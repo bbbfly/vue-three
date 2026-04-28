@@ -6,10 +6,8 @@
         <div class="space-y-3">
           <div>
             <label class="block text-xs text-gray-400 mb-1">控制器类型</label>
-            <select
-              v-model="controlsType"
-              class="w-full px-3 py-2 bg-gray-700 text-white text-sm rounded border border-gray-600 focus:outline-none focus:border-blue-500"
-            >
+            <select v-model="controlsType"
+              class="w-full px-3 py-2 bg-gray-700 text-white text-sm rounded border border-gray-600 focus:outline-none focus:border-blue-500">
               <option value="orbit">轨道控制器</option>
               <option value="fly">飞行控制器</option>
               <option value="firstPerson">第一人称</option>
@@ -25,94 +23,34 @@
     <template #viewport>
       <TCanvas antialias alpha :shadow-map="true">
         <TScene background="#1a1a2e">
-          <TOrthographicCamera
-            v-if="useOrthographic"
-            ref="orthoCameraRef"
-            :position="[8, 6, 8]"
-            :left="-8"
-            :right="8"
-            :top="8"
-            :bottom="-8"
-            :near="0.1"
-            :far="1000"
-            :zoom="1"
-          />
-          <TPerspectiveCamera
-            v-else
-            ref="perspCameraRef"
-            :position="[8, 6, 8]"
-            :fov="50"
-            :near="0.1"
-            :far="1000"
-          />
-          <TOrbitControls
-            v-if="controlsType === 'orbit'"
-            ref="orbitControlsRef"
-            :enable-damping="true"
-            :damping-factor="0.05"
-            :enable-pan="true"
-            :enable-zoom="true"
-            :enable-rotate="true"
-            :min-distance="2"
-            :max-distance="50"
-            :max-polar-angle="Math.PI / 2"
-          />
-          <TFlyControls
-            v-if="controlsType === 'fly'"
-            ref="flyControlsRef"
-            :movement-speed="20"
-            :roll-speed="0.5"
-            :drag-to-look="false"
-          />
-          <TFirstPersonControls
-            v-if="controlsType === 'firstPerson'"
-            ref="fpControlsRef"
-            :movement-speed="10"
-            :look-speed="0.2"
-            :no-fly="true"
-            :constrain-vertical="true"
-            :vertical-min="-Math.PI / 4"
-            :vertical-max="Math.PI / 4"
-          />
+          <TOrthographicCamera v-if="useOrthographic" ref="orthoCameraRef" :position="[8, 6, 8]" :left="-8" :right="8"
+            :top="8" :bottom="-8" :near="0.1" :far="1000" :zoom="1" />
+          <TPerspectiveCamera v-else ref="perspCameraRef" :position="[8, 6, 8]" :fov="50" :near="0.1" :far="1000" />
+          <TOrbitControls v-if="controlsType === 'orbit'" ref="orbitControlsRef" :enable-damping="true"
+            :damping-factor="0.05" :enable-pan="true" :enable-zoom="true" :enable-rotate="true" :min-distance="2"
+            :max-distance="50" :max-polar-angle="Math.PI / 2" />
+          <TFlyControls v-if="controlsType === 'fly'" ref="flyControlsRef" :movement-speed="20" :roll-speed="0.5"
+            :drag-to-look="true" />
+          <TFirstPersonControls v-if="controlsType === 'firstPerson'" ref="fpControlsRef" :movement-speed="10"
+            :look-speed="0.2" :no-fly="true" :constrain-vertical="true" :vertical-min="-Math.PI / 4"
+            :vertical-max="Math.PI / 4" />
 
           <TAmbientLight ref="ambientLightRef" :intensity="0.4" />
-          <TDirectionalLight
-            ref="directionalLightRef"
-            :position="[5, 8, 5]"
-            :intensity="1"
-            :cast-shadow="true"
-          />
+          <TDirectionalLight ref="directionalLightRef" :position="[5, 8, 5]" :intensity="1" :cast-shadow="true" />
 
-          <TMesh
-            v-for="i in 5"
-            :key="'box-' + i"
-            ref="boxRefs[i - 1]"
-            :position="[(i - 3) * 2.5, 0.5, 0]"
-            :cast-shadow="true"
-            :receive-shadow="true"
-          >
+          <TMesh v-for="i in 5" :key="'box-' + i" ref="boxRefs[i - 1]" :position="[(i - 3) * 2.5, 0.5, 0]"
+            :cast-shadow="true" :receive-shadow="true">
             <TBox :args="[1, i * 0.4 + 0.5, 1] as [number, number, number]" />
             <TMeshStandardMaterial :color="colors[i - 1]" />
           </TMesh>
 
-          <TMesh
-            v-for="z in 3"
-            :key="'sphere-' + z"
-            ref="sphereRefs[z - 1]"
-            :position="[0, 1, (z - 2) * 3]"
-            :cast-shadow="true"
-            :receive-shadow="true"
-          >
+          <TMesh v-for="z in 3" :key="'sphere-' + z" ref="sphereRefs[z - 1]" :position="[0, 1, (z - 2) * 3]"
+            :cast-shadow="true" :receive-shadow="true">
             <TSphere :args="[0.5, 32, 32] as [number, number, number]" />
             <TMeshStandardMaterial color="#9b59b6" />
           </TMesh>
 
-          <TMesh
-            ref="groundMeshRef"
-            :position="[0, -0.01, 0]"
-            :rotation="[-Math.PI / 2, 0, 0]"
-            :receive-shadow="true"
-          >
+          <TMesh ref="groundMeshRef" :position="[0, -0.01, 0]" :rotation="[-Math.PI / 2, 0, 0]" :receive-shadow="true">
             <TPlane :args="[20, 20] as [number, number]" />
             <TMeshStandardMaterial color="#2c3e50" />
           </TMesh>

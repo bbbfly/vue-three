@@ -32,7 +32,7 @@
           <TMesh ref="repeatTextureRef" :position="[4, 1.2, 0]" :cast-shadow="true" :receive-shadow="true">
             <TBox :args="[2, 2, 2] as [number, number, number]" />
             <TMeshStandardMaterial color="#22c55e" :metalness="0.1" :roughness="0.5">
-              <TTexture :repeat="[0.5, 0.3]" :url="diffuseTextureUrl" />
+              <TTexture :repeat="[2, 2]" :url="diffuseTextureUrl" />
             </TMeshStandardMaterial>
           </TMesh>
 
@@ -80,7 +80,11 @@
 
           <TMesh ref="groundMeshRef" :position="[0, -0.01, 0]" :rotation="[-Math.PI / 2, 0, 0]" :receive-shadow="true">
             <TPlane :args="[30, 20] as [number, number]" />
-            <TMeshStandardMaterial color="#2c3e50" />
+            <TMeshStandardMaterial>
+              <TTexture :repeat='[2, 2]' :offset='waterOffset1' :url='waterNormal1Url' />
+              <TTexture mapType='normalMap' :repeat='[2, 2]' :offset='waterOffset2' :url='waterNormal2Url' />
+              <TTexture mapType="roughnessMap" :repeat="[2, 2]" :url="waterRoughnessUrl" />
+            </TMeshStandardMaterial>
           </TMesh>
         </TScene>
       </TCanvas>
@@ -89,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, shallowRef } from 'vue'
+import { onMounted, onUnmounted, shallowRef, ref } from 'vue'
 import MainLayout from '../components/MainLayout.vue'
 import ComponentTree from '../components/ComponentTree.vue'
 import { useSceneStore } from '../stores/scene'
@@ -129,6 +133,9 @@ const groundMeshRef = shallowRef<any>(null)
 const diffuseTextureUrl = 'https://threejs.org/examples/textures/hardwood2_diffuse.jpg'
 const normalTextureUrl = 'https://threejs.org/examples/textures/hardwood2_bump.jpg'
 const roughnessTextureUrl = 'https://threejs.org/examples/textures/hardwood2_roughness.jpg'
+const waterNormal1Url = 'https://threejs.org/examples/textures/water/Water_1_M_Normal.jpg'
+const waterNormal2Url = 'https://threejs.org/examples/textures/water/Water_2_M_Normal.jpg'
+const waterRoughnessUrl = 'https://threejs.org/examples/textures/roughness_map.jpg'
 
 function registerSceneObjects() {
   const objects = [
@@ -161,11 +168,25 @@ function registerSceneObjects() {
   })
 }
 
+// 纹理贴图偏移 动画效果
+const waterOffset1 = ref<[number, number]>([0, 0])
+const waterOffset2 = ref<[number, number]>([0, 0])
+let timer: any = null
+const animateWater = () => {
+  waterOffset1.value[1] += 0.005
+  waterOffset1.value[0] += 0.005
+  waterOffset2.value[1] += 0.001
+  waterOffset2.value[0] += 0.001
+  timer = setTimeout(animateWater, 1000 / 60)
+}
+
 onMounted(() => {
   setTimeout(registerSceneObjects, 100)
+  animateWater()
 })
 
 onUnmounted(() => {
   sceneStore.clearAll()
+  clearTimeout(timer)
 })
 </script>

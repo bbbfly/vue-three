@@ -1,5 +1,5 @@
 import { inject, shallowRef, onBeforeUnmount, watch } from 'vue'
-import { Texture, TextureLoader } from 'three'
+import { Texture, TextureLoader, RepeatWrapping } from 'three'
 import { MaterialContextKey, type TextureMapType } from '../core/context'
 
 export interface TextureOptions {
@@ -47,34 +47,40 @@ export function useTexture(options: TextureOptions = {}) {
   function applyTextureSettings() {
     if (!texture.value) return
 
-    const tex = texture.value as any
+    const tex = texture.value
 
     if (options.wrapS !== undefined) {
-      tex.wrapS = options.wrapS
+      ;(tex as any).wrapS = options.wrapS
     }
     if (options.wrapT !== undefined) {
-      tex.wrapT = options.wrapT
+      ;(tex as any).wrapT = options.wrapT
     }
     if (options.magFilter !== undefined) {
-      tex.magFilter = options.magFilter
+      ;(tex as any).magFilter = options.magFilter
     }
     if (options.minFilter !== undefined) {
-      tex.minFilter = options.minFilter
+      ;(tex as any).minFilter = options.minFilter
     }
     if (options.repeat) {
-      texture.value.repeat.set(options.repeat[0], options.repeat[1])
+      tex.repeat.set(options.repeat[0], options.repeat[1])
+      if (options.wrapS === undefined) {
+        ;(tex as any).wrapS = RepeatWrapping
+      }
+      if (options.wrapT === undefined) {
+        ;(tex as any).wrapT = RepeatWrapping
+      }
     }
     if (options.offset) {
-      texture.value.offset.set(options.offset[0], options.offset[1])
+      tex.offset.set(options.offset[0], options.offset[1])
     }
     if (options.center) {
-      texture.value.center.set(options.center[0], options.center[1])
+      tex.center.set(options.center[0], options.center[1])
     }
     if (options.rotation !== undefined) {
-      texture.value.rotation = options.rotation
+      tex.rotation = options.rotation
     }
 
-    texture.value.needsUpdate = true
+    tex.needsUpdate = true
     applyTextureToMaterial()
   }
 
@@ -108,8 +114,14 @@ export function useTexture(options: TextureOptions = {}) {
     materialCtx!.setTextureByType(mapType, null)
   })
 
+  function updateSettings(newOptions: Partial<TextureOptions>) {
+    Object.assign(options, newOptions)
+    applyTextureSettings()
+  }
+
   return {
     texture,
-    load: loadTexture
+    load: loadTexture,
+    updateSettings
   }
 }

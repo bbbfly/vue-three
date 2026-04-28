@@ -4,6 +4,7 @@
 
 <script setup lang="ts">
 import type { PropType } from 'vue'
+import { toRefs, watch } from 'vue'
 import { useTexture } from '../composables/useTexture'
 import type { TextureMapType } from '../core/context'
 
@@ -103,7 +104,7 @@ const props = defineProps({
   }
 })
 
-const { texture, load } = useTexture({
+const { texture, load, updateSettings } = useTexture({
   url: props.url,
   mapType: props.mapType,
   wrapS: props.wrapS,
@@ -116,13 +117,31 @@ const { texture, load } = useTexture({
   rotation: props.rotation
 })
 
+const { url, wrapS, wrapT, magFilter, minFilter, repeat, offset, center, rotation } = toRefs(props)
+
+watch([url, wrapS, wrapT, magFilter, minFilter, repeat, offset, center, rotation], () => {
+  updateSettings({
+    url: props.url,
+    wrapS: props.wrapS,
+    wrapT: props.wrapT,
+    magFilter: props.magFilter,
+    minFilter: props.minFilter,
+    repeat: props.repeat,
+    offset: props.offset,
+    center: props.center,
+    rotation: props.rotation
+  })
+}, { deep: true })
+
 /**
  * @expose
  * @property texture - Three.js Texture 实例
  * @property load - 手动加载纹理方法
+ * @property updateSettings - 更新纹理设置
  */
 defineExpose({
   texture,
-  load
+  load,
+  updateSettings
 })
 </script>
