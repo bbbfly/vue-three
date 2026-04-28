@@ -13,7 +13,7 @@ import { useFlyControls } from '../composables/useFlyControls'
  * <TFlyControls
  *   :movementSpeed="10"
  *   :rollSpeed="0.5"
- *   :dragToLook="false"
+ *   :dragToLook="true"
  * />
  */
 const props = defineProps({
@@ -39,7 +39,7 @@ const props = defineProps({
    */
   dragToLook: {
     type: Boolean,
-    default: undefined
+    default: true
   },
   /**
    * 是否自动向前移动
