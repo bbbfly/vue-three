@@ -11,74 +11,76 @@
           <TAmbientLight ref="ambientLightRef" :intensity="0.4" />
           <TDirectionalLight ref="directionalLightRef" :position="[8, 12, 8]" :intensity="1.5" :cast-shadow="true" />
 
-          <TMesh ref="basicTextureRef" :position="[-4, 1.2, 2]" :cast-shadow="true" :receive-shadow="true">
-            <TBox :args="[2, 2, 2] as [number, number, number]" />
-            <TMeshStandardMaterial :metalness="0.1" :roughness="0.5">
-              <TTexture :repeat="[1, 1]" :url="roughTextureUrl" />
+          <TMesh ref="multiTextureRef" :position="[-4, 1.5, 0]" :cast-shadow="true" :receive-shadow="true">
+            <TBox :args="[2, 3, 2] as [number, number, number]" />
+            <TMeshStandardMaterial color="#8B4513" :metalness="0.1" :roughness="0.8">
+              <TTexture mapType="map" :repeat="[1, 1]" :url="diffuseTextureUrl" />
+              <TTexture mapType="normalMap" :repeat="[1, 1]" :url="normalTextureUrl" />
+              <TTexture mapType="roughnessMap" :repeat="[1, 1]" :url="roughnessTextureUrl" />
             </TMeshStandardMaterial>
           </TMesh>
 
-          <TMesh ref="repeatTextureRef" :position="[0, 1.2, 2]" :cast-shadow="true" :receive-shadow="true">
+          <TMesh ref="basicTextureRef" :position="[0, 1.2, 0]" :cast-shadow="true" :receive-shadow="true">
+            <TBox :args="[2, 2, 2] as [number, number, number]" />
+            <TMeshStandardMaterial>
+              <TTexture :url="diffuseTextureUrl" />
+              <TTexture mapType="normalMap" :url="normalTextureUrl" />
+              <TTexture mapType="roughnessMap" :url="roughnessTextureUrl" />
+            </TMeshStandardMaterial>
+          </TMesh>
+
+          <TMesh ref="repeatTextureRef" :position="[4, 1.2, 0]" :cast-shadow="true" :receive-shadow="true">
             <TBox :args="[2, 2, 2] as [number, number, number]" />
             <TMeshStandardMaterial color="#22c55e" :metalness="0.1" :roughness="0.5">
-              <TTexture :repeat="[3, 3]" :url="roughTextureUrl" />
+              <TTexture :repeat="[0.5, 0.3]" :url="diffuseTextureUrl" />
             </TMeshStandardMaterial>
           </TMesh>
 
-          <TMesh ref="offsetTextureRef" :position="[4, 1.2, 2]" :cast-shadow="true" :receive-shadow="true">
+          <TMesh ref="offsetTextureRef" :position="[-4, 1.2, -3.5]" :cast-shadow="true" :receive-shadow="true">
             <TBox :args="[2, 2, 2] as [number, number, number]" />
             <TMeshStandardMaterial :metalness="0.1" :roughness="0.5">
-              <TTexture :repeat="[2, 2]" :offset="[-0.5, -0.5]" :url="roughTextureUrl" />
+              <TTexture :repeat="[1, 1]" :offset="[0.25, 0.25]" :url="diffuseTextureUrl" />
             </TMeshStandardMaterial>
           </TMesh>
 
-          <TMesh ref="rotatedTextureRef" :position="[-4, 1.2, -2]" :cast-shadow="true" :receive-shadow="true">
+          <TMesh ref="rotatedTextureRef" :position="[0, 1.2, -3.5]" :cast-shadow="true" :receive-shadow="true">
             <TBox :args="[2, 2, 2] as [number, number, number]" />
             <TMeshStandardMaterial :metalness="0.1" :roughness="0.5">
-              <TTexture :repeat="[1, 1]" :rotation="Math.PI / 4" :url="roughTextureUrl" />
+              <TTexture :repeat="[0.5, 0.5]" :rotation="Math.PI / 4" :url="diffuseTextureUrl" />
             </TMeshStandardMaterial>
           </TMesh>
 
-          <TMesh ref="sphereTextureRef" :position="[0, 1.2, -2]" :cast-shadow="true" :receive-shadow="true">
+          <TMesh ref="sphereTextureRef" :position="[4, 1.2, -3.5]" :cast-shadow="true" :receive-shadow="true">
             <TSphere :args="[1.2, 64, 64] as [number, number, number]" />
             <TMeshStandardMaterial :metalness="0.3" :roughness="0.3">
-              <TTexture :repeat="[1, 1]" :url="roughTextureUrl" />
+              <TTexture />
             </TMeshStandardMaterial>
           </TMesh>
 
-          <TMesh ref="metalRoughRef" :position="[4, 1.2, -2]" :cast-shadow="true" :receive-shadow="true">
+          <TMesh ref="metalRoughRef" :position="[-4, 1.2, -7]" :cast-shadow="true" :receive-shadow="true">
             <TTorus :args="[0.9, 0.4, 32, 64] as [number, number, number, number]" />
             <TMeshStandardMaterial :metalness="0.9" :roughness="0.1">
               <TTexture />
             </TMeshStandardMaterial>
           </TMesh>
 
-          <TMesh ref="cylinderTextureRef" :position="[-4, 1.2, -5]" :cast-shadow="true" :receive-shadow="true">
+          <TMesh ref="cylinderTextureRef" :position="[0, 1.2, -7]" :cast-shadow="true" :receive-shadow="true">
             <TCylinder :args="[0.8, 0.8, 2.5, 32] as [number, number, number, number]" />
             <TMeshStandardMaterial :metalness="0.2" :roughness="0.6">
-              <TTexture :repeat="[1, 3]" :offset="[-0.5, -1]" :url="roughTextureUrl" />
+              <TTexture :repeat="[1, 3]" />
             </TMeshStandardMaterial>
           </TMesh>
 
-          <TMesh ref="coneTextureRef" :position="[0, 1.2, -5]" :cast-shadow="true" :receive-shadow="true">
+          <TMesh ref="coneTextureRef" :position="[4, 1.2, -7]" :cast-shadow="true" :receive-shadow="true">
             <TCone :args="[1, 2.2, 32] as [number, number, number]" />
             <TMeshStandardMaterial :metalness="0.1" :roughness="0.7">
-              <TTexture :repeat="[2, 1]" :url="roughTextureUrl" />
-            </TMeshStandardMaterial>
-          </TMesh>
-
-          <TMesh ref="planeTextureRef" :position="[4, 1, -5]" :rotation="[-Math.PI / 2, 0, 0]" :receive-shadow="true">
-            <TPlane :args="[2.5, 2.5] as [number, number]" />
-            <TMeshStandardMaterial :side="2" :metalness="0.1" :roughness="0.5">
-              <TTexture :repeat="[2, 2]" :offset="[-0.5, -0.5]" :url="waterTextureUrl1" />
+              <TTexture :repeat="[2, 1]" />
             </TMeshStandardMaterial>
           </TMesh>
 
           <TMesh ref="groundMeshRef" :position="[0, -0.01, 0]" :rotation="[-Math.PI / 2, 0, 0]" :receive-shadow="true">
             <TPlane :args="[30, 20] as [number, number]" />
-            <TMeshStandardMaterial>
-              <TTexture :repeat="[1, 1]" :url="waterTextureUrl2" />
-            </TMeshStandardMaterial>
+            <TMeshStandardMaterial color="#2c3e50" />
           </TMesh>
         </TScene>
       </TCanvas>
@@ -113,6 +115,7 @@ const sceneStore = useSceneStore()
 
 const ambientLightRef = shallowRef<any>(null)
 const directionalLightRef = shallowRef<any>(null)
+const multiTextureRef = shallowRef<any>(null)
 const basicTextureRef = shallowRef<any>(null)
 const repeatTextureRef = shallowRef<any>(null)
 const offsetTextureRef = shallowRef<any>(null)
@@ -121,15 +124,15 @@ const sphereTextureRef = shallowRef<any>(null)
 const metalRoughRef = shallowRef<any>(null)
 const cylinderTextureRef = shallowRef<any>(null)
 const coneTextureRef = shallowRef<any>(null)
-const planeTextureRef = shallowRef<any>(null)
 const groundMeshRef = shallowRef<any>(null)
 
-const waterTextureUrl1 = 'https://threejs.org/examples/textures/water/Water_1_M_Normal.jpg'
-const waterTextureUrl2 = 'https://threejs.org/examples/textures/water/Water_2_M_Normal.jpg'
-const roughTextureUrl = 'https://threejs.org/examples/textures/roughness_map.jpg'
+const diffuseTextureUrl = 'https://threejs.org/examples/textures/hardwood2_diffuse.jpg'
+const normalTextureUrl = 'https://threejs.org/examples/textures/hardwood2_bump.jpg'
+const roughnessTextureUrl = 'https://threejs.org/examples/textures/hardwood2_roughness.jpg'
 
 function registerSceneObjects() {
   const objects = [
+    { ref: multiTextureRef, name: '多纹理组合立方体', type: 'Mesh' },
     { ref: basicTextureRef, name: '基础纹理立方体', type: 'Mesh' },
     { ref: repeatTextureRef, name: '纹理重复立方体', type: 'Mesh' },
     { ref: offsetTextureRef, name: '纹理偏移立方体', type: 'Mesh' },
@@ -138,7 +141,6 @@ function registerSceneObjects() {
     { ref: metalRoughRef, name: '金属质感圆环', type: 'Mesh' },
     { ref: cylinderTextureRef, name: '纹理圆柱体', type: 'Mesh' },
     { ref: coneTextureRef, name: '纹理圆锥体', type: 'Mesh' },
-    { ref: planeTextureRef, name: '纹理平面', type: 'Mesh' },
     { ref: groundMeshRef, name: '地面', type: 'Mesh' },
     { ref: ambientLightRef, name: '环境光', type: 'AmbientLight' },
     { ref: directionalLightRef, name: '方向光', type: 'DirectionalLight' }

@@ -174,8 +174,9 @@ export function useCanvas(options: CanvasOptions = {}) {
     }
 
     if (options.shadowMap) {
-      renderer.value.shadowMap.enabled = options.shadowMap === true || options.shadowMap.enabled
-      if (options.shadowMap !== true && options.shadowMap.type) {
+      renderer.value.shadowMap.enabled =
+        options.shadowMap === true || (options.shadowMap as any).enabled === true
+      if (typeof options.shadowMap === 'object' && options.shadowMap.type) {
         renderer.value.shadowMap.type = options.shadowMap.type as any
       }
     }

@@ -87,9 +87,31 @@ export interface EffectComposerContext {
   removePass: (pass: Pass) => void
 }
 
+export type TextureMapType =
+  | 'map'
+  | 'normalMap'
+  | 'roughnessMap'
+  | 'metalnessMap'
+  | 'aoMap'
+  | 'displacementMap'
+  | 'emissiveMap'
+  | 'alphaMap'
+  | 'bumpMap'
+  | 'envMap'
+
 export interface MaterialContext {
   material: ShallowRef<Material>
   setMap: (texture: Texture | null) => void
+  setNormalMap: (texture: Texture | null) => void
+  setRoughnessMap: (texture: Texture | null) => void
+  setMetalnessMap: (texture: Texture | null) => void
+  setAoMap: (texture: Texture | null) => void
+  setDisplacementMap: (texture: Texture | null) => void
+  setEmissiveMap: (texture: Texture | null) => void
+  setAlphaMap: (texture: Texture | null) => void
+  setBumpMap: (texture: Texture | null) => void
+  setEnvMap: (texture: Texture | null) => void
+  setTextureByType: (type: TextureMapType, texture: Texture | null) => void
 }
 
 export const ThreeContextKey = Symbol('ThreeContext') as InjectionKey<ThreeContext>

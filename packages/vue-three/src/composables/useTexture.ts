@@ -1,9 +1,10 @@
 import { inject, shallowRef, onBeforeUnmount, watch } from 'vue'
 import { Texture, TextureLoader } from 'three'
-import { MaterialContextKey } from '../core/context'
+import { MaterialContextKey, type TextureMapType } from '../core/context'
 
 export interface TextureOptions {
   url?: string
+  mapType?: TextureMapType
   wrapS?: number
   wrapT?: number
   magFilter?: number
@@ -23,6 +24,13 @@ export function useTexture(options: TextureOptions = {}) {
 
   const texture = shallowRef<Texture | null>(null)
   const loader = new TextureLoader()
+  const mapType = options.mapType || 'map'
+
+  function applyTextureToMaterial() {
+    if (texture.value) {
+      materialCtx!.setTextureByType(mapType, texture.value)
+    }
+  }
 
   function loadTexture(url: string) {
     if (texture.value) {
@@ -30,7 +38,7 @@ export function useTexture(options: TextureOptions = {}) {
     }
 
     texture.value = loader.load(url, () => {
-      materialCtx!.setMap(texture.value)
+      applyTextureToMaterial()
     })
 
     applyTextureSettings()
@@ -67,10 +75,13 @@ export function useTexture(options: TextureOptions = {}) {
     }
 
     texture.value.needsUpdate = true
+    applyTextureToMaterial()
   }
 
   if (options.url) {
     loadTexture(options.url)
+  } else {
+    applyTextureSettings()
   }
 
   watch(
@@ -94,7 +105,7 @@ export function useTexture(options: TextureOptions = {}) {
     if (texture.value) {
       texture.value.dispose()
     }
-    materialCtx!.setMap(null)
+    materialCtx!.setTextureByType(mapType, null)
   })
 
   return {

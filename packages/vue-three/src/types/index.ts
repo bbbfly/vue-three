@@ -220,10 +220,12 @@ export interface RendererConfig {
   alpha?: boolean
   clearColor?: string | number
   clearAlpha?: number
-  shadowMap?: {
-    enabled: boolean
-    type?: number
-  }
+  shadowMap?:
+    | boolean
+    | {
+        enabled: boolean
+        type?: number
+      }
 }
 
 export interface GLTFLoaderConfig extends Object3DConfig {

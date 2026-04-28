@@ -5,18 +5,19 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import { useTexture } from '../composables/useTexture'
+import type { TextureMapType } from '../core/context'
 
 /**
  * 纹理贴图组件
  * @description 加载和配置纹理贴图，可应用于材质的各种属性（颜色、法线、金属度等）
  * @component TTexture
  * @example
- * <TTexture
- *   url="/textures/wood.jpg"
- *   :repeat="[2, 2]"
- *   :wrapS="1000"
- *   :wrapT="1000"
- * />
+ * // 基础颜色贴图
+ * <TTexture url="/textures/color.jpg" mapType="map" :repeat="[2, 2]" />
+ * // 法线贴图
+ * <TTexture url="/textures/normal.jpg" mapType="normalMap" />
+ * // 粗糙度贴图
+ * <TTexture url="/textures/roughness.jpg" mapType="roughnessMap" />
  */
 const props = defineProps({
   /**
@@ -27,6 +28,14 @@ const props = defineProps({
     type: String,
     required: false,
     default: undefined
+  },
+  /**
+   * 纹理贴图应用到材质的目标属性类型
+   * @default 'map'
+   */
+  mapType: {
+    type: String as PropType<TextureMapType>,
+    default: 'map'
   },
   /**
    * S方向（U方向）包裹模式
@@ -96,6 +105,7 @@ const props = defineProps({
 
 const { texture, load } = useTexture({
   url: props.url,
+  mapType: props.mapType,
   wrapS: props.wrapS,
   wrapT: props.wrapT,
   magFilter: props.magFilter,
