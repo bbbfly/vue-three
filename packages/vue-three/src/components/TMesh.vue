@@ -152,7 +152,15 @@ watch(
 )
 
 watch(
-  [() => mesh.value, () => props.onClick, () => props.onDblclick, () => props.onContextmenu, () => props.onPointerEnter, () => props.onPointerLeave, () => props.onPointerMove],
+  [
+    () => mesh.value,
+    () => props.onClick,
+    () => props.onDblclick,
+    () => props.onContextmenu,
+    () => props.onPointerEnter,
+    () => props.onPointerLeave,
+    () => props.onPointerMove
+  ],
   ([meshObj]) => {
     if (meshObj && interactionCtx) {
       interactionCtx.unregisterObject(meshObj)

@@ -9,69 +9,112 @@
           <TPerspectiveCamera :position="[10, 8, 10]" :fov="60" />
           <TOrbitControls :enable-damping="true" :enable-pan="true" :enable-zoom="true" />
           <TAmbientLight ref="ambientLightRef" :intensity="0.4" />
-          <TDirectionalLight ref="directionalLightRef" :position="[5, 8, 5]" :intensity="1" :cast-shadow="true" />
+          <TDirectionalLight
+            ref="directionalLightRef"
+            :position="[5, 8, 5]"
+            :intensity="1"
+            :cast-shadow="true"
+          />
 
-          <TMesh ref="tubeMeshRef" :position="[-5, 2, 0]" :rotation="[0, 0, 0]" :cast-shadow="true"
-            :receive-shadow="true">
-            <TTubeGeometry :path="{
-              type: 'catmullRom',
-              args: [
-                [-1.5, -1, 0],
-                [0, 1, 0],
-                [1.5, -1, 0]
-              ]
-            }" :args="[32, 0.4, 8, 0]" />
+          <TMesh
+            ref="tubeMeshRef"
+            :position="[-5, 2, 0]"
+            :rotation="[0, 0, 0]"
+            :cast-shadow="true"
+            :receive-shadow="true"
+          >
+            <TTubeGeometry
+              :path="{
+                type: 'catmullRom',
+                args: [
+                  [-1.5, -1, 0],
+                  [0, 1, 0],
+                  [1.5, -1, 0]
+                ]
+              }"
+              :args="[32, 0.4, 8, 0]"
+            />
             <TMeshStandardMaterial color="#e74c3c" :side="2" />
           </TMesh>
 
-          <TMesh ref="latheMeshRef" :position="[-1.5, 1.5, 0]" :cast-shadow="true" :receive-shadow="true">
-            <TLatheGeometry :points="[
-              [0, 0],
-              [0.3, 0.4],
-              [0.6, 0.6],
-              [0.4, 1],
-              [0.2, 1.4],
-              [0, 1.6]
-            ]" :args="[24, 0, Math.PI * 2]" />
+          <TMesh
+            ref="latheMeshRef"
+            :position="[-1.5, 1.5, 0]"
+            :cast-shadow="true"
+            :receive-shadow="true"
+          >
+            <TLatheGeometry
+              :points="[
+                [0, 0],
+                [0.3, 0.4],
+                [0.6, 0.6],
+                [0.4, 1],
+                [0.2, 1.4],
+                [0, 1.6]
+              ]"
+              :args="[24, 0, Math.PI * 2]"
+            />
             <TMeshStandardMaterial color="#3498db" :side="2" />
           </TMesh>
 
-          <TMesh ref="shapeMeshRef" :position="[2, 1.5, 0]" :rotation="[-Math.PI / 2, 0, 0]" :cast-shadow="true"
-            :receive-shadow="true">
-            <TShapeGeometry :shape="{
-              curves: [
-                { type: 'moveTo', args: [0, 0] },
-                { type: 'arc', args: [0, 1.2, 1.2, 1.2, 0, Math.PI, true] },
-                { type: 'lineTo', args: [-1.2, 0] }
-              ]
-            }" />
+          <TMesh
+            ref="shapeMeshRef"
+            :position="[2, 1.5, 0]"
+            :rotation="[-Math.PI / 2, 0, 0]"
+            :cast-shadow="true"
+            :receive-shadow="true"
+          >
+            <TShapeGeometry
+              :shape="{
+                curves: [
+                  { type: 'moveTo', args: [0, 0] },
+                  { type: 'arc', args: [0, 1.2, 1.2, 1.2, 0, Math.PI, true] },
+                  { type: 'lineTo', args: [-1.2, 0] }
+                ]
+              }"
+            />
             <TMeshStandardMaterial color="#2ecc71" :side="2" />
           </TMesh>
 
-          <TMesh ref="extrudeMeshRef" :position="[5.5, 2, 0]" :cast-shadow="true" :receive-shadow="true">
-            <TExtrudeGeometry :shape="{
-              curves: [
-                { type: 'moveTo', args: [-0.8, -0.8] },
-                { type: 'lineTo', args: [0.8, -0.8] },
-                { type: 'lineTo', args: [0.8, 0.8] },
-                { type: 'lineTo', args: [-0.8, 0.8] },
-                { type: 'lineTo', args: [-0.8, -0.8] }
-              ]
-            }" :args="{ depth: 1.5, bevelEnabled: true, bevelSize: 0.1, bevelThickness: 0.1 }" />
+          <TMesh
+            ref="extrudeMeshRef"
+            :position="[5.5, 2, 0]"
+            :cast-shadow="true"
+            :receive-shadow="true"
+          >
+            <TExtrudeGeometry
+              :shape="{
+                curves: [
+                  { type: 'moveTo', args: [-0.8, -0.8] },
+                  { type: 'lineTo', args: [0.8, -0.8] },
+                  { type: 'lineTo', args: [0.8, 0.8] },
+                  { type: 'lineTo', args: [-0.8, 0.8] },
+                  { type: 'lineTo', args: [-0.8, -0.8] }
+                ]
+              }"
+              :args="{ depth: 1.5, bevelEnabled: true, bevelSize: 0.1, bevelThickness: 0.1 }"
+            />
             <TMeshStandardMaterial color="#9b59b6" :side="2" />
           </TMesh>
 
-          <TMesh ref="sweepMeshRef" :position="[-3.5, 1, -4]" :rotation="[0, 0, 0]" :cast-shadow="true"
-            :receive-shadow="true">
-            <TSweepGeometry :shape="{
-              curves: [
-                { type: 'moveTo', args: [0, 0] },
-                { type: 'lineTo', args: [0.5, 0.5] },
-                { type: 'lineTo', args: [0, 1] },
-                { type: 'lineTo', args: [-0.5, 0.5] },
-                { type: 'lineTo', args: [0, 0] }
-              ]
-            }" :path="{
+          <TMesh
+            ref="sweepMeshRef"
+            :position="[-3.5, 1, -4]"
+            :rotation="[0, 0, 0]"
+            :cast-shadow="true"
+            :receive-shadow="true"
+          >
+            <TSweepGeometry
+              :shape="{
+                curves: [
+                  { type: 'moveTo', args: [0, 0] },
+                  { type: 'lineTo', args: [0.5, 0.5] },
+                  { type: 'lineTo', args: [0, 1] },
+                  { type: 'lineTo', args: [-0.5, 0.5] },
+                  { type: 'lineTo', args: [0, 0] }
+                ]
+              }"
+              :path="{
                 type: 'catmullRom',
                 args: [
                   [-1, -1, 0],
@@ -79,15 +122,28 @@
                   [1, -0.5, 0],
                   [1.5, 0.5, -0.5]
                 ]
-              }" :options="{ tubularSegments: 48, radialSegments: 6 }" />
+              }"
+              :options="{ tubularSegments: 48, radialSegments: 6 }"
+            />
             <TMeshStandardMaterial color="#f39c12" :side="2" />
           </TMesh>
 
-          <TWireframeGeometry ref="wireframeRef" :position="[0, 1.5, -4]"
-            :geometry="{ type: 'sphere', args: [1, 16, 16] }" :color="'#1abc9c'" :linewidth="1" />
+          <TWireframeGeometry
+            ref="wireframeRef"
+            :position="[0, 1.5, -4]"
+            :geometry="{ type: 'sphere', args: [1, 16, 16] }"
+            :color="'#1abc9c'"
+            :linewidth="1"
+          />
 
-          <TEdgesGeometry ref="edgesRef" :position="[3.5, 1.5, -4]" :geometry="{ type: 'box', args: [2, 2, 2] }"
-            :threshold-angle="20" :color="'#e91e63'" :linewidth="1" />
+          <TEdgesGeometry
+            ref="edgesRef"
+            :position="[3.5, 1.5, -4]"
+            :geometry="{ type: 'box', args: [2, 2, 2] }"
+            :threshold-angle="20"
+            :color="'#e91e63'"
+            :linewidth="1"
+          />
 
           <TMesh ref="groundMeshRef" :position="[0, -0.5, 0]" :rotation="[-Math.PI / 2, 0, 0]">
             <TPlane :args="[25, 25]" />

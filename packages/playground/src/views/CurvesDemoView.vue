@@ -9,77 +9,122 @@
           <TPerspectiveCamera :position="[8, 8, 8]" :fov="60" />
           <TOrbitControls :enable-damping="true" :enable-pan="true" :enable-zoom="true" />
           <TAmbientLight ref="ambientLightRef" :intensity="0.4" />
-          <TDirectionalLight ref="directionalLightRef" :position="[5, 8, 5]" :intensity="1" :cast-shadow="true" />
+          <TDirectionalLight
+            ref="directionalLightRef"
+            :position="[5, 8, 5]"
+            :intensity="1"
+            :cast-shadow="true"
+          />
 
-          <TLine ref="arcLineRef" :curve="{ type: 'arc', args: [-5, 3, 1.2, 0, Math.PI * 1.5] }" color="#ff6b6b"
-            :linewidth="2" />
+          <TLine
+            ref="arcLineRef"
+            :curve="{ type: 'arc', args: [-5, 3, 1.2, 0, Math.PI * 1.5] }"
+            color="#ff6b6b"
+            :linewidth="2"
+          />
 
-          <TLine ref="ellipseLineRef" :curve="{ type: 'ellipse', args: [-5, 0, 1.5, 1] }" color="#4ecdc4"
-            :linewidth="2" />
+          <TLine
+            ref="ellipseLineRef"
+            :curve="{ type: 'ellipse', args: [-5, 0, 1.5, 1] }"
+            color="#4ecdc4"
+            :linewidth="2"
+          />
 
-          <TLine ref="bezierLineRef" :curve="{
-            type: 'bezier',
-            args: [
-              [-2, 3],
-              [-1, 4.5],
-              [-3, 4.5],
-              [-2, 3]
-            ]
-          }" color="#ffe66d" :linewidth="2" />
+          <TLine
+            ref="bezierLineRef"
+            :curve="{
+              type: 'bezier',
+              args: [
+                [-2, 3],
+                [-1, 4.5],
+                [-3, 4.5],
+                [-2, 3]
+              ]
+            }"
+            color="#ffe66d"
+            :linewidth="2"
+          />
 
-          <TLine ref="quadraticLineRef" :curve="{
-            type: 'quadraticBezier',
-            args: [
-              [-2, 0],
-              [-2.5, 2],
-              [-1.5, 0]
-            ]
-          }" color="#ff9f43" :linewidth="2" />
+          <TLine
+            ref="quadraticLineRef"
+            :curve="{
+              type: 'quadraticBezier',
+              args: [
+                [-2, 0],
+                [-2.5, 2],
+                [-1.5, 0]
+              ]
+            }"
+            color="#ff9f43"
+            :linewidth="2"
+          />
 
-          <TLine ref="catmullLineRef" :curve="{
-            type: 'catmullRom',
-            args: [
-              [1, 0, 0],
-              [2, 1, 0],
-              [3, 0.5, 0],
-              [4, 1.5, 0],
-              [5, 0, 0]
-            ]
-          }" color="#c56cf0" :linewidth="2" />
+          <TLine
+            ref="catmullLineRef"
+            :curve="{
+              type: 'catmullRom',
+              args: [
+                [1, 0, 0],
+                [2, 1, 0],
+                [3, 0.5, 0],
+                [4, 1.5, 0],
+                [5, 0, 0]
+              ]
+            }"
+            color="#c56cf0"
+            :linewidth="2"
+          />
 
-          <TLine ref="splineLineRef" :curve="{
-            type: 'spline',
-            args: [
-              [1, 3],
-              [2, 4],
-              [3, 3.5],
-              [4, 4.5],
-              [5, 3]
-            ]
-          }" color="#7bed9f" :linewidth="2" />
+          <TLine
+            ref="splineLineRef"
+            :curve="{
+              type: 'spline',
+              args: [
+                [1, 3],
+                [2, 4],
+                [3, 3.5],
+                [4, 4.5],
+                [5, 3]
+              ]
+            }"
+            color="#7bed9f"
+            :linewidth="2"
+          />
 
-          <TLineDashed ref="dashedLineRef" :curve="{
-            type: 'catmullRom',
-            args: [
-              [-5, -2],
-              [-3, -1.5],
-              [-1, -2.5],
-              [1, -1.5],
-              [3, -2],
-              [5, -1.5]
-            ]
-          }" color="#70a1ff" :linewidth="2" :dash-size="0.2" :gap-size="0.1" />
+          <TLineDashed
+            ref="dashedLineRef"
+            :curve="{
+              type: 'catmullRom',
+              args: [
+                [-5, -2],
+                [-3, -1.5],
+                [-1, -2.5],
+                [1, -1.5],
+                [3, -2],
+                [5, -1.5]
+              ]
+            }"
+            color="#70a1ff"
+            :linewidth="2"
+            :dash-size="0.2"
+            :gap-size="0.1"
+          />
 
-          <TLineLoop ref="lineLoopRef" :curve="{
-            type: 'catmullRom',
-            args: [
-              [0, -2],
-              [1, -2.8],
-              [-1, -2.8],
-              [0, -2]
-            ],
-            closed: true
-          }" color="#ff4757" :linewidth="3" />
+          <TLineLoop
+            ref="lineLoopRef"
+            :curve="{
+              type: 'catmullRom',
+              args: [
+                [0, -2],
+                [1, -2.8],
+                [-1, -2.8],
+                [0, -2]
+              ],
+              closed: true
+            }"
+            color="#ff4757"
+            :linewidth="3"
+          />
 
           <TMesh ref="groundMeshRef" :position="[0, -3, 0]" :rotation="[-Math.PI / 2, 0, 0]">
             <TPlane :args="[20, 20]" />

@@ -162,6 +162,25 @@
 | TEST-LOAD-005 | 模型 scale 正确应用      | 组件测试 | model.scale 正确  |
 | TEST-LOAD-006 | 组件卸载时清理模型       | 组件测试 | 模型资源被释放    |
 
+### 3.8 后期处理组件测试
+
+| 测试ID       | 测试名称                          | 测试类型 | 预期结果                          |
+| ------------ | --------------------------------- | -------- | --------------------------------- |
+| TEST-PP-001  | TEffectComposer 正确创建          | 组件测试 | EffectComposer 实例存在           |
+| TEST-PP-002  | TBloomPass 添加到 Composer        | 组件测试 | composer.passes 包含 BloomPass    |
+| TEST-PP-003  | TSSAAPass 添加到 Composer         | 组件测试 | composer.passes 包含 SSAARenderPass |
+| TEST-PP-004  | TOutlinePass 正确创建             | 组件测试 | OutlinePass 实例存在              |
+| TEST-PP-005  | OutlinePass edgeStrength 配置生效 | 组件测试 | edgeStrength 属性正确设置         |
+| TEST-PP-006  | OutlinePass edgeGlow 配置生效     | 组件测试 | edgeGlow 属性正确设置             |
+| TEST-PP-007  | OutlinePass edgeThickness 配置生效 | 组件测试 | edgeThickness 属性正确设置       |
+| TEST-PP-008  | OutlinePass 描边颜色配置生效      | 组件测试 | visibleEdgeColor 正确设置         |
+| TEST-PP-009  | OutlinePass hiddenEdgeColor 配置生效 | 组件测试 | hiddenEdgeColor 正确设置        |
+| TEST-PP-010  | OutlinePass pulsePeriod 闪烁效果  | 组件测试 | pulsePeriod 动画周期正确          |
+| TEST-PP-011  | selectedObjects 选中对象描边      | 组件测试 | 选中对象显示描边效果              |
+| TEST-PP-012  | 动态添加/移除选中对象             | 组件测试 | 描边效果实时更新                  |
+| TEST-PP-013  | 多个对象同时描边                  | 组件测试 | 所有选中对象都显示描边            |
+| TEST-PP-014  | 组件卸载时清理 Pass 资源          | 组件测试 | pass 资源被 dispose               |
+
 ---
 
 ## 四、Playground 测试

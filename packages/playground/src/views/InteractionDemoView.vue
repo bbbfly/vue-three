@@ -6,7 +6,9 @@
     <template #viewport>
       <div class="h-full flex overflow-hidden">
         <div class="flex-1 relative">
-          <div class="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur rounded-lg p-3 shadow-lg">
+          <div
+            class="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur rounded-lg p-3 shadow-lg"
+          >
             <h2 class="text-lg font-bold text-gray-800">交互事件系统演示</h2>
             <p class="text-xs text-gray-600">点击网格、鼠标悬停查看效果</p>
           </div>
@@ -18,21 +20,34 @@
               <TAmbientLight :intensity="0.6" />
               <TDirectionalLight :position="[5, 5, 5]" :intensity="0.8" />
 
-              <TMesh v-for="(item, index) in cubes" :key="index" :position="item.position" :cast-shadow="true"
-                :receive-shadow="true" :on-click="handleClick"
+              <TMesh
+                v-for="(item, index) in cubes"
+                :key="index"
+                :position="item.position"
+                :cast-shadow="true"
+                :receive-shadow="true"
+                :on-click="handleClick"
                 :on-pointer-enter="(e: any) => handlePointerEnter(e, index)"
-                :on-pointer-leave="(e: any) => handlePointerLeave(e, index)">
+                :on-pointer-leave="(e: any) => handlePointerLeave(e, index)"
+              >
                 <TBox :args="[1, 1, 1]" />
                 <TMeshStandardMaterial :color="item.color" />
               </TMesh>
 
               <TMesh :position="[0, 0, 0]" :on-click="handleCenterClick">
                 <TSphere :args="[0.5, 32, 32]" />
-                <TMeshStandardMaterial :color="sphereColor" :emissive="sphereEmissive"
-                  :emissive-intensity="sphereIntensity" />
+                <TMeshStandardMaterial
+                  :color="sphereColor"
+                  :emissive="sphereEmissive"
+                  :emissive-intensity="sphereIntensity"
+                />
               </TMesh>
 
-              <TMesh :position="[0, -1.5, 0]" :rotation="[-Math.PI / 2, 0, 0]" :receive-shadow="true">
+              <TMesh
+                :position="[0, -1.5, 0]"
+                :rotation="[-Math.PI / 2, 0, 0]"
+                :receive-shadow="true"
+              >
                 <TPlane :args="[20, 20]" />
                 <TMeshStandardMaterial :color="0xcccccc" />
               </TMesh>
@@ -40,11 +55,17 @@
           </TCanvas>
         </div>
 
-        <div class="w-80 h-full bg-white border-l border-gray-200 p-4 flex flex-col overflow-hidden">
+        <div
+          class="w-80 h-full bg-white border-l border-gray-200 p-4 flex flex-col overflow-hidden"
+        >
           <h3 class="font-bold text-gray-800 mb-3 flex-shrink-0">事件日志</h3>
           <div class="flex-1 min-h-0 overflow-auto bg-gray-50 rounded p-2 text-xs font-mono">
-            <div v-for="(log, index) in eventLogs" :key="index" class="py-1 border-b border-gray-200 last:border-0"
-              :class="getLogColor(log.type)">
+            <div
+              v-for="(log, index) in eventLogs"
+              :key="index"
+              class="py-1 border-b border-gray-200 last:border-0"
+              :class="getLogColor(log.type)"
+            >
               <span class="font-bold">[{{ log.type }}]</span>
               {{ log.message }}
             </div>
@@ -52,8 +73,10 @@
               暂无事件，点击或悬停场景中的物体
             </div>
           </div>
-          <button class="mt-3 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded text-sm transition-colors flex-shrink-0"
-            @click="eventLogs = []">
+          <button
+            class="mt-3 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded text-sm transition-colors flex-shrink-0"
+            @click="eventLogs = []"
+          >
             清空日志
           </button>
         </div>
@@ -120,7 +143,10 @@ const getLogColor = (type: string) => {
 }
 
 const handleClick = (e: InteractionEvent) => {
-  addLog('click', `点击立方体: 位置 (${e.point.x.toFixed(2)}, ${e.point.y.toFixed(2)}, ${e.point.z.toFixed(2)})`)
+  addLog(
+    'click',
+    `点击立方体: 位置 (${e.point.x.toFixed(2)}, ${e.point.y.toFixed(2)}, ${e.point.z.toFixed(2)})`
+  )
   e.stopPropagation()
 }
 

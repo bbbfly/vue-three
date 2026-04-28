@@ -10,8 +10,10 @@
 
           <div class="space-y-2">
             <label class="block text-xs text-gray-500">曲线类型</label>
-            <select v-model="curveType"
-              class="w-full px-3 py-2 bg-white border border-gray-200 rounded-md text-sm text-gray-700">
+            <select
+              v-model="curveType"
+              class="w-full px-3 py-2 bg-white border border-gray-200 rounded-md text-sm text-gray-700"
+            >
               <option value="arc">圆弧 Arc</option>
               <option value="ellipse">椭圆 Ellipse</option>
               <option value="bezier">三次贝塞尔 Bezier</option>
@@ -26,7 +28,11 @@
             <div class="space-y-2">
               <div class="flex items-center justify-between">
                 <span class="text-xs text-gray-600">线条颜色</span>
-                <input v-model="lineColor" type="color" class="w-8 h-8 rounded cursor-pointer border-0" />
+                <input
+                  v-model="lineColor"
+                  type="color"
+                  class="w-8 h-8 rounded cursor-pointer border-0"
+                />
               </div>
               <div class="flex items-center justify-between">
                 <span class="text-xs text-gray-600">线条宽度</span>
@@ -45,16 +51,34 @@
             <label class="block text-xs text-gray-500 mb-2">虚线模式</label>
             <div class="flex items-center justify-between mb-2">
               <span class="text-xs text-gray-600">启用虚线</span>
-              <input v-model="dashedEnabled" type="checkbox" class="w-4 h-4 rounded border-gray-300" />
+              <input
+                v-model="dashedEnabled"
+                type="checkbox"
+                class="w-4 h-4 rounded border-gray-300"
+              />
             </div>
             <div v-if="dashedEnabled" class="space-y-2 pl-2 border-l-2 border-gray-200">
               <div class="flex items-center justify-between">
                 <span class="text-xs text-gray-600">虚线长度</span>
-                <input v-model.number="dashSize" type="range" min="0.05" max="0.5" step="0.01" class="w-20" />
+                <input
+                  v-model.number="dashSize"
+                  type="range"
+                  min="0.05"
+                  max="0.5"
+                  step="0.01"
+                  class="w-20"
+                />
               </div>
               <div class="flex items-center justify-between">
                 <span class="text-xs text-gray-600">间隔长度</span>
-                <input v-model.number="gapSize" type="range" min="0.05" max="0.5" step="0.01" class="w-20" />
+                <input
+                  v-model.number="gapSize"
+                  type="range"
+                  min="0.05"
+                  max="0.5"
+                  step="0.01"
+                  class="w-20"
+                />
               </div>
             </div>
           </div>
@@ -66,8 +90,14 @@
           <div v-if="curveType === 'arc'" class="space-y-3">
             <div v-for="(param, i) in arcParams" :key="i" class="flex items-center justify-between">
               <span class="text-xs text-gray-600 w-16">{{ param.label }}</span>
-              <input v-model.number="param.value" type="range" :min="param.min" :max="param.max" :step="param.step"
-                class="w-28" />
+              <input
+                v-model.number="param.value"
+                type="range"
+                :min="param.min"
+                :max="param.max"
+                :step="param.step"
+                class="w-28"
+              />
               <span class="text-xs text-gray-500 w-10 text-right">{{
                 param.value.toFixed(2)
               }}</span>
@@ -75,10 +105,20 @@
           </div>
 
           <div v-if="curveType === 'ellipse'" class="space-y-3">
-            <div v-for="(param, i) in ellipseParams" :key="i" class="flex items-center justify-between">
+            <div
+              v-for="(param, i) in ellipseParams"
+              :key="i"
+              class="flex items-center justify-between"
+            >
               <span class="text-xs text-gray-600 w-16">{{ param.label }}</span>
-              <input v-model.number="param.value" type="range" :min="param.min" :max="param.max" :step="param.step"
-                class="w-28" />
+              <input
+                v-model.number="param.value"
+                type="range"
+                :min="param.min"
+                :max="param.max"
+                :step="param.step"
+                class="w-28"
+              />
               <span class="text-xs text-gray-500 w-10 text-right">{{
                 param.value.toFixed(2)
               }}</span>
@@ -87,17 +127,35 @@
 
           <div v-if="curveType === 'catmullRom'" class="space-y-3">
             <p class="text-xs text-gray-500 mb-2">3D 控制点 (可扩展)</p>
-            <div v-for="(point, i) in catmullRomPoints" :key="i" class="flex items-center gap-1 bg-white p-2 rounded">
+            <div
+              v-for="(point, i) in catmullRomPoints"
+              :key="i"
+              class="flex items-center gap-1 bg-white p-2 rounded"
+            >
               <span class="text-xs text-gray-400 w-4">{{ i + 1 }}</span>
-              <input v-model.number="point[0]" type="number" step="0.5"
-                class="w-14 px-2 py-1 border border-gray-200 rounded text-xs" />
-              <input v-model.number="point[1]" type="number" step="0.5"
-                class="w-14 px-2 py-1 border border-gray-200 rounded text-xs" />
-              <input v-model.number="point[2]" type="number" step="0.5"
-                class="w-14 px-2 py-1 border border-gray-200 rounded text-xs" />
+              <input
+                v-model.number="point[0]"
+                type="number"
+                step="0.5"
+                class="w-14 px-2 py-1 border border-gray-200 rounded text-xs"
+              />
+              <input
+                v-model.number="point[1]"
+                type="number"
+                step="0.5"
+                class="w-14 px-2 py-1 border border-gray-200 rounded text-xs"
+              />
+              <input
+                v-model.number="point[2]"
+                type="number"
+                step="0.5"
+                class="w-14 px-2 py-1 border border-gray-200 rounded text-xs"
+              />
             </div>
-            <button class="w-full py-2 text-xs bg-blue-50 text-blue-600 rounded hover:bg-blue-100"
-              @click="addCatmullRomPoint">
+            <button
+              class="w-full py-2 text-xs bg-blue-50 text-blue-600 rounded hover:bg-blue-100"
+              @click="addCatmullRomPoint"
+            >
               + 添加控制点
             </button>
           </div>
@@ -112,9 +170,22 @@
           <TAmbientLight :intensity="0.5" />
           <TDirectionalLight :position="[5, 5, 5]" :intensity="0.8" />
 
-          <TLineDashed v-if="dashedEnabled" :curve="currentCurve" :color="lineColor" :linewidth="lineWidth"
-            :divisions="divisions" :dash-size="dashSize" :gap-size="gapSize" />
-          <TLine v-else :curve="currentCurve" :color="lineColor" :linewidth="lineWidth" :divisions="divisions" />
+          <TLineDashed
+            v-if="dashedEnabled"
+            :curve="currentCurve"
+            :color="lineColor"
+            :linewidth="lineWidth"
+            :divisions="divisions"
+            :dash-size="dashSize"
+            :gap-size="gapSize"
+          />
+          <TLine
+            v-else
+            :curve="currentCurve"
+            :color="lineColor"
+            :linewidth="lineWidth"
+            :divisions="divisions"
+          />
 
           <TMesh :position="[0, -2, 0]" :rotation="[-Math.PI / 2, 0, 0]">
             <TPlane :args="[20, 20]" />

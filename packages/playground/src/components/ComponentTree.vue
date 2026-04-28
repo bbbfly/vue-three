@@ -5,11 +5,17 @@
         <div v-if="sceneObjects.length === 0" class="px-6 py-4 text-sm text-gray-400 text-center">
           暂无场景对象
         </div>
-        <button v-for="obj in sceneObjects" :key="obj.id"
-          class="w-full text-left px-4 py-2 text-sm rounded-md mx-2 transition-colors" :class="selectedId === obj.id
+        <button
+          v-for="obj in sceneObjects"
+          :key="obj.id"
+          class="w-full text-left px-4 py-2 text-sm rounded-md mx-2 transition-colors"
+          :class="
+            selectedId === obj.id
               ? 'bg-blue-50 text-blue-600 font-medium'
               : 'text-gray-600 hover:bg-gray-100'
-            " @click="selectObject(obj.id)">
+          "
+          @click="selectObject(obj.id)"
+        >
           <span class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full" :class="getTypeColor(obj.type)"></span>
             {{ obj.name }}
@@ -20,9 +26,13 @@
 
     <CollapsePanel v-for="category in menuCategories" :key="category.id" :title="category.name">
       <nav class="py-2">
-        <router-link v-for="item in category.items" :key="item.id" :to="item.path"
+        <router-link
+          v-for="item in category.items"
+          :key="item.id"
+          :to="item.path"
           class="block px-4 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-md mx-2 transition-colors"
-          :class="{ 'bg-blue-50 text-blue-600 font-medium': isActive(item.path) }">
+          :class="{ 'bg-blue-50 text-blue-600 font-medium': isActive(item.path) }"
+        >
           <span class="flex items-center gap-2">
             <component :is="item.icon" class="w-4 h-4" />
             {{ item.name }}

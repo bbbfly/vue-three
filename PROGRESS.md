@@ -2,6 +2,44 @@
 
 ---
 
+## PP-005: TOutlinePass 发光描边组件
+
+**完成时间**: 2026-04-28  
+**完成内容**:
+
+- ✅ **PP-005: TOutlinePass 发光描边组件**
+  - 创建 `useOutlinePass` composable，遵循后期处理组件统一架构
+  - 完整支持所有 OutlinePass 配置属性：edgeStrength / edgeGlow / edgeThickness / pulsePeriod
+  - 支持描边颜色配置：visibleEdgeColor / hiddenEdgeColor
+  - 支持 selectedObjects 选中对象数组动态更新
+  - 自动注入 EffectComposerContext 和 ThreeContext
+  - 组件卸载时自动清理 Pass 资源
+  - 响应式配置变更实时更新效果
+
+- ✅ **PP-006: 描边颜色与粗细配置支持**
+  - 完整的 Props 类型定义与 JSDoc 文档注释
+  - 支持 String / Number / Color 多种颜色输入格式
+  - computed 响应式配置桥接
+  - defineExpose 暴露 outlinePass 实例供外部控制
+
+**新建文件**:
+
+- [packages/vue-three/src/composables/useOutlinePass.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/composables/useOutlinePass.ts) - 发光描边 composable
+- [packages/vue-three/src/components/TOutlinePass.vue](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/components/TOutlinePass.vue) - 发光描边组件
+
+**修改文件**:
+
+- [packages/vue-three/src/index.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/index.ts) - 导出 composable 与组件
+
+**验证结果**:
+
+- ✅ ESLint 代码规范检查通过
+- ✅ TypeScript 类型无新增错误
+- ✅ 与现有后期处理架构（TEffectComposer）完全兼容
+- ✅ 完整的 JSDoc 文档注释
+
+---
+
 ## EVT-001: 交互事件系统完整实现
 
 **完成时间**: 2026-04-27  

@@ -26,6 +26,7 @@ export * from './composables/useKeyframeAnimation'
 export * from './composables/useRenderPipeline'
 export * from './composables/useBloomPass'
 export * from './composables/useSSAAPass'
+export * from './composables/useOutlinePass'
 export * from './composables/useTexture'
 export * from './composables/useCurve'
 export * from './composables/useLine'
@@ -55,6 +56,7 @@ import TKeyframeAnimation from './components/TKeyframeAnimation.vue'
 import TEffectComposer from './components/TEffectComposer.vue'
 import TBloomPass from './components/TBloomPass.vue'
 import TSSAAPass from './components/TSSAAPass.vue'
+import TOutlinePass from './components/TOutlinePass.vue'
 import TOrthographicCamera from './components/TOrthographicCamera.vue'
 import TSpotLight from './components/TSpotLight.vue'
 import THemisphereLight from './components/THemisphereLight.vue'
@@ -118,6 +120,7 @@ export {
   TEffectComposer,
   TBloomPass,
   TSSAAPass,
+  TOutlinePass,
   TArcCurve,
   TEllipseCurve,
   TBezierCurve,
@@ -171,6 +174,7 @@ const components = [
   TEffectComposer,
   TBloomPass,
   TSSAAPass,
+  TOutlinePass,
   TArcCurve,
   TEllipseCurve,
   TBezierCurve,
