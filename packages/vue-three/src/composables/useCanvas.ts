@@ -173,9 +173,9 @@ export function useCanvas(options: CanvasOptions = {}) {
       renderer.value.setClearColor(new Color(options.clearColor), options.clearAlpha ?? 1)
     }
 
-    if (options.shadowMap?.enabled) {
-      renderer.value.shadowMap.enabled = true
-      if (options.shadowMap.type) {
+    if (options.shadowMap) {
+      renderer.value.shadowMap.enabled = options.shadowMap === true || options.shadowMap.enabled
+      if (options.shadowMap !== true && options.shadowMap.type) {
         renderer.value.shadowMap.type = options.shadowMap.type as any
       }
     }

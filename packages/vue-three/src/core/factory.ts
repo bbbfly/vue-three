@@ -183,6 +183,16 @@ export class ThreeObjectFactory {
       case 'directional': {
         const light = new DirectionalLight(config.color, config.intensity)
         this.applyObject3DConfig(light, config)
+        if (config.castShadow) {
+          light.shadow.mapSize.width = 2048
+          light.shadow.mapSize.height = 2048
+          light.shadow.camera.near = 0.5
+          light.shadow.camera.far = 50
+          light.shadow.camera.left = -20
+          light.shadow.camera.right = 20
+          light.shadow.camera.top = 20
+          light.shadow.camera.bottom = -20
+        }
         return light
       }
       case 'point': {
