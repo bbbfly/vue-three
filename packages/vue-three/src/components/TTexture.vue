@@ -119,19 +119,23 @@ const { texture, load, updateSettings } = useTexture({
 
 const { url, wrapS, wrapT, magFilter, minFilter, repeat, offset, center, rotation } = toRefs(props)
 
-watch([url, wrapS, wrapT, magFilter, minFilter, repeat, offset, center, rotation], () => {
-  updateSettings({
-    url: props.url,
-    wrapS: props.wrapS,
-    wrapT: props.wrapT,
-    magFilter: props.magFilter,
-    minFilter: props.minFilter,
-    repeat: props.repeat,
-    offset: props.offset,
-    center: props.center,
-    rotation: props.rotation
-  })
-}, { deep: true })
+watch(
+  [url, wrapS, wrapT, magFilter, minFilter, repeat, offset, center, rotation],
+  () => {
+    updateSettings({
+      url: props.url,
+      wrapS: props.wrapS,
+      wrapT: props.wrapT,
+      magFilter: props.magFilter,
+      minFilter: props.minFilter,
+      repeat: props.repeat,
+      offset: props.offset,
+      center: props.center,
+      rotation: props.rotation
+    })
+  },
+  { deep: true }
+)
 
 /**
  * @expose

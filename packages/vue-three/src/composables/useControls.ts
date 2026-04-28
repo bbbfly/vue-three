@@ -1,4 +1,4 @@
-import { inject, shallowRef, onMounted, watch } from 'vue'
+import { inject, onMounted, watch } from 'vue'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { ThreeContextKey } from '../core/context'
 import type { Object3DConfig } from '../types'
@@ -30,7 +30,7 @@ export function useControls(config: ControlsConfig = {}) {
     throw new Error('useControls must be used within a TCanvas component')
   }
 
-  const controls = shallowRef<OrbitControls | null>(null)
+  const controls = ctx.controls
 
   const update = () => {
     if (controls.value) {
@@ -51,7 +51,7 @@ export function useControls(config: ControlsConfig = {}) {
   }
 
   const setTarget = (x: number, y: number, z: number) => {
-    if (controls.value) {
+    if (controls.value && 'target' in controls.value) {
       controls.value.target.set(x, y, z)
     }
   }
@@ -129,8 +129,6 @@ export function useControls(config: ControlsConfig = {}) {
   }
 
   onMounted(() => {
-    controls.value = ctx.controls.value
-
     if (Object.keys(config).length > 0) {
       updateConfig(config)
     }
