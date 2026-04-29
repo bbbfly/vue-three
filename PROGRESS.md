@@ -2,6 +2,333 @@
 
 ---
 
+## CSS-001 & CSS-002: CSS2DContext 类型定义与 InjectionKey
+
+**完成时间**: 2026-04-29  
+**完成内容**:
+
+- ✅ **CSS-001: CSS2DContext 类型定义与 InjectionKey**
+  - 从 three/addons 导入 CSS2DRenderer 和 CSS2DObject 类型
+  - 定义 `CSS2DContext` 接口：renderer / labelContainer / addLabel / removeLabel
+  - 定义 `CSS2DContextKey` InjectionKey 用于依赖注入
+
+- ✅ **CSS-002: CSS2DLabelConfig 标签配置类型定义**
+  - 定义 `CSS2DLabelConfig` 完整接口：position / offset / minDistance / maxDistance
+  - 距离缩放配置：scaleByDistance / scaleFactor
+  - 样式配置：opacity / className / style
+  - 完整的 JSDoc 文档注释
+
+**修改文件**:
+
+- [packages/vue-three/src/core/context.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/core/context.ts) - 添加 CSS2D 相关类型定义
+
+**验证结果**:
+
+- ✅ ESLint 代码规范检查通过
+- ✅ 与现有上下文类型架构完全一致
+- ✅ 完整的 JSDoc 文档注释
+- ✅ 类型自动从 index.ts 统一导出
+- ✅ TypeScript 类型无新增错误
+
+---
+
+## CSS-003 ~ CSS-008: useCSS2DRenderer composable 完整实现
+
+**完成时间**: 2026-04-29  
+**完成内容**:
+
+- ✅ **CSS-003: useCSS2DRenderer composable 核心框架**
+  - 遵循现有 composables 统一架构模式
+  - 自动注入 ThreeContext 上下文
+  - 完整的 onMounted / onBeforeUnmount 生命周期管理
+
+- ✅ **CSS-004: CSS2DRenderer 实例初始化与容器管理**
+  - onMounted 阶段创建 CSS2DRenderer 实例
+  - 容器自动定位：absolute + top/left 与 canvas 完全重叠
+  - 层级控制：z-index: 2 覆盖在 WebGL 画布之上
+  - 事件穿透：pointer-events: none 容器本身不阻挡 3D 场景交互
+  - 自动挂载到 canvas 父节点
+
+- ✅ **CSS-005: 标签注册表与 addLabel/removeLabel 方法**
+  - Map 数据结构维护标签与配置映射
+  - addLabel: 支持传入 config 自动应用样式
+  - removeLabel: 自动从场景移除
+  - provide CSS2DContext 供子组件注入
+
+- ✅ **CSS-006: 距离计算与可见性控制**
+  - 每一帧计算标签到相机的距离
+  - minDistance：距离过近隐藏（防遮挡）
+  - maxDistance：距离过远隐藏（防密集）
+  - 范围外自动设置 display: none
+
+- ✅ **CSS-007: 距离缩放衰减与透明度衰减**
+  - scaleByDistance：标签随距离近大远小
+  - scaleFactor：基础缩放因子
+  - 距离透明度衰减：远距标签渐隐
+  - 所有参数可配置、可响应式更新
+
+- ✅ **CSS-008: 集成到渲染循环**
+  - 独立 requestAnimationFrame 渲染循环
+  - 监听 ctx.size 变化自动更新尺寸
+  - onBeforeUnmount 完整资源清理
+
+**新建文件**:
+
+- [packages/vue-three/src/composables/useCSS2DRenderer.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/composables/useCSS2DRenderer.ts) - CSS2D 渲染器 composable
+
+**修改文件**:
+
+- [packages/vue-three/src/index.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/index.ts) - 导出 useCSS2DRenderer
+
+**核心 API**:
+
+```typescript
+const {
+  renderer, // CSS2DRenderer 实例
+  labelContainer, // 容器 DOM 元素
+  labels, // 标签注册表 Map
+  addLabel, // 添加标签
+  removeLabel, // 移除标签
+  render, // 手动渲染
+  setSize, // 设置尺寸
+  startRenderLoop, // 启动循环
+  stopRenderLoop // 停止循环
+} = useCSS2DRenderer()
+```
+
+**验证结果**:
+
+- ✅ ESLint 代码规范检查通过
+- ✅ 与现有 composables 架构完全一致
+- ✅ 完整的生命周期管理
+- ✅ 自动提供 CSS2DContext
+- ✅ TypeScript 无新增类型错误
+
+---
+
+## CSS-009 & CSS-010: TCSS2DRenderer 根组件实现
+
+**完成时间**: 2026-04-29  
+**完成内容**:
+
+- ✅ **CSS-009: TCSS2DRenderer 根组件实现**
+  - 遵循现有组件统一架构
+  - JSDoc 组件文档注释完整
+  - defineExpose 暴露完整 API 供外部控制
+  - slot 插槽支持子标签组件
+  - 与现有组件库架构 100% 兼容
+
+- ✅ **CSS-010: TCSS2DRenderer 提供 CSS2DContext**
+  - 在 useCSS2DRenderer composable 内部自动 provide CSS2DContext
+  - 子标签组件可自动 inject 上下文，无需手动传递
+  - 遵循 Vue 依赖注入最佳实践
+
+**新建文件**:
+
+- [packages/vue-three/src/components/TCSS2DRenderer.vue](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/components/TCSS2DRenderer.vue) - CSS2D 渲染器根组件
+
+**修改文件**:
+
+- [packages/vue-three/src/index.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/index.ts) - 导出 TCSS2DRenderer 组件
+
+**使用示例**:
+
+```vue
+<TCanvas>
+  <TScene>
+    <TMesh ... />
+    <TCSS2DRenderer>
+      <!-- 标签组件将自动注入上下文 -->
+      <TCSS2DLabel :position="[0, 2, 0]">
+        <div>自定义标签内容</div>
+      </TCSS2DLabel>
+    </TCSS2DRenderer>
+  </TScene>
+</TCanvas>
+```
+
+**暴露的 API**:
+
+- `renderer` - CSS2DRenderer 实例
+- `labelContainer` - 标签容器 DOM 元素
+- `labels` - 已注册标签 Map
+- `addLabel` - 手动添加标签方法
+- `removeLabel` - 手动移除标签方法
+
+**验证结果**:
+
+- ✅ ESLint 代码规范检查通过
+- ✅ 与现有组件架构完全一致
+- ✅ 完整的 JSDoc 组件文档
+- ✅ 自动 provide CSS2DContext 上下文
+- ✅ TypeScript 无新增类型错误
+
+---
+
+## CSS-011 ~ CSS-021: TCSS2DLabel & TCSS2DObject 完整实现
+
+**完成时间**: 2026-04-29  
+**完成内容**:
+
+- ✅ **CSS-011: TCSS2DLabel 标签组件（基础版）**
+  - JSDoc 组件文档完整
+  - defineExpose 暴露 css2dObject 实例
+  - 完整的生命周期管理
+
+- ✅ **CSS-012: TCSS2DLabel position/offset 配置**
+  - `position: [number, number, number]` - 3D 空间位置
+  - `offset: [number, number]` - 像素偏移（margin 实现）
+  - watch 深度监听，配置实时更新
+
+- ✅ **CSS-013: TCSS2DLabel 距离范围配置**
+  - `minDistance` - 小于此距离自动隐藏
+  - `maxDistance` - 大于此距离自动隐藏
+  - 配置自动注入到标签注册表
+
+- ✅ **CSS-014: TCSS2DLabel scaleByDistance 功能**
+  - `scaleByDistance: boolean` - 启用近大远小效果
+  - `scaleFactor: number` - 基础缩放因子
+  - 每一帧自动计算并应用缩放
+
+- ✅ **CSS-015: TCSS2DLabel className/style 样式支持**
+  - `className` - 自定义 CSS 类名
+  - `style: Record<string, string>` - 内联样式对象
+  - 配置变更实时生效
+
+- ✅ **CSS-016: TCSS2DLabel 默认插槽自定义内容**
+  - 支持默认插槽 `<slot>`
+  - 支持完全自定义 HTML 结构
+  - 支持嵌套 Vue 组件
+
+- ✅ **CSS-017: TCSS2DLabel 原生 DOM 事件支持**
+  - `@click` 事件（自动 stopPropagation）
+  - `@mouseenter` 事件
+  - `@mouseleave` 事件
+  - 事件穿透控制：pointer-events: auto
+
+- ✅ **CSS-018: TCSS2DObject 通用对象组件**
+  - 更灵活的 center 锚点配置
+  - 完全自定义 HTML 内容
+  - 适用于更复杂的场景
+
+- ✅ **CSS-019/CSS-020: 标签资源自动清理**
+  - onBeforeUnmount 自动注销标签
+  - 自动从 CSS2DContext 移除
+  - 无 DOM 内存泄漏
+
+- ✅ **CSS-021: 渲染器容器清理**
+  - useCSS2DRenderer onBeforeUnmount 自动移除容器
+  - 停止渲染循环
+  - 清空标签注册表
+  - 从场景移除所有 CSS2DObject
+
+**新建文件**:
+
+- [packages/vue-three/src/components/TCSS2DLabel.vue](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/components/TCSS2DLabel.vue) - CSS2D 标签组件
+- [packages/vue-three/src/components/TCSS2DObject.vue](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/components/TCSS2DObject.vue) - CSS2D 通用对象组件
+
+**修改文件**:
+
+- [packages/vue-three/src/index.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/index.ts) - 导出 TCSS2DLabel / TCSS2DObject
+
+**完整使用示例**:
+
+```vue
+<template>
+  <TCanvas>
+    <TScene>
+      <TMesh :config="meshConfig" />
+
+      <TCSS2DRenderer>
+        <!-- 基础标签 -->
+        <TCSS2DLabel
+          :position="[0, 2, 0]"
+          :offset="[0, -20]"
+          :max-distance="20"
+          :scale-by-distance="true"
+          class-name="point-label"
+          :style="{ background: 'rgba(0,0,0,0.8)', padding: '4px 8px' }"
+          @click="handleLabelClick"
+        >
+          <div class="text-white text-sm">点击我！</div>
+        </TCSS2DLabel>
+      </TCSS2DRenderer>
+    </TScene>
+  </TCanvas>
+</template>
+```
+
+**验证结果**:
+
+- ✅ ESLint 代码规范检查通过
+- ✅ 与现有组件架构完全一致
+- ✅ 完整的类型支持
+- ✅ 完整 JSDoc 文档注释
+- ✅ 完整的资源清理机制
+
+---
+
+## DEMO-012 ~ DEMO-016: CSS2D Playground 完整演示页面
+
+**完成时间**: 2026-04-29  
+**完成内容**:
+
+- ✅ **DEMO-012: CSS2D 标签系统演示页面**
+  - 遵循 Playground 统一布局规范
+  - MainLayout + ComponentTree 侧边栏
+  - 双栏布局：视口 + 控制面板
+
+- ✅ **DEMO-013: 距离可见性/缩放效果演示**
+  - 5 个彩色球体锚点标签
+  - `minDistance: 2` / `maxDistance: 15` 范围控制
+  - 可勾选复选框实时启用/禁用距离缩放
+  - 滚动滚轮观察标签自动显示/隐藏
+
+- ✅ **DEMO-014: 自定义 HTML 内容与样式演示**
+  - 中心标签：带 Emoji + 动态计数 + 缩放动效
+  - 左下角统计面板：纯 HTML 复杂布局
+  - 支持纯 CSS transition 过渡效果
+  - `:class-name` 自定义类名支持
+
+- ✅ **DEMO-015: 标签点击事件交互演示**
+  - 点击标签切换点颜色
+  - 中心标签计数 + 高亮动画
+  - 完整的事件日志面板
+  - `@mouseenter` / `@mouseleave` 悬停事件
+
+- ✅ **DEMO-016: 标签样式 GUI 实时调试**
+  - ✨ 背景颜色 color picker
+  - ✨ 文字颜色 color picker
+  - ✨ 圆角大小滑块调节
+  - 所有配置实时生效，无需刷新
+
+**演示特性一览表**:
+
+| 特性            | 演示位置      | 说明                 |
+| --------------- | ------------- | -------------------- |
+| 距离自动隐藏    | 5 个锚点标签  | 太近/太远自动隐藏    |
+| 距离缩放        | 全局复选框    | 近大远小效果         |
+| 像素偏移        | 所有标签      | 避免与锚点重叠       |
+| 插槽自定义 HTML | 中心/面板标签 | 支持嵌套组件         |
+| 点击事件        | 所有标签      | stopPropagation 处理 |
+| 类名+内联样式   | 全局样式面板  | 实时生效             |
+
+**新建文件**:
+
+- [packages/playground/src/views/CSS2DDemoView.vue](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/playground/src/views/CSS2DDemoView.vue) - CSS2D 完整演示页面
+
+**修改文件**:
+
+- [packages/playground/src/router/index.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/playground/src/router/index.ts) - 添加 `/demo/css2d` 路由
+
+**访问方式**:
+
+```
+http://localhost:5173/#/demo/css2d
+```
+
+---
+
 ## MAT-007: TMeshPhysicalMaterial 物理材质组件
 
 **完成时间**: 2026-04-29  

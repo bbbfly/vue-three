@@ -17,6 +17,7 @@ import type {
 import type { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import type { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import type { Pass } from 'three/addons/postprocessing/Pass.js'
+import type { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'
 
 export type InteractionEventType =
   | 'click'
@@ -114,6 +115,32 @@ export interface MaterialContext {
   setTextureByType: (type: TextureMapType, texture: Texture | null) => void
 }
 
+/**
+ * CSS2D 标签配置接口
+ */
+export interface CSS2DLabelConfig {
+  position: [number, number, number]
+  offset?: [number, number]
+  minDistance?: number
+  maxDistance?: number
+  scaleByDistance?: boolean
+  scaleFactor?: number
+  opacity?: number
+  className?: string
+  style?: Record<string, string>
+}
+
+/**
+ * CSS2D 上下文接口
+ */
+export interface CSS2DContext {
+  renderer: ShallowRef<CSS2DRenderer | null>
+  labelContainer: Ref<HTMLElement | null>
+  addLabel: (label: CSS2DObject, config?: CSS2DLabelConfig) => void
+  updateLabelConfig: (label: CSS2DObject, config: Partial<CSS2DLabelConfig>) => void
+  removeLabel: (label: CSS2DObject) => void
+}
+
 export const ThreeContextKey = Symbol('ThreeContext') as InjectionKey<ThreeContext>
 export const MeshContextKey = Symbol('MeshContext') as InjectionKey<MeshContext>
 export const AnimationContextKey = Symbol('AnimationContext') as InjectionKey<AnimationContext>
@@ -124,3 +151,4 @@ export const MaterialContextKey = Symbol('MaterialContext') as InjectionKey<Mate
 export const InteractionContextKey = Symbol(
   'InteractionContext'
 ) as InjectionKey<InteractionContext>
+export const CSS2DContextKey = Symbol('CSS2DContext') as InjectionKey<CSS2DContext>

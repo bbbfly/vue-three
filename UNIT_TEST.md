@@ -282,6 +282,83 @@
 | ------------ | ------------------------- | -------- | --------------- |
 | TEST-EVT-031 | 100 个对象点击检测无延迟  | 性能测试 | 响应时间 < 16ms |
 | TEST-EVT-032 | 频繁 mousemove 无性能问题 | 性能测试 | FPS 保持 60     |
+
+---
+
+## 六、CSS2D 标签渲染系统测试
+
+### 6.1 核心类型测试
+
+| 测试ID       | 测试名称                      | 测试类型 | 预期结果                      |
+| ------------ | ----------------------------- | -------- | ----------------------------- |
+| TEST-CSS-001 | CSS2DContext 类型定义完整     | 类型测试 | 包含所有必填字段              |
+| TEST-CSS-002 | CSS2DLabelConfig 类型定义完整 | 类型测试 | 包含所有配置项                |
+| TEST-CSS-003 | CSS2DContextKey 可注入        | 单元测试 | 子组件可成功 inject 上下文    |
+
+### 6.2 useCSS2DRenderer 测试
+
+| 测试ID       | 测试名称                              | 测试类型 | 预期结果                            |
+| ------------ | ------------------------------------- | -------- | ----------------------------------- |
+| TEST-CSS-004 | onMounted 后创建 CSS2DRenderer 实例   | 单元测试 | CSS2DRenderer 实例存在              |
+| TEST-CSS-005 | 正确创建 label 容器 DOM 元素          | 单元测试 | 容器 div 存在于 DOM 中              |
+| TEST-CSS-006 | 容器使用 absolute 定位                | 单元测试 | position: absolute                 |
+| TEST-CSS-007 | 容器 z-index 正确（高于 canvas）      | 单元测试 | z-index: 2                          |
+| TEST-CSS-008 | 容器 pointer-events: none             | 单元测试 | 容器本身不阻挡事件                  |
+| TEST-CSS-009 | addLabel 正确添加标签到场景           | 单元测试 | scene.children 包含 CSS2DObject     |
+| TEST-CSS-010 | removeLabel 正确从场景移除标签        | 单元测试 | scene.children 不再包含标签         |
+| TEST-CSS-011 | 正确计算标签到相机的距离              | 单元测试 | distance 值计算准确                 |
+| TEST-CSS-012 | 距离 < minDistance 时隐藏标签         | 单元测试 | display: none                      |
+| TEST-CSS-013 | 距离 > maxDistance 时隐藏标签         | 单元测试 | display: none                      |
+| TEST-CSS-014 | 距离在范围内时显示标签                | 单元测试 | display: ''                         |
+| TEST-CSS-015 | scaleByDistance 启用时标签正确缩放    | 单元测试 | transform 包含 scale 值             |
+| TEST-CSS-016 | scaleFactor 缩放因子正确应用          | 单元测试 | 缩放值与 factor 成正比              |
+| TEST-CSS-017 | 距离透明度衰减正确应用                | 单元测试 | opacity 值随距离变化                |
+| TEST-CSS-018 | 渲染循环中执行 CSS2DRenderer.render() | 集成测试 | render 方法被调用                   |
+| TEST-CSS-019 | 组件卸载时清理 CSS2DRenderer          | 单元测试 | 渲染器资源被释放                    |
+| TEST-CSS-020 | 组件卸载时移除容器 DOM 元素            | 单元测试 | 容器从 DOM 中移除                   |
+
+### 6.3 组件集成测试
+
+| 测试ID       | 测试名称                              | 测试类型 | 预期结果                            |
+| ------------ | ------------------------------------- | -------- | ----------------------------------- |
+| TEST-CSS-021 | TCSS2DRenderer provide CSS2DContext   | 组件测试 | 子组件可获取上下文                  |
+| TEST-CSS-022 | TCSS2DLabel 创建 CSS2DObject 实例      | 组件测试 | CSS2DObject 实例存在                |
+| TEST-CSS-023 | TCSS2DLabel position 正确应用         | 组件测试 | 3D 坐标正确设置                     |
+| TEST-CSS-024 | TCSS2DLabel offset 正确应用           | 组件测试 | margin 偏移值正确设置               |
+| TEST-CSS-025 | TCSS2DLabel minDistance 配置生效      | 组件测试 | 近距自动隐藏                        |
+| TEST-CSS-026 | TCSS2DLabel maxDistance 配置生效      | 组件测试 | 远距自动隐藏                        |
+| TEST-CSS-027 | TCSS2DLabel scaleByDistance 配置生效  | 组件测试 | 缩放随距离变化                      |
+| TEST-CSS-028 | TCSS2DLabel className 正确应用        | 组件测试 | class 属性包含指定类名              |
+| TEST-CSS-029 | TCSS2DLabel style 样式正确应用        | 组件测试 | 内联样式正确设置                    |
+| TEST-CSS-030 | TCSS2DLabel 支持默认插槽              | 组件测试 | 插槽内容渲染到标签内                |
+| TEST-CSS-031 | TCSS2DLabel @click 事件触发           | 组件测试 | 点击标签触发回调                    |
+| TEST-CSS-032 | TCSS2DLabel @mouseenter 事件触发      | 组件测试 | 鼠标进入触发回调                    |
+| TEST-CSS-033 | TCSS2DLabel @mouseleave 事件触发      | 组件测试 | 鼠标离开触发回调                    |
+| TEST-CSS-034 | 标签元素 pointer-events: auto         | 组件测试 | 标签可接收点击事件                  |
+| TEST-CSS-035 | 标签元素 user-select: none            | 组件测试 | 文本不可选中                        |
+| TEST-CSS-036 | 配置变更实时更新标签                  | 组件测试 | 变更后立即生效                      |
+| TEST-CSS-037 | 组件卸载时自动注销标签                | 组件测试 | 标签从场景和注册表中移除            |
+
+### 6.4 功能特性测试
+
+| 测试ID       | 测试名称                              | 测试类型 | 预期结果                            |
+| ------------ | ------------------------------------- | -------- | ----------------------------------- |
+| TEST-CSS-038 | 标签始终面向相机（Billboard）         | 集成测试 | 旋转相机标签始终正面朝向屏幕        |
+| TEST-CSS-039 | 3D 坐标与屏幕像素对齐                 | 集成测试 | 标签位置与 3D 点投影位置一致        |
+| TEST-CSS-040 | 标签中心正确（0.5, 0.5）              | 单元测试 | center 属性正确设置                 |
+| TEST-CSS-041 | 多个标签 z-index 层级正确             | 集成测试 | 层级渲染顺序正确                    |
+| TEST-CSS-042 | 标签不阻挡 3D 场景交互                | 集成测试 | 点击空白区域可触发 3D 对象事件      |
+| TEST-CSS-043 | 标签点击事件不穿透                    | 集成测试 | 点击标签不触发背后 3D 对象事件      |
+| TEST-CSS-044 | 支持完整 CSS 样式                     | 集成测试 | background/border/shadow 等样式生效 |
+| TEST-CSS-045 | 支持 CSS transition 过渡动画          | 集成测试 | 样式变更有平滑过渡                  |
+
+### 6.5 性能测试
+
+| 测试ID       | 测试名称                      | 测试类型 | 预期结果          |
+| ------------ | ----------------------------- | -------- | ----------------- |
+| TEST-CSS-046 | 50 个标签渲染无性能损耗       | 性能测试 | FPS 保持 60       |
+| TEST-CSS-047 | 频繁更新标签位置无性能问题    | 性能测试 | 无明显卡顿        |
+| TEST-CSS-048 | 组件卸载后无内存泄漏          | 性能测试 | DOM 节点数不增长  |
 | TEST-EVT-033 | 大量注册注销无内存泄漏    | 性能测试 | GC 后内存正常   |
 
 ---

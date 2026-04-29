@@ -363,6 +363,84 @@
 
 ---
 
+## 第七阶段：CSS2D 标签渲染系统验收
+
+### 7.1 核心类型与上下文验收
+
+- [ ] CSS2DContext 类型定义完整（renderer/labelContainer/addLabel/removeLabel）
+- [ ] CSS2DLabelConfig 类型定义完整（所有配置项）
+- [ ] CSS2DContextKey InjectionKey 正确导出
+- [ ] 所有类型有完整 JSDoc 注释
+
+### 7.2 useCSS2DRenderer 验收
+
+- [ ] onMounted 时正确创建 CSS2DRenderer 实例
+- [ ] 正确创建 label 容器 div
+- [ ] 容器使用 absolute 定位，与 canvas 完全重叠
+- [ ] 容器 z-index 高于 canvas（z-index: 2）
+- [ ] 容器 pointer-events: none（不阻挡 3D 场景事件）
+- [ ] addLabel 正确将 CSS2DObject 添加到场景
+- [ ] removeLabel 正确将 CSS2DObject 从场景移除
+- [ ] 正确计算标签到相机的距离
+- [ ] minDistance 距离过近时隐藏标签
+- [ ] maxDistance 距离过远时隐藏标签
+- [ ] 距离在范围内时显示标签
+- [ ] scaleByDistance 启用时标签随距离缩放
+- [ ] scaleFactor 缩放因子正确应用
+- [ ] 距离透明度衰减正确应用
+- [ ] 渲染循环中正确调用 CSS2DRenderer.render()
+- [ ] 组件卸载时正确清理 CSS2DRenderer
+- [ ] 组件卸载时正确移除容器 DOM 元素
+- [ ] 所有方法有完整 TypeScript 类型标注
+
+### 7.3 组件实现验收
+
+- [ ] TCSS2DRenderer 正确 provide CSS2DContext
+- [ ] TCSS2DLabel 正确创建 CSS2DObject 实例
+- [ ] TCSS2DLabel position 配置正确应用 3D 坐标
+- [ ] TCSS2DLabel offset 配置正确应用像素偏移
+- [ ] TCSS2DLabel minDistance/maxDistance 配置生效
+- [ ] TCSS2DLabel scaleByDistance 配置生效
+- [ ] TCSS2DLabel className 正确应用到标签元素
+- [ ] TCSS2DLabel style 样式对象正确应用
+- [ ] TCSS2DLabel 支持默认插槽（自定义 HTML 内容）
+- [ ] TCSS2DLabel 支持 @click 原生事件
+- [ ] TCSS2DLabel 支持 @mouseenter / @mouseleave 事件
+- [ ] TCSS2DLabel 元素 pointer-events: auto（可接收事件）
+- [ ] TCSS2DLabel 元素 user-select: none
+- [ ] TCSS2DObject 支持更复杂的自定义场景
+- [ ] 配置变更实时响应更新
+- [ ] 组件卸载时自动注销标签
+- [ ] 组件卸载时正确清理资源
+
+### 7.4 功能特性验收
+
+- [ ] 标签始终面向相机（Billboard 效果）
+- [ ] 3D 坐标与屏幕像素完美对齐
+- [ ] 标签中心正确（center: 0.5, 0.5）
+- [ ] 偏移量通过 margin 正确实现
+- [ ] 多个标签层级通过 z-index 正确控制
+- [ ] 标签不阻挡 3D 场景交互（除自身区域外）
+- [ ] 标签上的点击事件不穿透到 3D 场景
+- [ ] 支持完整 CSS 样式（背景、边框、阴影等）
+- [ ] 支持 CSS 过渡动画效果
+- [ ] 控制台无内存泄漏警告
+
+### 7.5 Playground 演示验收
+
+- [ ] CSS2D 标签系统独立演示页面
+- [ ] 演示多个标签在 3D 场景中的定位
+- [ ] 演示距离可见性效果（拉远标签消失）
+- [ ] 演示距离缩放效果（近大远小）
+- [ ] 演示自定义 HTML 内容和样式
+- [ ] 演示标签点击交互（弹窗、跳转等）
+- [ ] 标签位置/偏移 GUI 实时调试
+- [ ] 标签距离参数 GUI 实时调试
+- [ ] 标签样式参数 GUI 实时调试
+- [ ] 包含完整的代码示例展示
+
+---
+
 ## 最终验收总览
 
 | 模块             | 验收项     | 通过数 | 总数 | 通过率 |
@@ -371,9 +449,11 @@
 | MVP 核心组件     | 55 项      |        |      |        |
 | Playground 平台  | 30 项      |        |      |        |
 | 迭代版本功能     | 12 项      |        |      |        |
+| 交互事件系统     | 45 项      |        |      |        |
 | 优化与完善       | 19 项      |        |      |        |
 | 曲线与高级几何体 | 35 项      |        |      |        |
-| **总计**         | **177 项** |        |      |        |
+| CSS2D 标签系统   | 59 项      |        |      |        |
+| **总计**         | **281 项** |        |      |        |
 
 ---
 

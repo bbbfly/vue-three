@@ -356,6 +356,162 @@ export const InteractionContextKey = Symbol(
 
 ---
 
+## 八、CSS2D 标签渲染系统设计
+
+### 8.1 核心技术原理
+
+**CSS2DRenderer 技术优势**：
+
+1. **HTML 原生渲染**：使用 DOM 元素渲染，支持完整 CSS 样式
+2. **3D 坐标对齐**：通过投影矩阵计算屏幕位置
+3. **自动面向相机**：CSS2DObject 始终保持面向相机
+4. **层级分离**：CSS2D 容器独立于 WebGL 画布
+
+**渲染流程**：
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    渲染循环                              │
+│  1. WebGLRenderer 渲染 3D 场景                          │
+│  2. CSS2DRenderer 遍历 CSS2DObject                      │
+│  3. 对每个对象执行：                                     │
+│     - 3D 坐标 → 相机投影 → NDC 坐标 [-1, 1]              │
+│     - NDC 坐标 → 屏幕像素坐标                            │
+│     - 应用 translate/scale/opacity 到 DOM 元素           │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 8.2 上下文类型定义
+
+```typescript
+// core/context.ts
+export interface CSS2DContext {
+  renderer: ShallowRef<CSS2DRenderer | null>
+  labelContainer: Ref<HTMLElement | null>
+  addLabel: (label: CSS2DObject) => void
+  removeLabel: (label: CSS2DObject) => void
+}
+
+export interface CSS2DLabelConfig {
+  position: [number, number, number]
+  offset?: [number, number]
+  minDistance?: number
+  maxDistance?: number
+  scaleByDistance?: boolean
+  scaleFactor?: number
+  opacity?: number
+  className?: string
+  style?: Record<string, string>
+}
+
+export const CSS2DContextKey = Symbol(
+  'CSS2DContext'
+) as InjectionKey<CSS2DContext>
+```
+
+### 8.3 分层实现架构
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                   TCanvas (根组件)                      │
+│  - 容器使用 relative 定位                               │
+│  - canvas 使用 absolute 定位 (z-index: 1)               │
+├─────────────────────────────────────────────────────────┤
+│                TCSS2DRenderer 组件                      │
+│  - 创建 CSS2DRenderer 实例                              │
+│  - 创建 div 容器 (z-index: 2, pointer-events: none)     │
+│  - 容器使用 absolute 定位，与 canvas 完全重叠            │
+│  - provide CSS2DContext                                │
+│  - 在渲染循环中执行 renderer.render(scene, camera)      │
+├─────────────────────────────────────────────────────────┤
+│              useCSS2DRenderer composable                │
+│  - 管理 CSS2DRenderer 实例生命周期                      │
+│  - 维护标签对象注册表                                   │
+│  - 计算每个标签到相机的距离                             │
+│  - 应用距离衰减：可见性 / 缩放 / 透明度                 │
+├─────────────────────────────────────────────────────────┤
+│               TCSS2DLabel / TCSS2DObject                │
+│  - 创建 CSS2DObject 实例，包含自定义 HTML               │
+│  - 注册到 CSS2DContext                                 │
+│  - 支持默认插槽（自定义 HTML 内容）                     │
+│  - 支持 @click / @mouseenter 等原生事件                 │
+│  - 配置变更实时更新位置与样式                          │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 8.4 核心实现要点
+
+#### 8.4.1 距离计算与衰减逻辑
+
+```typescript
+function updateLabelVisibilityAndScale(
+  label: CSS2DObject,
+  camera: Camera,
+  config: CSS2DLabelConfig
+) {
+  const distance = label.position.distanceTo(camera.position)
+  
+  // 1. 距离范围控制
+  if (config.minDistance && distance < config.minDistance) {
+    label.element.style.display = 'none'
+    return
+  }
+  if (config.maxDistance && distance > config.maxDistance) {
+    label.element.style.display = 'none'
+    return
+  }
+  label.element.style.display = ''
+  
+  // 2. 距离缩放衰减
+  if (config.scaleByDistance) {
+    const baseScale = config.scaleFactor || 1
+    const scale = baseScale * (1 / Math.max(distance * 0.1, 0.5))
+    label.element.style.transform = `translate(-50%, -50%) scale(${scale})`
+  }
+  
+  // 3. 距离透明度衰减
+  const opacity = config.opacity || 1
+  const distanceOpacity = Math.max(0, 1 - (distance / (config.maxDistance || 100)) * 0.5)
+  label.element.style.opacity = String(opacity * distanceOpacity)
+}
+```
+
+#### 8.4.2 像素偏移实现
+
+```typescript
+function applyOffset(label: CSS2DObject, offset: [number, number] = [0, 0]) {
+  const [offsetX, offsetY] = offset
+  label.center.set(0.5, 0.5)
+  
+  // 通过 margin 实现偏移，不影响 transform 定位
+  label.element.style.marginLeft = `${offsetX}px`
+  label.element.style.marginTop = `${offsetY}px`
+}
+```
+
+#### 8.4.3 事件穿透配置
+
+```css
+/* CSS2D 容器样式 */
+.css2d-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;  /* 容器本身不阻挡事件 */
+  overflow: hidden;
+  z-index: 2;
+}
+
+.css2d-label {
+  pointer-events: auto;   /* 标签本身可接收事件 */
+  user-select: none;
+}
+```
+
+---
+
 ## 三、组件系统设计
 
 ### 3.1 组件层级结构

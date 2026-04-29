@@ -68,22 +68,22 @@
 
 ### 2.4 几何体与材质组件
 
-| 任务ID  | 任务名称                      | 预计耗时 | 优先级 | 状态      |
-| ------- | ----------------------------- | -------- | ------ | --------- |
-| GEO-001 | TMesh 网格组件 + 几何体工厂   | 15min    | 高     | completed |
-| GEO-002 | TBox 立方体组件               | 5min     | 高     | completed |
-| GEO-003 | TSphere 球体组件              | 5min     | 高     | completed |
-| GEO-004 | TPlane 平面组件               | 5min     | 高     | completed |
-| GEO-005 | TCylinder 圆柱体组件          | 5min     | 高     | completed |
-| GEO-006 | TTorus 圆环几何体             | 5min     | 高     | completed |
-| GEO-007 | TCone 圆锥几何体              | 5min     | 高     | completed |
-| GEO-008 | TCustomGeometry 自定义几何体  | 10min    | 中     | pending   |
-| MAT-001 | TMeshBasicMaterial 基础材质   | 5min     | 高     | completed |
-| MAT-002 | TMeshStandardMaterial PBR材质 | 5min     | 高     | completed |
-| MAT-003 | TMeshLambertMaterial 材质     | 5min     | 高     | completed |
-| MAT-004 | TMeshPhongMaterial 材质       | 5min     | 高     | completed |
-| MAT-005 | TTexture 纹理贴图组件         | 10min    | 高     | completed |
-| MAT-006 | TCubeTexture 立方体贴图组件   | 10min    | 中     | pending   |
+| 任务ID  | 任务名称                       | 预计耗时 | 优先级 | 状态      |
+| ------- | ------------------------------ | -------- | ------ | --------- |
+| GEO-001 | TMesh 网格组件 + 几何体工厂    | 15min    | 高     | completed |
+| GEO-002 | TBox 立方体组件                | 5min     | 高     | completed |
+| GEO-003 | TSphere 球体组件               | 5min     | 高     | completed |
+| GEO-004 | TPlane 平面组件                | 5min     | 高     | completed |
+| GEO-005 | TCylinder 圆柱体组件           | 5min     | 高     | completed |
+| GEO-006 | TTorus 圆环几何体              | 5min     | 高     | completed |
+| GEO-007 | TCone 圆锥几何体               | 5min     | 高     | completed |
+| GEO-008 | TCustomGeometry 自定义几何体   | 10min    | 中     | pending   |
+| MAT-001 | TMeshBasicMaterial 基础材质    | 5min     | 高     | completed |
+| MAT-002 | TMeshStandardMaterial PBR材质  | 5min     | 高     | completed |
+| MAT-003 | TMeshLambertMaterial 材质      | 5min     | 高     | completed |
+| MAT-004 | TMeshPhongMaterial 材质        | 5min     | 高     | completed |
+| MAT-005 | TTexture 纹理贴图组件          | 10min    | 高     | completed |
+| MAT-006 | TCubeTexture 立方体贴图组件    | 10min    | 中     | pending   |
 | MAT-007 | TMeshPhysicalMaterial 物理材质 | 10min    | 高     | completed |
 
 ### 2.5 模型加载组件
@@ -291,14 +291,71 @@
 
 ---
 
+## 第八阶段：CSS2D 标签渲染系统开发（v1.4.0）
+
+### 8.1 核心类型与上下文
+
+| 任务ID  | 任务名称                             | 预计耗时 | 优先级 | 状态      |
+| ------- | ------------------------------------ | -------- | ------ | --------- |
+| CSS-001 | CSS2DContext 类型定义与 InjectionKey | 5min     | 高     | completed |
+| CSS-002 | CSS2DLabelConfig 标签配置类型定义    | 5min     | 高     | completed |
+
+### 8.2 Composables 实现
+
+| 任务ID  | 任务名称                               | 预计耗时 | 优先级 | 状态      |
+| ------- | -------------------------------------- | -------- | ------ | --------- |
+| CSS-003 | 实现 useCSS2DRenderer composable 核心  | 15min    | 高     | completed |
+| CSS-004 | CSS2DRenderer 实例初始化与容器管理     | 10min    | 高     | completed |
+| CSS-005 | 标签注册表与 addLabel/removeLabel 方法 | 10min    | 高     | completed |
+| CSS-006 | 距离计算与可见性控制                   | 10min    | 高     | completed |
+| CSS-007 | 距离缩放衰减与透明度衰减实现           | 10min    | 中     | completed |
+| CSS-008 | 集成到主渲染循环                       | 5min     | 高     | completed |
+
+### 8.3 组件实现
+
+| 任务ID  | 任务名称                              | 预计耗时 | 优先级 | 状态      |
+| ------- | ------------------------------------- | -------- | ------ | --------- |
+| CSS-009 | TCSS2DRenderer 根组件实现             | 10min    | 高     | completed |
+| CSS-010 | TCSS2DRenderer 提供 CSS2DContext      | 5min     | 高     | completed |
+| CSS-011 | TCSS2DLabel 标签组件（基础版）        | 10min    | 高     | completed |
+| CSS-012 | TCSS2DLabel 支持 position/offset 配置 | 10min    | 高     | completed |
+| CSS-013 | TCSS2DLabel 距离范围配置（min/max）   | 10min    | 中     | completed |
+| CSS-014 | TCSS2DLabel scaleByDistance 功能      | 10min    | 中     | completed |
+| CSS-015 | TCSS2DLabel className/style 样式支持  | 10min    | 高     | completed |
+| CSS-016 | TCSS2DLabel 支持默认插槽自定义内容    | 10min    | 高     | completed |
+| CSS-017 | TCSS2DLabel 支持原生 DOM 事件         | 10min    | 中     | completed |
+| CSS-018 | TCSS2DObject 通用对象组件             | 10min    | 中     | completed |
+
+### 8.4 资源清理
+
+| 任务ID  | 任务名称                        | 预计耗时 | 优先级 | 状态      |
+| ------- | ------------------------------- | -------- | ------ | --------- |
+| CSS-019 | 组件卸载时正确移除标签 DOM 元素 | 5min     | 高     | completed |
+| CSS-020 | 组件卸载时正确注销 CSS2DObject  | 5min     | 高     | completed |
+| CSS-021 | 渲染器销毁时正确清理容器        | 5min     | 高     | completed |
+
+### 8.5 Playground 演示页面
+
+| 任务ID   | 任务名称                   | 预计耗时 | 优先级 | 状态      |
+| -------- | -------------------------- | -------- | ------ | --------- |
+| DEMO-012 | CSS2D 标签系统演示页面     | 15min    | 高     | completed |
+| DEMO-013 | 距离可见性/缩放效果演示    | 10min    | 高     | completed |
+| DEMO-014 | 自定义 HTML 内容与样式演示 | 10min    | 高     | completed |
+| DEMO-015 | 标签点击事件交互演示       | 10min    | 中     | completed |
+| DEMO-016 | 标签样式 GUI 实时调试      | 15min    | 中     | completed |
+
+---
+
 ## 任务统计
 
-- **总任务数**：129 个
+- **总任务数**：157 个
 - **MVP 核心任务**：43 个（完成后可发布 v1.0.0）
 - **交互事件系统任务**：17 个（v1.2.0）
 - **曲线与高级几何体任务**：30 个（v1.3.0）
-- **高优先级任务**：76 个
+- **CSS2D 标签渲染系统任务**：28 个（v1.4.0）
+- **高优先级任务**：92 个
 - **平均每个任务**：~10 分钟
 - **MVP 预计总开发时间**：~6.5 小时
 - **交互事件系统预计开发时间**：~2.5 小时
 - **曲线与高级几何体预计开发时间**：~4.5 小时
+- **CSS2D 标签系统预计开发时间**：~4 小时

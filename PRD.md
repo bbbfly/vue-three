@@ -171,6 +171,26 @@ Vue-Three 是一个基于 Three.js 封装的 Vue 3 组件库，旨在为企业�
 | `TLine`             | 线条对象支持交互事件                       |
 | `TGLTFModel`        | 加载模型支持交互事件                       |
 
+#### 3.1.14 CSS2D 标签渲染系统
+
+| 组件名 / Composable | 功能描述                                                       |
+| ------------------- | -------------------------------------------------------------- |
+| `useCSS2DRenderer`  | CSS2D 渲染器核心 composable，管理 CSS2DRenderer 实例与渲染循环 |
+| `TCSS2DRenderer`    | CSS2D 渲染器组件，初始化并注入上下文                           |
+| `TCSS2DLabel`       | 2D 标签组件，基于 HTML 元素，始终面向相机                      |
+| `TCSS2DObject`      | CSS2D 通用对象，支持自定义 HTML 内容                           |
+
+**CSS2D 核心特性**：
+
+- ✅ 纯 HTML/CSS 渲染，支持完整 CSS 样式
+- ✅ 始终面向相机（自动 billboard 效果）
+- ✅ 完美与 3D 场景坐标对齐
+- ✅ 支持所有 HTML 事件（click、hover 等）
+- ✅ 支持透明度、z-index 层级控制
+- ✅ 可配置距离显示范围（近距显示/远距隐藏）
+- ✅ 支持缩放随距离衰减（近大远小效果）
+- ✅ 支持偏移量配置（避免与 3D 物体重叠）
+
 ---
 
 ### 3.2 Playground 演示平台
@@ -247,7 +267,23 @@ Vue-Three 是一个基于 Three.js 封装的 Vue 3 组件库，旨在为企业�
 - [ ] 支持鼠标悬停高亮效果
 - [ ] Playground 交互事件演示页面
 
-### 4.4 曲线与高级几何体（v1.3.0）
+### 4.4 CSS2D 标签渲染系统（v1.4.0）
+
+**计划完成**：
+
+- [ ] CSS2DRenderer 渲染器集成
+- [ ] useCSS2DRenderer composable 核心实现
+- [ ] TCSS2DRenderer 根组件
+- [ ] TCSS2DLabel 标签组件（标题、注释、标注）
+- [ ] TCSS2DObject 通用对象（自定义 HTML）
+- [ ] 距离显示范围控制（minDistance / maxDistance）
+- [ ] 缩放随距离衰减（scaleByDistance）
+- [ ] 像素偏移量配置（中心偏移、防重叠）
+- [ ] 支持 HTML 原生事件
+- [ ] CSS2D Playground 演示页面
+- [ ] 标签样式 GUI 调试
+
+### 4.5 曲线与高级几何体（v1.5.0）
 
 **计划完成**：
 

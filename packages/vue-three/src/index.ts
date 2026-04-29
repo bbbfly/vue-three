@@ -31,6 +31,7 @@ export * from './composables/useTexture'
 export * from './composables/useCurve'
 export * from './composables/useLine'
 export * from './composables/useInteraction'
+export * from './composables/useCSS2DRenderer'
 export { useGui, type UseGuiOptions } from './composables/useGui'
 
 import TCanvas from './components/TCanvas.vue'
@@ -85,8 +86,14 @@ import TExtrudeGeometry from './components/TExtrudeGeometry.vue'
 import TSweepGeometry from './components/TSweepGeometry.vue'
 import TEdgesGeometry from './components/TEdgesGeometry.vue'
 import TWireframeGeometry from './components/TWireframeGeometry.vue'
+import TCSS2DRenderer from './components/TCSS2DRenderer.vue'
+import TCSS2DLabel from './components/TCSS2DLabel.vue'
+import TCSS2DObject from './components/TCSS2DObject.vue'
 
 export {
+  TCSS2DRenderer,
+  TCSS2DLabel,
+  TCSS2DObject,
   TCanvas,
   TScene,
   TPerspectiveCamera,
