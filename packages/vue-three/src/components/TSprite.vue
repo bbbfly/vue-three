@@ -255,29 +255,36 @@ const spriteConfig = computed((): SpriteConfig => {
   if (props.config) {
     return props.config
   }
+  const materialConfig: SpriteMaterialConfig = {
+    type: 'sprite',
+    color: props.color,
+    opacity: props.opacity,
+    transparent: props.transparent,
+    rotation: props.rotation,
+    fog: props.fog,
+    depthTest: props.depthTest,
+    depthWrite: props.depthWrite,
+    sizeAttenuation: props.sizeAttenuation,
+    blending: props.blending,
+    clip: props.clip,
+    borderRadius: props.borderRadius,
+    tint: props.tint
+  }
+
+  if (props.minDistance > 0) {
+    materialConfig.minDistance = props.minDistance
+  }
+  if (isFinite(props.maxDistance)) {
+    materialConfig.maxDistance = props.maxDistance
+  }
+
   return {
     position: props.position,
     scale: props.scale,
     visible: props.visible,
     renderOrder: props.renderOrder,
     center: props.center,
-    material: {
-      type: 'sprite',
-      color: props.color,
-      opacity: props.opacity,
-      transparent: props.transparent,
-      rotation: props.rotation,
-      fog: props.fog,
-      depthTest: props.depthTest,
-      depthWrite: props.depthWrite,
-      sizeAttenuation: props.sizeAttenuation,
-      blending: props.blending,
-      clip: props.clip,
-      borderRadius: props.borderRadius,
-      tint: props.tint,
-      minDistance: props.minDistance,
-      maxDistance: props.maxDistance
-    } as SpriteMaterialConfig
+    material: materialConfig
   }
 })
 
@@ -300,49 +307,72 @@ onMounted(() => {
 })
 
 /**
- * 监听 props 变化，实时更新精灵配置
+ * 监听 Object3D 属性变化，实时更新精灵变换
  * 仅在未使用 config 属性时生效
  */
-watch(
-  () => props,
-  () => {
-    if (sprite.value && !props.config) {
-      const config: SpriteConfig = {
-        position: props.position,
-        scale: props.scale,
-        visible: props.visible,
-        renderOrder: props.renderOrder,
-        center: props.center,
-        material: {
-          type: 'sprite',
-          color: props.color,
-          opacity: props.opacity,
-          transparent: props.transparent,
-          rotation: props.rotation,
-          fog: props.fog,
-          depthTest: props.depthTest,
-          depthWrite: props.depthWrite,
-          sizeAttenuation: props.sizeAttenuation,
-          blending: props.blending,
-          clip: props.clip,
-          borderRadius: props.borderRadius,
-          tint: props.tint,
-          minDistance: props.minDistance,
-          maxDistance: props.maxDistance
-        }
-      }
-      ThreeObjectFactory.updateObject3DConfig(sprite.value, config)
-      setMaterialConfig(config.material)
-      if (props.center) {
-        setCenter(props.center)
-      }
-      if (props.renderOrder !== undefined) {
-        sprite.value.renderOrder = props.renderOrder
-      }
-    }
-  },
-  { deep: true }
-)
+function updateSpriteTransform() {
+  if (!sprite.value || props.config) return
+  const config: Partial<SpriteConfig> = {
+    position: props.position,
+    scale: props.scale,
+    visible: props.visible,
+    renderOrder: props.renderOrder
+  }
+  ThreeObjectFactory.updateObject3DConfig(sprite.value, config)
+}
+
+function updateSpriteMaterial() {
+  if (!sprite.value || props.config) return
+  const materialConfig: SpriteMaterialConfig = {
+    type: 'sprite',
+    color: props.color,
+    opacity: props.opacity,
+    transparent: props.transparent,
+    rotation: props.rotation,
+    fog: props.fog,
+    depthTest: props.depthTest,
+    depthWrite: props.depthWrite,
+    sizeAttenuation: props.sizeAttenuation,
+    blending: props.blending as any,
+    clip: props.clip,
+    borderRadius: props.borderRadius,
+    tint: props.tint
+  }
+  if (props.minDistance > 0) {
+    materialConfig.minDistance = props.minDistance
+  }
+  if (isFinite(props.maxDistance)) {
+    materialConfig.maxDistance = props.maxDistance
+  }
+  setMaterialConfig(materialConfig)
+}
+
+watch(() => props.position, updateSpriteTransform, { deep: true })
+watch(() => props.scale, updateSpriteTransform, { deep: true })
+watch(() => props.visible, updateSpriteTransform)
+watch(() => props.renderOrder, updateSpriteTransform)
+
+watch(() => props.color, () => updateSpriteMaterial())
+watch(() => props.opacity, () => updateSpriteMaterial())
+watch(() => props.transparent, () => updateSpriteMaterial())
+watch(() => props.rotation, () => updateSpriteMaterial())
+watch(() => props.fog, () => updateSpriteMaterial())
+watch(() => props.depthTest, () => updateSpriteMaterial())
+watch(() => props.depthWrite, () => updateSpriteMaterial())
+watch(() => props.sizeAttenuation, () => updateSpriteMaterial())
+watch(() => props.blending, () => updateSpriteMaterial())
+watch(() => props.clip, () => updateSpriteMaterial())
+watch(() => props.borderRadius, () => updateSpriteMaterial())
+watch(() => props.tint, () => updateSpriteMaterial())
+watch(() => props.minDistance, () => updateSpriteMaterial())
+watch(() => props.maxDistance, () => updateSpriteMaterial())
+
+watch(() => props.center, (newCenter) => {
+  if (!sprite.value || props.config) return
+  if (newCenter) {
+    setCenter(newCenter)
+  }
+})
 
 /**
  * 监听精灵实例和事件回调，注册交互事件

@@ -1,6 +1,7 @@
 import { inject, shallowRef, onBeforeUnmount, watch, provide, computed, unref } from 'vue'
 import type { MaybeRef } from 'vue'
-import { Sprite, SpriteMaterial, Color } from 'three'
+import { Sprite, SpriteMaterial as ThreeSpriteMaterial, Color } from 'three'
+import type { SpriteMaterial } from 'three'
 import { ThreeContextKey, SpriteContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
 import type { SpriteConfig, SpriteMaterialConfig } from '../types'
@@ -14,13 +15,14 @@ export function useSprite(config?: MaybeRef<SpriteConfig>) {
   }
 
   const sprite = shallowRef<Sprite>()
-  const spriteMaterial = shallowRef<SpriteMaterial>()
+  const spriteMaterial = shallowRef<ThreeSpriteMaterial>()
 
   function applyShaderExtensions(material: SpriteMaterial): void {
     material.onBeforeCompile = shader => {
       shader.uniforms.uClipMode = { value: 0 }
       shader.uniforms.uBorderRadius = { value: 0 }
-      shader.uniforms.uTintColor = { value: null }
+      shader.uniforms.uTintColor = { value: [1.0, 1.0, 1.0] }
+      shader.uniforms.uUseTint = { value: 0 }
 
       if (material.userData.clip === 'circle') {
         shader.uniforms.uClipMode.value = 1
@@ -32,9 +34,7 @@ export function useSprite(config?: MaybeRef<SpriteConfig>) {
       if (material.userData.tint) {
         const color = new Color(material.userData.tint)
         shader.uniforms.uTintColor.value = [color.r, color.g, color.b]
-        shader.uniforms.uUseTint = { value: 1 }
-      } else {
-        shader.uniforms.uUseTint = { value: 0 }
+        shader.uniforms.uUseTint.value = 1
       }
 
       shader.fragmentShader = shader.fragmentShader.replace(
@@ -83,7 +83,7 @@ export function useSprite(config?: MaybeRef<SpriteConfig>) {
 
   function createSprite(spriteConfig: SpriteConfig): Sprite {
     const newSprite = ThreeObjectFactory.createSprite(spriteConfig)
-    spriteMaterial.value = newSprite.material as SpriteMaterial
+    spriteMaterial.value = newSprite.material as ThreeSpriteMaterial
 
     if (
       spriteConfig.material.clip === 'circle' ||
@@ -116,7 +116,7 @@ export function useSprite(config?: MaybeRef<SpriteConfig>) {
     }
   }
 
-  function setMaterial(material: SpriteMaterial): void {
+  function setMaterial(material: ThreeSpriteMaterial): void {
     if (!sprite.value) return
 
     if (spriteMaterial.value) {
@@ -137,18 +137,27 @@ export function useSprite(config?: MaybeRef<SpriteConfig>) {
   function updateDistanceVisibility(): void {
     if (!sprite.value || !ctx_.camera.value) return
 
-    const material = sprite.value.material as SpriteMaterial
-    const minDistance = material.userData.minDistance ?? 0
-    const maxDistance = material.userData.maxDistance ?? Infinity
+    const material = sprite.value.material as ThreeSpriteMaterial
+    const minDistance = material.userData.minDistance
+    const maxDistance = material.userData.maxDistance
+
+    const hasMinDistance = typeof minDistance === 'number' && minDistance > 0
+    const hasMaxDistance = typeof maxDistance === 'number' && isFinite(maxDistance)
+
+    if (!hasMinDistance && !hasMaxDistance) {
+      return
+    }
 
     const distance = sprite.value.position.distanceTo(ctx_.camera.value.position)
-    sprite.value.visible = distance >= minDistance && distance <= maxDistance
+    const minOk = hasMinDistance ? distance >= minDistance : true
+    const maxOk = hasMaxDistance ? distance <= maxDistance : true
+    sprite.value.visible = minOk && maxOk
   }
 
   function setMaterialConfig(materialConfig: SpriteMaterialConfig): void {
-    if (!sprite.value) return
+    if (!sprite.value || !materialConfig) return
 
-    const material = sprite.value.material as SpriteMaterial
+    const material = sprite.value.material as ThreeSpriteMaterial
 
     if (materialConfig.color !== undefined) {
       material.color.set(materialConfig.color)
@@ -182,8 +191,14 @@ export function useSprite(config?: MaybeRef<SpriteConfig>) {
       material.sizeAttenuation = materialConfig.sizeAttenuation
     }
 
-    if (materialConfig.blending) {
-      material.blending = ThreeObjectFactory.resolveBlendingMode(materialConfig.blending) as any
+    const blendingValue = materialConfig.blending
+    const validBlendingModes = ['additive', 'multiply', 'screen']
+    if (blendingValue && validBlendingModes.includes(String(blendingValue))) {
+      material.blending = ThreeObjectFactory.resolveBlendingMode(blendingValue as any) as any
+      material.premultipliedAlpha = blendingValue === 'multiply'
+    } else {
+      material.blending = 1 // NormalBlending
+      material.premultipliedAlpha = false
     }
 
     if (materialConfig.blendSrc) {
@@ -197,29 +212,39 @@ export function useSprite(config?: MaybeRef<SpriteConfig>) {
     material.userData.clip = materialConfig.clip ?? 'none'
     material.userData.borderRadius = materialConfig.borderRadius ?? 0
     material.userData.tint = materialConfig.tint
-    material.userData.minDistance = materialConfig.minDistance ?? 0
-    material.userData.maxDistance = materialConfig.maxDistance ?? Infinity
+    if (typeof materialConfig.minDistance === 'number' && materialConfig.minDistance > 0) {
+      material.userData.minDistance = materialConfig.minDistance
+    }
+    if (typeof materialConfig.maxDistance === 'number' && isFinite(materialConfig.maxDistance)) {
+      material.userData.maxDistance = materialConfig.maxDistance
+    }
 
-    if (
-      materialConfig.clip === 'circle' ||
-      materialConfig.clip === 'rounded' ||
-      materialConfig.tint
-    ) {
+    const needsShader =
+      material.userData.clip === 'circle' ||
+      material.userData.clip === 'rounded' ||
+      material.userData.tint
+
+    if (needsShader) {
       if (!material.onBeforeCompile) {
         applyShaderExtensions(material)
-      } else {
-        material.customProgramCacheKey = () =>
-          `${material.userData.clip}-${material.userData.borderRadius}-${material.userData.tint}`
+      }
+      ;(material as any).customProgramCacheKey = () =>
+        `${material.userData.clip}-${material.userData.borderRadius}-${material.userData.tint}`
+    } else {
+      material.onBeforeCompile = null as any
+      if ('customProgramCacheKey' in material) {
+        delete (material as any).customProgramCacheKey
       }
     }
 
     material.needsUpdate = true
   }
 
-  if (config) {
+  if (unref(config) !== undefined) {
     watch(
       () => unref(config),
       newConfig => {
+        if (!newConfig) return
         ThreeObjectFactory.updateObject3DConfig(sprite.value!, newConfig)
 
         if (newConfig.material) {
@@ -240,20 +265,42 @@ export function useSprite(config?: MaybeRef<SpriteConfig>) {
 
   let animationFrameId: number | null = null
 
-  const hasDistanceControl = computed(() => {
-    if (!spriteMaterial.value) return false
-    const minDistance = spriteMaterial.value.userData.minDistance ?? 0
-    const maxDistance = spriteMaterial.value.userData.maxDistance ?? Infinity
-    return minDistance > 0 || maxDistance < Infinity
-  })
-
-  if (hasDistanceControl.value) {
+  function startDistanceLoop() {
+    if (animationFrameId !== null) return
     const animate = () => {
       updateDistanceVisibility()
       animationFrameId = requestAnimationFrame(animate)
     }
     animate()
   }
+
+  function stopDistanceLoop() {
+    if (animationFrameId !== null) {
+      cancelAnimationFrame(animationFrameId)
+      animationFrameId = null
+    }
+  }
+
+  const hasDistanceControl = computed(() => {
+    if (!spriteMaterial.value) return false
+    const minDistance = spriteMaterial.value.userData.minDistance
+    const maxDistance = spriteMaterial.value.userData.maxDistance
+    const hasMinDistance = typeof minDistance === 'number' && minDistance > 0
+    const hasMaxDistance = typeof maxDistance === 'number' && isFinite(maxDistance)
+    return hasMinDistance || hasMaxDistance
+  })
+
+  watch(
+    hasDistanceControl,
+    shouldEnable => {
+      if (shouldEnable) {
+        startDistanceLoop()
+      } else {
+        stopDistanceLoop()
+      }
+    },
+    { immediate: true }
+  )
 
   onBeforeUnmount(() => {
     if (animationFrameId !== null) {

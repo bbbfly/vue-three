@@ -572,6 +572,9 @@ export class ThreeObjectFactory {
 
     if (config.blending) {
       material.blending = this.resolveBlendingMode(config.blending) as any
+      if (config.blending === 'multiply') {
+        material.premultipliedAlpha = true
+      }
     }
 
     if (config.blendSrc) {
@@ -585,8 +588,12 @@ export class ThreeObjectFactory {
     material.userData.clip = config.clip ?? 'none'
     material.userData.borderRadius = config.borderRadius ?? 0
     material.userData.tint = config.tint
-    material.userData.minDistance = config.minDistance ?? 0
-    material.userData.maxDistance = config.maxDistance ?? Infinity
+    if (typeof config.minDistance === 'number' && config.minDistance > 0) {
+      material.userData.minDistance = config.minDistance
+    }
+    if (typeof config.maxDistance === 'number' && isFinite(config.maxDistance)) {
+      material.userData.maxDistance = config.maxDistance
+    }
 
     return material
   }
