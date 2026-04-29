@@ -10,12 +10,22 @@
 
 ### 文档说明
 
+#### 根目录核心文档
+
 - 📄 **PRD.md**: 产品需求文档，记录完整的功能和设计要求
 - 🔧 **TECH_DESIGN.md**: 技术方案文档，记录架构和实现细节
 - 📋 **TASKS.md**: 开发任务列表，所有任务按优先级和阶段划分
 - ✅ **CHECK_LIST.md**: 验收清单，每个任务完成后对照检查
 - 🧪 **UNIT_TEST.md**: 测试用例，每个功能对应测试
 - 📝 **PROGRESS.md**: 任务进度日志，记录已完成的工作
+
+#### Examples 项目专属文档（packages/examples/）
+
+- 📄 **EXAMPLES_PRD.md**: Three.js 官方示例验证平台产品需求
+- 🔧 **EXAMPLES_TECH_DESIGN.md**: Examples 项目技术设计方案
+- 📋 **EXAMPLES_TASKS.md**: Examples 项目开发任务清单
+- ✅ **EXAMPLES_CHECK_LIST.md**: Examples 项目验收清单
+- 🧪 **EXAMPLES_UNIT_TEST.md**: Examples 项目测试用例
 
 ---
 
@@ -118,14 +128,43 @@ packages/
 │   │   ├── utils/          # 工具函数
 │   │   └── index.ts        # 入口文件
 │   └── package.json
-└── playground/             # 演示平台
+│
+├── playground/             # 演示平台
+│   ├── src/
+│   │   ├── views/          # 演示页面
+│   │   ├── components/     # UI 组件
+│   │   ├── router/         # 路由配置
+│   │   ├── stores/         # Pinia 状态
+│   │   ├── utils/          # GUI 工具
+│   │   └── examples/       # 示例配置
+│   └── package.json
+│
+└── examples/               # Three.js 官方示例验证平台
+    ├── lib/                # 官方原始资源（只读，不修改）
+    │   ├── jsm/            # Three.js addons
+    │   ├── models/         # 3D 模型文件
+    │   ├── textures/       # 纹理图片
+    │   ├── fonts/          # 字体文件
+    │   └── *.html          # 官方原始 HTML 示例
+    │
     ├── src/
-    │   ├── views/          # 演示页面
-    │   ├── components/     # UI 组件
-    │   ├── router/         # 路由配置
-    │   ├── stores/         # Pinia 状态
-    │   ├── utils/          # GUI 工具
-    │   └── examples/       # 示例配置
+    │   ├── examples/       # 转换后的 Vue 示例组件
+    │   │   ├── webgl/      # WebGL 基础示例
+    │   │   ├── css2d/      # CSS2D 标签示例
+    │   │   ├── css3d/      # CSS3D 渲染示例
+    │   │   └── physics/    # 物理引擎示例
+    │   ├── components/     # 平台功能组件
+    │   ├── router/         # 示例路由配置
+    │   ├── views/          # 平台页面
+    │   ├── main.ts         # Vite 入口
+    │   └── App.vue         # 根组件
+    │
+    ├── EXAMPLES_PRD.md             # ✅ 项目需求文档
+    ├── EXAMPLES_TECH_DESIGN.md     # ✅ 技术设计方案
+    ├── EXAMPLES_TASKS.md           # ✅ 开发任务清单
+    ├── EXAMPLES_CHECK_LIST.md      # ✅ 验收检查清单
+    ├── EXAMPLES_UNIT_TEST.md       # ✅ 测试用例文档
+    ├── vite.config.ts
     └── package.json
 ```
 
