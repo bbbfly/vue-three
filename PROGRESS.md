@@ -2,6 +2,365 @@
 
 ---
 
+## SPR-019 ~ SPR-028: Sprite ç»„ä»¶å¼€å‘å®Œæˆ
+
+**å®Œæˆæ—¶é—´**: 2026-04-29  
+**å®Œæˆå†…å®¹**:
+
+- âœ… **SPR-019: TSprite ç²¾çµç»„ä»¶åŸºç¡€å®ç°**
+  - éµå¾ª TMesh ç»Ÿä¸€ç»„ä»¶æ¶æ„æ¨¡å¼
+  - å®Œæ•´çš„ Vue 3 Composition API + <script setup>
+  - æ’æ§½æ”¯æŒå­ç»„ä»¶æ’å…¥
+  - å®Œæ•´çš„ JSDoc ç»„ä»¶æ–‡æ¡£æ³¨é‡Š
+
+- âœ… **SPR-020: TSprite æ”¯æŒ config prop é…ç½®é©±åŠ¨**
+  - computed è‡ªåŠ¨æ£€æµ‹ config prop
+  - `config?: SpriteConfig` å®Œæ•´é…ç½®å¯¹è±¡
+  - ç‹¬ç«‹å±æ€§ä¸ config å¯¹è±¡äºŒé€‰ä¸€æ¨¡å¼
+  - config å˜æ›´è‡ªåŠ¨å“åº”å¼æ›´æ–°
+
+- âœ… **SPR-021: TSprite æš´éœ² sprite å®ä¾‹**
+  - defineExpose å¯¼å‡º sprite å®ä¾‹ ref
+  - å¯¼å‡º setMaterial / setCenter / setMaterialConfig æ–¹æ³•
+  - æ”¯æŒçˆ¶ç»„ä»¶é€šè¿‡ ref ç›´æ¥è°ƒç”¨ API
+
+- âœ… **SPR-022: TSprite æ”¯æŒäº¤äº’äº‹ä»¶ï¼ˆclick/pointer-\*ï¼‰**
+  - æ³¨å…¥ InteractionContext
+  - onClick / onDblclick / onContextmenu äº‹ä»¶
+  - onPointerEnter / onPointerLeave / onPointerMove æŒ‡é’ˆäº‹ä»¶
+  - onBeforeUnmount è‡ªåŠ¨æ³¨é”€äº‹ä»¶ç›‘å¬
+
+- âœ… **SPR-023: TSprite æ”¯æŒ TSpriteMaterial å­ç»„ä»¶æ’æ§½**
+  - é»˜è®¤æ’æ§½ <slot></slot>
+  - SpriteContext æä¾›ä¸Šä¸‹æ–‡
+  - å­ç»„ä»¶è‡ªåŠ¨æ³¨å…¥ SpriteContextKey
+
+- âœ… **SPR-024: TSpriteMaterial ç²¾çµæè´¨ç»„ä»¶åŸºç¡€å®ç°**
+  - å®Œæ•´çš„ç‹¬ç«‹ Props å®šä¹‰
+  - æ³¨å…¥ SpriteContextï¼Œè‡ªåŠ¨ç»‘å®šçˆ¶ Sprite
+  - æŠ›å‡ºé”™è¯¯æç¤ºï¼šå¿…é¡»åœ¨ TSprite ç»„ä»¶å†…ä½¿ç”¨
+
+- âœ… **SPR-025: TSpriteMaterial çº¹ç† map / alphaMap æ”¯æŒ**
+  - useTexture åŠ è½½å¤–éƒ¨å›¾ç‰‡çº¹ç†
+  - map: string çº¹ç† URL é…ç½®
+  - alphaMap: string é€æ˜åº¦è´´å›¾
+  - watch çº¹ç†åŠ è½½å®Œæˆè‡ªåŠ¨æ›´æ–° material.map
+
+- âœ… **SPR-026: TSpriteMaterial blending æ··åˆæ¨¡å¼æ”¯æŒ**
+  - blending: BlendingMode å±æ€§
+  - watch ç›‘å¬å˜æ›´ï¼Œè°ƒç”¨ resolveBlendingMode æ˜ å°„
+  - material.needsUpdate = true è§¦å‘é‡ç»˜
+
+- âœ… **SPR-027: TSpriteMaterial clip è£å‰ªæ¨¡å¼æ”¯æŒ**
+  - clip: SpriteClipMode ('none' | 'circle' | 'rounded')
+  - borderRadius: number åœ†è§’å¤§å°
+  - tint: é¢œè‰²å åŠ 
+  - customProgramCacheKey æ§åˆ¶ç€è‰²å™¨é‡æ–°ç¼–è¯‘
+
+- âœ… **SPR-028: TSpriteMaterial é…ç½®å˜æ›´å“åº”å¼æ›´æ–°**
+  - æ‰€æœ‰å±æ€§ç‹¬ç«‹ watch ç›‘å¬
+  - color: material.color.set() å®æ—¶æ›´æ–°
+  - rotation / opacity / transparent / depthTest ç­‰
+  - æ¯é¡¹å±æ€§å˜æ›´å³æ—¶ç”Ÿæ•ˆï¼Œæ— éœ€é‡æ–°åˆ›å»º
+
+**æ–°å¢æ–‡ä»¶**:
+
+- [packages/vue-three/src/components/TSprite.vue](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/components/TSprite.vue) - ç²¾çµç»„ä»¶
+- [packages/vue-three/src/components/TSpriteMaterial.vue](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/components/TSpriteMaterial.vue) - ç²¾çµæè´¨ç»„ä»¶
+- [packages/vue-three/src/index.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/index.ts) - æ–°å¢ç»„ä»¶å¯¼å‡º
+
+**ä½¿ç”¨ç¤ºä¾‹**:
+
+```vue
+<!-- ç®€æ´æ¨¡å¼ - ç‹¬ç«‹å±æ€§ -->
+<TSprite
+  :position="[0, 2, 0]"
+  :scale="[1, 1, 1]"
+  :color="0xff0000"
+  clip="circle"
+  @click="handleClick"
+/>
+
+<!-- é…ç½®é©±åŠ¨æ¨¡å¼ -->
+<TSprite :config="spriteConfig" />
+
+<!-- æ’æ§½æè´¨æ¨¡å¼ -->
+<TSprite :position="[0, 2, 0]">
+  <TSpriteMaterial
+    map="/textures/marker.png"
+    clip="rounded"
+    :border-radius="0.2"
+    blending="additive"
+  />
+</TSprite>
+```
+
+**éªŒè¯ç»“æœ**:
+
+- âœ… ESLint ä»£ç è§„èŒƒæ£€æŸ¥é€šè¿‡
+- âœ… TypeScript æ— æ–°å¢ç±»å‹é”™è¯¯
+- âœ… ä¸ç°æœ‰ç»„ä»¶æ¶æ„ 100% å…¼å®¹
+- âœ… å®Œæ•´çš„å“åº”å¼é…ç½®æ›´æ–°
+- âœ… å®Œæ•´çš„äº¤äº’äº‹ä»¶æ”¯æŒ
+- âœ… å®Œæ•´çš„æ’æ§½å­ç»„ä»¶æ”¯æŒ
+- âœ… ä»å…¥å£æ–‡ä»¶ç»Ÿä¸€å¯¼å‡º
+
+---
+
+## SPR-014 ~ SPR-018: Sprite ç€è‰²å™¨ç‰¹æ•ˆå®ç°
+
+**å®Œæˆæ—¶é—´**: 2026-04-29  
+**å®Œæˆå†…å®¹**:
+
+- âœ… **SPR-017: onBeforeCompile ç€è‰²å™¨æ³¨å…¥æœºåˆ¶**
+  - å®ç° `applyShaderExtensions` æ ¸å¿ƒæ–¹æ³•
+  - material.onBeforeCompile é’©å­æ³¨å…¥
+  - GLSL uniform å˜é‡å£°æ˜ä¸åˆå§‹åŒ–
+  - shader.fragmentShader å­—ç¬¦ä¸²æ›¿æ¢æ³¨å…¥
+  - customProgramCacheKey ç¨‹åºç¼“å­˜é”®æ§åˆ¶
+
+- âœ… **SPR-014: circle åœ†å½¢è£å‰ªç€è‰²å™¨æ‰©å±•**
+  - gl_PointCoord è·å–ç²¾çµçº¹ç†åæ ‡
+  - length(uv) è®¡ç®—åˆ°ä¸­å¿ƒçš„è·ç¦»
+  - discard ä¸¢å¼ƒåœ†å½¢èŒƒå›´å¤–çš„ç‰‡å…ƒ
+  - uClipMode = 1 å¯ç”¨åœ†å½¢è£å‰ª
+
+- âœ… **SPR-015: rounded åœ†è§’è£å‰ªç€è‰²å™¨æ‰©å±•**
+  - SDF (Signed Distance Field) ç®—æ³•å®ç°
+  - roundedBoxSDF GLSL å†…ç½®å‡½æ•°
+  - uBorderRadius åœ†è§’åŠå¾„ uniform æ§åˆ¶
+  - uClipMode = 2 å¯ç”¨åœ†è§’è£å‰ª
+
+- âœ… **SPR-016: color tint é¢œè‰²å åŠ æ•ˆæœå®ç°**
+  - uUseTint å¯ç”¨æ ‡è®° uniform
+  - uTintColor RGB é¢œè‰²å‘é‡
+  - diffuseColor.rgb \*= uTintColor å åŠ ç€è‰²
+  - æ”¯æŒä»»æ„ CSS é¢œè‰²å€¼è‡ªåŠ¨è½¬æ¢
+
+- âœ… **SPR-018: sizeAttenuation é€è§†å¤§å°è¡°å‡å¼€å…³**
+  - å·²åœ¨å·¥å‚æ–¹æ³• `createSpriteMaterial` ä¸­å®ç°
+  - `sizeAttenuation: config.sizeAttenuation ?? true` é»˜è®¤å€¼
+  - `setMaterialConfig` å“åº”å¼å®æ—¶æ›´æ–°
+  - Three.js åŸç”Ÿæ”¯æŒï¼Œæ— éœ€ç€è‰²å™¨ä¿®æ”¹
+
+**ä¿®æ”¹æ–‡ä»¶**:
+
+- [packages/vue-three/src/composables/useSprite.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/composables/useSprite.ts) - æ‰©å±•ç€è‰²å™¨åŠŸèƒ½
+
+**ç€è‰²å™¨æ³¨å…¥ä½ç½®**:
+
+```glsl
+// æ³¨å…¥ç‚¹ï¼š#include <map_fragment> çº¹ç†é‡‡æ ·ä¹‹å
+vec2 uv = gl_PointCoord - 0.5;
+
+// åœ†å½¢è£å‰ª (uClipMode == 1)
+float dist = length(uv);
+if (dist > 0.5) discard;
+
+// åœ†è§’è£å‰ª (uClipMode == 2)
+float d = roundedBoxSDF(uv, vec2(0.5 - uBorderRadius), uBorderRadius);
+if (d > 0.0) discard;
+
+// é¢œè‰²å åŠ  (uUseTint == 1)
+diffuseColor.rgb *= uTintColor;
+```
+
+**é…ç½®é©±åŠ¨è‡ªåŠ¨å¯ç”¨**:
+
+```typescript
+// åˆ›å»ºæ—¶æ£€æµ‹é…ç½®ï¼Œè‡ªåŠ¨åº”ç”¨ç€è‰²å™¨
+if (
+  config.material.clip === 'circle' ||
+  config.material.clip === 'rounded' ||
+  config.material.tint
+) {
+  applyShaderExtensions(material)
+}
+```
+
+**éªŒè¯ç»“æœ**:
+
+- âœ… ESLint ä»£ç è§„èŒƒæ£€æŸ¥é€šè¿‡
+- âœ… TypeScript æ— æ–°å¢ç±»å‹é”™è¯¯
+- âœ… GLSL ç€è‰²å™¨è¯­æ³•æ­£ç¡®
+- âœ… é…ç½®å˜æ›´å“åº”å¼ç”Ÿæ•ˆ
+- âœ… ä¸ç°æœ‰æ¶æ„æ— ç¼é›†æˆ
+
+---
+
+## SPR-008 ~ SPR-013: useSprite Composable å®ç°
+
+**å®Œæˆæ—¶é—´**: 2026-04-29  
+**å®Œæˆå†…å®¹**:
+
+- âœ… **SPR-008: å®ç° useSprite composable æ ¸å¿ƒé€»è¾‘**
+  - éµå¾ªç°æœ‰ useMesh ç»Ÿä¸€æ¶æ„æ¨¡å¼
+  - è‡ªåŠ¨æ³¨å…¥ ThreeContextï¼ŒæŠ›å‡ºåˆç†é”™è¯¯æç¤º
+  - æ”¯æŒå¯é€‰ config å‚æ•°ï¼ˆMaybeRef å“åº”å¼é…ç½®ï¼‰
+  - shallowRef ç®¡ç† Sprite å’Œ SpriteMaterial å®ä¾‹
+  - å·¥å‚æ–¹æ³• createSprite åˆ›å»ºå®ä¾‹å¹¶æ·»åŠ åˆ°åœºæ™¯
+
+- âœ… **SPR-009: æä¾› SpriteContext ä¸Šä¸‹æ–‡**
+  - provide(SpriteContextKey) æä¾›ä¸Šä¸‹æ–‡
+  - åŒ…å« sprite å’Œ setMaterial ä¸¤ä¸ªæ ¸å¿ƒå±æ€§
+  - ä¸ç°æœ‰ MeshContext æ¶æ„å®Œå…¨ä¸€è‡´
+  - æ”¯æŒå­ç»„ä»¶æ³¨å…¥è®¿é—®
+
+- âœ… **SPR-010: setMaterial æè´¨åˆ‡æ¢æ–¹æ³•å®ç°**
+  - è‡ªåŠ¨ dispose æ—§æè´¨èµ„æº
+  - æ›´æ–° sprite.material å¼•ç”¨
+  - è®¾ç½® material.needsUpdate = true
+  - å®Œæ•´çš„èµ„æºç”Ÿå‘½å‘¨æœŸç®¡ç†
+
+- âœ… **SPR-011: è·ç¦»å¯è§æ€§æ§åˆ¶ï¼ˆminDistance/maxDistanceï¼‰**
+  - computed æ£€æµ‹æ˜¯å¦å¯ç”¨è·ç¦»æ§åˆ¶
+  - requestAnimationFrame å¾ªç¯æ£€æµ‹ç›¸æœºè·ç¦»
+  - åŠ¨æ€è®¾ç½® sprite.visible å±æ€§
+  - onBeforeUnmount è‡ªåŠ¨å–æ¶ˆåŠ¨ç”»å¸§
+
+- âœ… **SPR-012: center ä¸­å¿ƒç‚¹å¯¹é½é…ç½®å®ç°**
+  - æä¾› setCenter([x, y]) æ–¹æ³•
+  - config å˜æ›´è‡ªåŠ¨å“åº”å¼æ›´æ–°
+  - sprite.center.set åŸç”Ÿ Three.js API
+
+- âœ… **SPR-013: Sprite èµ„æºè‡ªåŠ¨æ¸…ç†æœºåˆ¶å®ç°**
+  - onBeforeUnmount ç”Ÿå‘½å‘¨æœŸé’©å­
+  - ä» scene ä¸­ç§»é™¤ sprite å¯¹è±¡
+  - disposeMaterial æ¸…ç†æè´¨èµ„æº
+  - å–æ¶ˆè·ç¦»æ£€æµ‹åŠ¨ç”»å¸§å¾ªç¯
+  - shallowRef å¼•ç”¨ç½®ç©ºååŠ© GC
+
+**ä¿®æ”¹æ–‡ä»¶**:
+
+- [packages/vue-three/src/composables/useSprite.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/composables/useSprite.ts) - æ–°å»º composable
+- [packages/vue-three/src/index.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/index.ts) - æ–°å¢å¯¼å‡º
+
+**æä¾› API**:
+
+```typescript
+export function useSprite(config?: MaybeRef<SpriteConfig>) {
+  return {
+    sprite, // ShallowRef<Sprite> ç²¾çµå®ä¾‹
+    setMaterial, // åˆ‡æ¢ SpriteMaterial
+    setCenter, // è®¾ç½®ä¸­å¿ƒç‚¹ [x, y]
+    setMaterialConfig, // æ›´æ–°æè´¨é…ç½®
+    updateDistanceVisibility // æ‰‹åŠ¨æ›´æ–°å¯è§æ€§
+  }
+}
+```
+
+**éªŒè¯ç»“æœ**:
+
+- âœ… ESLint ä»£ç è§„èŒƒæ£€æŸ¥é€šè¿‡
+- âœ… TypeScript ç±»å‹æ— æ–°å¢é”™è¯¯
+- âœ… ä¸ç°æœ‰ composables æ¶æ„é£æ ¼ç»Ÿä¸€
+- âœ… å®Œæ•´çš„ç”Ÿå‘½å‘¨æœŸèµ„æºç®¡ç†
+- âœ… å“åº”å¼é…ç½®å˜æ›´è‡ªåŠ¨æ›´æ–°
+- âœ… ä»å…¥å£æ–‡ä»¶ç»Ÿä¸€å¯¼å‡º
+
+---
+
+## SPR-005 ~ SPR-007: æ ¸å¿ƒå·¥å‚æ‰©å±•
+
+**å®Œæˆæ—¶é—´**: 2026-04-29  
+**å®Œæˆå†…å®¹**:
+
+- âœ… **SPR-005: ThreeObjectFactory æ·»åŠ  createSprite æ–¹æ³•**
+  - è°ƒç”¨ createSpriteMaterial åˆ›å»ºæè´¨
+  - å®ä¾‹åŒ– Sprite å¯¹è±¡
+  - é€šè¿‡ applyObject3DConfig åº”ç”¨é€šç”¨ 3D å¯¹è±¡é…ç½®
+  - æ”¯æŒ center ä¸­å¿ƒç‚¹è®¾ç½®
+  - æ”¯æŒ renderOrder æ¸²æŸ“é¡ºåºæ§åˆ¶
+  - ä¸ç°æœ‰ createMesh / createLine æ¶æ„ä¸€è‡´
+
+- âœ… **SPR-006: ThreeObjectFactory æ·»åŠ  createSpriteMaterial æ–¹æ³•**
+  - å®Œæ•´çš„ SpriteMaterial å®ä¾‹åˆ›å»ºï¼šcolor / rotation / fog / transparent / opacity
+  - æ·±åº¦æµ‹è¯•é…ç½®ï¼šdepthTest / depthWrite
+  - é€è§†æ§åˆ¶ï¼šsizeAttenuation å¤§å°è¡°å‡å¼€å…³
+  - æ··åˆæ¨¡å¼ï¼šé€šè¿‡ resolveBlendingMode æ˜ å°„ blending
+  - è‡ªå®šä¹‰æ··åˆå› å­ï¼šblendSrc / blendDst æ”¯æŒ
+  - ç”¨æˆ·æ•°æ®å­˜å‚¨ï¼šclip / borderRadius / tint / minDistance / maxDistance
+  - æ‰€æœ‰å±æ€§æä¾›åˆç†é»˜è®¤å€¼
+
+- âœ… **SPR-007: resolveBlendingMode æ··åˆæ¨¡å¼æ˜ å°„å®ç°**
+  - å®ç° `resolveBlendingMode` æ–¹æ³•ï¼šnormal / additive / subtractive / multiply / screen
+  - å®ç° `resolveBlendingFactor` è¾…åŠ©æ–¹æ³•
+  - å°†å­—ç¬¦ä¸²é…ç½®æ˜ å°„åˆ° Three.js åŸç”Ÿå¸¸é‡å€¼
+  - æä¾› Fallback é»˜è®¤å€¼å¤„ç†
+
+**ä¿®æ”¹æ–‡ä»¶**:
+
+- [packages/vue-three/src/core/factory.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/core/factory.ts) - æ‰©å±• ThreeObjectFactory
+
+**æ–°å¢å¯¼å…¥**:
+
+- âœ… Sprite / SpriteMaterial æ ¸å¿ƒç±»
+- âœ… æ··åˆæ¨¡å¼å¸¸é‡ï¼šNormalBlending / AdditiveBlending / SubtractiveBlending ç­‰
+- âœ… æ··åˆå› å­å¸¸é‡ï¼šSrcAlphaFactor / OneFactor / DstColorFactor ç­‰
+- âœ… ç±»å‹å¯¼å…¥ï¼šSpriteConfig / SpriteMaterialConfig / BlendingMode / BlendingFactor
+
+**éªŒè¯ç»“æœ**:
+
+- âœ… ESLint ä»£ç è§„èŒƒæ£€æŸ¥é€šè¿‡
+- âœ… TypeScript ç±»å‹æ— æ–°å¢é”™è¯¯
+- âœ… ä¸ç°æœ‰å·¥å‚æ¶æ„å®Œå…¨ä¸€è‡´
+- âœ… æ–¹æ³•å‘½åä¸å‚æ•°é£æ ¼ç»Ÿä¸€
+- âœ… é»˜è®¤å€¼åˆç†ä¸é…ç½®ç±»å‹å¯¹åº”
+
+---
+
+## SPR-001 ~ SPR-004: Sprite æ ¸å¿ƒç±»å‹ä¸ä¸Šä¸‹æ–‡
+
+**å®Œæˆæ—¶é—´**: 2026-04-29  
+**å®Œæˆå†…å®¹**:
+
+- âœ… **SPR-001: SpriteConfig ç²¾çµé…ç½®ç±»å‹å®šä¹‰**
+  - ç»§æ‰¿ Object3DConfig åŸºç¡€å±æ€§
+  - æ–°å¢ material ç²¾çµæè´¨é…ç½®
+  - æ–°å¢ center?: [number, number] ä¸­å¿ƒç‚¹å¯¹é½
+  - æ–°å¢ renderOrder?: number æ¸²æŸ“é¡ºåºæ§åˆ¶
+
+- âœ… **SPR-002: SpriteMaterialConfig æè´¨é…ç½®ç±»å‹å®šä¹‰**
+  - åŸºç¡€æ¸²æŸ“å±æ€§ï¼šcolor / opacity / transparent
+  - çº¹ç†æ”¯æŒï¼šmap / alphaMap æ”¯æŒ URL æˆ– Texture å®ä¾‹
+  - æ¸²æŸ“é…ç½®ï¼šrotation / fog / depthTest / depthWrite
+  - é€è§†æ§åˆ¶ï¼šsizeAttenuation å¤§å°è¡°å‡å¼€å…³
+  - æ··åˆæ¨¡å¼ï¼šblending / blendSrc / blendDst
+  - ç€è‰²å™¨ç‰¹æ•ˆï¼štint / clip / borderRadius
+  - è·ç¦»å¯è§æ€§ï¼šminDistance / maxDistance
+
+- âœ… **SPR-003: BlendingMode / BlendingFactor æšä¸¾ç±»å‹**
+  - `BlendingMode` è”åˆç±»å‹ï¼šnormal / additive / subtractive / multiply / screen
+  - `BlendingFactor` è”åˆç±»å‹ï¼šSrcAlpha / OneMinusSrcAlpha / One / DstColor / OneMinusDstColor
+  - `SpriteClipMode` è£å‰ªæ¨¡å¼ï¼šnone / circle / rounded
+
+- âœ… **SPR-004: SpriteContext ç±»å‹ä¸ InjectionKey**
+  - å®šä¹‰ `SpriteContext` æ¥å£ï¼šsprite / setMaterial
+  - å®Œæ•´çš„ JSDoc æ–‡æ¡£æ³¨é‡Š
+  - å®šä¹‰ `SpriteContextKey` InjectionKey ç”¨äºä¾èµ–æ³¨å…¥
+  - ä¸ç°æœ‰ä¸Šä¸‹æ–‡æ¶æ„å®Œå…¨ä¸€è‡´
+
+**ä¿®æ”¹æ–‡ä»¶**:
+
+- [packages/vue-three/src/types/index.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/types/index.ts) - æ·»åŠ  Sprite ç±»å‹å®šä¹‰
+- [packages/vue-three/src/core/context.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/core/context.ts) - æ·»åŠ  SpriteContext
+
+**å¯¼å‡ºæƒ…å†µ**:
+
+- âœ… æ‰€æœ‰ç±»å‹ä» index.ts ç»Ÿä¸€å¯¼å‡º
+- âœ… `export * from './types'` è‡ªåŠ¨å¯¼å‡ºæ‰€æœ‰ç±»å‹
+- âœ… `export * from './core/context'` è‡ªåŠ¨å¯¼å‡ºä¸Šä¸‹æ–‡
+
+**éªŒè¯ç»“æœ**:
+
+- âœ… TypeScript ç±»å‹æ— æ–°å¢é”™è¯¯
+- âœ… ESLint ä»£ç è§„èŒƒæ£€æŸ¥é€šè¿‡
+- âœ… ä¸ç°æœ‰ç±»å‹ç³»ç»Ÿæ¶æ„å®Œå…¨å…¼å®¹
+- âœ… å®Œæ•´çš„ JSDoc æ–‡æ¡£æ³¨é‡Š
+- âœ… ç±»å‹è‡ªåŠ¨ä»å…¥å£æ–‡ä»¶å¯¼å‡º
+
+---
+
 ## CSS-001 & CSS-002: CSS2DContext ç±»å‹å®šä¹‰ä¸ InjectionKey
 
 **å®Œæˆæ—¶é—´**: 2026-04-29  
@@ -2335,3 +2694,181 @@ http://localhost:5173/#/demo/css2d
 **ä¿®æ”¹æ–‡ä»¶**:
 
 - [components/MainLayout.vue](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/playground/src/components/MainLayout.vue) - å®Œæ•´å“åº”å¼å¸ƒå±€é‡æ„
+
+---
+
+## DEMO-017 ~ DEMO-023: Playground Sprite ÑİÊ¾Ò³Ãæ
+
+**Íê³ÉÊ±¼ä**: 2026-04-29  
+**Íê³ÉÄÚÈİ**:
+
+-  **DEMO-017: Sprite ¾«Áé×é¼şÑİÊ¾Ò³Ãæ**
+  - ÍêÕûµÄ 3D ³¡¾°²¼¾Ö£¬°üº¬»ù´¡Íø¸ñ¡¢µÆ¹â¡¢µØÃæ
+  - »ù´¡¾«ÁéÕ¹Ê¾£º²»Í¬ÑÕÉ«ºÍ´óĞ¡µÄ¾«ÁéÅÅÁĞ
+  - Ê¹ÓÃ TSprite ×é¼ş¶ÀÁ¢ÊôĞÔÄ£Ê½
+
+-  **DEMO-018: ±ê¼Çµã POI ÏµÍ³ÑİÊ¾**
+  - 5 ¸ö POI ±ê¼Çµã·Ö²¼ÔÚ³¡¾°ÖĞ£¬´øÓĞ¹âÔÎĞ§¹û
+  - Ã¿¸ö POI °üº¬Ö÷¾«ÁéºÍ¹âÔÎ¾«Áéµş¼Ó
+  - POI µã»÷ÊÂ¼şÖ§³Ö£¬ÏÔÊ¾µã»÷Ãû³Æ
+  - ¸ß renderOrder È·±£ÏÔÊ¾ÔÚ×îÉÏ²ã
+
+-  **DEMO-019: Ô²ĞÎ/Ô²½Ç²Ã¼ôĞ§¹ûÑİÊ¾**
+  - ËÄÖÖ²Ã¼ôÄ£Ê½²¢ÅÅ¶Ô±ÈÕ¹Ê¾
+  - ÎŞ²Ã¼ô (clip="none") - ·½ĞÎ¾«Áé
+  - Ô²ĞÎ²Ã¼ô (clip="circle") - ÍêÃÀÔ²ĞÎ
+  - Ô²½Ç²Ã¼ô (clip="rounded") - Á½ÖÖ²»Í¬Ô²½Ç°ë¾¶
+  - Ê¹ÓÃ TSpriteMaterial ×Ó×é¼ş²å²ÛÄ£Ê½
+
+-  **DEMO-020: »ìºÏÄ£Ê½Ğ§¹û¶Ô±ÈÑİÊ¾**
+  - ËÄÖÖ»ìºÏÄ£Ê½²¢ÅÅ¶Ô±È£ºnormal / additive / multiply / screen
+  - ¼Ó·¨»ìºÏ (additive) Ä£Äâ·¢¹â¹âÔÎĞ§¹û
+  - Ã¿ÖÖÄ£Ê½Ê¹ÓÃ²»Í¬ÑÕÉ«Õ¹Ê¾Ğ§¹û²îÒì
+
+-  **DEMO-021: ¾àÀë¿É¼ûĞÔ/ÏñËØ¼¶äÖÈ¾ÑİÊ¾**
+  - sizeAttenuation ¿ª¹Ø¶Ô±ÈÑİÊ¾
+  - ¿ªÆô£ºÍ¸ÊÓ´óĞ¡Ë¥¼õ£¨½ü´óÔ¶Ğ¡£©
+  - ¹Ø±Õ£ºÏñËØ¼¶ºã¶¨´óĞ¡£¨¾àÀë²»Ó°Ïì£©
+  - 8 ¸ö¾«ÁéÑØ Z ÖáÅÅÁĞ£¬Õ¹Ê¾¾àÀëĞ§¹û
+
+-  **DEMO-022: Sprite ½»»¥µã»÷ÊÂ¼şÑİÊ¾**
+  - ¿Éµã»÷¾«Áé£¬µã»÷ºóÇĞ»»ÑÕÉ«·´À¡
+  - pointer-over / pointer-out ĞüÍ£×´Ì¬¼ì²â
+  - click ÊÂ¼şÏìÓ¦Ê½×´Ì¬¸üĞÂ
+
+-  **DEMO-023: ¾«ÁéÊôĞÔ GUI ÊµÊ±µ÷ÊÔÃæ°å**
+  - Ëõ·Å»¬¿é (0.2 - 2.0) ÊµÊ±µ÷Õû
+  - Í¸Ã÷¶È»¬¿é (0 - 1) ÊµÊ±µ÷Õû
+  - Ô²½Ç°ë¾¶»¬¿éÓë²Ã¼ôÄ£Ê½Áª¶¯
+  - ²Ã¼ôÄ£Ê½ÏÂÀ­Ñ¡Ôñ
+  - »ìºÏÄ£Ê½ÏÂÀ­Ñ¡Ôñ
+  - ÑÕÉ«Ñ¡ÔñÆ÷ÊµÊ±×ÅÉ«
+  - sizeAttenuation ¸´Ñ¡¿ò¿ª¹Ø
+  - µã»÷×´Ì¬ÊµÊ±ÏÔÊ¾Ãæ°å
+
+**ĞÂÔöÎÄ¼ş**:
+
+- [packages/playground/src/views/SpriteDemoView.vue](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/playground/src/views/SpriteDemoView.vue) - Sprite ×ÛºÏÑİÊ¾Ò³Ãæ
+
+**ĞŞ¸ÄÎÄ¼ş**:
+
+- [packages/playground/src/router/index.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/playground/src/router/index.ts) - Ìí¼Ó /demo/sprite Â·ÓÉ
+- [packages/vue-three/src/components/TSpriteMaterial.vue](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/components/TSpriteMaterial.vue) - ĞŞ¸´ÀàĞÍ´íÎó
+
+**·ÃÎÊµØÖ·**:
+
+```
+/demo/sprite
+```
+
+**Ò³Ãæ¹¦ÄÜ·ÖÇø**:
+
+| ÇøÓò | ¹¦ÄÜ |
+|------|------|
+| ×óÉÏ | »ù´¡¾«ÁéÕ¹Ê¾ |
+| ×óÖĞ | POI ±ê¼ÇµãÏµÍ³´ø¹âÔÎ |
+| ×óÏÂ | ²Ã¼ôÄ£Ê½¶Ô±È |
+| ÖĞ | »ìºÏÄ£Ê½¶Ô±È |
+| ÓÒÖĞ | ÏñËØ¼¶äÖÈ¾¾àÀëĞ§¹û |
+| ÓÒÉÏ | ¿É½»»¥¾«Áéµã»÷²âÊÔ |
+| ÓÒÏÂ | ¶¯Ì¬ÊôĞÔµ÷ÊÔ¾«Áé |
+| ÓÒ²àÃæ°å | ÊôĞÔµ÷ÊÔ¿Ø¼ş + ×´Ì¬ÏÔÊ¾ |
+
+**ÑéÖ¤½á¹û**:
+
+-  ESLint ´úÂë¹æ·¶¼ì²éÍ¨¹ı
+-  TypeScript ÎŞĞÂÔöÀàĞÍ´íÎó
+-  ËùÓĞ¾«Áé¹¦ÄÜÕı³£Õ¹Ê¾
+-  ½»»¥ÊÂ¼şÏìÓ¦Õı³£
+-  ÊôĞÔµ÷ÊÔÊµÊ±ÉúĞ§
+-  Â·ÓÉÅäÖÃÕıÈ·¿É·ÃÎÊ
+
+
+---
+
+## DEMO-017 ~ DEMO-023: Playground Sprite ÑİÊ¾Ò³Ãæ
+
+**Íê³ÉÊ±¼ä**: 2026-04-29  
+**Íê³ÉÄÚÈİ**:
+
+-  **DEMO-017: Sprite ¾«Áé×é¼şÑİÊ¾Ò³Ãæ**
+  - ÍêÕûµÄ 3D ³¡¾°²¼¾Ö£¬°üº¬»ù´¡Íø¸ñ¡¢µÆ¹â¡¢µØÃæ
+  - »ù´¡¾«ÁéÕ¹Ê¾£º²»Í¬ÑÕÉ«ºÍ´óĞ¡µÄ¾«ÁéÅÅÁĞ
+  - Ê¹ÓÃ TSprite ×é¼ş¶ÀÁ¢ÊôĞÔÄ£Ê½
+
+-  **DEMO-018: ±ê¼Çµã POI ÏµÍ³ÑİÊ¾**
+  - 5 ¸ö POI ±ê¼Çµã·Ö²¼ÔÚ³¡¾°ÖĞ£¬´øÓĞ¹âÔÎĞ§¹û
+  - Ã¿¸ö POI °üº¬Ö÷¾«ÁéºÍ¹âÔÎ¾«Áéµş¼Ó
+  - POI µã»÷ÊÂ¼şÖ§³Ö£¬ÏÔÊ¾µã»÷Ãû³Æ
+  - ¸ß renderOrder È·±£ÏÔÊ¾ÔÚ×îÉÏ²ã
+
+-  **DEMO-019: Ô²ĞÎ/Ô²½Ç²Ã¼ôĞ§¹ûÑİÊ¾**
+  - ËÄÖÖ²Ã¼ôÄ£Ê½²¢ÅÅ¶Ô±ÈÕ¹Ê¾
+  - ÎŞ²Ã¼ô (clip="none") - ·½ĞÎ¾«Áé
+  - Ô²ĞÎ²Ã¼ô (clip="circle") - ÍêÃÀÔ²ĞÎ
+  - Ô²½Ç²Ã¼ô (clip="rounded") - Á½ÖÖ²»Í¬Ô²½Ç°ë¾¶
+  - Ê¹ÓÃ TSpriteMaterial ×Ó×é¼ş²å²ÛÄ£Ê½
+
+-  **DEMO-020: »ìºÏÄ£Ê½Ğ§¹û¶Ô±ÈÑİÊ¾**
+  - ËÄÖÖ»ìºÏÄ£Ê½²¢ÅÅ¶Ô±È£ºnormal / additive / multiply / screen
+  - ¼Ó·¨»ìºÏ (additive) Ä£Äâ·¢¹â¹âÔÎĞ§¹û
+  - Ã¿ÖÖÄ£Ê½Ê¹ÓÃ²»Í¬ÑÕÉ«Õ¹Ê¾Ğ§¹û²îÒì
+
+-  **DEMO-021: ¾àÀë¿É¼ûĞÔ/ÏñËØ¼¶äÖÈ¾ÑİÊ¾**
+  - sizeAttenuation ¿ª¹Ø¶Ô±ÈÑİÊ¾
+  - ¿ªÆô£ºÍ¸ÊÓ´óĞ¡Ë¥¼õ£¨½ü´óÔ¶Ğ¡£©
+  - ¹Ø±Õ£ºÏñËØ¼¶ºã¶¨´óĞ¡£¨¾àÀë²»Ó°Ïì£©
+  - 8 ¸ö¾«ÁéÑØ Z ÖáÅÅÁĞ£¬Õ¹Ê¾¾àÀëĞ§¹û
+
+-  **DEMO-022: Sprite ½»»¥µã»÷ÊÂ¼şÑİÊ¾**
+  - ¿Éµã»÷¾«Áé£¬µã»÷ºóÇĞ»»ÑÕÉ«·´À¡
+  - pointer-over / pointer-out ĞüÍ£×´Ì¬¼ì²â
+  - click ÊÂ¼şÏìÓ¦Ê½×´Ì¬¸üĞÂ
+
+-  **DEMO-023: ¾«ÁéÊôĞÔ GUI ÊµÊ±µ÷ÊÔÃæ°å**
+  - Ëõ·Å»¬¿é (0.2 - 2.0) ÊµÊ±µ÷Õû
+  - Í¸Ã÷¶È»¬¿é (0 - 1) ÊµÊ±µ÷Õû
+  - Ô²½Ç°ë¾¶»¬¿éÓë²Ã¼ôÄ£Ê½Áª¶¯
+  - ²Ã¼ôÄ£Ê½ÏÂÀ­Ñ¡Ôñ
+  - »ìºÏÄ£Ê½ÏÂÀ­Ñ¡Ôñ
+  - ÑÕÉ«Ñ¡ÔñÆ÷ÊµÊ±×ÅÉ«
+  - sizeAttenuation ¸´Ñ¡¿ò¿ª¹Ø
+  - µã»÷×´Ì¬ÊµÊ±ÏÔÊ¾Ãæ°å
+
+**ĞÂÔöÎÄ¼ş**:
+
+- [packages/playground/src/views/SpriteDemoView.vue](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/playground/src/views/SpriteDemoView.vue) - Sprite ×ÛºÏÑİÊ¾Ò³Ãæ
+
+**ĞŞ¸ÄÎÄ¼ş**:
+
+- [packages/playground/src/router/index.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/playground/src/router/index.ts) - Ìí¼Ó /demo/sprite Â·ÓÉ
+- [packages/vue-three/src/components/TSpriteMaterial.vue](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/components/TSpriteMaterial.vue) - ĞŞ¸´ÀàĞÍ´íÎó
+
+**·ÃÎÊµØÖ·**:
+
+```
+/demo/sprite
+```
+
+**Ò³Ãæ¹¦ÄÜ·ÖÇø**:
+
+| ÇøÓò | ¹¦ÄÜ |
+|------|------|
+| ×óÉÏ | »ù´¡¾«ÁéÕ¹Ê¾ |
+| ×óÖĞ | POI ±ê¼ÇµãÏµÍ³´ø¹âÔÎ |
+| ×óÏÂ | ²Ã¼ôÄ£Ê½¶Ô±È |
+| ÖĞ | »ìºÏÄ£Ê½¶Ô±È |
+| ÓÒÖĞ | ÏñËØ¼¶äÖÈ¾¾àÀëĞ§¹û |
+| ÓÒÉÏ | ¿É½»»¥¾«Áéµã»÷²âÊÔ |
+| ÓÒÏÂ | ¶¯Ì¬ÊôĞÔµ÷ÊÔ¾«Áé |
+| ÓÒ²àÃæ°å | ÊôĞÔµ÷ÊÔ¿Ø¼ş + ×´Ì¬ÏÔÊ¾ |
+
+**ÑéÖ¤½á¹û**:
+
+-  ESLint ´úÂë¹æ·¶¼ì²éÍ¨¹ı
+-  TypeScript ÎŞĞÂÔöÀàĞÍ´íÎó
+-  ËùÓĞ¾«Áé¹¦ÄÜÕı³£Õ¹Ê¾
+-  ½»»¥ÊÂ¼şÏìÓ¦Õı³£
+-  ÊôĞÔµ÷ÊÔÊµÊ±ÉúĞ§
+-  Â·ÓÉÅäÖÃÕıÈ·¿É·ÃÎÊ
+

@@ -363,7 +363,108 @@
 
 ---
 
-## 六、性能测试
+## 七、Sprite 精灵模型系统测试
+
+### 7.1 核心类型测试
+
+| 测试ID       | 测试名称                          | 测试类型 | 预期结果                      |
+| ------------ | --------------------------------- | -------- | ----------------------------- |
+| TEST-SPR-001 | SpriteConfig 类型定义完整         | 类型测试 | 包含所有必填字段              |
+| TEST-SPR-002 | SpriteMaterialConfig 类型定义完整 | 类型测试 | 包含所有配置项                |
+| TEST-SPR-003 | BlendingMode 枚举类型完整         | 类型测试 | 包含所有混合模式              |
+| TEST-SPR-004 | SpriteContext 类型定义完整        | 类型测试 | 包含 sprite 和 setMaterial    |
+| TEST-SPR-005 | SpriteContextKey 可注入           | 单元测试 | 子组件可成功 inject 上下文    |
+
+### 7.2 工厂方法测试
+
+| 测试ID       | 测试名称                              | 测试类型 | 预期结果                            |
+| ------------ | ------------------------------------- | -------- | ----------------------------------- |
+| TEST-SPR-006 | createSprite 创建 Sprite 实例         | 单元测试 | 返回 Sprite 实例                    |
+| TEST-SPR-007 | createSpriteMaterial 创建材质实例     | 单元测试 | 返回 SpriteMaterial 实例            |
+| TEST-SPR-008 | createSprite 正确应用 position        | 单元测试 | sprite.position 正确设置            |
+| TEST-SPR-009 | createSprite 正确应用 scale           | 单元测试 | sprite.scale 正确设置               |
+| TEST-SPR-010 | createSprite 正确应用 center          | 单元测试 | sprite.center 正确设置              |
+| TEST-SPR-011 | createSprite 正确应用 renderOrder     | 单元测试 | sprite.renderOrder 正确设置         |
+| TEST-SPR-012 | createSpriteMaterial color 正确       | 单元测试 | material.color 正确设置             |
+| TEST-SPR-013 | createSpriteMaterial opacity 正确     | 单元测试 | material.opacity 正确设置           |
+| TEST-SPR-014 | createSpriteMaterial transparent 正确 | 单元测试 | material.transparent 正确设置       |
+| TEST-SPR-015 | createSpriteMaterial sizeAttenuation  | 单元测试 | material.sizeAttenuation 正确设置   |
+| TEST-SPR-016 | createSpriteMaterial depthTest        | 单元测试 | material.depthTest 正确设置         |
+| TEST-SPR-017 | createSpriteMaterial depthWrite       | 单元测试 | material.depthWrite 正确设置        |
+| TEST-SPR-018 | createSpriteMaterial rotation         | 单元测试 | material.rotation 正确设置          |
+| TEST-SPR-019 | resolveBlendingMode normal 模式正确   | 单元测试 | 返回 NormalBlending                 |
+| TEST-SPR-020 | resolveBlendingMode additive 正确     | 单元测试 | 返回 AdditiveBlending               |
+| TEST-SPR-021 | resolveBlendingMode subtractive 正确  | 单元测试 | 返回 SubtractiveBlending            |
+| TEST-SPR-022 | resolveBlendingMode multiply 正确     | 单元测试 | 返回 MultiplyBlending               |
+| TEST-SPR-023 | resolveBlendingMode screen 正确       | 单元测试 | 返回 ScreenBlending                 |
+| TEST-SPR-024 | 未知 blending 模式使用默认值          | 单元测试 | 默认使用 NormalBlending             |
+
+### 7.3 useSprite Composable 测试
+
+| 测试ID       | 测试名称                              | 测试类型 | 预期结果                            |
+| ------------ | ------------------------------------- | -------- | ----------------------------------- |
+| TEST-SPR-025 | onBeforeMount 创建 Sprite 实例        | 单元测试 | sprite 是 Sprite 实例               |
+| TEST-SPR-026 | Sprite 被添加到 scene                 | 单元测试 | scene.children 包含 sprite          |
+| TEST-SPR-027 | provide SpriteContext                 | 单元测试 | 子组件可 inject 获取上下文          |
+| TEST-SPR-028 | setMaterial 正确替换材质              | 单元测试 | sprite.material 指向新材质          |
+| TEST-SPR-029 | setMaterial 销毁旧材质                | 单元测试 | 旧材质 disposed = true              |
+| TEST-SPR-030 | 距离 < minDistance 时隐藏 Sprite      | 单元测试 | sprite.visible = false              |
+| TEST-SPR-031 | 距离 > maxDistance 时隐藏 Sprite      | 单元测试 | sprite.visible = false              |
+| TEST-SPR-032 | 距离在范围内时显示 Sprite             | 单元测试 | sprite.visible = true               |
+| TEST-SPR-033 | center 中心点配置正确应用             | 单元测试 | sprite.center.x/y 正确设置          |
+| TEST-SPR-034 | sizeAttenuation = false 时大小不变    | 单元测试 | 透视不影响精灵大小                  |
+| TEST-SPR-035 | sizeAttenuation = true 时透视缩放     | 单元测试 | 远距精灵变小                        |
+| TEST-SPR-036 | 配置变更触发 sprite 更新              | 单元测试 | sprite 属性响应更新                 |
+| TEST-SPR-037 | 组件卸载时移除 sprite                 | 单元测试 | scene 不再包含 sprite               |
+| TEST-SPR-038 | 组件卸载时销毁 sprite 资源            | 单元测试 | material.disposed = true            |
+
+### 7.4 着色器特效测试
+
+| 测试ID       | 测试名称                              | 测试类型 | 预期结果                            |
+| ------------ | ------------------------------------- | -------- | ----------------------------------- |
+| TEST-SPR-039 | clip = circle 圆形裁剪生效            | 集成测试 | 着色器代码包含 circle clip 逻辑     |
+| TEST-SPR-040 | clip = rounded 圆角裁剪生效           | 集成测试 | 着色器代码包含 rounded clip 逻辑    |
+| TEST-SPR-041 | clip = none 不修改着色器              | 单元测试 | onBeforeCompile 未设置              |
+| TEST-SPR-042 | borderRadius 圆角半径正确应用         | 单元测试 | 着色器 uniform 值正确               |
+| TEST-SPR-043 | color tint 颜色叠加效果正确           | 集成测试 | 最终颜色 = 纹理颜色 * tint 颜色     |
+| TEST-SPR-044 | onBeforeCompile 正确注入着色器        | 单元测试 | shader 代码被正确修改               |
+| TEST-SPR-045 | 着色器编译无错误                      | 集成测试 | 控制台无 WebGL 编译错误             |
+
+### 7.5 组件集成测试
+
+| 测试ID       | 测试名称                              | 测试类型 | 预期结果                            |
+| ------------ | ------------------------------------- | -------- | ----------------------------------- |
+| TEST-SPR-046 | TSprite 正常挂载到 scene              | 组件测试 | scene 包含 sprite                   |
+| TEST-SPR-047 | TSprite config prop 类型校验          | 组件测试 | 错误类型抛出警告                    |
+| TEST-SPR-048 | TSprite expose sprite 实例            | 组件测试 | 通过 ref 可访问 sprite              |
+| TEST-SPR-049 | TSprite @click 事件触发               | 组件测试 | 点击 sprite 触发回调                |
+| TEST-SPR-050 | TSprite @pointer-enter 事件触发       | 组件测试 | 鼠标进入触发回调                    |
+| TEST-SPR-051 | TSprite @pointer-leave 事件触发       | 组件测试 | 鼠标离开触发回调                    |
+| TEST-SPR-052 | TSprite 支持 TSpriteMaterial 插槽     | 组件测试 | 子材质正确应用到 sprite             |
+| TEST-SPR-053 | TSpriteMaterial 被正确注入            | 组件测试 | 通过 SpriteContext 设置材质         |
+| TEST-SPR-054 | TSpriteMaterial map 纹理正确加载      | 组件测试 | material.map 是 Texture 实例        |
+| TEST-SPR-055 | TSpriteMaterial alphaMap 正确加载     | 组件测试 | material.alphaMap 是 Texture 实例   |
+| TEST-SPR-056 | TSpriteMaterial blending 正确应用     | 组件测试 | material.blending 正确设置          |
+| TEST-SPR-057 | TSpriteMaterial fog 正确应用          | 组件测试 | material.fog 正确设置               |
+| TEST-SPR-058 | TSpriteMaterial clip 正确应用         | 组件测试 | 裁剪模式正确应用到着色器            |
+| TEST-SPR-059 | TSpriteMaterial 配置变更响应式        | 组件测试 | 属性变更立即更新到材质              |
+| TEST-SPR-060 | 精灵始终面向相机（Billboard）         | 集成测试 | 旋转相机精灵始终正面朝向屏幕        |
+| TEST-SPR-061 | 精灵深度测试正确                      | 集成测试 | 被 3D 物体遮挡时正确隐藏            |
+| TEST-SPR-062 | 精灵正确写入深度缓冲                  | 集成测试 | depthWrite = true 时阻挡后面物体    |
+
+### 7.6 性能测试
+
+| 测试ID       | 测试名称                      | 测试类型 | 预期结果          |
+| ------------ | ----------------------------- | -------- | ----------------- |
+| TEST-SPR-063 | 100 个精灵渲染 FPS            | 性能测试 | FPS > 55          |
+| TEST-SPR-064 | 500 个精灵批量渲染 FPS        | 性能测试 | FPS > 45          |
+| TEST-SPR-065 | 大量精灵无内存泄漏            | 性能测试 | 内存稳定          |
+| TEST-SPR-066 | 频繁创建销毁精灵无内存泄漏    | 性能测试 | GC 后内存正常     |
+| TEST-SPR-067 | 相同纹理精灵共享材质实例      | 性能测试 | 材质复用率 > 90%  |
+
+---
+
+## 八、性能测试
 
 | 测试ID        | 测试名称             | 测试类型 | 预期结果                  |
 | ------------- | -------------------- | -------- | ------------------------- |

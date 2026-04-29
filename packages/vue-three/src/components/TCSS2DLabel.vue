@@ -22,22 +22,25 @@ import { CSS2DContextKey, type CSS2DLabelConfig } from '../core/context'
  * </TCSS2DLabel>
  */
 
-const props = withDefaults(defineProps<{
-  position: [number, number, number]
-  offset?: [number, number]
-  minDistance?: number
-  maxDistance?: number
-  scaleByDistance?: boolean
-  scaleFactor?: number
-  opacity?: number
-  className?: string
-  style?: Record<string, string>
-}>(), {
-  offset: () => [0, 0],
-  scaleByDistance: false,
-  scaleFactor: 1,
-  opacity: 1
-})
+const props = withDefaults(
+  defineProps<{
+    position: [number, number, number]
+    offset?: [number, number]
+    minDistance?: number
+    maxDistance?: number
+    scaleByDistance?: boolean
+    scaleFactor?: number
+    opacity?: number
+    className?: string
+    style?: Record<string, string>
+  }>(),
+  {
+    offset: () => [0, 0],
+    scaleByDistance: false,
+    scaleFactor: 1,
+    opacity: 1
+  }
+)
 
 const emit = defineEmits<{
   click: [event: MouseEvent]

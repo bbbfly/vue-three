@@ -1,4 +1,4 @@
-import type { BufferGeometry, Material } from 'three'
+import type { BufferGeometry, Material, Texture } from 'three'
 
 export interface Object3DConfig {
   id?: string
@@ -196,6 +196,45 @@ export interface AmbientLightConfig extends BaseLightConfig {
 
 export interface DirectionalLightConfig extends BaseLightConfig {
   type: 'directional'
+}
+
+export type BlendingMode = 'normal' | 'additive' | 'subtractive' | 'multiply' | 'screen'
+
+export type BlendingFactor =
+  | 'SrcAlpha'
+  | 'OneMinusSrcAlpha'
+  | 'One'
+  | 'DstColor'
+  | 'OneMinusDstColor'
+
+export type SpriteClipMode = 'none' | 'circle' | 'rounded'
+
+export interface SpriteMaterialConfig {
+  type: 'sprite'
+  color?: string | number
+  map?: string | Texture
+  alphaMap?: string | Texture
+  rotation?: number
+  fog?: boolean
+  transparent?: boolean
+  opacity?: number
+  depthTest?: boolean
+  depthWrite?: boolean
+  sizeAttenuation?: boolean
+  blending?: BlendingMode
+  blendSrc?: BlendingFactor
+  blendDst?: BlendingFactor
+  tint?: string | number
+  clip?: SpriteClipMode
+  borderRadius?: number
+  minDistance?: number
+  maxDistance?: number
+}
+
+export interface SpriteConfig extends Object3DConfig {
+  material: SpriteMaterialConfig
+  center?: [number, number]
+  renderOrder?: number
 }
 
 export interface PointLightConfig extends BaseLightConfig {

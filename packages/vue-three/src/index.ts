@@ -32,6 +32,7 @@ export * from './composables/useCurve'
 export * from './composables/useLine'
 export * from './composables/useInteraction'
 export * from './composables/useCSS2DRenderer'
+export * from './composables/useSprite'
 export { useGui, type UseGuiOptions } from './composables/useGui'
 
 import TCanvas from './components/TCanvas.vue'
@@ -89,11 +90,15 @@ import TWireframeGeometry from './components/TWireframeGeometry.vue'
 import TCSS2DRenderer from './components/TCSS2DRenderer.vue'
 import TCSS2DLabel from './components/TCSS2DLabel.vue'
 import TCSS2DObject from './components/TCSS2DObject.vue'
+import TSprite from './components/TSprite.vue'
+import TSpriteMaterial from './components/TSpriteMaterial.vue'
 
 export {
   TCSS2DRenderer,
   TCSS2DLabel,
   TCSS2DObject,
+  TSprite,
+  TSpriteMaterial,
   TCanvas,
   TScene,
   TPerspectiveCamera,

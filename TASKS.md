@@ -346,16 +346,87 @@
 
 ---
 
+## 第九阶段：Sprite 精灵模型系统开发（v1.5.0）
+
+### 9.1 核心类型与上下文
+
+| 任务ID  | 任务名称                              | 预计耗时 | 优先级 | 状态      |
+| ------- | ------------------------------------- | -------- | ------ | --------- |
+| SPR-001 | SpriteConfig 精灵配置类型定义         | 5min     | 高     | completed |
+| SPR-002 | SpriteMaterialConfig 材质配置类型定义 | 5min     | 高     | completed |
+| SPR-003 | BlendingMode / BlendingFactor 枚举    | 5min     | 高     | completed |
+| SPR-004 | SpriteContext 类型与 InjectionKey     | 5min     | 高     | completed |
+
+### 9.2 核心工厂扩展
+
+| 任务ID  | 任务名称                                     | 预计耗时 | 优先级 | 状态      |
+| ------- | -------------------------------------------- | -------- | ------ | --------- |
+| SPR-005 | ThreeObjectFactory 添加 createSprite 方法    | 10min    | 高     | completed |
+| SPR-006 | ThreeObjectFactory 添加 createSpriteMaterial | 10min    | 高     | completed |
+| SPR-007 | resolveBlendingMode 混合模式映射实现         | 5min     | 高     | completed |
+
+### 9.3 Composables 实现
+
+| 任务ID  | 任务名称                                  | 预计耗时 | 优先级 | 状态      |
+| ------- | ----------------------------------------- | -------- | ------ | --------- |
+| SPR-008 | 实现 useSprite composable 核心逻辑        | 15min    | 高     | completed |
+| SPR-009 | 提供 SpriteContext 上下文                 | 5min     | 高     | completed |
+| SPR-010 | setMaterial 材质切换方法实现              | 5min     | 高     | completed |
+| SPR-011 | 距离可见性控制（minDistance/maxDistance） | 10min    | 中     | completed |
+| SPR-012 | center 中心点对齐配置实现                 | 5min     | 中     | completed |
+| SPR-013 | Sprite 资源自动清理机制实现               | 5min     | 高     | completed |
+
+### 9.4 着色器特效实现
+
+| 任务ID  | 任务名称                         | 预计耗时 | 优先级 | 状态      |
+| ------- | -------------------------------- | -------- | ------ | --------- |
+| SPR-014 | circle 圆形裁剪着色器扩展        | 10min    | 中     | completed |
+| SPR-015 | rounded 圆角裁剪着色器扩展       | 15min    | 中     | completed |
+| SPR-016 | color tint 颜色叠加效果实现      | 10min    | 中     | completed |
+| SPR-017 | onBeforeCompile 着色器注入机制   | 5min     | 高     | completed |
+| SPR-018 | sizeAttenuation 透视大小衰减开关 | 5min     | 高     | completed |
+
+### 9.5 组件开发
+
+| 任务ID  | 任务名称                                 | 预计耗时 | 优先级 | 状态      |
+| ------- | ---------------------------------------- | -------- | ------ | --------- |
+| SPR-019 | TSprite 精灵组件基础实现                 | 10min    | 高     | completed |
+| SPR-020 | TSprite 支持 config prop 配置驱动        | 5min     | 高     | completed |
+| SPR-021 | TSprite 暴露 sprite 实例                 | 5min     | 高     | completed |
+| SPR-022 | TSprite 支持交互事件（click/pointer-\*） | 10min    | 高     | completed |
+| SPR-023 | TSprite 支持 TSpriteMaterial 子组件插槽  | 5min     | 高     | completed |
+| SPR-024 | TSpriteMaterial 精灵材质组件基础实现     | 10min    | 高     | completed |
+| SPR-025 | TSpriteMaterial 纹理 map / alphaMap 支持 | 10min    | 高     | completed |
+| SPR-026 | TSpriteMaterial blending 混合模式支持    | 5min     | 高     | completed |
+| SPR-027 | TSpriteMaterial clip 裁剪模式支持        | 10min    | 中     | completed |
+| SPR-028 | TSpriteMaterial 配置变更响应式更新       | 5min     | 高     | completed |
+
+### 9.6 Playground 演示页面
+
+| 任务ID   | 任务名称                  | 预计耗时 | 优先级 | 状态      |
+| -------- | ------------------------- | -------- | ------ | --------- |
+| DEMO-017 | Sprite 精灵组件演示页面   | 15min    | 高     | completed |
+| DEMO-018 | 标记点 POI 系统演示       | 10min    | 高     | completed |
+| DEMO-019 | 圆形/圆角裁剪效果演示     | 10min    | 中     | completed |
+| DEMO-020 | 混合模式效果对比演示      | 10min    | 中     | completed |
+| DEMO-021 | 距离可见性/像素级渲染演示 | 10min    | 中     | completed |
+| DEMO-022 | Sprite 交互点击事件演示   | 10min    | 高     | completed |
+| DEMO-023 | 精灵属性 GUI 实时调试面板 | 15min    | 中     | completed |
+
+---
+
 ## 任务统计
 
-- **总任务数**：157 个
+- **总任务数**：192 个
 - **MVP 核心任务**：43 个（完成后可发布 v1.0.0）
 - **交互事件系统任务**：17 个（v1.2.0）
 - **曲线与高级几何体任务**：30 个（v1.3.0）
 - **CSS2D 标签渲染系统任务**：28 个（v1.4.0）
-- **高优先级任务**：92 个
+- **Sprite 精灵模型系统任务**：35 个（v1.5.0）
+- **高优先级任务**：112 个
 - **平均每个任务**：~10 分钟
 - **MVP 预计总开发时间**：~6.5 小时
 - **交互事件系统预计开发时间**：~2.5 小时
 - **曲线与高级几何体预计开发时间**：~4.5 小时
 - **CSS2D 标签系统预计开发时间**：~4 小时
+- **Sprite 精灵模型预计开发时间**：~5 小时

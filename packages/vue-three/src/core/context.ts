@@ -12,7 +12,9 @@ import type {
   Vector3,
   Vector2,
   Raycaster,
-  Face
+  Face,
+  Sprite,
+  SpriteMaterial
 } from 'three'
 import type { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import type { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
@@ -152,3 +154,13 @@ export const InteractionContextKey = Symbol(
   'InteractionContext'
 ) as InjectionKey<InteractionContext>
 export const CSS2DContextKey = Symbol('CSS2DContext') as InjectionKey<CSS2DContext>
+
+/**
+ * Sprite 精灵上下文接口
+ */
+export interface SpriteContext {
+  sprite: ShallowRef<Sprite>
+  setMaterial: (material: SpriteMaterial) => void
+}
+
+export const SpriteContextKey = Symbol('SpriteContext') as InjectionKey<SpriteContext>

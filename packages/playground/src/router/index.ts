@@ -81,6 +81,11 @@ const routes: RouteRecordRaw[] = [
     path: '/demo/css2d',
     name: 'CSS2DDemo',
     component: () => import('../views/CSS2DDemoView.vue')
+  },
+  {
+    path: '/demo/sprite',
+    name: 'SpriteDemo',
+    component: () => import('../views/SpriteDemoView.vue')
   }
 ]
 

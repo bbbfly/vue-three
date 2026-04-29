@@ -428,6 +428,111 @@
 
 ### 7.5 Playground 演示验收
 
+- [ ] CSS2D 标签系统演示页面可访问
+- [ ] 距离可见性/缩放效果演示正常
+- [ ] 自定义 HTML 内容与样式演示
+- [ ] 标签点击事件交互演示
+- [ ] 标签样式 GUI 实时调试面板
+- [ ] 完整代码示例展示
+
+---
+
+## 第八阶段：Sprite 精灵模型系统验收（v1.5.0）
+
+### 8.1 核心类型与上下文验收
+
+- [ ] SpriteConfig 类型定义完整（继承 Object3DConfig）
+- [ ] SpriteConfig 包含 material / center / renderOrder 属性
+- [ ] SpriteMaterialConfig 类型定义完整（所有配置项）
+- [ ] BlendingMode 联合类型定义完整（5种混合模式）
+- [ ] BlendingFactor 联合类型定义完整
+- [ ] SpriteContext 类型定义完整（sprite / setMaterial）
+- [ ] SpriteContextKey InjectionKey 正确导出
+- [ ] 所有类型有完整 JSDoc 注释
+
+### 8.2 工厂方法验收
+
+- [ ] ThreeObjectFactory 包含 createSprite 方法
+- [ ] ThreeObjectFactory 包含 createSpriteMaterial 方法
+- [ ] ThreeObjectFactory 包含 resolveBlendingMode 私有方法
+- [ ] createSprite 正确创建 Sprite 实例
+- [ ] createSprite 正确应用 position / rotation / scale
+- [ ] createSprite 正确应用 center 中心点
+- [ ] createSprite 正确应用 renderOrder 渲染顺序
+- [ ] createSpriteMaterial 正确创建 SpriteMaterial 实例
+- [ ] createSpriteMaterial 所有默认值正确
+- [ ] createSpriteMaterial color 默认白色（0xffffff）
+- [ ] createSpriteMaterial transparent 默认 true
+- [ ] createSpriteMaterial depthWrite 默认 false
+- [ ] createSpriteMaterial sizeAttenuation 默认 true
+- [ ] resolveBlendingMode 正确映射所有混合模式
+- [ ] 未知 blending 模式 fallback 到 NormalBlending
+
+### 8.3 useSprite Composable 验收
+
+- [ ] useSprite 在 setup 阶段可调用
+- [ ] onBeforeMount 正确创建 Sprite 实例
+- [ ] Sprite 实例被正确添加到 scene
+- [ ] 正确 provide SpriteContext 上下文
+- [ ] setMaterial 方法正确替换精灵材质
+- [ ] setMaterial 正确销毁旧材质
+- [ ] 距离 < minDistance 时精灵自动隐藏
+- [ ] 距离 > maxDistance 时精灵自动隐藏
+- [ ] 距离在范围内时精灵正常显示
+- [ ] center [x, y] 正确应用到 sprite.center
+- [ ] sizeAttenuation = false 关闭透视缩放
+- [ ] sizeAttenuation = true 启用透视缩放
+- [ ] 配置变更触发精灵属性实时更新
+- [ ] onBeforeUnmount 时从 scene 移除精灵
+- [ ] 组件卸载时正确销毁精灵资源
+- [ ] 所有方法有完整 TypeScript 类型标注
+
+### 8.4 着色器特效验收
+
+- [ ] clip = 'circle' 启用圆形裁剪
+- [ ] 圆形裁剪着色器代码正确注入
+- [ ] clip = 'rounded' 启用圆角裁剪
+- [ ] borderRadius 正确传递给着色器
+- [ ] clip = 'none' 不修改着色器
+- [ ] color tint 颜色叠加效果正确
+- [ ] onBeforeCompile 着色器注入机制正常
+- [ ] 着色器代码注入位置正确
+- [ ] 着色器编译无 WebGL 错误
+- [ ] 着色器 uniform 参数正确传递
+
+### 8.5 组件实现验收
+
+- [ ] TSprite 组件基础实现完整
+- [ ] TSprite 支持 config prop 配置驱动
+- [ ] TSprite 通过 ref 暴露 sprite 实例
+- [ ] TSprite 支持 @click 点击事件
+- [ ] TSprite 支持 @pointer-enter 事件
+- [ ] TSprite 支持 @pointer-leave 事件
+- [ ] TSprite 支持默认插槽（TSpriteMaterial）
+- [ ] TSpriteMaterial 组件基础实现完整
+- [ ] TSpriteMaterial 通过 inject 获取 SpriteContext
+- [ ] TSpriteMaterial map 纹理支持 URL 字符串
+- [ ] TSpriteMaterial map 支持 Texture 实例
+- [ ] TSpriteMaterial alphaMap 纹理支持
+- [ ] TSpriteMaterial blending 混合模式支持
+- [ ] TSpriteMaterial clip 裁剪模式支持
+- [ ] TSpriteMaterial 配置变更响应式更新
+- [ ] 精灵始终面向相机（自动 Billboard）
+- [ ] depthTest 启用时正确被 3D 物体遮挡
+- [ ] depthWrite 启用时正确写入深度缓冲
+- [ ] 控制台无内存泄漏警告
+
+### 8.6 Playground 演示验收
+
+- [ ] Sprite 精灵组件演示页面可访问
+- [ ] POI 标记点系统完整演示
+- [ ] 圆形/圆角裁剪效果对比演示
+- [ ] 5种混合模式效果对比演示
+- [ ] 距离可见性/像素级渲染演示
+- [ ] Sprite 点击交互事件演示
+- [ ] 精灵属性 GUI 实时调试面板
+- [ ] 完整代码示例展示
+
 - [ ] CSS2D 标签系统独立演示页面
 - [ ] 演示多个标签在 3D 场景中的定位
 - [ ] 演示距离可见性效果（拉远标签消失）

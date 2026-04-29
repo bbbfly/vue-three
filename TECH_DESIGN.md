@@ -403,41 +403,39 @@ export interface CSS2DLabelConfig {
   className?: string
   style?: Record<string, string>
 }
-
-export const CSS2DContextKey = Symbol(
-  'CSS2DContext'
-) as InjectionKey<CSS2DContext>
 ```
 
 ### 8.3 分层实现架构
 
 ```
+
 ┌─────────────────────────────────────────────────────────┐
-│                   TCanvas (根组件)                      │
-│  - 容器使用 relative 定位                               │
-│  - canvas 使用 absolute 定位 (z-index: 1)               │
+│ TCanvas (根组件) │
+│ - 容器使用 relative 定位 │
+│ - canvas 使用 absolute 定位 (z-index: 1) │
 ├─────────────────────────────────────────────────────────┤
-│                TCSS2DRenderer 组件                      │
-│  - 创建 CSS2DRenderer 实例                              │
-│  - 创建 div 容器 (z-index: 2, pointer-events: none)     │
-│  - 容器使用 absolute 定位，与 canvas 完全重叠            │
-│  - provide CSS2DContext                                │
-│  - 在渲染循环中执行 renderer.render(scene, camera)      │
+│ TCSS2DRenderer 组件 │
+│ - 创建 CSS2DRenderer 实例 │
+│ - 创建 div 容器 (z-index: 2, pointer-events: none) │
+│ - 容器使用 absolute 定位，与 canvas 完全重叠 │
+│ - provide CSS2DContext │
+│ - 在渲染循环中执行 renderer.render(scene, camera) │
 ├─────────────────────────────────────────────────────────┤
-│              useCSS2DRenderer composable                │
-│  - 管理 CSS2DRenderer 实例生命周期                      │
-│  - 维护标签对象注册表                                   │
-│  - 计算每个标签到相机的距离                             │
-│  - 应用距离衰减：可见性 / 缩放 / 透明度                 │
+│ useCSS2DRenderer composable │
+│ - 管理 CSS2DRenderer 实例生命周期 │
+│ - 维护标签对象注册表 │
+│ - 计算每个标签到相机的距离 │
+│ - 应用距离衰减：可见性 / 缩放 / 透明度 │
 ├─────────────────────────────────────────────────────────┤
-│               TCSS2DLabel / TCSS2DObject                │
-│  - 创建 CSS2DObject 实例，包含自定义 HTML               │
-│  - 注册到 CSS2DContext                                 │
-│  - 支持默认插槽（自定义 HTML 内容）                     │
-│  - 支持 @click / @mouseenter 等原生事件                 │
-│  - 配置变更实时更新位置与样式                          │
+│ TCSS2DLabel / TCSS2DObject │
+│ - 创建 CSS2DObject 实例，包含自定义 HTML │
+│ - 注册到 CSS2DContext │
+│ - 支持默认插槽（自定义 HTML 内容） │
+│ - 支持 @click / @mouseenter 等原生事件 │
+│ - 配置变更实时更新位置与样式 │
 └─────────────────────────────────────────────────────────┘
-```
+
+````
 
 ### 8.4 核心实现要点
 
@@ -450,7 +448,7 @@ function updateLabelVisibilityAndScale(
   config: CSS2DLabelConfig
 ) {
   const distance = label.position.distanceTo(camera.position)
-  
+
   // 1. 距离范围控制
   if (config.minDistance && distance < config.minDistance) {
     label.element.style.display = 'none'
@@ -461,20 +459,20 @@ function updateLabelVisibilityAndScale(
     return
   }
   label.element.style.display = ''
-  
+
   // 2. 距离缩放衰减
   if (config.scaleByDistance) {
     const baseScale = config.scaleFactor || 1
     const scale = baseScale * (1 / Math.max(distance * 0.1, 0.5))
     label.element.style.transform = `translate(-50%, -50%) scale(${scale})`
   }
-  
+
   // 3. 距离透明度衰减
   const opacity = config.opacity || 1
   const distanceOpacity = Math.max(0, 1 - (distance / (config.maxDistance || 100)) * 0.5)
   label.element.style.opacity = String(opacity * distanceOpacity)
 }
-```
+````
 
 #### 8.4.2 像素偏移实现
 
@@ -482,7 +480,7 @@ function updateLabelVisibilityAndScale(
 function applyOffset(label: CSS2DObject, offset: [number, number] = [0, 0]) {
   const [offsetX, offsetY] = offset
   label.center.set(0.5, 0.5)
-  
+
   // 通过 margin 实现偏移，不影响 transform 定位
   label.element.style.marginLeft = `${offsetX}px`
   label.element.style.marginTop = `${offsetY}px`
@@ -499,16 +497,279 @@ function applyOffset(label: CSS2DObject, offset: [number, number] = [0, 0]) {
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none;  /* 容器本身不阻挡事件 */
+  pointer-events: none; /* 容器本身不阻挡事件 */
   overflow: hidden;
   z-index: 2;
 }
 
 .css2d-label {
-  pointer-events: auto;   /* 标签本身可接收事件 */
+  pointer-events: auto; /* 标签本身可接收事件 */
   user-select: none;
 }
 ```
+---
+
+## 九、Sprite 精灵模型系统设计
+
+### 9.1 核心技术原理
+
+**Sprite vs CSS2D 技术对比**：
+
+| 特性                | Sprite (WebGL 渲染)        | CSS2D (DOM 渲染)             |
+| ------------------- | -------------------------- | ---------------------------- |
+| 渲染管线            | WebGL 硬件加速             | HTML/CSS 浏览器渲染          |
+| 性能                | 高，支持大批量实例         | 低，DOM 数量影响性能         |
+| 样式能力            | 纹理/颜色/着色器           | 完整 CSS 支持                |
+| 事件交互            | Raycaster 射线检测         | DOM 原生事件                 |
+| 与 3D 场景融合      | 完美，支持深度测试         | 浮于顶层                     |
+| 粒子系统适配        | 极佳，支持 GPU 实例化      | 不适用                       |
+
+**适用场景选择**：
+
+- ✅ **选 Sprite**：粒子效果、光晕、星空、大量标记点
+- ✅ **选 CSS2D**：复杂 HTML 内容、表单、富文本标签
+
+**Sprite 渲染原理**：
+
+```
+
+┌─────────────────────────────────────────────────────────┐
+│ Sprite 渲染流程 │
+│ │
+│ 1. 顶点着色器： │
+│ - 始终面向相机（Billboard 矩阵计算） │
+│ - 应用缩放、位置变换 │
+│ - 投影变换输出 gl_Position │
+│ │
+│ 2. 片元着色器： │
+│ - 纹理采样 + 颜色 tint │
+│ - Alpha 透明度处理 │
+│ - 圆形裁剪 / 圆角 自定义效果 │
+│ │
+│ 3. 渲染特性： │
+│ - sizeAttenuation: 透视大小衰减开关 │
+│ - depthTest/depthWrite: 深度测试配置 │
+│ - blending: 混合模式控制 │
+└─────────────────────────────────────────────────────────┘
+
+````
+
+### 9.2 配置类型定义
+
+```typescript
+// types/sprite.ts
+export interface SpriteConfig extends Object3DConfig {
+  material: SpriteMaterialConfig
+  center?: [number, number]
+  renderOrder?: number
+}
+
+export interface SpriteMaterialConfig {
+  type: 'sprite'
+  color?: string
+  map?: string | Texture
+  alphaMap?: string | Texture
+  rotation?: number
+  fog?: boolean
+  transparent?: boolean
+  opacity?: number
+  depthTest?: boolean
+  depthWrite?: boolean
+  sizeAttenuation?: boolean
+  blending?: BlendingMode
+  blendSrc?: BlendingFactor
+  blendDst?: BlendingFactor
+  tint?: string
+  clip?: 'none' | 'circle' | 'rounded'
+  borderRadius?: number
+  minDistance?: number
+  maxDistance?: number
+}
+
+export type BlendingMode =
+  | 'normal'
+  | 'additive'
+  | 'subtractive'
+  | 'multiply'
+  | 'screen'
+
+export type BlendingFactor =
+  | 'SrcAlpha'
+  | 'OneMinusSrcAlpha'
+  | 'One'
+  | 'DstColor'
+  | 'OneMinusDstColor'
+````
+
+### 9.3 上下文与工厂扩展
+
+```typescript
+// core/context.ts
+export interface SpriteContext {
+  sprite: ShallowRef<Sprite>
+  setMaterial: (material: SpriteMaterial) => void
+}
+
+export const SpriteContextKey = Symbol('SpriteContext') as InjectionKey<SpriteContext>
+
+// core/factory.ts 扩展
+export class ThreeObjectFactory {
+  static createSprite(config: SpriteConfig): Sprite {
+    const material = this.createSpriteMaterial(config.material)
+    const sprite = new Sprite(material)
+
+    this.applyObject3DConfig(sprite, config)
+
+    if (config.center) {
+      sprite.center.set(...config.center)
+    }
+    if (config.renderOrder !== undefined) {
+      sprite.renderOrder = config.renderOrder
+    }
+
+    return sprite
+  }
+
+  static createSpriteMaterial(config: SpriteMaterialConfig): SpriteMaterial {
+    const material = new SpriteMaterial({
+      color: config.color ?? 0xffffff,
+      rotation: config.rotation ?? 0,
+      fog: config.fog ?? false,
+      transparent: config.transparent ?? true,
+      opacity: config.opacity ?? 1,
+      depthTest: config.depthTest ?? true,
+      depthWrite: config.depthWrite ?? false,
+      sizeAttenuation: config.sizeAttenuation ?? true
+    })
+
+    if (config.blending) {
+      material.blending = this.resolveBlendingMode(config.blending)
+    }
+
+    return material
+  }
+
+  private static resolveBlendingMode(mode: BlendingMode): number {
+    const blendingMap = {
+      normal: NormalBlending,
+      additive: AdditiveBlending,
+      subtractive: SubtractiveBlending,
+      multiply: MultiplyBlending,
+      screen: ScreenBlending
+    }
+    return blendingMap[mode] ?? NormalBlending
+  }
+}
+```
+
+### 9.4 useSprite Composable 设计
+
+```typescript
+// composables/useSprite.ts
+export function useSprite(config: MaybeRef<SpriteConfig>) {
+  const context = inject(ThreeContextKey)
+  const spriteConfig = computed(() => unref(config))
+
+  const sprite = shallowRef<Sprite>()
+  const spriteMaterial = shallowRef<SpriteMaterial>()
+
+  onBeforeMount(() => {
+    sprite.value = ThreeObjectFactory.createSprite(spriteConfig.value)
+    context.scene.value.add(sprite.value)
+  })
+
+  function setMaterial(material: SpriteMaterial) {
+    if (sprite.value) {
+      spriteMaterial.value?.dispose()
+      spriteMaterial.value = material
+      sprite.value.material = material
+    }
+  }
+
+  // 距离裁剪逻辑
+  function updateVisibilityByDistance() {
+    if (!sprite.value || !context.camera.value) return
+    const { minDistance, maxDistance } = spriteConfig.value.material
+    const distance = sprite.value.position.distanceTo(context.camera.value.position)
+
+    if (minDistance && distance < minDistance) {
+      sprite.value.visible = false
+    } else if (maxDistance && distance > maxDistance) {
+      sprite.value.visible = false
+    } else {
+      sprite.value.visible = spriteConfig.value.visible ?? true
+    }
+  }
+
+  // 圆形裁剪着色器扩展
+  function applyCircleClip() {
+    if (!spriteMaterial.value) return
+    spriteMaterial.value.onBeforeCompile = shader => {
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <clipping_planes_fragment>',
+        `
+        #include <clipping_planes_fragment>
+        vec2 uv = gl_PointCoord - 0.5;
+        float dist = length(uv);
+        if (dist > 0.5) discard;
+        `
+      )
+    }
+  }
+
+  provide(SpriteContextKey, { sprite, setMaterial })
+
+  onBeforeUnmount(() => {
+    if (sprite.value) {
+      context.scene.value.remove(sprite.value)
+      disposeObject3D(sprite.value)
+    }
+  })
+
+  return { sprite, spriteMaterial, setMaterial }
+}
+```
+
+### 9.5 组件实现架构
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    TSprite 组件                         │
+│  Props:                                                 │
+│  - config: SpriteConfig                                 │
+│  Events:                                                │
+│  - @click / @pointerenter / @pointerleave               │
+│  Expose:                                                │
+│  - sprite: Sprite 实例                                  │
+│  Slot:                                                  │
+│  - default: TSpriteMaterial 子组件                      │
+├─────────────────────────────────────────────────────────┤
+│                TSpriteMaterial 组件                     │
+│  Props:                                                 │
+│  - color / opacity / transparent                        │
+│  - map / alphaMap 纹理支持                              │
+│  - sizeAttenuation / depthTest                          │
+│  - blending / tint 效果                                 │
+│  - clip: none/circle/rounded 裁剪模式                   │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 9.6 性能优化要点
+
+1. **纹理复用**：相同纹理的 Sprite 共享材质实例
+2. **批量渲染**：使用 `InstancedMesh` 批量渲染大量 Sprite
+3. **距离裁剪**：超出距离范围自动隐藏，减少绘制调用
+4. **资源池**：频繁创建销毁的精灵使用对象池
+5. **LOD**：远距离使用低分辨率纹理
+
+```
+export const CSS2DContextKey = Symbol(
+'CSS2DContext'
+) as InjectionKey<CSS2DContext>
+
+```
+
+
 
 ---
 

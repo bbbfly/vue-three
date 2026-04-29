@@ -36,7 +36,19 @@ import {
   ShapeGeometry,
   ExtrudeGeometry,
   EdgesGeometry,
-  WireframeGeometry
+  WireframeGeometry,
+  Sprite,
+  SpriteMaterial,
+  NormalBlending,
+  AdditiveBlending,
+  SubtractiveBlending,
+  MultiplyBlending,
+  CustomBlending,
+  SrcAlphaFactor,
+  OneMinusSrcAlphaFactor,
+  OneFactor,
+  DstColorFactor,
+  OneMinusDstColorFactor
 } from 'three'
 import type { ShapeConfig } from '../types'
 import type {
@@ -48,7 +60,11 @@ import type {
   CurveConfig,
   LineConfig,
   LineLoopConfig,
-  LineDashedConfig
+  LineDashedConfig,
+  SpriteConfig,
+  SpriteMaterialConfig,
+  BlendingMode,
+  BlendingFactor
 } from '../types'
 import {
   AmbientLight,
@@ -518,5 +534,77 @@ export class ThreeObjectFactory {
     }
 
     return shape
+  }
+
+  static resolveBlendingMode(mode: BlendingMode): number {
+    const blendingMap: Record<BlendingMode, number> = {
+      normal: NormalBlending,
+      additive: AdditiveBlending,
+      subtractive: SubtractiveBlending,
+      multiply: MultiplyBlending,
+      screen: CustomBlending
+    }
+    return blendingMap[mode] ?? NormalBlending
+  }
+
+  static resolveBlendingFactor(factor: BlendingFactor): number {
+    const factorMap: Record<BlendingFactor, number> = {
+      SrcAlpha: SrcAlphaFactor,
+      OneMinusSrcAlpha: OneMinusSrcAlphaFactor,
+      One: OneFactor,
+      DstColor: DstColorFactor,
+      OneMinusDstColor: OneMinusDstColorFactor
+    }
+    return factorMap[factor] ?? SrcAlphaFactor
+  }
+
+  static createSpriteMaterial(config: SpriteMaterialConfig): SpriteMaterial {
+    const material = new SpriteMaterial({
+      color: config.color ?? 0xffffff,
+      rotation: config.rotation ?? 0,
+      fog: config.fog ?? false,
+      transparent: config.transparent ?? true,
+      opacity: config.opacity ?? 1,
+      depthTest: config.depthTest ?? true,
+      depthWrite: config.depthWrite ?? false,
+      sizeAttenuation: config.sizeAttenuation ?? true
+    })
+
+    if (config.blending) {
+      material.blending = this.resolveBlendingMode(config.blending) as any
+    }
+
+    if (config.blendSrc) {
+      material.blendSrc = this.resolveBlendingFactor(config.blendSrc) as any
+    }
+
+    if (config.blendDst) {
+      material.blendDst = this.resolveBlendingFactor(config.blendDst) as any
+    }
+
+    material.userData.clip = config.clip ?? 'none'
+    material.userData.borderRadius = config.borderRadius ?? 0
+    material.userData.tint = config.tint
+    material.userData.minDistance = config.minDistance ?? 0
+    material.userData.maxDistance = config.maxDistance ?? Infinity
+
+    return material
+  }
+
+  static createSprite(config: SpriteConfig): Sprite {
+    const material = this.createSpriteMaterial(config.material)
+    const sprite = new Sprite(material)
+
+    this.applyObject3DConfig(sprite, config)
+
+    if (config.center) {
+      sprite.center.set(...config.center)
+    }
+
+    if (config.renderOrder !== undefined) {
+      sprite.renderOrder = config.renderOrder
+    }
+
+    return sprite
   }
 }

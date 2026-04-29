@@ -17,24 +17,27 @@ import { CSS2DContextKey, type CSS2DLabelConfig } from '../core/context'
  * </TCSS2DObject>
  */
 
-const props = withDefaults(defineProps<{
-  position: [number, number, number]
-  offset?: [number, number]
-  minDistance?: number
-  maxDistance?: number
-  scaleByDistance?: boolean
-  scaleFactor?: number
-  opacity?: number
-  className?: string
-  style?: Record<string, string>
-  center?: [number, number]
-}>(), {
-  offset: () => [0, 0],
-  center: () => [0.5, 0.5],
-  scaleByDistance: false,
-  scaleFactor: 1,
-  opacity: 1
-})
+const props = withDefaults(
+  defineProps<{
+    position: [number, number, number]
+    offset?: [number, number]
+    minDistance?: number
+    maxDistance?: number
+    scaleByDistance?: boolean
+    scaleFactor?: number
+    opacity?: number
+    className?: string
+    style?: Record<string, string>
+    center?: [number, number]
+  }>(),
+  {
+    offset: () => [0, 0],
+    center: () => [0.5, 0.5],
+    scaleByDistance: false,
+    scaleFactor: 1,
+    opacity: 1
+  }
+)
 
 const css2dCtx = inject(CSS2DContextKey)
 

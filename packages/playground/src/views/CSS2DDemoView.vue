@@ -20,11 +20,7 @@
               <TAmbientLight :intensity="0.6" />
               <TDirectionalLight :position="[5, 5, 5]" :intensity="0.8" />
 
-              <TMesh
-                v-for="(point, index) in points"
-                :key="index"
-                :position="point.position"
-              >
+              <TMesh v-for="(point, index) in points" :key="index" :position="point.position">
                 <TSphere :args="[0.2, 16, 16]" />
                 <TMeshStandardMaterial :color="point.color" />
               </TMesh>
@@ -64,11 +60,7 @@
                   </div>
                 </TCSS2DLabel>
 
-                <TCSS2DObject
-                  :position="[0, -2, 0]"
-                  :offset="[0, 0]"
-                  :center="[0.5, 0.5]"
-                >
+                <TCSS2DObject :position="[0, -2, 0]" :offset="[0, 0]" :center="[0.5, 0.5]">
                   <div class="bg-black/70 text-white px-3 py-2 rounded text-xs">
                     <div class="font-bold mb-1">📊 统计信息</div>
                     <div>标签总数: {{ points.length + 1 }}</div>
@@ -100,11 +92,7 @@
 
               <div class="space-y-3">
                 <label class="flex items-center gap-2 cursor-pointer">
-                  <input
-                    v-model="enableDistanceScaling"
-                    type="checkbox"
-                    class="w-4 h-4"
-                  />
+                  <input v-model="enableDistanceScaling" type="checkbox" class="w-4 h-4" />
                   <span class="text-sm">距离缩放 (近大远小)</span>
                 </label>
 
