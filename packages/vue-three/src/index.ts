@@ -48,6 +48,7 @@ import TCylinder from './components/TCylinder.vue'
 import TTorus from './components/TTorus.vue'
 import TMeshBasicMaterial from './components/TMeshBasicMaterial.vue'
 import TMeshStandardMaterial from './components/TMeshStandardMaterial.vue'
+import TMeshPhysicalMaterial from './components/TMeshPhysicalMaterial.vue'
 import TMeshLambertMaterial from './components/TMeshLambertMaterial.vue'
 import TMeshPhongMaterial from './components/TMeshPhongMaterial.vue'
 import TGLTFLoader from './components/TGLTFLoader.vue'
@@ -106,6 +107,7 @@ export {
   TTorus,
   TMeshBasicMaterial,
   TMeshStandardMaterial,
+  TMeshPhysicalMaterial,
   TMeshLambertMaterial,
   TMeshPhongMaterial,
   TTexture,
@@ -160,6 +162,7 @@ const components = [
   TTorus,
   TMeshBasicMaterial,
   TMeshStandardMaterial,
+  TMeshPhysicalMaterial,
   TMeshLambertMaterial,
   TMeshPhongMaterial,
   TTexture,

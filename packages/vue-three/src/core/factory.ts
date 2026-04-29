@@ -8,6 +8,7 @@ import {
   BufferGeometry,
   MeshBasicMaterial,
   MeshStandardMaterial,
+  MeshPhysicalMaterial,
   MeshLambertMaterial,
   MeshPhongMaterial,
   MeshNormalMaterial,
@@ -132,6 +133,15 @@ export class ThreeObjectFactory {
           options.side = side
         }
         return new MeshStandardMaterial(options)
+      }
+      case 'physical': {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { type, side, ...rest } = config
+        const options: any = { ...rest }
+        if (side !== undefined) {
+          options.side = side
+        }
+        return new MeshPhysicalMaterial(options)
       }
       case 'lambert': {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -106,6 +106,11 @@
 - [ ] ✅ TCylinder 参数全部生效
 - [ ] ✅ TMeshBasicMaterial color/transparent 生效
 - [ ] ✅ TMeshStandardMaterial metalness/roughness 生效
+- [ ] TMeshPhysicalMaterial clearcoat/clearcoatRoughness 生效
+- [ ] TMeshPhysicalMaterial transmission/thickness 透射效果生效
+- [ ] TMeshPhysicalMaterial ior/iridescence 彩虹效果生效
+- [ ] TMeshPhysicalMaterial sheen 光泽效果生效
+- [ ] TMeshPhysicalMaterial specularIntensity/specularColor 生效
 - [ ] ✅ TMeshLambertMaterial 正确渲染
 - [ ] ✅ TMeshPhongMaterial shininess 生效
 - [ ] ✅ 所有配置变更实时响应

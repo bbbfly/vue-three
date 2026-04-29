@@ -84,6 +84,7 @@
 | MAT-004 | TMeshPhongMaterial 材质       | 5min     | 高     | completed |
 | MAT-005 | TTexture 纹理贴图组件         | 10min    | 高     | completed |
 | MAT-006 | TCubeTexture 立方体贴图组件   | 10min    | 中     | pending   |
+| MAT-007 | TMeshPhysicalMaterial 物理材质 | 10min    | 高     | completed |
 
 ### 2.5 模型加载组件
 

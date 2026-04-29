@@ -21,6 +21,7 @@
 | TEST-F-005 | createGeometry - 未知类型抛出错误 | 单元测试 | 抛出 TypeError                       |
 | TEST-F-006 | createMaterial - basic            | 单元测试 | 返回 MeshBasicMaterial 实例          |
 | TEST-F-007 | createMaterial - standard         | 单元测试 | 返回 MeshStandardMaterial 实例       |
+| TEST-F-011 | createMaterial - physical         | 单元测试 | 返回 MeshPhysicalMaterial 实例       |
 | TEST-F-008 | createMaterial - lambert          | 单元测试 | 返回 MeshLambertMaterial 实例        |
 | TEST-F-009 | createMaterial - phong            | 单元测试 | 返回 MeshPhongMaterial 实例          |
 | TEST-F-010 | createMesh - 正确创建网格         | 单元测试 | Mesh 包含正确的 geometry 和 material |
@@ -125,13 +126,20 @@
 
 ### 3.4 材质组件测试
 
-| 测试ID       | 测试名称                             | 测试类型 | 预期结果                  |
-| ------------ | ------------------------------------ | -------- | ------------------------- |
-| TEST-MAT-001 | TMeshBasicMaterial 颜色正确          | 组件测试 | color 正确设置            |
-| TEST-MAT-002 | TMeshStandardMaterial metalness 正确 | 组件测试 | metalness 正确            |
-| TEST-MAT-003 | TMeshStandardMaterial roughness 正确 | 组件测试 | roughness 正确            |
-| TEST-MAT-004 | transparent 配置生效                 | 组件测试 | material.transparent 正确 |
-| TEST-MAT-005 | opacity 配置生效                     | 组件测试 | material.opacity 正确     |
+| 测试ID       | 测试名称                                      | 测试类型 | 预期结果                    |
+| ------------ | --------------------------------------------- | -------- | --------------------------- |
+| TEST-MAT-001 | TMeshBasicMaterial 颜色正确                   | 组件测试 | color 正确设置              |
+| TEST-MAT-002 | TMeshStandardMaterial metalness 正确          | 组件测试 | metalness 正确              |
+| TEST-MAT-003 | TMeshStandardMaterial roughness 正确          | 组件测试 | roughness 正确              |
+| TEST-MAT-006 | TMeshPhysicalMaterial clearcoat 正确          | 组件测试 | clearcoat 属性正确          |
+| TEST-MAT-007 | TMeshPhysicalMaterial clearcoatRoughness 正确 | 组件测试 | clearcoatRoughness 属性正确 |
+| TEST-MAT-008 | TMeshPhysicalMaterial transmission 正确       | 组件测试 | transmission 属性正确       |
+| TEST-MAT-009 | TMeshPhysicalMaterial thickness 正确          | 组件测试 | thickness 属性正确          |
+| TEST-MAT-010 | TMeshPhysicalMaterial ior 正确                | 组件测试 | ior 属性正确                |
+| TEST-MAT-011 | TMeshPhysicalMaterial iridescence 正确        | 组件测试 | iridescence 属性正确        |
+| TEST-MAT-012 | TMeshPhysicalMaterial sheen 正确              | 组件测试 | sheen 属性正确              |
+| TEST-MAT-004 | transparent 配置生效                          | 组件测试 | material.transparent 正确   |
+| TEST-MAT-005 | opacity 配置生效                              | 组件测试 | material.opacity 正确       |
 
 ### 3.5 光源组件测试
 
@@ -164,22 +172,22 @@
 
 ### 3.8 后期处理组件测试
 
-| 测试ID       | 测试名称                          | 测试类型 | 预期结果                          |
-| ------------ | --------------------------------- | -------- | --------------------------------- |
-| TEST-PP-001  | TEffectComposer 正确创建          | 组件测试 | EffectComposer 实例存在           |
-| TEST-PP-002  | TBloomPass 添加到 Composer        | 组件测试 | composer.passes 包含 BloomPass    |
-| TEST-PP-003  | TSSAAPass 添加到 Composer         | 组件测试 | composer.passes 包含 SSAARenderPass |
-| TEST-PP-004  | TOutlinePass 正确创建             | 组件测试 | OutlinePass 实例存在              |
-| TEST-PP-005  | OutlinePass edgeStrength 配置生效 | 组件测试 | edgeStrength 属性正确设置         |
-| TEST-PP-006  | OutlinePass edgeGlow 配置生效     | 组件测试 | edgeGlow 属性正确设置             |
-| TEST-PP-007  | OutlinePass edgeThickness 配置生效 | 组件测试 | edgeThickness 属性正确设置       |
-| TEST-PP-008  | OutlinePass 描边颜色配置生效      | 组件测试 | visibleEdgeColor 正确设置         |
-| TEST-PP-009  | OutlinePass hiddenEdgeColor 配置生效 | 组件测试 | hiddenEdgeColor 正确设置        |
-| TEST-PP-010  | OutlinePass pulsePeriod 闪烁效果  | 组件测试 | pulsePeriod 动画周期正确          |
-| TEST-PP-011  | selectedObjects 选中对象描边      | 组件测试 | 选中对象显示描边效果              |
-| TEST-PP-012  | 动态添加/移除选中对象             | 组件测试 | 描边效果实时更新                  |
-| TEST-PP-013  | 多个对象同时描边                  | 组件测试 | 所有选中对象都显示描边            |
-| TEST-PP-014  | 组件卸载时清理 Pass 资源          | 组件测试 | pass 资源被 dispose               |
+| 测试ID      | 测试名称                             | 测试类型 | 预期结果                            |
+| ----------- | ------------------------------------ | -------- | ----------------------------------- |
+| TEST-PP-001 | TEffectComposer 正确创建             | 组件测试 | EffectComposer 实例存在             |
+| TEST-PP-002 | TBloomPass 添加到 Composer           | 组件测试 | composer.passes 包含 BloomPass      |
+| TEST-PP-003 | TSSAAPass 添加到 Composer            | 组件测试 | composer.passes 包含 SSAARenderPass |
+| TEST-PP-004 | TOutlinePass 正确创建                | 组件测试 | OutlinePass 实例存在                |
+| TEST-PP-005 | OutlinePass edgeStrength 配置生效    | 组件测试 | edgeStrength 属性正确设置           |
+| TEST-PP-006 | OutlinePass edgeGlow 配置生效        | 组件测试 | edgeGlow 属性正确设置               |
+| TEST-PP-007 | OutlinePass edgeThickness 配置生效   | 组件测试 | edgeThickness 属性正确设置          |
+| TEST-PP-008 | OutlinePass 描边颜色配置生效         | 组件测试 | visibleEdgeColor 正确设置           |
+| TEST-PP-009 | OutlinePass hiddenEdgeColor 配置生效 | 组件测试 | hiddenEdgeColor 正确设置            |
+| TEST-PP-010 | OutlinePass pulsePeriod 闪烁效果     | 组件测试 | pulsePeriod 动画周期正确            |
+| TEST-PP-011 | selectedObjects 选中对象描边         | 组件测试 | 选中对象显示描边效果                |
+| TEST-PP-012 | 动态添加/移除选中对象                | 组件测试 | 描边效果实时更新                    |
+| TEST-PP-013 | 多个对象同时描边                     | 组件测试 | 所有选中对象都显示描边              |
+| TEST-PP-014 | 组件卸载时清理 Pass 资源             | 组件测试 | pass 资源被 dispose                 |
 
 ---
 

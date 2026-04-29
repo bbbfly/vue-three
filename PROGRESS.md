@@ -2,6 +2,55 @@
 
 ---
 
+## MAT-007: TMeshPhysicalMaterial 物理材质组件
+
+**完成时间**: 2026-04-29  
+**完成内容**:
+
+- ✅ **MAT-007: TMeshPhysicalMaterial 物理材质组件**
+  - 创建 `TMeshPhysicalMaterial.vue` 增强型 PBR 物理材质组件
+  - 完整支持所有 MeshPhysicalMaterial 高级属性
+  - 完整的 Props 类型定义与 JSDoc 文档注释
+  - 所有属性响应式更新 watch 监听
+  - defineExpose 暴露 material 实例供外部控制
+
+- ✅ **类型系统扩展**
+  - 更新 `MaterialType` 添加 'physical' 类型
+  - 创建 `PhysicalMaterialConfig` 类型接口
+  - 继承 `MaterialConfig` 联合类型扩展
+
+- ✅ **对象工厂支持**
+  - 更新 `ThreeObjectFactory.createMaterial` 添加 'physical' case 分支
+  - 支持 side 属性正确传递到材质选项
+
+- ✅ **组件属性完整支持**
+  - 标准 PBR 属性：color / metalness / roughness / transparent / opacity / wireframe
+  - 清漆效果：clearcoat / clearcoatRoughness
+  - 透射效果：transmission / thickness / ior
+  - 高级效果：iridescence / sheen / sheenColor
+  - 镜面反射：specularIntensity
+
+**新建文件**:
+
+- [packages/vue-three/src/components/TMeshPhysicalMaterial.vue](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/components/TMeshPhysicalMaterial.vue) - 物理材质组件
+
+**修改文件**:
+
+- [packages/vue-three/src/types/index.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/types/index.ts) - 添加 PhysicalMaterialConfig 类型
+- [packages/vue-three/src/core/factory.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/core/factory.ts) - 添加 physical 材质创建
+- [packages/vue-three/src/index.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/vue-three/src/index.ts) - 导出新组件
+- [TASKS.md](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/TASKS.md) - 更新任务状态
+
+**验证结果**:
+
+- ✅ ESLint 代码规范检查通过
+- ✅ TypeScript 类型无新增错误
+- ✅ 与现有材质组件架构完全统一
+- ✅ 完整的 JSDoc 文档注释
+- ✅ 所有属性响应式更新生效
+
+---
+
 ## PP-005: TOutlinePass 发光描边组件
 
 **完成时间**: 2026-04-28  

@@ -98,6 +98,7 @@ export type GeometryConfig =
 export type MaterialType =
   | 'basic'
   | 'standard'
+  | 'physical'
   | 'lambert'
   | 'phong'
   | 'normal'
@@ -121,6 +122,27 @@ export interface StandardMaterialConfig extends BaseMaterialConfig {
   metalness?: number
   roughness?: number
   envMapIntensity?: number
+}
+
+export interface PhysicalMaterialConfig extends BaseMaterialConfig {
+  type: 'physical'
+  metalness?: number
+  roughness?: number
+  envMapIntensity?: number
+  clearcoat?: number
+  clearcoatRoughness?: number
+  transmission?: number
+  transmissionMap?: string
+  thickness?: number
+  ior?: number
+  iridescence?: number
+  iridescenceIOR?: number
+  sheen?: number
+  sheenColor?: number | string
+  sheenRoughness?: number
+  specularIntensity?: number
+  specularColor?: number | string
+  reflectivity?: number
 }
 
 export interface LambertMaterialConfig extends BaseMaterialConfig {
@@ -149,6 +171,7 @@ export interface CustomMaterialConfig {
 export type MaterialConfig =
   | BasicMaterialConfig
   | StandardMaterialConfig
+  | PhysicalMaterialConfig
   | LambertMaterialConfig
   | PhongMaterialConfig
   | NormalMaterialConfig

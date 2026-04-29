@@ -97,6 +97,7 @@ Vue-Three 是一个基于 Three.js 封装的 Vue 3 组件库，旨在为企业�
 | ----------------------- | ---------------------- |
 | `TMeshBasicMaterial`    | 基础网格材质           |
 | `TMeshStandardMaterial` | PBR标准材质            |
+| `TMeshPhysicalMaterial` | 增强型PBR物理材质      |
 | `TMeshLambertMaterial`  | Lambert材质            |
 | `TMeshPhongMaterial`    | Phong材质              |
 | `TTexture`              | 纹理贴图组件           |
