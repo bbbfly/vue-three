@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import { useMaterial } from '../composables/useMaterial'
-
+import * as THREE from 'three'
 /**
  * Phong材质组件
  * @description 具有镜面高光的光泽表面材质，适用于塑料、油漆等光滑表面
@@ -53,6 +53,14 @@ const props = defineProps({
   wireframe: {
     type: Boolean,
     default: false
+  },
+  /**
+   * 材质渲染面
+   * @default DoubleSide
+   */
+  side: {
+    type: Number,
+    default: THREE.DoubleSide
   }
 })
 
@@ -62,7 +70,8 @@ const { material } = useMaterial({
   shininess: props.shininess,
   transparent: props.transparent,
   opacity: props.opacity,
-  wireframe: props.wireframe
+  wireframe: props.wireframe,
+  side: props.side
 })
 
 /**
