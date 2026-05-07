@@ -111,6 +111,8 @@ export interface BaseMaterialConfig {
   opacity?: number
   wireframe?: boolean
   side?: number
+  blending?: number
+  premultipliedAlpha?: boolean
 }
 
 export interface BasicMaterialConfig extends BaseMaterialConfig {
@@ -413,9 +415,11 @@ export type CurveConfig =
 export type LineType = 'line' | 'lineLoop' | 'lineDashed'
 
 export interface LineConfig extends Object3DConfig {
-  curve: CurveConfig
+  curve?: CurveConfig
+  geometry?: BufferGeometry
   color?: string | number
   linewidth?: number
+  vertexColors?: boolean
 }
 
 export interface LineLoopConfig extends Object3DConfig {
@@ -430,6 +434,13 @@ export interface LineDashedConfig extends Object3DConfig {
   linewidth?: number
   dashSize?: number
   gapSize?: number
+}
+
+export interface LineSegmentsConfig extends Object3DConfig {
+  geometry: BufferGeometry
+  color?: string | number
+  linewidth?: number
+  vertexColors?: boolean
 }
 
 export type ShapeHole = Array<[number, number]>

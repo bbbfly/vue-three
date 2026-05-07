@@ -7,22 +7,31 @@ import type { PropType } from 'vue'
 import { watch, computed } from 'vue'
 import { useLine } from '../composables/useLine'
 import type { CurveConfig, Object3DConfig } from '../types'
+import type { BufferGeometry } from 'three'
 
 /**
  * 线条渲染组件
- * @description 将曲线渲染为线条
+ * @description 将曲线或自定义几何体渲染为线条，支持顶点颜色
  * @component TLine
  * @example
  * <TLine :curve="{ type: 'arc', args: [0, 0, 1, 0, Math.PI * 2, false] }" color="#ff0000" />
+ * @example
+ * <TLine :geometry="customGeometry" :vertex-colors="true" :position="[0, 0, 0]" />
  */
 const props = defineProps({
   /**
    * 曲线配置
-   * @required 曲线配置对象
    */
   curve: {
     type: Object as PropType<CurveConfig>,
-    required: true
+    required: false
+  },
+  /**
+   * 自定义 BufferGeometry
+   */
+  geometry: {
+    type: Object as PropType<BufferGeometry>,
+    required: false
   },
   /**
    * 线条颜色
@@ -39,6 +48,14 @@ const props = defineProps({
   linewidth: {
     type: Number,
     default: 1
+  },
+  /**
+   * 是否启用顶点颜色
+   * @default false
+   */
+  vertexColors: {
+    type: Boolean,
+    default: false
   },
   /**
    * Object3D 公共配置
@@ -63,8 +80,10 @@ const props = defineProps({
 
 const lineConfig = computed(() => ({
   curve: props.curve,
+  geometry: props.geometry,
   color: props.color,
   linewidth: props.linewidth,
+  vertexColors: props.vertexColors,
   position: props.position,
   rotation: props.rotation,
   scale: props.scale,

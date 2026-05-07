@@ -27,8 +27,8 @@ export interface CanvasOptions extends RendererConfig {
   autoClear?: boolean
   enableControls?: boolean
 }
-
-export function useCanvas(options: CanvasOptions = {}) {
+type AnimateFn = ({ scene, camera, delta }: { scene: Scene; camera: Camera; delta: number }) => void
+export function useCanvas(options: CanvasOptions = {}, animateFn: AnimateFn) {
   const canvasRef = ref<HTMLCanvasElement | null>(null)
   const renderer = shallowRef<WebGLRenderer | null>(null)
   const scene = shallowRef<Scene>(new Scene())
@@ -110,6 +110,7 @@ export function useCanvas(options: CanvasOptions = {}) {
     const render = () => {
       animationFrameId = requestAnimationFrame(render)
       const delta = clock.getDelta()
+      animateFn({ scene: scene.value, camera: camera.value, delta })
 
       animationMixers.forEach(mixer => {
         mixer.update(delta)
@@ -142,6 +143,10 @@ export function useCanvas(options: CanvasOptions = {}) {
     const newHeight = options.height || container.clientHeight || 150
 
     size.value = { width: newWidth, height: newHeight }
+    canvasRef.value.style.width = newWidth + 'px'
+    canvasRef.value.style.height = newHeight + 'px'
+    canvasRef.value.width = newWidth
+    canvasRef.value.height = newHeight
 
     const perspectiveCamera = camera.value as PerspectiveCamera
     if (perspectiveCamera.aspect !== undefined) {

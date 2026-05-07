@@ -5,6 +5,7 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import { watch } from 'vue'
+import { Shape } from 'three'
 import { useGeometry } from '../composables/useGeometry'
 import type { ShapeConfig, ExtrudeGeometryArgs } from '../types'
 
@@ -14,14 +15,16 @@ import type { ShapeConfig, ExtrudeGeometryArgs } from '../types'
  * @component TExtrudeGeometry
  * @example
  * <TExtrudeGeometry :shape="shapeConfig" :args="{ depth: 1, bevelEnabled: true }" />
+ * @example
+ * <TExtrudeGeometry :shape="threeShapeObject" :args="{ depth: 1 }" />
  */
 const props = defineProps({
   /**
-   * 形状配置
+   * 形状配置，可以是 ShapeConfig 对象或 THREE.Shape 实例
    * @required 形状路径配置
    */
   shape: {
-    type: Object as PropType<ShapeConfig>,
+    type: Object as PropType<ShapeConfig | Shape>,
     required: true
   },
   /**

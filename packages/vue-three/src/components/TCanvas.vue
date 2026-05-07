@@ -1,6 +1,6 @@
 <template>
-  <div class="t-canvas w-full h-full relative">
-    <canvas ref="canvasRef" class="w-full h-full block"></canvas>
+  <div class="t-canvas relative">
+    <canvas ref="canvasRef" width="100%" height="100%" class="block"></canvas>
     <slot></slot>
   </div>
 </template>
@@ -135,7 +135,13 @@ const options = computed<CanvasOptions>(() => ({
   enableControls: props.enableControls
 }))
 
-const { canvasRef, context } = useCanvas(options.value)
+const emit = defineEmits<{
+  animate: [{ scene: THREE.Scene; camera: THREE.Camera; delta: number; renderer: THREE.WebGLRenderer }]
+}>()
+
+const { canvasRef, context } = useCanvas(options.value, ({ scene, camera, delta }) => {
+  emit('animate', { scene, camera, delta, renderer: context.renderer.value! })
+})
 const interaction = useInteraction(context)
 
 watch(

@@ -20,6 +20,7 @@ import type { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import type { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import type { Pass } from 'three/addons/postprocessing/Pass.js'
 import type { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'
+import type { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js'
 
 export type InteractionEventType =
   | 'click'
@@ -143,6 +144,27 @@ export interface CSS2DContext {
   removeLabel: (label: CSS2DObject) => void
 }
 
+/**
+ * CSS3D 对象配置接口
+ */
+export interface CSS3DObjectConfig {
+  position: [number, number, number]
+  rotation?: [number, number, number]
+  scale?: [number, number, number]
+  className?: string
+  style?: Record<string, string>
+}
+
+/**
+ * CSS3D 上下文接口
+ */
+export interface CSS3DContext {
+  renderer: ShallowRef<CSS3DRenderer | null>
+  container: Ref<HTMLElement | null>
+  addObject: (object: CSS3DObject, config?: CSS3DObjectConfig) => void
+  removeObject: (object: CSS3DObject) => void
+}
+
 export const ThreeContextKey = Symbol('ThreeContext') as InjectionKey<ThreeContext>
 export const MeshContextKey = Symbol('MeshContext') as InjectionKey<MeshContext>
 export const AnimationContextKey = Symbol('AnimationContext') as InjectionKey<AnimationContext>
@@ -154,6 +176,7 @@ export const InteractionContextKey = Symbol(
   'InteractionContext'
 ) as InjectionKey<InteractionContext>
 export const CSS2DContextKey = Symbol('CSS2DContext') as InjectionKey<CSS2DContext>
+export const CSS3DContextKey = Symbol('CSS3DContext') as InjectionKey<CSS3DContext>
 
 /**
  * Sprite 精灵上下文接口

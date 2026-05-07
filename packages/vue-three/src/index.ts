@@ -32,7 +32,9 @@ export * from './composables/useCurve'
 export * from './composables/useLine'
 export * from './composables/useInteraction'
 export * from './composables/useCSS2DRenderer'
+export * from './composables/useCSS3DRenderer'
 export * from './composables/useSprite'
+export * from './composables/useHelper'
 export { useGui, type UseGuiOptions } from './composables/useGui'
 
 import TCanvas from './components/TCanvas.vue'
@@ -71,6 +73,7 @@ import TFBXLoader from './components/TFBXLoader.vue'
 import TDRACOLoader from './components/TDRACOLoader.vue'
 import TFlyControls from './components/TFlyControls.vue'
 import TFirstPersonControls from './components/TFirstPersonControls.vue'
+import TTrackballControls from './components/TTrackballControls.vue'
 import TArcCurve from './components/TArcCurve.vue'
 import TEllipseCurve from './components/TEllipseCurve.vue'
 import TBezierCurve from './components/TBezierCurve.vue'
@@ -80,6 +83,8 @@ import TSplineCurve from './components/TSplineCurve.vue'
 import TLine from './components/TLine.vue'
 import TLineLoop from './components/TLineLoop.vue'
 import TLineDashed from './components/TLineDashed.vue'
+import TLineSegments from './components/TLineSegments.vue'
+import TLineBasicMaterial from './components/TLineBasicMaterial.vue'
 import TTubeGeometry from './components/TTubeGeometry.vue'
 import TLatheGeometry from './components/TLatheGeometry.vue'
 import TShapeGeometry from './components/TShapeGeometry.vue'
@@ -90,13 +95,24 @@ import TWireframeGeometry from './components/TWireframeGeometry.vue'
 import TCSS2DRenderer from './components/TCSS2DRenderer.vue'
 import TCSS2DLabel from './components/TCSS2DLabel.vue'
 import TCSS2DObject from './components/TCSS2DObject.vue'
+import TCSS3DRenderer from './components/TCSS3DRenderer.vue'
+import TCSS3DObject from './components/TCSS3DObject.vue'
+import TCSS3DSprite from './components/TCSS3DSprite.vue'
 import TSprite from './components/TSprite.vue'
 import TSpriteMaterial from './components/TSpriteMaterial.vue'
+import TGridHelper from './components/TGridHelper.vue'
+import TPolarGridHelper from './components/TPolarGridHelper.vue'
+import TPointLightHelper from './components/TPointLightHelper.vue'
+import TBoxHelper from './components/TBoxHelper.vue'
+import TAxesHelper from './components/TAxesHelper.vue'
 
 export {
   TCSS2DRenderer,
   TCSS2DLabel,
   TCSS2DObject,
+  TCSS3DRenderer,
+  TCSS3DObject,
+  TCSS3DSprite,
   TSprite,
   TSpriteMaterial,
   TCanvas,
@@ -104,6 +120,7 @@ export {
   TPerspectiveCamera,
   TOrthographicCamera,
   TOrbitControls,
+  TTrackballControls,
   TAmbientLight,
   TDirectionalLight,
   TPointLight,
@@ -144,13 +161,20 @@ export {
   TLine,
   TLineLoop,
   TLineDashed,
+  TLineSegments,
+  TLineBasicMaterial,
   TTubeGeometry,
   TLatheGeometry,
   TShapeGeometry,
   TExtrudeGeometry,
   TSweepGeometry,
   TEdgesGeometry,
-  TWireframeGeometry
+  TWireframeGeometry,
+  TGridHelper,
+  TPolarGridHelper,
+  TPointLightHelper,
+  TBoxHelper,
+  TAxesHelper
 }
 
 const components = [
@@ -159,6 +183,7 @@ const components = [
   TPerspectiveCamera,
   TOrthographicCamera,
   TOrbitControls,
+  TTrackballControls,
   TAmbientLight,
   TDirectionalLight,
   TPointLight,
@@ -205,7 +230,12 @@ const components = [
   TExtrudeGeometry,
   TSweepGeometry,
   TEdgesGeometry,
-  TWireframeGeometry
+  TWireframeGeometry,
+  TGridHelper,
+  TPolarGridHelper,
+  TPointLightHelper,
+  TBoxHelper,
+  TAxesHelper
 ]
 
 export const VueThree: Plugin = {

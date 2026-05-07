@@ -14,9 +14,15 @@ export function useLight(config: LightConfig) {
 
   const light = shallowRef<Light>(createLight(config))
 
-  if (ctx.scene.value) {
-    ctx.scene.value.add(light.value)
-  }
+  watch(
+    () => ctx.scene.value,
+    scene => {
+      if (scene) {
+        scene.add(light.value)
+      }
+    },
+    { immediate: true }
+  )
 
   function createLight(lightConfig: LightConfig) {
     const newLight = ThreeObjectFactory.createLight(lightConfig) as Light

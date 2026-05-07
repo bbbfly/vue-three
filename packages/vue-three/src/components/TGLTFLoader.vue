@@ -1,12 +1,5 @@
 <template>
-  <slot
-    :model="model"
-    :animations="animations"
-    :loading="loading"
-    :progress="progress"
-    :total="total"
-    :error="error"
-  >
+  <slot :model="model" :animations="animations" :loading="loading" :progress="progress" :total="total" :error="error">
   </slot>
 </template>
 
@@ -81,16 +74,16 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  load: [model: Object3D, animations: AnimationClip[]]
+  load: [model: Object3D, animations: AnimationClip[], gltf: any]
   progress: [event: { loaded: number; total: number }]
   error: [error: Error]
 }>()
 
-const { model, animations, loading, progress, total, error } = useGLTFLoader(props)
+const { model, animations, loading, progress, total, error, gltf } = useGLTFLoader(props)
 
-watch(model, newModel => {
-  if (newModel) {
-    emit('load', newModel, animations.value)
+watch(gltf, newGltf => {
+  if (newGltf && model.value) {
+    emit('load', model.value, animations.value, newGltf)
   }
 })
 

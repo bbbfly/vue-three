@@ -29,13 +29,15 @@ const props = withDefaults(
     className?: string
     style?: Record<string, string>
     center?: [number, number]
+    layers?: number
   }>(),
   {
     offset: () => [0, 0],
     center: () => [0.5, 0.5],
     scaleByDistance: false,
     scaleFactor: 1,
-    opacity: 1
+    opacity: 1,
+    layers: undefined
   }
 )
 
@@ -76,6 +78,10 @@ const applyConfig = () => {
 
   css2dObject.value.position.set(...props.position)
   css2dObject.value.center.set(...props.center)
+
+  if (props.layers !== undefined) {
+    css2dObject.value.layers.set(props.layers)
+  }
 
   const el = css2dObject.value.element
 
@@ -128,6 +134,11 @@ watch(
   () => props.style,
   () => applyConfig(),
   { deep: true }
+)
+
+watch(
+  () => props.layers,
+  () => applyConfig()
 )
 
 onBeforeUnmount(() => {

@@ -27,6 +27,7 @@ import {
   LineBasicMaterial,
   Line,
   LineLoop,
+  LineSegments,
   LineDashedMaterial,
   BufferAttribute,
   Shape,
@@ -107,6 +108,10 @@ export class ThreeObjectFactory {
         return new ShapeGeometry(shape)
       }
       case 'extrude': {
+        if (!config.shape) {
+          console.error('createGeometry: extrude config.shape is undefined or null', config)
+          return new ExtrudeGeometry(new Shape(), config.args || {})
+        }
         const shape = this.createShape(config.shape)
         return new ExtrudeGeometry(shape, config.args || {})
       }
@@ -134,10 +139,16 @@ export class ThreeObjectFactory {
     switch (config.type) {
       case 'basic': {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { type, side, ...rest } = config
+        const { type, side, blending, premultipliedAlpha, ...rest } = config
         const options: any = { ...rest }
         if (side !== undefined) {
           options.side = side
+        }
+        if (blending !== undefined) {
+          options.blending = blending
+        }
+        if (premultipliedAlpha !== undefined) {
+          options.premultipliedAlpha = premultipliedAlpha
         }
         return new MeshBasicMaterial(options)
       }
@@ -407,16 +418,24 @@ export class ThreeObjectFactory {
   }
 
   static createLine(config: LineConfig): Line {
-    if (!config.curve) {
-      config.curve = { type: 'arc' }
+    let geometry: BufferGeometry
+
+    if (config.geometry) {
+      geometry = config.geometry
+    } else {
+      if (!config.curve) {
+        config.curve = { type: 'arc' }
+      }
+      const curve = this.createCurve(config.curve)
+      const divisions = config.curve.divisions || 50
+      const points = curve.getPoints(divisions)
+      geometry = new BufferGeometry().setFromPoints(points)
     }
-    const curve = this.createCurve(config.curve)
-    const divisions = config.curve.divisions || 50
-    const points = curve.getPoints(divisions)
-    const geometry = new BufferGeometry().setFromPoints(points)
+
     const material = new LineBasicMaterial({
       color: config.color || 0xffffff,
-      linewidth: config.linewidth || 1
+      linewidth: config.linewidth || 1,
+      vertexColors: config.vertexColors || false
     })
     const line = new Line(geometry, material)
     this.applyObject3DConfig(line, config)
@@ -471,7 +490,37 @@ export class ThreeObjectFactory {
     return line
   }
 
-  static createShape(config: ShapeConfig): Shape {
+  static createLineSegments(config: any): LineSegments {
+    const geometry = config.geometry || new BufferGeometry()
+    const material = new LineBasicMaterial({
+      color: config.color || 0xffffff,
+      linewidth: config.linewidth || 1,
+      vertexColors: config.vertexColors || false
+    })
+    const lineSegments = new LineSegments(geometry, material)
+    this.applyObject3DConfig(lineSegments, config)
+    return lineSegments
+  }
+
+  static createShape(config: ShapeConfig | Shape): Shape {
+    if (config instanceof Shape) {
+      return config
+    }
+
+    if (!config) {
+      console.error('createShape: config is undefined or null')
+      return new Shape()
+    }
+
+    if ('moveTo' in config && typeof config.moveTo === 'function') {
+      return config as unknown as Shape
+    }
+
+    if (!config.curves) {
+      console.error('createShape: Invalid config - missing curves property', config)
+      return new Shape()
+    }
+
     const shape = new Shape()
 
     config.curves.forEach(path => {

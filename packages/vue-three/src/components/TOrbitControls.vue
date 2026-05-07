@@ -84,6 +84,22 @@ const props = defineProps({
     default: undefined
   },
   /**
+   * 是否启用屏幕空间平移（false 表示在世界空间平移）
+   * @default undefined
+   */
+  screenSpacePanning: {
+    type: Boolean,
+    default: undefined
+  },
+  /**
+   * 鼠标悬停样式，可选值: 'grab', 'pointer', 'default' 等
+   * @default undefined
+   */
+  cursorStyle: {
+    type: String,
+    default: undefined
+  },
+  /**
    * 最小缩放距离
    * @default undefined
    */
@@ -166,6 +182,8 @@ const config: ControlsConfig = {
   rotateSpeed: props.rotateSpeed,
   enablePan: props.enablePan,
   panSpeed: props.panSpeed,
+  screenSpacePanning: props.screenSpacePanning,
+  cursorStyle: props.cursorStyle,
   minDistance: props.minDistance,
   maxDistance: props.maxDistance,
   minPolarAngle: props.minPolarAngle,

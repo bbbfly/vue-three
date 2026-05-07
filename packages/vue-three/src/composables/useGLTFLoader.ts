@@ -18,6 +18,7 @@ export function useGLTFLoader(config: GLTFLoaderConfig) {
 
   const scene = threeCtx.scene
   const model = shallowRef<Object3D | null>(null)
+  const gltf = shallowRef<any>(null)
   const animations = shallowRef<AnimationClip[]>([])
   const loading = shallowRef(false)
   const progress = shallowRef(0)
@@ -39,13 +40,13 @@ export function useGLTFLoader(config: GLTFLoaderConfig) {
 
     loader.load(
       src,
-      gltf => {
+      loadedGltf => {
         if (model.value && scene.value) {
           scene.value.remove(model.value)
           disposeModel(model.value)
         }
 
-        const loadedModel = gltf.scene || gltf.scenes?.[0]
+        const loadedModel = loadedGltf.scene || loadedGltf.scenes?.[0]
 
         if (loadedModel) {
           ThreeObjectFactory.applyObject3DConfig(loadedModel, config)
@@ -58,7 +59,8 @@ export function useGLTFLoader(config: GLTFLoaderConfig) {
           model.value = loadedModel
         }
 
-        animations.value = gltf.animations || []
+        gltf.value = loadedGltf
+        animations.value = loadedGltf.animations || []
 
         loading.value = false
         progress.value = 100
@@ -139,6 +141,7 @@ export function useGLTFLoader(config: GLTFLoaderConfig) {
 
   return {
     model,
+    gltf,
     animations,
     loading,
     progress,

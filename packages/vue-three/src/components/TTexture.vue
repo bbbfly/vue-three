@@ -101,6 +101,14 @@ const props = defineProps({
   rotation: {
     type: Number,
     default: undefined
+  },
+  /**
+   * 纹理颜色空间，如 'srgb'
+   * @default undefined
+   */
+  colorSpace: {
+    type: String,
+    default: undefined
   }
 })
 
@@ -114,13 +122,14 @@ const { texture, load, updateSettings } = useTexture({
   repeat: props.repeat,
   offset: props.offset,
   center: props.center,
-  rotation: props.rotation
+  rotation: props.rotation,
+  colorSpace: props.colorSpace
 })
 
-const { url, wrapS, wrapT, magFilter, minFilter, repeat, offset, center, rotation } = toRefs(props)
+const { url, wrapS, wrapT, magFilter, minFilter, repeat, offset, center, rotation, colorSpace } = toRefs(props)
 
 watch(
-  [url, wrapS, wrapT, magFilter, minFilter, repeat, offset, center, rotation],
+  [url, wrapS, wrapT, magFilter, minFilter, repeat, offset, center, rotation, colorSpace],
   () => {
     updateSettings({
       url: props.url,
@@ -131,7 +140,8 @@ watch(
       repeat: props.repeat,
       offset: props.offset,
       center: props.center,
-      rotation: props.rotation
+      rotation: props.rotation,
+      colorSpace: props.colorSpace
     })
   },
   { deep: true }

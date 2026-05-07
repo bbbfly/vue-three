@@ -13,6 +13,7 @@ export interface TextureOptions {
   offset?: [number, number]
   center?: [number, number]
   rotation?: number
+  colorSpace?: string
 }
 
 export function useTexture(options: TextureOptions = {}) {
@@ -38,10 +39,8 @@ export function useTexture(options: TextureOptions = {}) {
     }
 
     texture.value = loader.load(url, () => {
-      applyTextureToMaterial()
+      applyTextureSettings()
     })
-
-    applyTextureSettings()
   }
 
   function applyTextureSettings() {
@@ -50,24 +49,24 @@ export function useTexture(options: TextureOptions = {}) {
     const tex = texture.value
 
     if (options.wrapS !== undefined) {
-      ;(tex as any).wrapS = options.wrapS
+      tex.wrapS = options.wrapS
     }
     if (options.wrapT !== undefined) {
-      ;(tex as any).wrapT = options.wrapT
+      tex.wrapT = options.wrapT
     }
     if (options.magFilter !== undefined) {
-      ;(tex as any).magFilter = options.magFilter
+      tex.magFilter = options.magFilter
     }
     if (options.minFilter !== undefined) {
-      ;(tex as any).minFilter = options.minFilter
+      tex.minFilter = options.minFilter
     }
     if (options.repeat) {
       tex.repeat.set(options.repeat[0], options.repeat[1])
       if (options.wrapS === undefined) {
-        ;(tex as any).wrapS = RepeatWrapping
+        tex.wrapS = RepeatWrapping
       }
       if (options.wrapT === undefined) {
-        ;(tex as any).wrapT = RepeatWrapping
+        tex.wrapT = RepeatWrapping
       }
     }
     if (options.offset) {
@@ -79,8 +78,13 @@ export function useTexture(options: TextureOptions = {}) {
     if (options.rotation !== undefined) {
       tex.rotation = options.rotation
     }
+    if (options.colorSpace !== undefined) {
+      tex.colorSpace = options.colorSpace
+    }
 
-    tex.needsUpdate = true
+    if (tex.image) {
+      tex.needsUpdate = true
+    }
     applyTextureToMaterial()
   }
 

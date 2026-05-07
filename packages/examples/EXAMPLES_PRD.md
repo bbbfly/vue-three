@@ -22,19 +22,89 @@
 
 ### 3.2 示例覆盖范围
 
-| 分类         | 数量 | 覆盖功能点                   |
-| ------------ | ---- | ---------------------------- |
-| WebGL 基础   | 30+  | 几何体、材质、灯光、相机     |
-| 动画系统     | 10+  | 关键帧、骨骼、变形目标       |
-| 控制器       | 8+   | Orbit、Fly、Drag、Transform  |
-| 模型加载     | 20+  | GLTF、FBX、OBJ、DRACO 等     |
-| 后期处理     | 15+  | Bloom、SSAO、Outline 等      |
-| CSS2D/3D     | 10+  | 标签、DOM 元素 3D 变换       |
-| 交互事件     | 10+  | 点击、拖拽、射线检测         |
-| 物理引擎     | 5+   | Ammo、Jolt、Rapier           |
-| 高级几何体   | 10+  | 曲线、管道、旋转成型、扫描   |
-| 着色器特效   | 10+  | 自定义着色器、GPGPU          |
-| **总计**     | **130+** | **完整覆盖官方核心示例**     |
+#### 3.2.1 分类概览
+
+本平台覆盖 Three.js 官方全部 **579 个示例**，分为 **53 个分类**，详细分类如下：
+
+| 分类                       | 数量 | 已完成 | 覆盖功能点                                                          |
+| -------------------------- | ---- | ------ | ------------------------------------------------------------------- |
+| **CSS2D**                  | 1    | 1      | 标签                                                                |
+| **CSS3D**                  | 7    | 0      | 混合、分子、正交投影、周期表、沙盒、精灵、YouTube                   |
+| **游戏**                   | 1    | 0      | FPS 游戏                                                            |
+| **杂项**                   | 21   | 1      | 动画组、控制器（轨道/飞行/拖拽/追踪球）、导出器（Draco/GLTF/OBJ等） |
+| **物理引擎**               | 12   | 0      | Ammo（破碎/布料/绳索/地形）、Rapier（角色/关节/车辆）、Jolt         |
+| **SVG**                    | 2    | 0      | 线条、沙盒                                                          |
+| **Web Audio**              | 4    | 0      | 方向定位、沙盒、时序、可视化                                        |
+| **WebGL**                  | 31   | 2      | 几何体、变形目标、着色器、阴影、折射等基础示例                      |
+| **WebGL - 动画**           | 7    | 0      | 关键帧、蒙皮、反向运动学、行走动画                                  |
+| **WebGL - BufferGeometry** | 16   | 0      | 属性、实例化、粒子、线、点                                          |
+| **WebGL - 相机**           | 3    | 0      | 基础相机、阵列相机、对数深度缓冲                                    |
+| **WebGL - 裁剪**           | 4    | 0      | 基础裁剪、高级裁剪、相交裁剪、模板裁剪                              |
+| **WebGL - 自定义属性**     | 5    | 0      | 自定义属性、线条、点云                                              |
+| **WebGL - 贴花**           | 1    | 0      | 贴花效果                                                            |
+| **WebGL - 深度纹理**       | 1    | 0      | 深度纹理渲染                                                        |
+| **WebGL - 特效**           | 4    | 0      | 立体红青、ASCII、视差屏障、立体声                                   |
+| **WebGL - 帧缓冲纹理**     | 1    | 0      | 帧缓冲纹理                                                          |
+| **WebGL - 熔炉测试**       | 1    | 0      | WebGL 功能测试                                                      |
+| **WebGL - 几何体**         | 16   | 1      | 立方体、凸包、CSG、拉伸、样条、地形、文字                           |
+| **WebGL - GPGPU**          | 4    | 0      | 鸟群模拟、原行星、水面效果                                          |
+| **WebGL - 辅助对象**       | 1    | 1      | 坐标、网格、骨架等辅助工具                                          |
+| **WebGL - 实例化**         | 5    | 0      | 动态实例、变形实例、性能测试、射线检测                              |
+| **WebGL - 交互**           | 8    | 0      | 射线检测、立方体交互、体素绘画                                      |
+| **WebGL - 镜头光晕**       | 1    | 0      | 镜头光晕效果                                                        |
+| **WebGL - 光照探针**       | 5    | 0      | 光照探针、立方体相机、复杂场景                                      |
+| **WebGL - 灯光**           | 5    | 3      | 半球光、物理光照、聚光灯                                            |
+| **WebGL - 线条**           | 5    | 1      | 颜色线条、虚线、粗线条、射线检测                                    |
+| **WebGL - 模型加载**       | 55   | 1      | GLTF、FBX、OBJ、STL、PLY、Draco、3D Tiles 等                        |
+| **WebGL - LOD**            | 1    | 0      | 细节层次                                                            |
+| **WebGL - Marching Cubes** | 1    | 0      | 体素等值面                                                          |
+| **WebGL - 材质**           | 33   | 2      | 环境贴图、凹凸贴图、位移贴图、物理材质、透射等                      |
+| **WebGL - 数学**           | 2    | 0      | OBB、方向变换                                                       |
+| **WebGL - 修改器**         | 6    | 0      | 曲线、细分、简化、边缘分割                                          |
+| **WebGL - 多渲染器**       | 5    | 0      | 多元素、多渲染目标、多视图                                          |
+| **WebGL - 全景**           | 2    | 0      | 立方体全景、等距柱状全景                                            |
+| **WebGL - 性能**           | 1    | 0      | 性能测试                                                            |
+| **WebGL - 点云**           | 4    | 0      | 公告板、动态点云、波浪                                              |
+| **WebGL - 传送门**         | 1    | 0      | 传送门效果                                                          |
+| **WebGL - 后处理**         | 26   | 0      | Bloom、SSAO、SSR、景深、FXAA、SMAA、轮廓等                          |
+| **WebGL - 射线检测**       | 3    | 0      | BVH、精灵、纹理射线检测                                             |
+| **WebGL - 像素读取**       | 1    | 0      | 浮点缓冲读取                                                        |
+| **WebGL - 渲染器**         | 1    | 0      | 路径追踪                                                            |
+| **WebGL - 渲染到纹理**     | 1    | 0      | RTT                                                                 |
+| **WebGL - 阴影**           | 8    | 0      | 阴影贴图、PCSS、CSM、VSM                                            |
+| **WebGL - 精灵**           | 1    | 0      | 精灵系统                                                            |
+| **WebGL - 色调映射**       | 1    | 0      | 色调映射                                                            |
+| **WebGL - 视频**           | 2    | 0      | Kinect、全景视频                                                    |
+| **WebGL - 体积**           | 3    | 0      | 云、实例化、Perlin 噪声                                             |
+| **WebGL - Worker**         | 1    | 0      | OffscreenCanvas                                                     |
+| **WebGPU**                 | 130  | 0      | 计算着色器、粒子系统、后处理、光线追踪                              |
+| **WebXR**                  | 26   | 0      | AR/VR 交互、手势追踪、全景、传送                                    |
+
+#### 3.2.2 实现进度统计
+
+| 指标       | 数量 | 占比  |
+| ---------- | ---- | ----- |
+| 总示例数   | 579  | 100%  |
+| 已完成示例 | 12   | 2.1%  |
+| 待完成示例 | 567  | 97.9% |
+| 分类总数   | 53   | -     |
+
+#### 3.2.3 已完成示例清单
+
+| 示例 ID                   | 标题       | 分类             |
+| ------------------------- | ---------- | ---------------- |
+| `css2d_label`             | Label      | CSS2D            |
+| `misc_controls_orbit`     | 控制器轨道 | 杂项             |
+| `webgl_geometries`        | 几何体     | WebGL            |
+| `webgl_geometry_cube`     | 立方体     | WebGL - 几何体   |
+| `webgl_helpers`           | 辅助对象   | WebGL - 辅助对象 |
+| `webgl_lights_hemisphere` | 半球光     | WebGL - 灯光     |
+| `webgl_lights_physical`   | 物理材质   | WebGL - 灯光     |
+| `webgl_lights_spotlight`  | Spotlight  | WebGL - 灯光     |
+| `webgl_lines_colors`      | 颜色       | WebGL - 线条     |
+| `webgl_loader_gltf`       | GLTF       | WebGL - 模型加载 |
+| `webgl_materials_envmaps` | Envmaps    | WebGL - 材质     |
+| `webgl_materials`         | 材质       | WebGL - 材质     |
 
 ### 3.3 平台功能特性
 
@@ -48,15 +118,15 @@
 
 ### 声明式转换规范
 
-| 官方原生写法 | vue-three 声明式写法 |
-|------------|-------------------|
-| `new WebGLRenderer()` | `<TCanvas antialias />` |
-| `new PerspectiveCamera()` | `<TPerspectiveCamera />` |
-| `scene.add(mesh)` | 组件嵌套关系自动处理 |
-| `OrbitControls` | `<TOrbitControls />` |
-| `GLTFLoader.load()` | `<TGLTFLoader url="..." />` |
-| `requestAnimationFrame` | `@before-render` 事件钩子 |
-| `window.addEventListener` | Vue 生命周期 + 事件绑定 |
+| 官方原生写法              | vue-three 声明式写法        |
+| ------------------------- | --------------------------- |
+| `new WebGLRenderer()`     | `<TCanvas antialias />`     |
+| `new PerspectiveCamera()` | `<TPerspectiveCamera />`    |
+| `scene.add(mesh)`         | 组件嵌套关系自动处理        |
+| `OrbitControls`           | `<TOrbitControls />`        |
+| `GLTFLoader.load()`       | `<TGLTFLoader url="..." />` |
+| `requestAnimationFrame`   | `@before-render` 事件钩子   |
+| `window.addEventListener` | Vue 生命周期 + 事件绑定     |
 
 ### 代码质量要求
 

@@ -45,6 +45,22 @@ const props = defineProps({
   wireframe: {
     type: Boolean,
     default: false
+  },
+  /**
+   * 混合模式
+   * @default THREE.NormalBlending
+   */
+  blending: {
+    type: Number as PropType<number>,
+    default: undefined
+  },
+  /**
+   * 是否启用 premultiplied alpha
+   * @default false
+   */
+  premultipliedAlpha: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -53,7 +69,9 @@ const { material } = useMaterial({
   color: props.color,
   transparent: props.transparent,
   opacity: props.opacity,
-  wireframe: props.wireframe
+  wireframe: props.wireframe,
+  blending: props.blending,
+  premultipliedAlpha: props.premultipliedAlpha
 })
 
 /**

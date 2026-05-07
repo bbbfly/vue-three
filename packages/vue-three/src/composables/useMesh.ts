@@ -14,9 +14,15 @@ export function useMesh(config?: MeshConfig) {
 
   const mesh = shallowRef<Mesh>(config ? createMesh(config) : new Mesh())
 
-  if (ctx.scene.value) {
-    ctx.scene.value.add(mesh.value)
-  }
+  watch(
+    () => ctx.scene.value,
+    scene => {
+      if (scene) {
+        scene.add(mesh.value)
+      }
+    },
+    { immediate: true }
+  )
 
   function setGeometry(geometry: BufferGeometry) {
     if (mesh.value.geometry) {

@@ -23,12 +23,28 @@ const props = defineProps({
     default: 0xffffff
   },
   /**
+   * 镜面高光颜色
+   * @default 0x111111
+   */
+  specular: {
+    type: [String, Number] as PropType<string | number>,
+    default: undefined
+  },
+  /**
    * 光泽度，数值越高镜面高光越明显
    * @default 30
    */
   shininess: {
     type: Number,
     default: 30
+  },
+  /**
+   * 法线贴图对材质的影响程度
+   * @default undefined
+   */
+  normalScale: {
+    type: Array as unknown as PropType<[number, number]>,
+    default: undefined
   },
   /**
    * 是否启用透明度
@@ -67,7 +83,9 @@ const props = defineProps({
 const { material } = useMaterial({
   type: 'phong',
   color: props.color,
+  specular: props.specular,
   shininess: props.shininess,
+  normalScale: props.normalScale,
   transparent: props.transparent,
   opacity: props.opacity,
   wireframe: props.wireframe,

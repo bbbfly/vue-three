@@ -12,6 +12,7 @@ export interface ControlsConfig extends Object3DConfig {
   rotateSpeed?: number
   enablePan?: boolean
   panSpeed?: number
+  screenSpacePanning?: boolean
   minDistance?: number
   maxDistance?: number
   minPolarAngle?: number
@@ -20,6 +21,7 @@ export interface ControlsConfig extends Object3DConfig {
   maxAzimuthAngle?: number
   autoRotate?: boolean
   autoRotateSpeed?: number
+  cursorStyle?: string
   target?: [number, number, number]
 }
 
@@ -89,6 +91,14 @@ export function useControls(config: ControlsConfig = {}) {
 
     if (newConfig.panSpeed !== undefined) {
       controls.value.panSpeed = newConfig.panSpeed
+    }
+
+    if (newConfig.screenSpacePanning !== undefined) {
+      controls.value.screenSpacePanning = newConfig.screenSpacePanning
+    }
+
+    if (newConfig.cursorStyle !== undefined) {
+      controls.value.cursorStyle = newConfig.cursorStyle
     }
 
     if (newConfig.minDistance !== undefined) {
