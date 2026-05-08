@@ -20,8 +20,18 @@
         </div>
       </div>
 
-      <div class="search-box">
-        <input v-model="searchQuery" type="text" placeholder="🔍 搜索示例名称..." class="search-input" />
+      <div class="filter-bar">
+        <div class="category-select">
+          <select v-model="selectedCategory" class="select-input">
+            <option value="">📁 全部分类</option>
+            <option v-for="category in exampleCategories" :key="category.id" :value="category.id">
+              {{ category.icon }} {{ category.name }}
+            </option>
+          </select>
+        </div>
+        <div class="search-box">
+          <input v-model="searchQuery" type="text" placeholder="🔍 搜索示例名称..." class="search-input" />
+        </div>
       </div>
     </header>
 
@@ -62,26 +72,33 @@ import { exampleCategories, getCompletedCount, getTotalCount, getScreenshotUrl }
 import CategoryNav from '../components/CategoryNav.vue'
 
 const searchQuery = ref('')
+const selectedCategory = ref('')
 
 const completedCount = getCompletedCount()
 const totalCount = getTotalCount()
 
 const filteredCategories = computed(() => {
-  if (!searchQuery.value.trim()) {
-    return exampleCategories
+  let result = exampleCategories
+
+  if (selectedCategory.value) {
+    result = result.filter(category => category.id === selectedCategory.value)
   }
 
-  const query = searchQuery.value.toLowerCase()
-  return exampleCategories
-    .map(category => ({
-      ...category,
-      examples: category.examples.filter(
-        ex =>
-          ex.title.toLowerCase().includes(query) ||
-          ex.id.toLowerCase().includes(query)
-      )
-    }))
-    .filter(category => category.examples.length > 0)
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase()
+    result = result
+      .map(category => ({
+        ...category,
+        examples: category.examples.filter(
+          ex =>
+            ex.title.toLowerCase().includes(query) ||
+            ex.id.toLowerCase().includes(query)
+        )
+      }))
+      .filter(category => category.examples.length > 0)
+  }
+
+  return result
 })
 
 function handleImageError(event: Event) {
@@ -144,17 +161,59 @@ function handleImageError(event: Event) {
   margin-top: 0.25rem;
 }
 
-.search-box {
-  max-width: 500px;
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  max-width: 700px;
   margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+.category-select {
+  flex-shrink: 0;
+}
+
+.select-input {
+  padding: 0.875rem 1.25rem;
+  border: none;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px;
+  padding-right: 2.5rem;
+}
+
+.select-input:hover {
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.18);
+}
+
+.select-input:focus {
+  box-shadow: 0 6px 30px rgba(102, 126, 234, 0.3);
+  border: 2px solid #667eea;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 200px;
 }
 
 .search-input {
   width: 100%;
-  padding: 1rem 1.5rem;
+  padding: 0.875rem 1.5rem;
   border: none;
   border-radius: 50px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   background: rgba(255, 255, 255, 0.95);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   outline: none;
@@ -162,8 +221,8 @@ function handleImageError(event: Event) {
 }
 
 .search-input:focus {
-  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.2);
-  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(102, 126, 234, 0.3);
+  border: 2px solid #667eea;
 }
 
 .search-input::placeholder {
