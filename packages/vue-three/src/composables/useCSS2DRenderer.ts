@@ -1,13 +1,10 @@
 import { inject, ref, shallowRef, onMounted, onBeforeUnmount, watch, provide } from 'vue'
+import { Scene } from 'three'
 import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js'
 import type { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'
 import { ThreeContextKey, CSS2DContextKey } from '../core/context'
 import type { CSS2DLabelConfig } from '../core/context'
 
-/**
- * CSS2D 渲染器 Composable
- * 管理 CSS2DRenderer 实例生命周期、标签注册与渲染更新
- */
 export function useCSS2DRenderer() {
   const ctx = inject(ThreeContextKey)
 
@@ -17,6 +14,9 @@ export function useCSS2DRenderer() {
 
   const renderer = shallowRef<CSS2DRenderer | null>(null)
   const labelContainer = ref<HTMLElement | null>(null)
+  
+  // 创建独立的 CSS2D 场景
+  const scene = shallowRef<Scene>(new Scene())
 
   const labels = shallowRef<Map<CSS2DObject, CSS2DLabelConfig>>(new Map())
 
@@ -25,7 +25,8 @@ export function useCSS2DRenderer() {
       labels.value.set(label, config)
       applyLabelConfig(label, config)
     }
-    ctx.scene.value.add(label)
+    // 添加到 CSS2D 独立场景
+    scene.value.add(label)
   }
 
   const updateLabelConfig = (label: CSS2DObject, config: Partial<CSS2DLabelConfig>) => {
@@ -39,7 +40,7 @@ export function useCSS2DRenderer() {
 
   const removeLabel = (label: CSS2DObject) => {
     labels.value.delete(label)
-    ctx.scene.value.remove(label)
+    scene.value.remove(label)
   }
 
   const applyLabelConfig = (label: CSS2DObject, config: CSS2DLabelConfig) => {
@@ -64,13 +65,6 @@ export function useCSS2DRenderer() {
     label.element.style.opacity = String(config.opacity ?? 1)
     label.element.style.pointerEvents = 'auto'
     label.element.style.userSelect = 'none'
-  }
-
-  const render = () => {
-    if (renderer.value && ctx.scene.value && ctx.camera.value) {
-      renderer.value.render(ctx.scene.value, ctx.camera.value)
-      applyDistanceEffects()
-    }
   }
 
   const applyDistanceEffects = () => {
@@ -113,23 +107,6 @@ export function useCSS2DRenderer() {
     }
   }
 
-  let animationFrameId: number | null = null
-
-  const startRenderLoop = () => {
-    const animate = () => {
-      render()
-      animationFrameId = requestAnimationFrame(animate)
-    }
-    animate()
-  }
-
-  const stopRenderLoop = () => {
-    if (animationFrameId !== null) {
-      cancelAnimationFrame(animationFrameId)
-      animationFrameId = null
-    }
-  }
-
   onMounted(() => {
     renderer.value = new CSS2DRenderer()
     labelContainer.value = renderer.value.domElement
@@ -149,7 +126,9 @@ export function useCSS2DRenderer() {
 
     setSize(ctx.size.value.width, ctx.size.value.height)
 
-    startRenderLoop()
+    // 注册场景和渲染器到 ThreeContext
+    ctx.registerScene('css2d', scene.value)
+    ctx.registerRenderer('css2d', renderer.value)
   })
 
   watch(
@@ -161,10 +140,12 @@ export function useCSS2DRenderer() {
   )
 
   onBeforeUnmount(() => {
-    stopRenderLoop()
+    // 取消注册场景和渲染器
+    ctx.unregisterScene('css2d')
+    ctx.unregisterRenderer('css2d')
 
     labels.value.forEach((_, label) => {
-      ctx.scene.value.remove(label)
+      scene.value.remove(label)
     })
     labels.value.clear()
 
@@ -176,9 +157,15 @@ export function useCSS2DRenderer() {
     labelContainer.value = null
   })
 
+  // 距离效果需要在每次渲染后调用，通过全局渲染循环调度
+  const renderComplete = () => {
+    applyDistanceEffects()
+  }
+
   provide(CSS2DContextKey, {
     renderer,
     labelContainer,
+    scene,
     addLabel,
     updateLabelConfig,
     removeLabel
@@ -187,13 +174,12 @@ export function useCSS2DRenderer() {
   return {
     renderer,
     labelContainer,
+    scene,
     labels,
     addLabel,
     updateLabelConfig,
     removeLabel,
-    render,
     setSize,
-    startRenderLoop,
-    stopRenderLoop
+    renderComplete
   }
 }

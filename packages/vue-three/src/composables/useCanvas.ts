@@ -55,6 +55,12 @@ export function useCanvas(options: CanvasOptions = {}, animateFn: AnimateFn) {
   const clock = new Clock()
   let postProcessingEnabled = false
 
+  // 场景注册表 - 支持多场景渲染
+  const scenes = shallowRef<Map<string, Scene>>(new Map([['main', scene.value]]))
+
+  // 渲染器注册表 - 支持多渲染器
+  const renderers = shallowRef<Map<string, THREE.Renderer>>(new Map())
+
   const registerAnimationMixer = (mixer: AnimationMixer) => {
     animationMixers.add(mixer)
   }
@@ -82,6 +88,28 @@ export function useCanvas(options: CanvasOptions = {}, animateFn: AnimateFn) {
     }
   }
 
+  // 场景注册表方法
+  const registerScene = (name: string, sceneInstance: Scene) => {
+    scenes.value.set(name, sceneInstance)
+  }
+
+  const getScene = (name: string) => scenes.value.get(name)
+
+  const unregisterScene = (name: string) => {
+    scenes.value.delete(name)
+  }
+
+  // 渲染器注册表方法
+  const registerRenderer = (name: string, rendererInstance: THREE.Renderer) => {
+    renderers.value.set(name, rendererInstance)
+  }
+
+  const getRenderer = (name: string) => renderers.value.get(name)
+
+  const unregisterRenderer = (name: string) => {
+    renderers.value.delete(name)
+  }
+
   const enablePostProcessing = () => {
     if (postProcessingEnabled || !renderer.value) return
 
@@ -106,6 +134,29 @@ export function useCanvas(options: CanvasOptions = {}, animateFn: AnimateFn) {
   const cameraPos = options.camera?.position || [0, 0, 5]
   camera.value.position.set(...cameraPos)
 
+  const renderAll = (delta: number) => {
+    if (!renderer.value || !camera.value) return
+
+    // 1. 渲染 WebGL 主场景
+    if (options.autoClear !== false) {
+      renderer.value.clear()
+    }
+
+    if (postProcessingEnabled && composer.value) {
+      composer.value.render(delta)
+    } else {
+      renderer.value.render(scene.value, camera.value)
+    }
+
+    // 2. 渲染其他注册的场景（CSS3D, CSS2D 等）
+    renderers.value.forEach((customRenderer, name) => {
+      const customScene = scenes.value.get(name)
+      if (customScene) {
+        customRenderer.render(customScene, camera.value)
+      }
+    })
+  }
+
   const startRenderLoop = () => {
     const render = () => {
       animationFrameId = requestAnimationFrame(render)
@@ -120,14 +171,8 @@ export function useCanvas(options: CanvasOptions = {}, animateFn: AnimateFn) {
         ;(controls.value as any).update(delta)
       }
 
-      if (postProcessingEnabled && composer.value) {
-        composer.value.render(delta)
-      } else if (renderer.value && scene.value && camera.value) {
-        if (options.autoClear !== false) {
-          renderer.value.clear()
-        }
-        renderer.value.render(scene.value, camera.value)
-      }
+      // 统一渲染调度
+      renderAll(delta)
     }
 
     render()
@@ -243,6 +288,19 @@ export function useCanvas(options: CanvasOptions = {}, animateFn: AnimateFn) {
     canvas: canvasRef,
     size,
     composer,
+
+    // 场景注册表
+    scenes,
+    registerScene,
+    getScene,
+    unregisterScene,
+
+    // 渲染器注册表
+    renderers,
+    registerRenderer,
+    getRenderer,
+    unregisterRenderer,
+
     registerAnimationMixer,
     unregisterAnimationMixer,
     registerRenderPass,

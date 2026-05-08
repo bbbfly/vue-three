@@ -464,16 +464,87 @@
 
 ---
 
+---
+
+## 第十一阶段：多场景渲染架构开发（v1.7.0）
+
+### 11.1 核心类型与上下文扩展
+
+| 任务ID  | 任务名称                                         | 预计耗时 | 优先级 | 状态      |
+| ------- | ------------------------------------------------ | -------- | ------ | --------- |
+| MTL-001 | ThreeContext 扩展 scenes/renderers 注册表接口    | 10min    | 高     | completed |
+| MTL-002 | CSS3DGroupContext / CSS2DGroupContext 类型定义   | 5min     | 高     | completed |
+| MTL-003 | CSS3DGroupContextKey / CSS2DGroupContextKey 定义 | 5min     | 高     | completed |
+
+### 11.2 useCanvas 改造
+
+| 任务ID  | 任务名称                                 | 预计耗时 | 优先级 | 状态      |
+| ------- | ---------------------------------------- | -------- | ------ | --------- |
+| MTL-004 | 实现场景注册表（registerScene/getScene） | 10min    | 高     | completed |
+| MTL-005 | 实现渲染器注册表（registerRenderer）     | 10min    | 高     | completed |
+| MTL-006 | 实现统一渲染循环 renderAll 方法          | 15min    | 高     | completed |
+| MTL-007 | 移除 CSS 渲染器独立渲染循环调用          | 5min     | 高     | completed |
+
+### 11.3 useCSS3DRenderer 改造
+
+| 任务ID  | 任务名称                        | 预计耗时 | 优先级 | 状态      |
+| ------- | ------------------------------- | -------- | ------ | --------- |
+| MTL-008 | 创建独立 CSS3D Scene 实例       | 5min     | 高     | completed |
+| MTL-009 | 对象添加到 CSS3D 独立场景       | 5min     | 高     | completed |
+| MTL-010 | 注册场景和渲染器到 ThreeContext | 5min     | 高     | completed |
+| MTL-011 | 组件卸载时取消注册              | 5min     | 高     | completed |
+| MTL-012 | CSS3DContext 暴露 scene 属性    | 5min     | 高     | completed |
+
+### 11.4 useCSS2DRenderer 改造
+
+| 任务ID  | 任务名称                        | 预计耗时 | 优先级 | 状态      |
+| ------- | ------------------------------- | -------- | ------ | --------- |
+| MTL-013 | 创建独立 CSS2D Scene 实例       | 5min     | 高     | completed |
+| MTL-014 | 标签添加到 CSS2D 独立场景       | 5min     | 高     | completed |
+| MTL-015 | 注册场景和渲染器到 ThreeContext | 5min     | 高     | completed |
+| MTL-016 | 组件卸载时取消注册              | 5min     | 高     | completed |
+| MTL-017 | CSS2DContext 暴露 scene 属性    | 5min     | 高     | completed |
+
+### 11.5 useGroup 多场景支持
+
+| 任务ID  | 任务名称                         | 预计耗时 | 优先级 | 状态      |
+| ------- | -------------------------------- | -------- | ------ | --------- |
+| MTL-018 | useGroup 注入 CSS3D/CSS2D 上下文 | 10min    | 高     | completed |
+| MTL-019 | 实现多场景父容器优先级逻辑       | 10min    | 高     | completed |
+| MTL-020 | 根据上下文提供对应 GroupContext  | 10min    | 高     | completed |
+
+### 11.6 测试与验证
+
+| 任务ID  | 任务名称                            | 预计耗时 | 优先级 | 状态      |
+| ------- | ----------------------------------- | -------- | ------ | --------- |
+| MTL-021 | 验证 WebGL 主场景渲染正常           | 5min     | 高     | completed |
+| MTL-022 | 验证 CSS3D 独立场景渲染正常         | 5min     | 高     | completed |
+| MTL-023 | 验证 CSS2D 独立场景渲染正常         | 5min     | 高     | completed |
+| MTL-024 | 验证 TGroup 在 CSS3D 场景中正常工作 | 10min    | 高     | completed |
+| MTL-025 | 验证 TGroup 在 CSS2D 场景中正常工作 | 10min    | 高     | completed |
+| MTL-026 | 验证相机共用（视角同步）            | 5min     | 高     | completed |
+
+### 11.7 Playground 演示页面
+
+| 任务ID   | 任务名称                         | 预计耗时 | 优先级 | 状态      |
+| -------- | -------------------------------- | -------- | ------ | --------- |
+| DEMO-025 | 多场景渲染架构演示页面           | 15min    | 高     | completed |
+| DEMO-026 | TGroup 在 CSS3D/CSS2D 中使用演示 | 10min    | 中     | completed |
+| DEMO-027 | 统一渲染循环性能对比演示         | 10min    | 中     | completed |
+
+---
+
 ## 任务统计
 
-- **总任务数**：207 个
+- **总任务数**：233 个
 - **MVP 核心任务**：43 个（完成后可发布 v1.0.0）
 - **交互事件系统任务**：17 个（v1.2.0）
 - **曲线与高级几何体任务**：30 个（v1.3.0）
 - **CSS2D 标签渲染系统任务**：28 个（v1.4.0）
 - **Sprite 精灵模型系统任务**：35 个（v1.5.0）
 - **TGroup 层级分组系统任务**：15 个（v1.6.0）
-- **高优先级任务**：125 个
+- **多场景渲染架构任务**：26 个（v1.7.0）
+- **高优先级任务**：140 个
 - **平均每个任务**：~10 分钟
 - **MVP 预计总开发时间**：~6.5 小时
 - **交互事件系统预计开发时间**：~2.5 小时
@@ -481,3 +552,4 @@
 - **TGroup 层级分组系统预计开发时间**：~2 小时
 - **CSS2D 标签系统预计开发时间**：~4 小时
 - **Sprite 精灵模型预计开发时间**：~5 小时
+- **多场景渲染架构预计开发时间**：~4 小时

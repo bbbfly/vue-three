@@ -91,6 +91,11 @@ const routes: RouteRecordRaw[] = [
     path: '/demo/group',
     name: 'GroupDemo',
     component: () => import('../views/GroupDemoView.vue')
+  },
+  {
+    path: '/demo/multi-scene',
+    name: 'MultiSceneDemo',
+    component: () => import('../views/MultiSceneDemoView.vue')
   }
 ]
 

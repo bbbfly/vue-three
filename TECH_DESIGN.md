@@ -539,6 +539,316 @@ function applyOffset(label: CSS2DObject, offset: [number, number] = [0, 0]) {
 
 ---
 
+---
+
+## 十、多场景渲染架构设计（v1.7.0）
+
+### 10.1 核心设计目标
+
+基于现有架构分析，实现以下核心目标：
+
+| 目标             | 说明                                            |
+| ---------------- | ----------------------------------------------- |
+| **相机共用**     | 所有场景共享同一个相机视角，保持视觉一致性      |
+| **场景独立**     | WebGL、CSS3D、CSS2D 各有独立的 Scene 实例       |
+| **统一渲染循环** | 所有渲染器在同一个 requestAnimationFrame 中执行 |
+| **向后兼容**     | 保持原有 API 接口不变，现有代码无需大幅修改     |
+
+### 10.2 架构设计
+
+#### 10.2.1 整体架构图
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        TCanvas                                  │
+│  ┌───────────────────────────────────────────────────────────┐   │
+│  │                    ThreeContext                            │   │
+│  │  • renderer: WebGLRenderer                                │   │
+│  │  • camera: Camera (共用)                                  │   │
+│  │  • scenes: Map<string, Scene>  ← 场景注册表              │   │
+│  │  • renderers: Map<string, Renderer> ← 渲染器注册表       │   │
+│  │  • size, controls, animationMixers...                    │   │
+│  └───────────────────────────────────────────────────────────┘   │
+│                              │                                  │
+│          ┌───────────────────┼───────────────────┐              │
+│          ▼                   ▼                   ▼              │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐         │
+│  │ WebGL Scene │    │ CSS3D Scene │    │ CSS2D Scene │         │
+│  │   (主场景)   │    │  (独立)     │    │  (独立)     │         │
+│  └──────┬──────┘    └──────┬──────┘    └──────┬──────┘         │
+│         │                  │                  │                  │
+│         ▼                  ▼                  ▼                  │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐         │
+│  │ TMesh/TLight│    │TCSS3DObject │    │ TCSS2DLabel │         │
+│  │   等组件     │    │   等组件     │    │   等组件     │         │
+│  └─────────────┘    └─────────────┘    └─────────────┘         │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### 10.2.2 ThreeContext 扩展接口
+
+```typescript
+// core/context.ts
+export interface ThreeContext {
+  renderer: ShallowRef<WebGLRenderer | null>
+  camera: ShallowRef<Camera>
+  controls: ShallowRef<OrbitControls | null>
+  canvas: Ref<HTMLCanvasElement | null>
+  size: Ref<Size>
+  composer: ShallowRef<EffectComposer | null>
+
+  // 新增：场景注册表
+  scenes: ShallowRef<Map<string, Scene>>
+  registerScene: (name: string, scene: Scene) => void
+  getScene: (name: string) => Scene | undefined
+  unregisterScene: (name: string) => void
+
+  // 新增：渲染器注册表
+  renderers: ShallowRef<Map<string, Renderer>>
+  registerRenderer: (name: string, renderer: Renderer) => void
+  getRenderer: (name: string) => Renderer | undefined
+  unregisterRenderer: (name: string) => void
+
+  registerAnimationMixer: (mixer: AnimationMixer) => void
+  unregisterAnimationMixer: (mixer: AnimationMixer) => void
+  registerRenderPass: (pass: Pass) => void
+  unregisterRenderPass: (pass: Pass) => void
+  enablePostProcessing: () => void
+}
+```
+
+#### 10.2.3 新增上下文类型
+
+```typescript
+// core/context.ts
+export interface CSS3DGroupContext {
+  group: ShallowRef<Group>
+}
+
+export interface CSS2DGroupContext {
+  group: ShallowRef<Group>
+}
+
+export const CSS3DGroupContextKey = Symbol('CSS3DGroupContext') as InjectionKey<CSS3DGroupContext>
+export const CSS2DGroupContextKey = Symbol('CSS2DGroupContext') as InjectionKey<CSS2DGroupContext>
+```
+
+### 10.3 核心实现要点
+
+#### 10.3.1 useCanvas 统一渲染循环
+
+```typescript
+// composables/useCanvas.ts
+export function useCanvas(options: CanvasOptions = {}, animateFn: AnimateFn) {
+  // ... 现有代码
+
+  // 场景注册表
+  const scenes = shallowRef<Map<string, Scene>>(new Map([['main', mainScene.value]]))
+
+  // 渲染器注册表
+  const renderers = shallowRef<Map<string, Renderer>>(new Map())
+
+  const registerScene = (name: string, scene: Scene) => {
+    scenes.value.set(name, scene)
+  }
+
+  const registerRenderer = (name: string, renderer: Renderer) => {
+    renderers.value.set(name, renderer)
+  }
+
+  const renderAll = () => {
+    if (!renderer.value || !camera.value) return
+
+    // 1. 渲染 WebGL 主场景
+    if (options.autoClear !== false) {
+      renderer.value.clear()
+    }
+
+    if (postProcessingEnabled && composer.value) {
+      composer.value.render(delta)
+    } else {
+      renderer.value.render(mainScene.value, camera.value)
+    }
+
+    // 2. 渲染其他注册的场景
+    renderers.value.forEach((renderer, name) => {
+      const scene = scenes.value.get(name)
+      if (scene) {
+        renderer.render(scene, camera.value)
+      }
+    })
+  }
+
+  const startRenderLoop = () => {
+    const render = () => {
+      animationFrameId = requestAnimationFrame(render)
+      const delta = clock.getDelta()
+
+      animateFn({ scene: mainScene.value, camera: camera.value, delta })
+
+      animationMixers.forEach(mixer => mixer.update(delta))
+
+      if (controls.value) {
+        ;(controls.value as any).update(delta)
+      }
+
+      // 统一渲染调度
+      renderAll()
+    }
+    render()
+  }
+
+  // ... 其余代码
+}
+```
+
+#### 10.3.2 useCSS3DRenderer 独立场景
+
+```typescript
+// composables/useCSS3DRenderer.ts
+export function useCSS3DRenderer() {
+  const ctx = inject(ThreeContextKey)
+
+  const renderer = shallowRef<CSS3DRenderer | null>(null)
+  const container = ref<HTMLElement | null>(null)
+
+  // 新增：创建独立的 CSS3D 场景
+  const scene = shallowRef<Scene>(new Scene())
+
+  const addObject = (object: CSS3DObject, config?: CSS3DObjectConfig) => {
+    if (config) {
+      objects.value.set(object, config)
+      applyObjectConfig(object, config)
+    }
+    // 添加到 CSS3D 独立场景，而不是主场景
+    scene.value.add(object)
+  }
+
+  onMounted(() => {
+    renderer.value = new CSS3DRenderer()
+    container.value = renderer.value.domElement
+
+    // ... 样式设置
+
+    // 注册场景和渲染器到 context
+    ctx.registerScene('css3d', scene.value)
+    ctx.registerRenderer('css3d', renderer.value)
+  })
+
+  onBeforeUnmount(() => {
+    // 取消注册
+    ctx.unregisterScene('css3d')
+    ctx.unregisterRenderer('css3d')
+
+    // ... 清理代码
+  })
+
+  provide(CSS3DContextKey, {
+    renderer,
+    container,
+    scene,
+    addObject,
+    removeObject
+  })
+
+  return { renderer, container, scene, objects, addObject, removeObject }
+}
+```
+
+#### 10.3.3 useGroup 多场景支持
+
+```typescript
+// composables/useGroup.ts
+export function useGroup(config?: GroupConfig) {
+  const ctx = inject(ThreeContextKey)
+
+  // 尝试获取各种父容器上下文
+  const parentGroupCtx = inject(GroupContextKey, null)
+  const parentCss3DGroupCtx = inject(CSS3DGroupContextKey, null)
+  const parentCss2DGroupCtx = inject(CSS2DGroupContextKey, null)
+  const css3dCtx = inject(CSS3DContextKey, null)
+  const css2dCtx = inject(CSS2DContextKey, null)
+
+  const group = shallowRef<Group>(new Group())
+
+  // 根据上下文确定父容器
+  const parent = computed(() => {
+    // 优先级：CSS3D Group > CSS2D Group > WebGL Group > CSS3D Scene > CSS2D Scene > 主场景
+    if (parentCss3DGroupCtx?.group.value) return parentCss3DGroupCtx.group.value
+    if (parentCss2DGroupCtx?.group.value) return parentCss2DGroupCtx.group.value
+    if (parentGroupCtx?.group.value) return parentGroupCtx.group.value
+    if (css3dCtx?.scene.value) return css3dCtx.scene.value
+    if (css2dCtx?.scene.value) return css2dCtx.scene.value
+    return ctx.scene.value
+  })
+
+  // ... 其余代码
+
+  // 根据上下文提供对应的 GroupContext
+  if (css3dCtx) {
+    provide(CSS3DGroupContextKey, { group })
+  } else if (css2dCtx) {
+    provide(CSS2DGroupContextKey, { group })
+  } else {
+    provide(GroupContextKey, { group })
+  }
+}
+```
+
+### 10.4 使用示例
+
+```vue
+<TCanvas>
+  <!-- WebGL 主场景 -->
+  <TScene>
+    <TPerspectiveCamera />
+    <TDirectionalLight />
+    <TMesh>
+      <TBoxGeometry />
+      <TMeshStandardMaterial />
+    </TMesh>
+    <TGroup :position="[2, 0, 0]">
+      <TMesh>
+        <TSphereGeometry />
+        <TMeshStandardMaterial />
+      </TMesh>
+    </TGroup>
+  </TScene>
+  
+  <!-- CSS3D 独立场景，共用相机 -->
+  <TCSS3DRenderer>
+    <TGroup :position="[0, 1, 0]">
+      <TCSS3DObject>
+        <div class="css3d-content">3D HTML Content</div>
+      </TCSS3DObject>
+    </TGroup>
+    <TCSS3DObject :position="[0, -1, 0]">
+      <div class="css3d-content">Another 3D HTML</div>
+    </TCSS3DObject>
+  </TCSS3DRenderer>
+  
+  <!-- CSS2D 独立场景，共用相机 -->
+  <TCSS2DRenderer>
+    <TCSS2DLabel :position="[1, 2, 3]">
+      <div class="css2d-label">2D Label</div>
+    </TCSS2DLabel>
+  </TCSS2DRenderer>
+</TCanvas>
+```
+
+### 10.5 方案优势
+
+| 特性         | 说明                                                      |
+| ------------ | --------------------------------------------------------- |
+| **相机共用** | 所有场景共享同一个相机，视角统一                          |
+| **场景独立** | WebGL、CSS3D、CSS2D 各有独立 Scene，对象管理清晰          |
+| **统一渲染** | 所有渲染器在同一个 requestAnimationFrame 中执行，同步性好 |
+| **向后兼容** | 保持原有的 API 接口，现有代码无需大幅修改                 |
+| **可扩展性** | 易于添加新的渲染器类型                                    |
+| **性能优化** | 避免多个渲染循环的性能开销                                |
+
+---
+
 ## 九、Sprite 精灵模型系统设计
 
 ### 9.1 核心技术原理

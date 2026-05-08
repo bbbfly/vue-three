@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { inject, shallowRef, onMounted, onBeforeUnmount, watch } from 'vue'
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'
-import { CSS2DContextKey, type CSS2DLabelConfig } from '../core/context'
+import { CSS2DContextKey, CSS2DGroupContextKey, type CSS2DLabelConfig } from '../core/context'
 
 /**
  * CSS2D 通用对象组件
@@ -42,6 +42,7 @@ const props = withDefaults(
 )
 
 const css2dCtx = inject(CSS2DContextKey)
+const css2dGroupCtx = inject(CSS2DGroupContextKey)
 
 if (!css2dCtx) {
   throw new Error('TCSS2DObject must be used within a TCSS2DRenderer component')
@@ -70,7 +71,12 @@ const createObject = () => {
     style: props.style
   }
 
-  css2dCtx.addLabel(object, config)
+  if (css2dGroupCtx) {
+    applyConfig()
+    css2dGroupCtx.group.value.add(object)
+  } else {
+    css2dCtx.addLabel(object, config)
+  }
 }
 
 const applyConfig = () => {
@@ -143,7 +149,11 @@ watch(
 
 onBeforeUnmount(() => {
   if (css2dObject.value) {
-    css2dCtx.removeLabel(css2dObject.value)
+    if (css2dGroupCtx) {
+      css2dGroupCtx.group.value.remove(css2dObject.value)
+    } else {
+      css2dCtx.removeLabel(css2dObject.value)
+    }
   }
 })
 

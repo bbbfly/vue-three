@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { inject, shallowRef, onMounted, onBeforeUnmount, watch } from 'vue'
 import { CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js'
-import { CSS3DContextKey, type CSS3DObjectConfig } from '../core/context'
+import { CSS3DContextKey, CSS3DGroupContextKey, type CSS3DObjectConfig } from '../core/context'
 
 /**
  * CSS3D 对象组件
@@ -28,6 +28,7 @@ const props = withDefaults(
 )
 
 const css3dCtx = inject(CSS3DContextKey)
+const css3dGroupCtx = inject(CSS3DGroupContextKey)
 
 if (!css3dCtx) {
   throw new Error('TCSS3DObject must be used within a TCSS3DRenderer component')
@@ -52,21 +53,19 @@ const createObject = () => {
     style: props.style
   }
 
-  css3dCtx.addObject(object, config)
+  if (css3dGroupCtx) {
+    applyConfig()
+    css3dGroupCtx.group.value.add(object)
+  } else {
+    css3dCtx.addObject(object, config)
+  }
 }
 
 const applyConfig = () => {
   if (!css3dObject.value) return
-
   css3dObject.value.position.set(...props.position)
   css3dObject.value.rotation.set(...props.rotation)
   css3dObject.value.scale.set(...props.scale)
-
-  const el = css3dObject.value.element
-
-  if (props.className) {
-    el.className = props.className
-  }
 }
 
 onMounted(() => {
@@ -104,7 +103,11 @@ watch(
 
 onBeforeUnmount(() => {
   if (css3dObject.value) {
-    css3dCtx.removeObject(css3dObject.value)
+    if (css3dGroupCtx) {
+      css3dGroupCtx.group.value.remove(css3dObject.value)
+    } else {
+      css3dCtx.removeObject(css3dObject.value)
+    }
   }
 })
 
@@ -118,7 +121,7 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="objectRef" :style="props.style">
+  <div ref="objectRef" :style="props.style" :class="props.className">
     <slot></slot>
   </div>
 </template>

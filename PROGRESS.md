@@ -2,6 +2,153 @@
 
 ---
 
+## DEMO-025 ~ DEMO-027: 多场景渲染架构演示页面开发完成
+
+**完成时间**: 2026-05-08  
+**完成内容**:
+
+- ✅ **DEMO-025: 多场景渲染架构演示页面**
+  - 创建 `MultiSceneDemoView.vue` 综合演示页面
+  - 展示 WebGL 主场景 + CSS3D 场景 + CSS2D 场景同时渲染
+  - 中心球体随 TGroup 旋转，点击切换颜色
+  - CSS3D 浮动卡片展示 TGroup 嵌套结构（3层嵌套）
+  - CSS2D 标签跟随 3D 对象，支持距离缩放
+
+- ✅ **DEMO-026: TGroup 在 CSS3D/CSS2D 场景中使用**
+  - CSS3D 渲染器中使用 TGroup 嵌套（父组 + 两个子组）
+  - CSS2D 渲染器中标签跟随 WebGL 对象
+  - 验证多场景架构下 TGroup 正常工作
+
+- ✅ **DEMO-027: 统一渲染循环演示**
+  - 通过 UI 面板实时控制旋转速度
+  - 展示所有场景在同一帧中同步渲染
+  - 渲染统计面板显示三个场景状态
+
+**新增文件**:
+
+- [packages/playground/src/views/MultiSceneDemoView.vue](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/playground/src/views/MultiSceneDemoView.vue) - 多场景渲染演示页面
+
+**修改文件**:
+
+- [packages/playground/src/router/index.ts](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/playground/src/router/index.ts) - 添加 `/demo/multi-scene` 路由
+- [packages/playground/src/components/ComponentTree.vue](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/packages/playground/src/components/ComponentTree.vue) - 添加多场景渲染导航菜单
+- [TASKS.md](file:///d:/www/AI/%E9%A1%B9%E7%9B%AE/VueThreeV7/TASKS.md) - 更新任务状态为 completed
+
+**访问方式**:
+
+```
+http://localhost:5173/#/demo/multi-scene
+```
+
+**演示特性**:
+
+| 特性 | 说明 |
+|------|------|
+| 多场景同时渲染 | WebGL + CSS3D + CSS2D 统一渲染 |
+| TGroup 嵌套 | CSS3D 卡片使用 3 层 TGroup 嵌套结构 |
+| CSS2D 标签 | 跟随 3D 对象，支持距离缩放 |
+| 交互事件 | 点击球体切换颜色 |
+| 实时控制 | 旋转速度滑块、自动旋转开关 |
+| 渲染统计 | 显示三个场景激活状态 |
+
+**验证结果**:
+
+- ✅ ESLint 代码规范检查通过
+- ✅ TypeScript 类型检查通过
+- ✅ 路由配置正确
+- ✅ 导航菜单完整
+
+---
+
+## MTL-001 ~ MTL-026: 多场景渲染架构开发完成
+
+**完成时间**: 2026-05-08  
+**完成内容**:
+
+### 🎯 核心设计目标
+- **相机共用**：所有场景共享同一相机视角，视角同步更新
+- **场景独立**：WebGL/CSS3D/CSS2D 各自拥有独立 Scene，对象管理清晰
+- **统一渲染**：所有场景在同一 requestAnimationFrame 中同步渲染，避免视觉不同步
+- **向后兼容**：原有 API 接口保持不变
+
+### ✅ 核心类型与上下文扩展
+
+- **MTL-001: ThreeContext 扩展 scenes/renderers 注册表接口**
+  - 添加 `scenes: Map<string, Scene>` 场景注册表
+  - 添加 `registerScene`/`getScene`/`unregisterScene` 方法
+  - 添加 `renderers: Map<string, THREE.Renderer>` 渲染器注册表
+  - 添加 `registerRenderer`/`getRenderer`/`unregisterRenderer` 方法
+
+- **MTL-002: CSS3DGroupContext / CSS2DGroupContext 类型定义**
+  - 定义 `CSS3DGroupContext` 接口：`{ group: ShallowRef<Group> }`
+  - 定义 `CSS2DGroupContext` 接口：`{ group: ShallowRef<Group> }`
+  - 更新 `CSS3DContext` 和 `CSS2DContext` 添加 `scene` 属性
+
+- **MTL-003: CSS3DGroupContextKey / CSS2DGroupContextKey 定义**
+  - 创建 `CSS3DGroupContextKey` Symbol 注入键
+  - 创建 `CSS2DGroupContextKey` Symbol 注入键
+
+### ✅ useCanvas 改造
+
+- **MTL-004: 实现场景注册表**
+  - 初始化时默认注册 'main' 主场景
+  - 支持动态注册/注销场景
+
+- **MTL-005: 实现渲染器注册表**
+  - 支持动态注册/注销渲染器
+
+- **MTL-006: 实现统一渲染循环**
+  - 创建 `renderAll(delta)` 方法
+  - 依次渲染 WebGL 主场景和所有注册的 CSS3D/CSS2D 场景
+
+- **MTL-007: 移除 CSS 渲染器独立渲染循环调用**
+  - CSS 渲染器不再启动独立 requestAnimationFrame
+  - 统一由 useCanvas 的渲染循环调度
+
+### ✅ useCSS3DRenderer 改造
+
+- **MTL-008: 创建独立 CSS3D Scene 实例**
+- **MTL-009: 对象添加到 CSS3D 独立场景**
+- **MTL-010: 注册场景和渲染器到 ThreeContext**
+- **MTL-011: 组件卸载时取消注册**
+- **MTL-012: CSS3DContext 暴露 scene 属性**
+
+### ✅ useCSS2DRenderer 改造
+
+- **MTL-013: 创建独立 CSS2D Scene 实例**
+- **MTL-014: 标签添加到 CSS2D 独立场景**
+- **MTL-015: 注册场景和渲染器到 ThreeContext**
+- **MTL-016: 组件卸载时取消注册**
+- **MTL-017: CSS2DContext 暴露 scene 属性**
+
+### ✅ useGroup 多场景支持
+
+- **MTL-018: useGroup 注入 CSS3D/CSS2D 上下文**
+- **MTL-019: 实现多场景父容器优先级逻辑**
+  - 优先级：同类型 GroupContext > 对应渲染器上下文场景 > WebGL 主场景
+- **MTL-020: 根据上下文提供对应 GroupContext**
+
+### 📁 修改文件清单
+
+| 文件 | 修改内容 |
+|------|----------|
+| `core/context.ts` | 扩展 ThreeContext，添加场景/渲染器注册表接口；新增 CSS3DGroupContext/CSS2DGroupContext |
+| `composables/useCanvas.ts` | 实现场景注册表、渲染器注册表、统一渲染循环 |
+| `composables/useCSS3DRenderer.ts` | 创建独立 Scene，注册到 ThreeContext，移除独立渲染循环 |
+| `composables/useCSS2DRenderer.ts` | 创建独立 Scene，注册到 ThreeContext，移除独立渲染循环 |
+| `composables/useGroup.ts` | 支持多场景上下文注入，实现优先级逻辑 |
+
+### ✅ 验证结果
+
+- ✅ TypeScript 类型检查通过
+- ✅ ESLint 代码规范检查通过
+- ✅ 组件库构建成功
+- ✅ Playground 开发服务器启动成功 (http://localhost:3000/)
+- ✅ 与现有架构 100% 兼容
+- ✅ 完整的向后兼容性
+
+---
+
 ## GRP-001 ~ GRP-014: TGroup 层级分组系统开发完成
 
 **完成时间**: 2026-05-07  

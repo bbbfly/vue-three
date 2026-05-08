@@ -70,6 +70,19 @@ export interface ThreeContext {
   canvas: Ref<HTMLCanvasElement | null>
   size: Ref<Size>
   composer: ShallowRef<EffectComposer | null>
+
+  // 场景注册表 - 支持多场景渲染
+  scenes: ShallowRef<Map<string, Scene>>
+  registerScene: (name: string, scene: Scene) => void
+  getScene: (name: string) => Scene | undefined
+  unregisterScene: (name: string) => void
+
+  // 渲染器注册表 - 支持多渲染器
+  renderers: ShallowRef<Map<string, THREE.Renderer>>
+  registerRenderer: (name: string, renderer: THREE.Renderer) => void
+  getRenderer: (name: string) => THREE.Renderer | undefined
+  unregisterRenderer: (name: string) => void
+
   registerAnimationMixer: (mixer: AnimationMixer) => void
   unregisterAnimationMixer: (mixer: AnimationMixer) => void
   registerRenderPass: (pass: Pass) => void
@@ -166,8 +179,35 @@ export interface CSS3DObjectConfig {
 export interface CSS3DContext {
   renderer: ShallowRef<CSS3DRenderer | null>
   container: Ref<HTMLElement | null>
+  scene: ShallowRef<Scene>
   addObject: (object: CSS3DObject, config?: CSS3DObjectConfig) => void
   removeObject: (object: CSS3DObject) => void
+}
+
+/**
+ * CSS3D 组上下文接口
+ */
+export interface CSS3DGroupContext {
+  group: ShallowRef<Group>
+}
+
+/**
+ * CSS2D 上下文接口（扩展）
+ */
+export interface CSS2DContext {
+  renderer: ShallowRef<CSS2DRenderer | null>
+  labelContainer: Ref<HTMLElement | null>
+  scene: ShallowRef<Scene>
+  addLabel: (label: CSS2DObject, config?: CSS2DLabelConfig) => void
+  updateLabelConfig: (label: CSS2DObject, config: Partial<CSS2DLabelConfig>) => void
+  removeLabel: (label: CSS2DObject) => void
+}
+
+/**
+ * CSS2D 组上下文接口
+ */
+export interface CSS2DGroupContext {
+  group: ShallowRef<Group>
 }
 
 export const ThreeContextKey = Symbol('ThreeContext') as InjectionKey<ThreeContext>
@@ -183,6 +223,8 @@ export const InteractionContextKey = Symbol(
 ) as InjectionKey<InteractionContext>
 export const CSS2DContextKey = Symbol('CSS2DContext') as InjectionKey<CSS2DContext>
 export const CSS3DContextKey = Symbol('CSS3DContext') as InjectionKey<CSS3DContext>
+export const CSS3DGroupContextKey = Symbol('CSS3DGroupContext') as InjectionKey<CSS3DGroupContext>
+export const CSS2DGroupContextKey = Symbol('CSS2DGroupContext') as InjectionKey<CSS2DGroupContext>
 
 /**
  * Sprite 精灵上下文接口

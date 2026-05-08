@@ -4,18 +4,20 @@
       <TPerspectiveCamera :fov="70" :near="1" :far="5000" :position="[0, 0, 1000]" ref="cameraRef" />
       <TTrackballControls ref="controlsRef" :rotate-speed="0.5" />
       <TCSS3DRenderer ref="cssRendererRef" class="css3d-renderer">
-        <template v-for="atom in atoms" :key="atom.id">
-          <TCSS3DSprite :position="atom.position" :scale="[1, 1, 1]" :style="atom.style"
-            :ref="el => setSpriteRef(atom.id, el)">
-            <img :src="atom.src" />
-          </TCSS3DSprite>
-        </template>
-        <template v-for="bond in bonds" :key="bond.id">
-          <TCSS3DObject :position="bond.position" :rotation="bond.rotation" :scale="[1, 1, 1]" :style="bond.style"
-            :ref="el => setBondRef(bond.id, el)">
-            <div class="bond"></div>
-          </TCSS3DObject>
-        </template>
+        <TGroup ref="rootRef" :rotation="rootRotation">
+          <template v-for="atom in atoms" :key="atom.id">
+            <TCSS3DSprite :position="atom.position" :scale="[1, 1, 1]" :style="atom.style"
+              :ref="el => setSpriteRef(atom.id, el)">
+              <img :src="atom.src" draggable="false" style="user-select: none; pointer-events: auto;" />
+            </TCSS3DSprite>
+          </template>
+          <template v-for="bond in bonds" :key="bond.id">
+            <TCSS3DObject :position="bond.position" :rotation="bond.rotation" :scale="[1, 1, 1]" :style="bond.style"
+              :ref="el => setBondRef(bond.id, el)">
+              <div class="bond"></div>
+            </TCSS3DObject>
+          </template>
+        </TGroup>
       </TCSS3DRenderer>
     </TScene>
   </TCanvas>
@@ -45,7 +47,8 @@ import {
   TTrackballControls,
   TCSS3DRenderer,
   TCSS3DObject,
-  TCSS3DSprite
+  TCSS3DSprite,
+  TGroup
 } from '@vue-three/vue-three'
 
 const cameraRef = ref<any>(null)
@@ -53,7 +56,7 @@ const controlsRef = ref<any>(null)
 const cssRendererRef = ref<any>(null)
 const rootRef = ref<any>(null)
 
-const rootRotation = ref(new THREE.Euler(0, 0, 0))
+const rootRotation = ref<[number, number, number]>([0, 0, 0])
 
 const VIZ_TYPE = {
   'Atoms': 0,
@@ -301,8 +304,8 @@ const animate = () => {
   animationId = requestAnimationFrame(animate)
 
   const time = Date.now() * 0.0004
-  rootRotation.value.x = time
-  rootRotation.value.y = time * 0.7
+  rootRotation.value[0] += 0.01
+  rootRotation.value[1] += 0.005
 
   if (controlsRef.value?.controls) {
     controlsRef.value.controls.update()
@@ -333,9 +336,9 @@ watch(currentMolecule, () => {
 </script>
 
 <style scoped>
-.css3d-renderer>div {
+/* .css3d-renderer>div {
   pointer-events: auto;
-}
+} */
 
 .bond {
   width: 5px;

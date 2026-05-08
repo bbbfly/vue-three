@@ -1,13 +1,10 @@
 import { inject, ref, shallowRef, onMounted, onBeforeUnmount, watch, provide } from 'vue'
+import { Scene } from 'three'
 import { CSS3DRenderer } from 'three/addons/renderers/CSS3DRenderer.js'
 import type { CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js'
 import { ThreeContextKey, CSS3DContextKey } from '../core/context'
 import type { CSS3DObjectConfig } from '../core/context'
 
-/**
- * CSS3D 渲染器 Composable
- * 管理 CSS3DRenderer 实例生命周期、对象注册与渲染更新
- */
 export function useCSS3DRenderer() {
   const ctx = inject(ThreeContextKey)
 
@@ -18,6 +15,9 @@ export function useCSS3DRenderer() {
   const renderer = shallowRef<CSS3DRenderer | null>(null)
   const container = ref<HTMLElement | null>(null)
 
+  // 创建独立的 CSS3D 场景
+  const scene = shallowRef<Scene>(new Scene())
+
   const objects = shallowRef<Map<CSS3DObject, CSS3DObjectConfig>>(new Map())
 
   const addObject = (object: CSS3DObject, config?: CSS3DObjectConfig) => {
@@ -25,12 +25,13 @@ export function useCSS3DRenderer() {
       objects.value.set(object, config)
       applyObjectConfig(object, config)
     }
-    ctx.scene.value.add(object)
+    // 添加到 CSS3D 独立场景
+    scene.value.add(object)
   }
 
   const removeObject = (object: CSS3DObject) => {
     objects.value.delete(object)
-    ctx.scene.value.remove(object)
+    scene.value.remove(object)
   }
 
   const applyObjectConfig = (object: CSS3DObject, config: CSS3DObjectConfig) => {
@@ -59,55 +60,33 @@ export function useCSS3DRenderer() {
     }
   }
 
-  const render = () => {
-    if (renderer.value && ctx.scene.value && ctx.camera.value) {
-      renderer.value.render(ctx.scene.value, ctx.camera.value)
-    }
-  }
-
   const setSize = (width: number, height: number) => {
     if (renderer.value) {
+      console.log(width, height, '---')
       renderer.value.setSize(width, height)
     }
   }
 
-  let animationFrameId: number | null = null
+  renderer.value = new CSS3DRenderer()
+  container.value = renderer.value.domElement
 
-  const startRenderLoop = () => {
-    const animate = () => {
-      render()
-      animationFrameId = requestAnimationFrame(animate)
-    }
-    animate()
-  }
-
-  const stopRenderLoop = () => {
-    if (animationFrameId !== null) {
-      cancelAnimationFrame(animationFrameId)
-      animationFrameId = null
-    }
-  }
-
+  container.value.style.position = 'absolute'
+  container.value.style.top = '0'
+  container.value.style.left = '0'
+  container.value.style.width = '100%'
+  container.value.style.height = '100%'
+  container.value.style.pointerEvents = 'none'
+  container.value.style.overflow = 'hidden'
+  // 注册场景和渲染器到 ThreeContext
+  ctx.registerScene('css3d', scene.value)
+  ctx.registerRenderer('css3d', renderer.value)
   onMounted(() => {
-    renderer.value = new CSS3DRenderer()
-    container.value = renderer.value.domElement
-
-    container.value.style.position = 'absolute'
-    container.value.style.top = '0'
-    container.value.style.left = '0'
-    container.value.style.width = '100%'
-    container.value.style.height = '100%'
-    container.value.style.pointerEvents = 'none'
-    container.value.style.overflow = 'hidden'
-    container.value.style.zIndex = '2'
-
+    // container.value.style.zIndex = '2'
+    setSize(ctx.size.value.width, ctx.size.value.height)
+    console.log(ctx.canvas.value?.parentNode, 'useCSS3DRenderer')
     if (ctx.canvas.value?.parentNode) {
       ctx.canvas.value.parentNode.appendChild(container.value)
     }
-
-    setSize(ctx.size.value.width, ctx.size.value.height)
-
-    startRenderLoop()
   })
 
   watch(
@@ -119,10 +98,12 @@ export function useCSS3DRenderer() {
   )
 
   onBeforeUnmount(() => {
-    stopRenderLoop()
+    // 取消注册场景和渲染器
+    ctx.unregisterScene('css3d')
+    ctx.unregisterRenderer('css3d')
 
     objects.value.forEach((_, object) => {
-      ctx.scene.value.remove(object)
+      scene.value.remove(object)
     })
     objects.value.clear()
 
@@ -137,6 +118,7 @@ export function useCSS3DRenderer() {
   provide(CSS3DContextKey, {
     renderer,
     container,
+    scene,
     addObject,
     removeObject
   })
@@ -144,12 +126,10 @@ export function useCSS3DRenderer() {
   return {
     renderer,
     container,
+    scene,
     objects,
     addObject,
     removeObject,
-    render,
-    setSize,
-    startRenderLoop,
-    stopRenderLoop
+    setSize
   }
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { inject, shallowRef, onMounted, onBeforeUnmount, watch } from 'vue'
 import { CSS3DSprite } from 'three/addons/renderers/CSS3DRenderer.js'
-import { CSS3DContextKey, type CSS3DObjectConfig } from '../core/context'
+import { CSS3DContextKey, CSS3DGroupContextKey, type CSS3DObjectConfig } from '../core/context'
 
 /**
  * CSS3D Sprite 组件
@@ -28,6 +28,7 @@ const props = withDefaults(
 )
 
 const css3dCtx = inject(CSS3DContextKey)
+const css3dGroupCtx = inject(CSS3DGroupContextKey)
 
 if (!css3dCtx) {
   throw new Error('TCSS3DSprite must be used within a TCSS3DRenderer component')
@@ -52,7 +53,12 @@ const createSprite = () => {
     style: props.style
   }
 
-  css3dCtx.addObject(sprite, config)
+  if (css3dGroupCtx) {
+    applyConfig()
+    css3dGroupCtx.group.value.add(sprite)
+  } else {
+    css3dCtx.addObject(sprite, config)
+  }
 }
 
 const applyConfig = () => {
@@ -104,7 +110,11 @@ watch(
 
 onBeforeUnmount(() => {
   if (css3dSprite.value) {
-    css3dCtx.removeObject(css3dSprite.value)
+    if (css3dGroupCtx) {
+      css3dGroupCtx.group.value.remove(css3dSprite.value)
+    } else {
+      css3dCtx.removeObject(css3dSprite.value)
+    }
   }
 })
 

@@ -131,7 +131,8 @@ const menuCategories: MenuCategory[] = [
     items: [
       { id: 'canvas', name: 'TCanvas / TScene', path: '/demo/canvas', icon: IconGrid },
       { id: 'camera', name: '相机 / 控制器', path: '/demo/camera', icon: IconCamera },
-      { id: 'group', name: 'TGroup 层级分组', path: '/demo/group', icon: IconLayers }
+      { id: 'group', name: 'TGroup 层级分组', path: '/demo/group', icon: IconLayers },
+      { id: 'multi-scene', name: '多场景渲染', path: '/demo/multi-scene', icon: IconLayers }
     ]
   },
   {
