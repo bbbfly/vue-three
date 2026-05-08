@@ -41,6 +41,7 @@ export { useGui, type UseGuiOptions } from './composables/useGui'
 import TCanvas from './components/TCanvas.vue'
 import TScene from './components/TScene.vue'
 import TGroup from './components/TGroup.vue'
+import TCamera from './components/TCamera.vue'
 import TPerspectiveCamera from './components/TPerspectiveCamera.vue'
 import TOrbitControls from './components/TOrbitControls.vue'
 import TAmbientLight from './components/TAmbientLight.vue'
@@ -57,6 +58,7 @@ import TMeshStandardMaterial from './components/TMeshStandardMaterial.vue'
 import TMeshPhysicalMaterial from './components/TMeshPhysicalMaterial.vue'
 import TMeshLambertMaterial from './components/TMeshLambertMaterial.vue'
 import TMeshPhongMaterial from './components/TMeshPhongMaterial.vue'
+import TShaderMaterial from './components/TShaderMaterial.vue'
 import TGLTFLoader from './components/TGLTFLoader.vue'
 import TAnimationMixer from './components/TAnimationMixer.vue'
 import TKeyframeAnimation from './components/TKeyframeAnimation.vue'
@@ -120,6 +122,7 @@ export {
   TCanvas,
   TScene,
   TGroup,
+  TCamera,
   TPerspectiveCamera,
   TOrthographicCamera,
   TOrbitControls,
@@ -142,6 +145,7 @@ export {
   TMeshPhysicalMaterial,
   TMeshLambertMaterial,
   TMeshPhongMaterial,
+  TShaderMaterial,
   TTexture,
   TGLTFLoader,
   TOBJLoader,
@@ -184,6 +188,7 @@ const components = [
   TCanvas,
   TScene,
   TGroup,
+  TCamera,
   TPerspectiveCamera,
   TOrthographicCamera,
   TOrbitControls,
@@ -206,6 +211,7 @@ const components = [
   TMeshPhysicalMaterial,
   TMeshLambertMaterial,
   TMeshPhongMaterial,
+  TShaderMaterial,
   TTexture,
   TGLTFLoader,
   TOBJLoader,

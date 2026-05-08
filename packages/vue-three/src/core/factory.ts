@@ -13,6 +13,7 @@ import {
   MeshPhongMaterial,
   MeshNormalMaterial,
   MeshDepthMaterial,
+  ShaderMaterial,
   Material,
   Mesh,
   Object3D,
@@ -195,6 +196,21 @@ export class ThreeObjectFactory {
       }
       case 'depth':
         return new MeshDepthMaterial()
+      case 'shader': {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { type, side, blending, premultipliedAlpha, ...rest } = config
+        const options: any = { ...rest }
+        if (side !== undefined) {
+          options.side = side
+        }
+        if (blending !== undefined) {
+          options.blending = blending
+        }
+        if (premultipliedAlpha !== undefined) {
+          options.premultipliedAlpha = premultipliedAlpha
+        }
+        return new ShaderMaterial(options)
+      }
       case 'custom':
         return config.instance
       default:

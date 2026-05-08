@@ -1,0 +1,106 @@
+<template>
+  <slot></slot>
+</template>
+
+<script setup lang="ts">
+import type { PropType } from 'vue'
+import { useMaterial } from '../composables/useMaterial'
+
+/**
+ * 着色器材质组件
+ * @description 使用自定义 GLSL 着色器渲染材质，支持顶点着色器和片元着色器
+ * @component TShaderMaterial
+ * @example
+ * <TShaderMaterial
+ *   :uniforms="{ time: { value: 0 } }"
+ *   :vertexShader="vertexShader"
+ *   :fragmentShader="fragmentShader"
+ * />
+ */
+const props = defineProps({
+  /**
+   * 着色器 uniform 变量
+   * @default {}
+   */
+  uniforms: {
+    type: Object as PropType<Record<string, any>>,
+    default: () => ({})
+  },
+  /**
+   * 顶点着色器代码
+   * @default undefined
+   */
+  vertexShader: {
+    type: String,
+    default: undefined
+  },
+  /**
+   * 片元着色器代码
+   * @default undefined
+   */
+  fragmentShader: {
+    type: String,
+    default: undefined
+  },
+  /**
+   * 是否启用透明度
+   * @default false
+   */
+  transparent: {
+    type: Boolean,
+    default: false
+  },
+  /**
+   * 透明度值，范围 0 到 1
+   * @default 1 (不透明)
+   */
+  opacity: {
+    type: Number,
+    default: 1
+  },
+  /**
+   * 是否以线框模式渲染
+   * @default false
+   */
+  wireframe: {
+    type: Boolean,
+    default: false
+  },
+  /**
+   * 混合模式
+   * @default THREE.NormalBlending
+   */
+  blending: {
+    type: Number as PropType<number>,
+    default: undefined
+  },
+  /**
+   * 是否启用 premultiplied alpha
+   * @default false
+   */
+  premultipliedAlpha: {
+    type: Boolean,
+    default: false
+  }
+})
+
+const { material } = useMaterial({
+  type: 'shader',
+  uniforms: props.uniforms,
+  vertexShader: props.vertexShader,
+  fragmentShader: props.fragmentShader,
+  transparent: props.transparent,
+  opacity: props.opacity,
+  wireframe: props.wireframe,
+  blending: props.blending,
+  premultipliedAlpha: props.premultipliedAlpha
+})
+
+/**
+ * @expose
+ * @property material - Three.js ShaderMaterial 实例
+ */
+defineExpose({
+  material
+})
+</script>

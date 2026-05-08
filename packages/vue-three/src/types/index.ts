@@ -103,6 +103,7 @@ export type MaterialType =
   | 'phong'
   | 'normal'
   | 'depth'
+  | 'shader'
   | 'custom'
 
 export interface BaseMaterialConfig {
@@ -165,6 +166,13 @@ export interface DepthMaterialConfig {
   type: 'depth'
 }
 
+export interface ShaderMaterialConfig extends BaseMaterialConfig {
+  type: 'shader'
+  vertexShader?: string
+  fragmentShader?: string
+  uniforms?: Record<string, any>
+}
+
 export interface CustomMaterialConfig {
   type: 'custom'
   instance: Material
@@ -178,6 +186,7 @@ export type MaterialConfig =
   | PhongMaterialConfig
   | NormalMaterialConfig
   | DepthMaterialConfig
+  | ShaderMaterialConfig
   | CustomMaterialConfig
 
 export interface MeshConfig extends Object3DConfig {
