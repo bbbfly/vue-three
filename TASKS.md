@@ -415,18 +415,69 @@
 
 ---
 
+## 第十阶段：TGroup 层级分组系统开发（v1.6.0）
+
+### 10.1 核心类型与上下文
+
+| 任务ID  | 任务名称                             | 预计耗时 | 优先级 | 状态      |
+| ------- | ------------------------------------ | -------- | ------ | --------- |
+| GRP-001 | GroupContext 类型定义与 InjectionKey | 5min     | 高     | completed |
+
+### 10.2 Composables 实现
+
+| 任务ID  | 任务名称                 | 预计耗时 | 优先级 | 状态      |
+| ------- | ------------------------ | -------- | ------ | --------- |
+| GRP-002 | 实现 useGroup composable | 10min    | 高     | completed |
+
+### 10.3 组件开发
+
+| 任务ID  | 任务名称              | 预计耗时 | 优先级 | 状态      |
+| ------- | --------------------- | -------- | ------ | --------- |
+| GRP-003 | TGroup 组容器组件实现 | 10min    | 高     | completed |
+
+### 10.4 Composables 适配
+
+| 任务ID  | 任务名称                           | 预计耗时 | 优先级 | 状态      |
+| ------- | ---------------------------------- | -------- | ------ | --------- |
+| GRP-004 | useMesh 适配 GroupContext          | 10min    | 高     | completed |
+| GRP-005 | useLight 适配 GroupContext         | 10min    | 高     | completed |
+| GRP-006 | useLine 适配 GroupContext          | 10min    | 高     | completed |
+| GRP-007 | useSprite 适配 GroupContext        | 10min    | 高     | completed |
+| GRP-008 | useHelper 适配 GroupContext        | 10min    | 高     | completed |
+| GRP-009 | useGLTFLoader 适配 GroupContext    | 10min    | 高     | completed |
+| GRP-010 | useOBJLoader 适配 GroupContext     | 10min    | 中     | completed |
+| GRP-011 | useFBXLoader 适配 GroupContext     | 10min    | 中     | completed |
+| GRP-012 | useCSS2DRenderer 适配 GroupContext | 10min    | 中     | completed |
+| GRP-013 | useCSS3DRenderer 适配 GroupContext | 10min    | 中     | completed |
+
+### 10.5 组件库入口
+
+| 任务ID  | 任务名称                  | 预计耗时 | 优先级 | 状态      |
+| ------- | ------------------------- | -------- | ------ | --------- |
+| GRP-014 | TGroup 组件添加到入口导出 | 5min     | 高     | completed |
+
+### 10.6 Playground 演示页面
+
+| 任务ID   | 任务名称                | 预计耗时 | 优先级 | 状态      |
+| -------- | ----------------------- | -------- | ------ | --------- |
+| DEMO-024 | TGroup 层级分组演示页面 | 15min    | 高     | completed |
+
+---
+
 ## 任务统计
 
-- **总任务数**：192 个
+- **总任务数**：207 个
 - **MVP 核心任务**：43 个（完成后可发布 v1.0.0）
 - **交互事件系统任务**：17 个（v1.2.0）
 - **曲线与高级几何体任务**：30 个（v1.3.0）
 - **CSS2D 标签渲染系统任务**：28 个（v1.4.0）
 - **Sprite 精灵模型系统任务**：35 个（v1.5.0）
-- **高优先级任务**：112 个
+- **TGroup 层级分组系统任务**：15 个（v1.6.0）
+- **高优先级任务**：125 个
 - **平均每个任务**：~10 分钟
 - **MVP 预计总开发时间**：~6.5 小时
 - **交互事件系统预计开发时间**：~2.5 小时
 - **曲线与高级几何体预计开发时间**：~4.5 小时
+- **TGroup 层级分组系统预计开发时间**：~2 小时
 - **CSS2D 标签系统预计开发时间**：~4 小时
 - **Sprite 精灵模型预计开发时间**：~5 小时

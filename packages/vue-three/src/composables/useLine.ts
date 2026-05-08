@@ -1,4 +1,4 @@
-import { inject, shallowRef, onBeforeUnmount, watch, provide } from 'vue'
+import { inject, shallowRef, onBeforeUnmount, watch, provide, computed } from 'vue'
 import * as THREE from 'three'
 import {
   Line,
@@ -8,7 +8,7 @@ import {
   LineDashedMaterial,
   BufferGeometry
 } from 'three'
-import { ThreeContextKey } from '../core/context'
+import { ThreeContextKey, GroupContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
 import type { LineConfig, LineLoopConfig, LineDashedConfig, LineSegmentsConfig } from '../types'
 import { disposeObject3D } from '../core/cleanup'
@@ -17,6 +17,7 @@ export const LineContextKey = Symbol('line')
 
 export function useLine(config?: LineConfig) {
   const ctx = inject(ThreeContextKey)
+  const groupCtx = inject(GroupContextKey, null)
 
   if (!ctx) {
     throw new Error('useLine must be used within a TCanvas component')
@@ -31,18 +32,20 @@ export function useLine(config?: LineConfig) {
         })
   )
 
-  if (ctx.scene.value) {
-    ctx.scene.value.add(line.value)
+  const parent = computed(() => groupCtx?.group.value || ctx.scene.value)
+
+  if (parent.value) {
+    parent.value.add(line.value)
   }
 
   function updateLine(newConfig: LineConfig) {
-    if (ctx.scene.value) {
-      ctx.scene.value.remove(line.value)
+    if (parent.value) {
+      parent.value.remove(line.value)
     }
     disposeObject3D(line.value)
     line.value = ThreeObjectFactory.createLine(newConfig)
-    if (ctx.scene.value) {
-      ctx.scene.value.add(line.value)
+    if (parent.value) {
+      parent.value.add(line.value)
     }
   }
 
@@ -57,8 +60,8 @@ export function useLine(config?: LineConfig) {
   }
 
   onBeforeUnmount(() => {
-    if (ctx.scene.value) {
-      ctx.scene.value.remove(line.value)
+    if (parent.value) {
+      parent.value.remove(line.value)
     }
     disposeObject3D(line.value)
   })
@@ -76,6 +79,7 @@ export function useLine(config?: LineConfig) {
 
 export function useLineLoop(config?: LineLoopConfig) {
   const ctx = inject(ThreeContextKey)
+  const groupCtx = inject(GroupContextKey, null)
 
   if (!ctx) {
     throw new Error('useLineLoop must be used within a TCanvas component')
@@ -90,18 +94,20 @@ export function useLineLoop(config?: LineLoopConfig) {
         })
   )
 
-  if (ctx.scene.value) {
-    ctx.scene.value.add(lineLoop.value)
+  const parent = computed(() => groupCtx?.group.value || ctx.scene.value)
+
+  if (parent.value) {
+    parent.value.add(lineLoop.value)
   }
 
   function updateLineLoop(newConfig: LineLoopConfig) {
-    if (ctx.scene.value) {
-      ctx.scene.value.remove(lineLoop.value)
+    if (parent.value) {
+      parent.value.remove(lineLoop.value)
     }
     disposeObject3D(lineLoop.value)
     lineLoop.value = ThreeObjectFactory.createLineLoop(newConfig)
-    if (ctx.scene.value) {
-      ctx.scene.value.add(lineLoop.value)
+    if (parent.value) {
+      parent.value.add(lineLoop.value)
     }
   }
 
@@ -116,8 +122,8 @@ export function useLineLoop(config?: LineLoopConfig) {
   }
 
   onBeforeUnmount(() => {
-    if (ctx.scene.value) {
-      ctx.scene.value.remove(lineLoop.value)
+    if (parent.value) {
+      parent.value.remove(lineLoop.value)
     }
     disposeObject3D(lineLoop.value)
   })
@@ -130,6 +136,7 @@ export function useLineLoop(config?: LineLoopConfig) {
 
 export function useLineDashed(config?: LineDashedConfig) {
   const ctx = inject(ThreeContextKey)
+  const groupCtx = inject(GroupContextKey, null)
 
   if (!ctx) {
     throw new Error('useLineDashed must be used within a TCanvas component')
@@ -146,18 +153,20 @@ export function useLineDashed(config?: LineDashedConfig) {
         })
   )
 
-  if (ctx.scene.value) {
-    ctx.scene.value.add(line.value)
+  const parent = computed(() => groupCtx?.group.value || ctx.scene.value)
+
+  if (parent.value) {
+    parent.value.add(line.value)
   }
 
   function updateLineDashed(newConfig: LineDashedConfig) {
-    if (ctx.scene.value) {
-      ctx.scene.value.remove(line.value)
+    if (parent.value) {
+      parent.value.remove(line.value)
     }
     disposeObject3D(line.value)
     line.value = ThreeObjectFactory.createLineDashed(newConfig)
-    if (ctx.scene.value) {
-      ctx.scene.value.add(line.value)
+    if (parent.value) {
+      parent.value.add(line.value)
     }
   }
 
@@ -172,8 +181,8 @@ export function useLineDashed(config?: LineDashedConfig) {
   }
 
   onBeforeUnmount(() => {
-    if (ctx.scene.value) {
-      ctx.scene.value.remove(line.value)
+    if (parent.value) {
+      parent.value.remove(line.value)
     }
     disposeObject3D(line.value)
   })
@@ -186,6 +195,7 @@ export function useLineDashed(config?: LineDashedConfig) {
 
 export function useLineSegments(config?: LineSegmentsConfig) {
   const ctx = inject(ThreeContextKey)
+  const groupCtx = inject(GroupContextKey, null)
 
   if (!ctx) {
     throw new Error('useLineSegments must be used within a TCanvas component')
@@ -200,18 +210,20 @@ export function useLineSegments(config?: LineSegmentsConfig) {
         })
   )
 
-  if (ctx.scene.value) {
-    ctx.scene.value.add(lineSegments.value)
+  const parent = computed(() => groupCtx?.group.value || ctx.scene.value)
+
+  if (parent.value) {
+    parent.value.add(lineSegments.value)
   }
 
   function updateLineSegments(newConfig: LineSegmentsConfig) {
-    if (ctx.scene.value) {
-      ctx.scene.value.remove(lineSegments.value)
+    if (parent.value) {
+      parent.value.remove(lineSegments.value)
     }
     disposeObject3D(lineSegments.value)
     lineSegments.value = ThreeObjectFactory.createLineSegments(newConfig)
-    if (ctx.scene.value) {
-      ctx.scene.value.add(lineSegments.value)
+    if (parent.value) {
+      parent.value.add(lineSegments.value)
     }
   }
 
@@ -226,8 +238,8 @@ export function useLineSegments(config?: LineSegmentsConfig) {
   }
 
   onBeforeUnmount(() => {
-    if (ctx.scene.value) {
-      ctx.scene.value.remove(lineSegments.value)
+    if (parent.value) {
+      parent.value.remove(lineSegments.value)
     }
     disposeObject3D(lineSegments.value)
   })

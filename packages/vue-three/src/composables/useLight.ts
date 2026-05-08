@@ -1,12 +1,13 @@
-import { inject, shallowRef, onBeforeUnmount, watch } from 'vue'
+import { inject, shallowRef, onBeforeUnmount, watch, computed } from 'vue'
 import { Light } from 'three'
-import { ThreeContextKey } from '../core/context'
+import { ThreeContextKey, GroupContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
 import type { LightConfig } from '../types'
 import { disposeObject3D } from '../core/cleanup'
 
 export function useLight(config: LightConfig) {
   const ctx = inject(ThreeContextKey)
+  const groupCtx = inject(GroupContextKey, null)
 
   if (!ctx) {
     throw new Error('useLight must be used within a TCanvas component')
@@ -14,15 +15,13 @@ export function useLight(config: LightConfig) {
 
   const light = shallowRef<Light>(createLight(config))
 
-  watch(
-    () => ctx.scene.value,
-    scene => {
-      if (scene) {
-        scene.add(light.value)
-      }
-    },
-    { immediate: true }
-  )
+  const parent = computed(() => groupCtx?.group.value || ctx.scene.value)
+
+  watch(parent, (newParent) => {
+    if (newParent && !newParent.children.includes(light.value)) {
+      newParent.add(light.value)
+    }
+  }, { immediate: true })
 
   function createLight(lightConfig: LightConfig) {
     const newLight = ThreeObjectFactory.createLight(lightConfig) as Light
@@ -39,8 +38,8 @@ export function useLight(config: LightConfig) {
   )
 
   onBeforeUnmount(() => {
-    if (ctx.scene.value) {
-      ctx.scene.value.remove(light.value)
+    if (parent.value) {
+      parent.value.remove(light.value)
     }
     disposeObject3D(light.value)
   })

@@ -1,19 +1,21 @@
-import { inject, shallowRef, onMounted, onBeforeUnmount, watch } from 'vue'
+import { inject, shallowRef, onMounted, onBeforeUnmount, watch, computed } from 'vue'
 import type { AnimationClip } from 'three'
 import { Object3D } from 'three'
 import { FBXLoader } from 'three/addons/loaders/FBXLoader.js'
-import { ThreeContextKey } from '../core/context'
+import { ThreeContextKey, GroupContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
 import type { FBXLoaderConfig } from '../types'
 
 export function useFBXLoader(config: FBXLoaderConfig) {
   const threeCtx = inject(ThreeContextKey)
+  const groupCtx = inject(GroupContextKey, null)
 
   if (!threeCtx) {
     throw new Error('useFBXLoader must be used within a TCanvas component')
   }
 
   const scene = threeCtx.scene
+  const parent = computed(() => groupCtx?.group.value || scene.value)
   const model = shallowRef<Object3D | null>(null)
   const animations = shallowRef<AnimationClip[]>([])
   const loading = shallowRef(false)
@@ -31,8 +33,8 @@ export function useFBXLoader(config: FBXLoaderConfig) {
     loader.load(
       src,
       loadedModel => {
-        if (model.value && scene.value) {
-          scene.value.remove(model.value)
+        if (model.value && parent.value) {
+          parent.value.remove(model.value)
           disposeModel(model.value)
         }
 
@@ -40,8 +42,8 @@ export function useFBXLoader(config: FBXLoaderConfig) {
           ThreeObjectFactory.applyObject3DConfig(loadedModel, config)
           applyShadowToModel(loadedModel, config)
 
-          if (scene.value) {
-            scene.value.add(loadedModel)
+          if (parent.value) {
+            parent.value.add(loadedModel)
           }
 
           model.value = loadedModel
@@ -119,8 +121,8 @@ export function useFBXLoader(config: FBXLoaderConfig) {
   )
 
   onBeforeUnmount(() => {
-    if (model.value && scene.value) {
-      scene.value.remove(model.value)
+    if (model.value && parent.value) {
+      parent.value.remove(model.value)
       disposeModel(model.value)
     }
   })

@@ -14,7 +14,8 @@ import type {
   Raycaster,
   Face,
   Sprite,
-  SpriteMaterial
+  SpriteMaterial,
+  Group
 } from 'three'
 import type { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import type { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
@@ -80,6 +81,10 @@ export interface MeshContext {
   mesh: ShallowRef<Mesh>
   setGeometry: (geometry: BufferGeometry) => void
   setMaterial: (material: Material) => void
+}
+
+export interface GroupContext {
+  group: ShallowRef<Group>
 }
 
 export interface AnimationContext {
@@ -167,6 +172,7 @@ export interface CSS3DContext {
 
 export const ThreeContextKey = Symbol('ThreeContext') as InjectionKey<ThreeContext>
 export const MeshContextKey = Symbol('MeshContext') as InjectionKey<MeshContext>
+export const GroupContextKey = Symbol('GroupContext') as InjectionKey<GroupContext>
 export const AnimationContextKey = Symbol('AnimationContext') as InjectionKey<AnimationContext>
 export const EffectComposerContextKey = Symbol(
   'EffectComposerContext'

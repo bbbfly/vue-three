@@ -35,10 +35,12 @@ export * from './composables/useCSS2DRenderer'
 export * from './composables/useCSS3DRenderer'
 export * from './composables/useSprite'
 export * from './composables/useHelper'
+export * from './composables/useGroup'
 export { useGui, type UseGuiOptions } from './composables/useGui'
 
 import TCanvas from './components/TCanvas.vue'
 import TScene from './components/TScene.vue'
+import TGroup from './components/TGroup.vue'
 import TPerspectiveCamera from './components/TPerspectiveCamera.vue'
 import TOrbitControls from './components/TOrbitControls.vue'
 import TAmbientLight from './components/TAmbientLight.vue'
@@ -117,6 +119,7 @@ export {
   TSpriteMaterial,
   TCanvas,
   TScene,
+  TGroup,
   TPerspectiveCamera,
   TOrthographicCamera,
   TOrbitControls,
@@ -180,6 +183,7 @@ export {
 const components = [
   TCanvas,
   TScene,
+  TGroup,
   TPerspectiveCamera,
   TOrthographicCamera,
   TOrbitControls,

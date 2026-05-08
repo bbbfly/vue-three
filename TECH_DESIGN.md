@@ -62,8 +62,13 @@ export interface MeshContext {
   setMaterial: (material: Material) => void
 }
 
+export interface GroupContext {
+  group: ShallowRef<Group> // Setup 阶段创建，永不为 null
+}
+
 export const ThreeContextKey = Symbol('ThreeContext') as InjectionKey<ThreeContext>
 export const MeshContextKey = Symbol('MeshContext') as InjectionKey<MeshContext>
+export const GroupContextKey = Symbol('GroupContext') as InjectionKey<GroupContext>
 ```
 
 #### 2.1.2 上下文注入机制
@@ -71,6 +76,30 @@ export const MeshContextKey = Symbol('MeshContext') as InjectionKey<MeshContext>
 - `TCanvas` 作为根组件，初始化并 provide 上下文
 - 所有子组件通过 inject 获取上下文
 - 支持嵌套场景（多画布、多场景）
+
+#### 2.1.3 GroupContext 层级注入机制
+
+**设计目标**：支持 3D 对象的层级分组管理，实现 scene → group → group → mesh 的嵌套结构。
+
+**注入优先级**：子组件查找父对象时遵循以下优先级：
+
+1. 优先从 `GroupContext` 获取父 Group
+2. 如果没有 `GroupContext`，回退到 `ThreeContext.scene`
+
+**向后兼容性**：当没有 TGroup 包裹时，子组件自动添加到 scene，保持现有代码兼容性。
+
+**层级结构示例**：
+
+```
+TCanvas
+├── TScene
+│   ├── TGroup (GroupContext: group1)
+│   │   ├── TMesh (添加到 group1)
+│   │   ├── TLight (添加到 group1)
+│   │   └── TGroup (GroupContext: group1-1，继承自 group1)
+│   │       └── TMesh (添加到 group1-1)
+│   └── TMesh (无 GroupContext，添加到 scene)
+```
 
 ### 2.2 配置驱动引擎
 
@@ -435,7 +464,7 @@ export interface CSS2DLabelConfig {
 │ - 配置变更实时更新位置与样式 │
 └─────────────────────────────────────────────────────────┘
 
-````
+```
 
 ### 8.4 核心实现要点
 
@@ -472,7 +501,7 @@ function updateLabelVisibilityAndScale(
   const distanceOpacity = Math.max(0, 1 - (distance / (config.maxDistance || 100)) * 0.5)
   label.element.style.opacity = String(opacity * distanceOpacity)
 }
-````
+```
 
 #### 8.4.2 像素偏移实现
 
@@ -507,6 +536,7 @@ function applyOffset(label: CSS2DObject, offset: [number, number] = [0, 0]) {
   user-select: none;
 }
 ```
+
 ---
 
 ## 九、Sprite 精灵模型系统设计
@@ -515,14 +545,14 @@ function applyOffset(label: CSS2DObject, offset: [number, number] = [0, 0]) {
 
 **Sprite vs CSS2D 技术对比**：
 
-| 特性                | Sprite (WebGL 渲染)        | CSS2D (DOM 渲染)             |
-| ------------------- | -------------------------- | ---------------------------- |
-| 渲染管线            | WebGL 硬件加速             | HTML/CSS 浏览器渲染          |
-| 性能                | 高，支持大批量实例         | 低，DOM 数量影响性能         |
-| 样式能力            | 纹理/颜色/着色器           | 完整 CSS 支持                |
-| 事件交互            | Raycaster 射线检测         | DOM 原生事件                 |
-| 与 3D 场景融合      | 完美，支持深度测试         | 浮于顶层                     |
-| 粒子系统适配        | 极佳，支持 GPU 实例化      | 不适用                       |
+| 特性           | Sprite (WebGL 渲染)   | CSS2D (DOM 渲染)     |
+| -------------- | --------------------- | -------------------- |
+| 渲染管线       | WebGL 硬件加速        | HTML/CSS 浏览器渲染  |
+| 性能           | 高，支持大批量实例    | 低，DOM 数量影响性能 |
+| 样式能力       | 纹理/颜色/着色器      | 完整 CSS 支持        |
+| 事件交互       | Raycaster 射线检测    | DOM 原生事件         |
+| 与 3D 场景融合 | 完美，支持深度测试    | 浮于顶层             |
+| 粒子系统适配   | 极佳，支持 GPU 实例化 | 不适用               |
 
 **适用场景选择**：
 
@@ -552,7 +582,7 @@ function applyOffset(label: CSS2DObject, offset: [number, number] = [0, 0]) {
 │ - blending: 混合模式控制 │
 └─────────────────────────────────────────────────────────┘
 
-````
+```
 
 ### 9.2 配置类型定义
 
@@ -586,12 +616,7 @@ export interface SpriteMaterialConfig {
   maxDistance?: number
 }
 
-export type BlendingMode =
-  | 'normal'
-  | 'additive'
-  | 'subtractive'
-  | 'multiply'
-  | 'screen'
+export type BlendingMode = 'normal' | 'additive' | 'subtractive' | 'multiply' | 'screen'
 
 export type BlendingFactor =
   | 'SrcAlpha'
@@ -599,7 +624,7 @@ export type BlendingFactor =
   | 'One'
   | 'DstColor'
   | 'OneMinusDstColor'
-````
+```
 
 ### 9.3 上下文与工厂扩展
 
@@ -769,8 +794,6 @@ export const CSS2DContextKey = Symbol(
 
 ```
 
-
-
 ---
 
 ## 三、组件系统设计
@@ -864,10 +887,22 @@ export function useCanvas(options: CanvasOptions) {
 ```typescript
 export function useMesh(config: MeshConfig) {
   const ctx = inject(ThreeContextKey)!
+  const groupCtx = inject(GroupContextKey, null)
   const mesh = shallowRef<Mesh>(ThreeObjectFactory.createMesh(config))
 
-  // Setup 阶段同步加入场景
-  ctx.scene.value.add(mesh.value)
+  // 确定父对象：优先 GroupContext，回退到 scene
+  const parent = computed(() => groupCtx?.group.value || ctx.scene.value)
+
+  // Setup 阶段同步加入父对象
+  watch(
+    parent,
+    newParent => {
+      if (newParent && !newParent.children.includes(mesh.value)) {
+        newParent.add(mesh.value)
+      }
+    },
+    { immediate: true }
+  )
 
   provide(MeshContextKey, {
     mesh,
@@ -891,11 +926,65 @@ export function useMesh(config: MeshConfig) {
   )
 
   onBeforeUnmount(() => {
-    ctx.scene.value.remove(mesh.value)
+    if (parent.value) {
+      parent.value.remove(mesh.value)
+    }
     disposeObject3D(mesh.value)
   })
 
   return { mesh }
+}
+```
+
+#### 3.3.5 useGroup
+
+```typescript
+export interface GroupConfig extends Object3DConfig {
+  name?: string
+}
+
+export function useGroup(config?: GroupConfig) {
+  const ctx = inject(ThreeContextKey)!
+  const parentGroupCtx = inject(GroupContextKey, null)
+  const group = shallowRef<Group>(new Group())
+
+  // 确定父对象：优先父级 GroupContext，回退到 scene
+  const parent = computed(() => parentGroupCtx?.group.value || ctx.scene.value)
+
+  // Setup 阶段同步加入父对象
+  watch(
+    parent,
+    newParent => {
+      if (newParent && !newParent.children.includes(group.value)) {
+        newParent.add(group.value)
+      }
+    },
+    { immediate: true }
+  )
+
+  // 应用 Object3D 配置
+  if (config) {
+    watch(
+      () => config,
+      newConfig => {
+        ThreeObjectFactory.updateObject3DConfig(group.value, newConfig)
+      },
+      { deep: true }
+    )
+  }
+
+  // 提供 GroupContext 给子组件
+  provide(GroupContextKey, { group })
+
+  // 清理
+  onBeforeUnmount(() => {
+    if (parent.value) {
+      parent.value.remove(group.value)
+    }
+    disposeObject3D(group.value)
+  })
+
+  return { group }
 }
 ```
 

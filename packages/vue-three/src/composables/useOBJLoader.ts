@@ -1,18 +1,20 @@
-import { inject, shallowRef, onMounted, onBeforeUnmount, watch } from 'vue'
+import { inject, shallowRef, onMounted, onBeforeUnmount, watch, computed } from 'vue'
 import { Object3D } from 'three'
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'
-import { ThreeContextKey } from '../core/context'
+import { ThreeContextKey, GroupContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
 import type { OBJLoaderConfig } from '../types'
 
 export function useOBJLoader(config: OBJLoaderConfig) {
   const threeCtx = inject(ThreeContextKey)
+  const groupCtx = inject(GroupContextKey, null)
 
   if (!threeCtx) {
     throw new Error('useOBJLoader must be used within a TCanvas component')
   }
 
   const scene = threeCtx.scene
+  const parent = computed(() => groupCtx?.group.value || scene.value)
   const model = shallowRef<Object3D | null>(null)
   const loading = shallowRef(false)
   const progress = shallowRef(0)
@@ -29,8 +31,8 @@ export function useOBJLoader(config: OBJLoaderConfig) {
     loader.load(
       src,
       loadedModel => {
-        if (model.value && scene.value) {
-          scene.value.remove(model.value)
+        if (model.value && parent.value) {
+          parent.value.remove(model.value)
           disposeModel(model.value)
         }
 
@@ -38,8 +40,8 @@ export function useOBJLoader(config: OBJLoaderConfig) {
           ThreeObjectFactory.applyObject3DConfig(loadedModel, config)
           applyShadowToModel(loadedModel, config)
 
-          if (scene.value) {
-            scene.value.add(loadedModel)
+          if (parent.value) {
+            parent.value.add(loadedModel)
           }
 
           model.value = loadedModel
@@ -116,8 +118,8 @@ export function useOBJLoader(config: OBJLoaderConfig) {
   )
 
   onBeforeUnmount(() => {
-    if (model.value && scene.value) {
-      scene.value.remove(model.value)
+    if (model.value && parent.value) {
+      parent.value.remove(model.value)
       disposeModel(model.value)
     }
   })

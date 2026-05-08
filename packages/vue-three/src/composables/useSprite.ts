@@ -2,13 +2,14 @@ import { inject, shallowRef, onBeforeUnmount, watch, provide, computed, unref } 
 import type { MaybeRef } from 'vue'
 import { Sprite, SpriteMaterial as ThreeSpriteMaterial, Color } from 'three'
 import type { SpriteMaterial } from 'three'
-import { ThreeContextKey, SpriteContextKey } from '../core/context'
+import { ThreeContextKey, SpriteContextKey, GroupContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
 import type { SpriteConfig, SpriteMaterialConfig } from '../types'
 import { disposeMaterial } from '../core/cleanup'
 
 export function useSprite(config?: MaybeRef<SpriteConfig>) {
   const ctx = inject(ThreeContextKey)
+  const groupCtx = inject(GroupContextKey, null)
 
   if (!ctx) {
     throw new Error('useSprite must be used within a TCanvas component')
@@ -97,13 +98,14 @@ export function useSprite(config?: MaybeRef<SpriteConfig>) {
   }
 
   const ctx_ = ctx!
+  const parent = computed(() => groupCtx?.group.value || ctx_.scene.value)
 
   if (config) {
     const configValue = unref(config)
     sprite.value = createSprite(configValue)
 
-    if (ctx_.scene.value) {
-      ctx_.scene.value.add(sprite.value)
+    if (parent.value) {
+      parent.value.add(sprite.value)
     }
   } else {
     const defaultConfig: SpriteConfig = {
@@ -111,8 +113,8 @@ export function useSprite(config?: MaybeRef<SpriteConfig>) {
     }
     sprite.value = createSprite(defaultConfig)
 
-    if (ctx_.scene.value) {
-      ctx_.scene.value.add(sprite.value)
+    if (parent.value) {
+      parent.value.add(sprite.value)
     }
   }
 
@@ -307,8 +309,8 @@ export function useSprite(config?: MaybeRef<SpriteConfig>) {
       cancelAnimationFrame(animationFrameId)
     }
 
-    if (ctx_.scene.value && sprite.value) {
-      ctx_.scene.value.remove(sprite.value)
+    if (parent.value && sprite.value) {
+      parent.value.remove(sprite.value)
     }
 
     if (spriteMaterial.value) {

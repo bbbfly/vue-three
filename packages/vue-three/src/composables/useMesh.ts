@@ -1,12 +1,13 @@
-import { inject, shallowRef, onBeforeUnmount, watch, provide } from 'vue'
+import { inject, shallowRef, onBeforeUnmount, watch, provide, computed } from 'vue'
 import { Mesh, BufferGeometry, Material } from 'three'
-import { ThreeContextKey, MeshContextKey } from '../core/context'
+import { ThreeContextKey, MeshContextKey, GroupContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
 import type { MeshConfig } from '../types'
 import { disposeObject3D } from '../core/cleanup'
 
 export function useMesh(config?: MeshConfig) {
   const ctx = inject(ThreeContextKey)
+  const groupCtx = inject(GroupContextKey, null)
 
   if (!ctx) {
     throw new Error('useMesh must be used within a TCanvas component')
@@ -14,15 +15,13 @@ export function useMesh(config?: MeshConfig) {
 
   const mesh = shallowRef<Mesh>(config ? createMesh(config) : new Mesh())
 
-  watch(
-    () => ctx.scene.value,
-    scene => {
-      if (scene) {
-        scene.add(mesh.value)
-      }
-    },
-    { immediate: true }
-  )
+  const parent = computed(() => groupCtx?.group.value || ctx.scene.value)
+
+  watch(parent, (newParent) => {
+    if (newParent && !newParent.children.includes(mesh.value)) {
+      newParent.add(mesh.value)
+    }
+  }, { immediate: true })
 
   function setGeometry(geometry: BufferGeometry) {
     if (mesh.value.geometry) {
@@ -58,8 +57,8 @@ export function useMesh(config?: MeshConfig) {
   }
 
   onBeforeUnmount(() => {
-    if (ctx.scene.value) {
-      ctx.scene.value.remove(mesh.value)
+    if (parent.value) {
+      parent.value.remove(mesh.value)
     }
     disposeObject3D(mesh.value)
   })
