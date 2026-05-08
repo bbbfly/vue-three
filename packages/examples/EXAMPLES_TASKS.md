@@ -149,7 +149,7 @@
 | EX-1101 | 方向     | webaudio_orientation | 15min    | 低     | pending |
 | EX-1102 | 沙盒     | webaudio_sandbox     | 20min    | 低     | pending |
 | EX-1103 | Timing   | webaudio_timing      | 15min    | 低     | pending |
-| EX-1104 | 可视化   | webaudio_visualizer  | 15min    | 低     | pending |
+| EX-1104 | 可视化   | webaudio_visualizer  | 15min    | 低     | completed |
 
 ---
 

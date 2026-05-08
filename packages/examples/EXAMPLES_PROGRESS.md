@@ -306,6 +306,28 @@
 - EX-011 ExampleView 示例查看页面布局
 - ...
 
+---
+
+## 2026-05-08 - Web Audio 可视化示例完成
+
+### 完成任务
+
+#### EX-1104 - webaudio_visualizer 音频可视化示例
+
+- **完成时间**: 2026-05-08
+- **内容**:
+  - 创建 webaudio_visualizer.vue 示例组件
+  - 使用 Vue 3 Composition API 重构官方 Web Audio 可视化示例
+  - 实现音频加载和播放功能（支持 iOS Safari 和其他浏览器）
+  - 使用 THREE.AudioAnalyser 进行频率数据分析
+  - 通过 DataTexture 将音频数据传递给着色器
+  - 使用自定义 ShaderMaterial 实现音频可视化效果
+  - 添加播放按钮覆盖层，点击后开始播放音乐并显示可视化效果
+  - 更新 examples.ts 配置标记为已完成
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例

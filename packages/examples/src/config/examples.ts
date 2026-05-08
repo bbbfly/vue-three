@@ -130,7 +130,7 @@ export const exampleCategories: ExampleCategory[] = [
       { id: 'webaudio_orientation', title: '方向', category: 'webaudio', completed: false },
       { id: 'webaudio_sandbox', title: '沙盒', category: 'webaudio', completed: false },
       { id: 'webaudio_timing', title: 'Timing', category: 'webaudio', completed: false },
-      { id: 'webaudio_visualizer', title: '可视化', category: 'webaudio', completed: false }
+      { id: 'webaudio_visualizer', title: '可视化', category: 'webaudio', completed: true }
     ]
   },
   {
