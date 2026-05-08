@@ -30,6 +30,10 @@ defineExpose({
   addObject,
   removeObject
 })
+
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <template>

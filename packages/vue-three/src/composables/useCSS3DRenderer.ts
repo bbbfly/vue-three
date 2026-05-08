@@ -62,7 +62,6 @@ export function useCSS3DRenderer() {
 
   const setSize = (width: number, height: number) => {
     if (renderer.value) {
-      console.log(width, height, '---')
       renderer.value.setSize(width, height)
     }
   }

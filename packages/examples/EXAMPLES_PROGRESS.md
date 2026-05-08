@@ -276,6 +276,26 @@
 
 ---
 
+## 2026-05-08 - CSS3D Sprites 示例完成
+
+### 完成任务
+
+#### EX-506 - css3d_sprites Sprites 示例
+
+- **完成时间**: 2026-05-08
+- **内容**:
+  - 创建 css3d_sprites.vue 示例组件
+  - 使用 TCSS3DRenderer + TCSS3DSprite 渲染 512 个精灵粒子
+  - 实现四种布局模式：平面波纹、立方体、随机分布、球体
+  - 使用 TWEEN.js 实现平滑过渡动画
+  - 粒子随时间动态缩放效果
+  - TrackballControls 轨道控制支持
+  - 窗口大小自适应处理
+  - 更新 examples.ts 配置标记为已完成
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
 ## 后续待完成任务
 
 ### 第二阶段：核心功能组件

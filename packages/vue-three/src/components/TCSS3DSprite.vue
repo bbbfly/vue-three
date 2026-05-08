@@ -28,7 +28,7 @@ const props = withDefaults(
 )
 
 const css3dCtx = inject(CSS3DContextKey)
-const css3dGroupCtx = inject(CSS3DGroupContextKey)
+const css3dGroupCtx = inject(CSS3DGroupContextKey, null, true)
 
 if (!css3dCtx) {
   throw new Error('TCSS3DSprite must be used within a TCSS3DRenderer component')
@@ -63,7 +63,6 @@ const createSprite = () => {
 
 const applyConfig = () => {
   if (!css3dSprite.value) return
-
   css3dSprite.value.position.set(...props.position)
   css3dSprite.value.rotation.set(...props.rotation)
   css3dSprite.value.scale.set(...props.scale)

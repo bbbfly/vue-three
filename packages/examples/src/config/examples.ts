@@ -29,7 +29,7 @@ export const exampleCategories: ExampleCategory[] = [
       { id: 'css3d_orthographic', title: '正交', category: 'css3d', completed: true },
       { id: 'css3d_periodictable', title: 'Periodictable', category: 'css3d', completed: true },
       { id: 'css3d_sandbox', title: '沙盒', category: 'css3d', completed: true },
-      { id: 'css3d_sprites', title: 'Sprites', category: 'css3d', completed: false },
+      { id: 'css3d_sprites', title: 'Sprites', category: 'css3d', completed: true },
       { id: 'css3d_youtube', title: 'Youtube', category: 'css3d', completed: false }
     ]
   },

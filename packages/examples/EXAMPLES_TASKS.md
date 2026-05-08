@@ -72,7 +72,7 @@
 | EX-503 | 正交          | css3d_orthographic  | 10min    | 中     | completed |
 | EX-504 | Periodictable | css3d_periodictable | 15min    | 中     | pending   |
 | EX-505 | 沙盒          | css3d_sandbox       | 15min    | 中     | completed |
-| EX-506 | Sprites       | css3d_sprites       | 10min    | 中     | pending   |
+| EX-506 | Sprites       | css3d_sprites       | 10min    | 中     | completed |
 | EX-507 | Youtube       | css3d_youtube       | 15min    | 中     | pending   |
 
 ---
