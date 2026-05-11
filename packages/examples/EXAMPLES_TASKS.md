@@ -242,7 +242,7 @@
 | 任务ID  | 任务名称               | 示例ID                              | 预计耗时 | 优先级 | 状态    |
 | ------- | ---------------------- | ----------------------------------- | -------- | ------ | ------- |
 | EX-1501 | Webgl相机              | webgl_camera                        | 10min    | 中     | completed |
-| EX-1502 | Array                  | webgl_camera_array                  | 15min    | 中     | pending |
+| EX-1502 | Array                  | webgl_camera_array                  | 15min    | 中     | completed |
 | EX-1503 | Logarithmicdepthbuffer | webgl_camera_logarithmicdepthbuffer | 15min    | 中     | pending |
 
 ---
