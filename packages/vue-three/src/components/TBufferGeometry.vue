@@ -1,0 +1,69 @@
+<template>
+  <slot></slot>
+</template>
+
+<script setup lang="ts">
+import { inject, shallowRef, watch, onBeforeUnmount } from 'vue'
+import { BufferGeometry, BufferAttribute } from 'three'
+import { MeshContextKey } from '../core/context'
+
+/**
+ * 自定义缓冲几何体组件
+ * @description 允许用户通过 attributes 属性自定义顶点数据，适用于需要手动构建几何体的场景
+ * @component TBufferGeometry
+ * @example
+ * <TBufferGeometry :attributes="customAttributes">
+ * </TBufferGeometry>
+ */
+const props = defineProps<{
+  /**
+   * 自定义顶点属性对象，key 为属性名，value 为 BufferAttribute 或属性配置
+   */
+  attributes?: Record<string, BufferAttribute | { array: number[] | Float32Array; itemSize: number }>
+}>()
+
+const meshCtx = inject(MeshContextKey)
+
+if (!meshCtx) {
+  throw new Error('TBufferGeometry must be used within a TMesh component')
+}
+
+const geometry = shallowRef<BufferGeometry>(new BufferGeometry())
+
+meshCtx!.setGeometry(geometry.value)
+
+function updateAttributes() {
+  if (!props.attributes) return
+
+  for (const [name, attr] of Object.entries(props.attributes)) {
+    if (attr instanceof BufferAttribute) {
+      geometry.value.setAttribute(name, attr)
+    } else if (attr.array && attr.itemSize !== undefined) {
+      const array = attr.array instanceof Float32Array ? attr.array : new Float32Array(attr.array)
+      geometry.value.setAttribute(name, new BufferAttribute(array, attr.itemSize))
+    }
+  }
+}
+
+updateAttributes()
+
+watch(
+  () => props.attributes,
+  () => {
+    updateAttributes()
+  },
+  { deep: true }
+)
+
+onBeforeUnmount(() => {
+  geometry.value.dispose()
+})
+
+/**
+ * @expose
+ * @property geometry - Three.js BufferGeometry 实例
+ */
+defineExpose({
+  geometry
+})
+</script>

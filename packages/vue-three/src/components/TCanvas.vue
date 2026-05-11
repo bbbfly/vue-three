@@ -136,11 +136,11 @@ const options = computed<CanvasOptions>(() => ({
 }))
 
 const emit = defineEmits<{
-  animate: [{ scene: THREE.Scene; camera: THREE.Camera; delta: number; renderer: THREE.WebGLRenderer }]
+  animate: [{ scene: THREE.Scene; camera: THREE.Camera; delta: number; renderer: THREE.WebGLRenderer; size: { width: number; height: number } }]
 }>()
 
 const { canvasRef, context } = useCanvas(options.value, ({ scene, camera, delta }) => {
-  emit('animate', { scene, camera, delta, renderer: context.renderer.value! })
+  emit('animate', { scene, camera, delta, renderer: context.renderer.value!, size: context.size.value })
 })
 const interaction = useInteraction(context)
 

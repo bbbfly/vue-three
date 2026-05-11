@@ -96,7 +96,10 @@ import TExtrudeGeometry from './components/TExtrudeGeometry.vue'
 import TSweepGeometry from './components/TSweepGeometry.vue'
 import TEdgesGeometry from './components/TEdgesGeometry.vue'
 import TWireframeGeometry from './components/TWireframeGeometry.vue'
+import TBufferGeometry from './components/TBufferGeometry.vue'
 import TCSS2DRenderer from './components/TCSS2DRenderer.vue'
+import TPoints from './components/TPoints.vue'
+import TPointsMaterial from './components/TPointsMaterial.vue'
 import TCSS2DLabel from './components/TCSS2DLabel.vue'
 import TCSS2DObject from './components/TCSS2DObject.vue'
 import TCSS3DRenderer from './components/TCSS3DRenderer.vue'
@@ -177,6 +180,9 @@ export {
   TSweepGeometry,
   TEdgesGeometry,
   TWireframeGeometry,
+  TBufferGeometry,
+  TPoints,
+  TPointsMaterial,
   TGridHelper,
   TPolarGridHelper,
   TPointLightHelper,
@@ -241,6 +247,9 @@ const components = [
   TSweepGeometry,
   TEdgesGeometry,
   TWireframeGeometry,
+  TBufferGeometry,
+  TPoints,
+  TPointsMaterial,
   TGridHelper,
   TPolarGridHelper,
   TPointLightHelper,
