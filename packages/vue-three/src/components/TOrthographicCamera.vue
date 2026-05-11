@@ -3,6 +3,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { PropType } from 'vue'
 import { useCamera } from '../composables/useCamera'
 import type { CameraOptions } from '../composables/useCamera'
@@ -105,7 +106,7 @@ const props = defineProps({
   }
 })
 
-const config: CameraOptions = {
+const config = computed<CameraOptions>(() => ({
   type: 'orthographic',
   left: props.left,
   right: props.right,
@@ -117,7 +118,7 @@ const config: CameraOptions = {
   position: props.position,
   rotation: props.rotation,
   lookAt: props.lookAtTarget
-}
+}))
 
 const {
   camera,

@@ -134,6 +134,27 @@ export function useCanvas(options: CanvasOptions = {}, animateFn: AnimateFn) {
   const cameraPos = options.camera?.position || [0, 0, 5]
   camera.value.position.set(...cameraPos)
 
+  const setCamera = (newCamera: Camera) => {
+    camera.value = newCamera
+
+    // 同步更新 OrbitControls 的相机引用
+    if (controls.value) {
+      controls.value.object = newCamera
+    }
+
+    // 同步更新 EffectComposer 的 RenderPass 相机引用
+    if (composer.value) {
+      const passes = composer.value.passes
+      const renderPass = passes.find(p => (p as any).camera)
+      if (renderPass) {
+        ;(renderPass as any).camera = newCamera
+      }
+    }
+
+    // 立即执行一次 resize 让新相机适配画布尺寸
+    handleResize()
+  }
+
   const renderAll = (delta: number) => {
     if (!renderer.value || !camera.value) return
 
@@ -305,7 +326,9 @@ export function useCanvas(options: CanvasOptions = {}, animateFn: AnimateFn) {
     unregisterAnimationMixer,
     registerRenderPass,
     unregisterRenderPass,
-    enablePostProcessing
+    enablePostProcessing,
+
+    setCamera
   }
 
   return {

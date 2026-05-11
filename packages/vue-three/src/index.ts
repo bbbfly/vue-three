@@ -43,6 +43,7 @@ import TScene from './components/TScene.vue'
 import TGroup from './components/TGroup.vue'
 import TCamera from './components/TCamera.vue'
 import TPerspectiveCamera from './components/TPerspectiveCamera.vue'
+import TArrayCamera from './components/TArrayCamera.vue'
 import TOrbitControls from './components/TOrbitControls.vue'
 import TAmbientLight from './components/TAmbientLight.vue'
 import TDirectionalLight from './components/TDirectionalLight.vue'
@@ -128,6 +129,7 @@ export {
   TCamera,
   TPerspectiveCamera,
   TOrthographicCamera,
+  TArrayCamera,
   TOrbitControls,
   TTrackballControls,
   TAmbientLight,
@@ -197,6 +199,7 @@ const components = [
   TCamera,
   TPerspectiveCamera,
   TOrthographicCamera,
+  TArrayCamera,
   TOrbitControls,
   TTrackballControls,
   TAmbientLight,

@@ -88,6 +88,9 @@ export interface ThreeContext {
   registerRenderPass: (pass: Pass) => void
   unregisterRenderPass: (pass: Pass) => void
   enablePostProcessing: () => void
+
+  // 动态设置全局相机（后来者居上）
+  setCamera: (camera: Camera) => void
 }
 
 export interface MeshContext {
