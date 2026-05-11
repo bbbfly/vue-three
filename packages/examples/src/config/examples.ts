@@ -378,8 +378,8 @@ export const exampleCategories: ExampleCategory[] = [
     name: 'WebGL - 相机',
     icon: '📷',
     examples: [
-      { id: 'webgl_camera', title: 'Webgl相机', category: 'camera', completed: false },
-      { id: 'webgl_camera_array', title: 'Array', category: 'camera', completed: false },
+      { id: 'webgl_camera', title: 'Webgl相机', category: 'camera', completed: true },
+      { id: 'webgl_camera_array', title: 'Array', category: 'camera', completed: true },
       {
         id: 'webgl_camera_logarithmicdepthbuffer',
         title: 'Logarithmicdepthbuffer',
