@@ -67,12 +67,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onActivated, onDeactivated, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { exampleCategories, getCompletedCount, getTotalCount, getScreenshotUrl } from '../config/examples'
 import CategoryNav from '../components/CategoryNav.vue'
 
+const route = useRoute()
+const router = useRouter()
+
 const searchQuery = ref('')
 const selectedCategory = ref('')
+const savedScrollTop = ref(0)
 
 const completedCount = getCompletedCount()
 const totalCount = getTotalCount()
@@ -99,6 +104,26 @@ const filteredCategories = computed(() => {
   }
 
   return result
+})
+
+watch([searchQuery, selectedCategory], () => {
+  const query: Record<string, string> = {}
+  if (searchQuery.value) query.q = searchQuery.value
+  if (selectedCategory.value) query.cat = selectedCategory.value
+  router.replace({ query })
+})
+
+onMounted(() => {
+  if (route.query.q) searchQuery.value = route.query.q as string
+  if (route.query.cat) selectedCategory.value = route.query.cat as string
+})
+
+onDeactivated(() => {
+  savedScrollTop.value = window.scrollY
+})
+
+onActivated(() => {
+  window.scrollTo(0, savedScrollTop.value)
 })
 
 function handleImageError(event: Event) {
