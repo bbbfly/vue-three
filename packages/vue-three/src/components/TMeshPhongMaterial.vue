@@ -77,6 +77,22 @@ const props = defineProps({
   side: {
     type: Number,
     default: THREE.DoubleSide
+  },
+  /**
+   * 是否使用平面着色（忽略平滑插值）
+   * @default false
+   */
+  flatShading: {
+    type: Boolean,
+    default: false
+  },
+  /**
+   * 是否使用几何体顶点颜色
+   * @default false
+   */
+  vertexColors: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -89,7 +105,9 @@ const { material } = useMaterial({
   transparent: props.transparent,
   opacity: props.opacity,
   wireframe: props.wireframe,
-  side: props.side
+  side: props.side,
+  flatShading: props.flatShading,
+  vertexColors: props.vertexColors
 })
 
 /**

@@ -28,6 +28,7 @@ export * from './composables/useBloomPass'
 export * from './composables/useSSAAPass'
 export * from './composables/useOutlinePass'
 export * from './composables/useTexture'
+export * from './composables/useCanvasTexture'
 export * from './composables/useCurve'
 export * from './composables/useLine'
 export * from './composables/useInteraction'
@@ -54,6 +55,7 @@ import TSphere from './components/TSphere.vue'
 import TPlane from './components/TPlane.vue'
 import TCylinder from './components/TCylinder.vue'
 import TTorus from './components/TTorus.vue'
+import TIcosahedron from './components/TIcosahedron.vue'
 import TMeshBasicMaterial from './components/TMeshBasicMaterial.vue'
 import TMeshStandardMaterial from './components/TMeshStandardMaterial.vue'
 import TMeshPhysicalMaterial from './components/TMeshPhysicalMaterial.vue'
@@ -73,6 +75,7 @@ import THemisphereLight from './components/THemisphereLight.vue'
 import TRectAreaLight from './components/TRectAreaLight.vue'
 import TCone from './components/TCone.vue'
 import TTexture from './components/TTexture.vue'
+import TCanvasTexture from './components/TCanvasTexture.vue'
 import TOBJLoader from './components/TOBJLoader.vue'
 import TFBXLoader from './components/TFBXLoader.vue'
 import TDRACOLoader from './components/TDRACOLoader.vue'
@@ -145,6 +148,7 @@ export {
   TCylinder,
   TCone,
   TTorus,
+  TIcosahedron,
   TMeshBasicMaterial,
   TMeshStandardMaterial,
   TMeshPhysicalMaterial,
@@ -152,6 +156,7 @@ export {
   TMeshPhongMaterial,
   TShaderMaterial,
   TTexture,
+  TCanvasTexture,
   TGLTFLoader,
   TOBJLoader,
   TFBXLoader,
@@ -215,6 +220,7 @@ const components = [
   TCylinder,
   TCone,
   TTorus,
+  TIcosahedron,
   TMeshBasicMaterial,
   TMeshStandardMaterial,
   TMeshPhysicalMaterial,
@@ -222,6 +228,7 @@ const components = [
   TMeshPhongMaterial,
   TShaderMaterial,
   TTexture,
+  TCanvasTexture,
   TGLTFLoader,
   TOBJLoader,
   TFBXLoader,

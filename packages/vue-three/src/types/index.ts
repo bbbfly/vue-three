@@ -19,6 +19,7 @@ export type GeometryType =
   | 'cylinder'
   | 'torus'
   | 'cone'
+  | 'icosahedron'
   | 'custom'
   | 'tube'
   | 'lathe'
@@ -43,6 +44,7 @@ export type CylinderGeometryArgs = [
 ]
 export type TorusGeometryArgs = [number?, number?, number?, number?, number?]
 export type ConeGeometryArgs = [number?, number?, number?, number?, boolean?, number?, number?]
+export type IcosahedronGeometryArgs = [number?, number?]
 
 export interface BoxGeometryConfig {
   type: 'box'
@@ -74,6 +76,11 @@ export interface ConeGeometryConfig {
   args?: ConeGeometryArgs
 }
 
+export interface IcosahedronGeometryConfig {
+  type: 'icosahedron'
+  args?: IcosahedronGeometryArgs
+}
+
 export interface CustomGeometryConfig {
   type: 'custom'
   buffer: BufferGeometry
@@ -86,6 +93,7 @@ export type GeometryConfig =
   | CylinderGeometryConfig
   | TorusGeometryConfig
   | ConeGeometryConfig
+  | IcosahedronGeometryConfig
   | CustomGeometryConfig
   | TubeGeometryConfig
   | LatheGeometryConfig
@@ -114,6 +122,8 @@ export interface BaseMaterialConfig {
   side?: number
   blending?: number
   premultipliedAlpha?: boolean
+  flatShading?: boolean
+  vertexColors?: boolean
 }
 
 export interface BasicMaterialConfig extends BaseMaterialConfig {

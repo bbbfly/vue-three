@@ -317,7 +317,7 @@
 
 | 任务ID  | 任务名称     | 示例ID                            | 预计耗时 | 优先级 | 状态    |
 | ------- | ------------ | --------------------------------- | -------- | ------ | ------- |
-| EX-2301 | 颜色         | webgl_geometry_colors             | 10min    | 中     | pending |
+| EX-2301 | 颜色         | webgl_geometry_colors             | 10min    | 中     | completed |
 | EX-2302 | 颜色查找表   | webgl_geometry_colors_lookuptable | 15min    | 中     | pending |
 | EX-2303 | 凸           | webgl_geometry_convex             | 15min    | 中     | pending |
 | EX-2304 | CSG          | webgl_geometry_csg                | 20min    | 中     | pending |

@@ -5,6 +5,7 @@ import {
   CylinderGeometry,
   TorusGeometry,
   ConeGeometry,
+  IcosahedronGeometry,
   BufferGeometry,
   MeshBasicMaterial,
   MeshStandardMaterial,
@@ -92,6 +93,8 @@ export class ThreeObjectFactory {
         return new TorusGeometry(...(config.args || []))
       case 'cone':
         return new ConeGeometry(...(config.args || []))
+      case 'icosahedron':
+        return new IcosahedronGeometry(...(config.args || []))
       case 'tube': {
         const path = this.createCurve(config.path)
         const [tubularSegments = 64, radius = 1, radialSegments = 8] = config.args || []

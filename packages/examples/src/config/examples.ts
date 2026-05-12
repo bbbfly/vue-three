@@ -502,7 +502,7 @@ export const exampleCategories: ExampleCategory[] = [
     name: 'WebGL - 几何体',
     icon: '📦',
     examples: [
-      { id: 'webgl_geometry_colors', title: '颜色', category: 'geometry', completed: false },
+      { id: 'webgl_geometry_colors', title: '颜色', category: 'geometry', completed: true },
       {
         id: 'webgl_geometry_colors_lookuptable',
         title: '颜色查找表',
