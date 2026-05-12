@@ -327,7 +327,7 @@
 | EX-2308 | NURBS        | webgl_geometry_nurbs              | 20min    | 中     | pending   |
 | EX-2309 | 形状         | webgl_geometry_shapes             | 10min    | 中     | pending   |
 | EX-2310 | 样条编辑器   | webgl_geometry_spline_editor      | 20min    | 中     | pending   |
-| EX-2311 | 茶壶         | webgl_geometry_teapot             | 15min    | 中     | pending   |
+| EX-2311 | 茶壶         | webgl_geometry_teapot             | 15min    | 中     | completed |
 | EX-2312 | 地形         | webgl_geometry_terrain            | 20min    | 中     | pending   |
 | EX-2313 | 地形射线检测 | webgl_geometry_terrain_raycast    | 20min    | 中     | pending   |
 | EX-2314 | 文字         | webgl_geometry_text               | 15min    | 中     | pending   |

@@ -431,7 +431,30 @@
 
 ---
 
-## 2026-05-11 - WebGL 几何体颜色示例完成
+## 2026-05-12 - WebGL 茶壶几何体示例完成
+
+### 完成任务
+
+#### EX-2311 - webgl_geometry_teapot 茶壶几何体示例
+
+- **完成时间**: 2026-05-12
+- **内容**:
+  - 创建 webgl_geometry_teapot.vue 示例组件
+  - 使用 Utah Teapot 犹他茶壶经典 3D 模型
+  - 通过 three/addons/geometries/TeapotGeometry.js 加载茶壶几何体
+  - TBufferGeometry 组件通过 create 函数生成动态茶壶几何体
+  - 支持 GUI 参数调节：细分级别（Tessellation Level）、显示/隐藏壶盖、壶身、壶底
+  - 提供 6 种不同着色模式切换：线框(wireframe)、平面(flat)、平滑(smooth)、光泽(glossy)、纹理(textured)、反射(reflective)
+  - 环境光 + 方向光照明系统
+  - 使用 useGui 组合式函数集成 lil-gui 控制面板
+  - 加载 UV 网格纹理 uv_grid_opengl.jpg 和比萨斜塔环境立方体贴图
+  - 当切换到 reflective 模式时自动切换背景为立方体贴图
+  - 使用 TOrbitControls 轨道控制器支持自由视角观察
+  - 更新 examples.ts 配置标记为已完成
+
+---
+
+## 2026-05-12 - WebGL 几何体颜色示例完成
 
 ### 完成任务
 

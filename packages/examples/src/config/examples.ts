@@ -533,7 +533,7 @@ export const exampleCategories: ExampleCategory[] = [
         category: 'geometry',
         completed: false
       },
-      { id: 'webgl_geometry_teapot', title: '茶壶', category: 'geometry', completed: false },
+      { id: 'webgl_geometry_teapot', title: '茶壶', category: 'geometry', completed: true },
       { id: 'webgl_geometry_terrain', title: '地形', category: 'geometry', completed: false },
       {
         id: 'webgl_geometry_terrain_raycast',
