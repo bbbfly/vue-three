@@ -15,6 +15,7 @@ import {
   MeshNormalMaterial,
   MeshDepthMaterial,
   ShaderMaterial,
+  PointsMaterial,
   Material,
   Mesh,
   Object3D,
@@ -53,6 +54,7 @@ import {
   DstColorFactor,
   OneMinusDstColorFactor
 } from 'three'
+import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js'
 import type { ShapeConfig } from '../types'
 import type {
   GeometryConfig,
@@ -134,6 +136,10 @@ export class ThreeObjectFactory {
         const closed = config.closed || false
         return new TubeGeometry(path, tubularSegments, 1, radialSegments, closed)
       }
+      case 'convex': {
+        const vertices = config.vertices.map(v => new Vector3(v[0], v[1], v[2]))
+        return new ConvexGeometry(vertices)
+      }
       default:
         return new BoxGeometry()
     }
@@ -176,19 +182,31 @@ export class ThreeObjectFactory {
       }
       case 'lambert': {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { type, side, ...rest } = config
+        const { type, side, depthWrite, flatShading, ...rest } = config
         const options: any = { ...rest }
         if (side !== undefined) {
           options.side = side
+        }
+        if (depthWrite !== undefined) {
+          options.depthWrite = depthWrite
+        }
+        if (flatShading !== undefined) {
+          options.flatShading = flatShading
         }
         return new MeshLambertMaterial(options)
       }
       case 'phong': {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { type, side, ...rest } = config
+        const { type, side, depthWrite, flatShading, ...rest } = config
         const options: any = { ...rest }
         if (side !== undefined) {
           options.side = side
+        }
+        if (depthWrite !== undefined) {
+          options.depthWrite = depthWrite
+        }
+        if (flatShading !== undefined) {
+          options.flatShading = flatShading
         }
         return new MeshPhongMaterial(options)
       }
@@ -213,6 +231,11 @@ export class ThreeObjectFactory {
           options.premultipliedAlpha = premultipliedAlpha
         }
         return new ShaderMaterial(options)
+      }
+      case 'points': {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { type, ...rest } = config
+        return new PointsMaterial(rest)
       }
       case 'custom':
         return config.instance

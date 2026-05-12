@@ -369,6 +369,27 @@
 
 ---
 
+## 2026-05-12 - WebGL 凸几何体示例完成
+
+### 完成任务
+
+#### EX-2303 - webgl_geometry_convex 凸包几何体示例
+
+- **完成时间**: 2026-05-12
+- **内容**:
+  - 创建 webgl_geometry_convex.vue 示例组件
+  - 使用 ConvexGeometry 从十二面体顶点生成凸包几何体
+  - 展示原始顶点作为蓝色点粒子
+  - 半透明白色 MeshLambertMaterial 渲染凸包网格
+  - 包含 AxesHelper 坐标轴辅助线
+  - OrbitControls 轨道控制器（限制距离20-50，最大极角PI/2）
+  - 点粒子纹理使用 disc.png 精灵图
+  - 整个 group 自动旋转动画效果
+  - 正确使用 BufferGeometryUtils.mergeVertices() 处理顶点合并
+  - 更新 examples.ts 配置标记为已完成
+
+---
+
 ## 2026-05-11 - WebGL 几何体颜色示例完成
 
 ### 完成任务

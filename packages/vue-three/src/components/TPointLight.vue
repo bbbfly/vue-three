@@ -40,11 +40,11 @@ const props = defineProps({
   },
   /**
    * 光源位置坐标 [x, y, z]
-   * @default [0, 5, 0]
+   * @default [0, 0, 0]
    */
   position: {
     type: Array as unknown as PropType<[number, number, number]>,
-    default: () => [0, 5, 0]
+    default: () => [0, 0, 0]
   },
   /**
    * 光照最大距离，超出该距离的物体不受光照影响

@@ -509,7 +509,7 @@ export const exampleCategories: ExampleCategory[] = [
         category: 'geometry',
         completed: false
       },
-      { id: 'webgl_geometry_convex', title: '凸', category: 'geometry', completed: false },
+      { id: 'webgl_geometry_convex', title: '凸', category: 'geometry', completed: true },
       { id: 'webgl_geometry_csg', title: 'CSG', category: 'geometry', completed: false },
       { id: 'webgl_geometry_cube', title: '立方体', category: 'geometry', completed: true },
       {

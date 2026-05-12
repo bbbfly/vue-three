@@ -144,11 +144,11 @@
 
 ## 第十一阶段：Web Audio 示例
 
-| 任务ID  | 任务名称 | 示例ID               | 预计耗时 | 优先级 | 状态    |
-| ------- | -------- | -------------------- | -------- | ------ | ------- |
-| EX-1101 | 方向     | webaudio_orientation | 15min    | 低     | pending |
-| EX-1102 | 沙盒     | webaudio_sandbox     | 20min    | 低     | pending |
-| EX-1103 | Timing   | webaudio_timing      | 15min    | 低     | pending |
+| 任务ID  | 任务名称 | 示例ID               | 预计耗时 | 优先级 | 状态      |
+| ------- | -------- | -------------------- | -------- | ------ | --------- |
+| EX-1101 | 方向     | webaudio_orientation | 15min    | 低     | pending   |
+| EX-1102 | 沙盒     | webaudio_sandbox     | 20min    | 低     | pending   |
+| EX-1103 | Timing   | webaudio_timing      | 15min    | 低     | pending   |
 | EX-1104 | 可视化   | webaudio_visualizer  | 15min    | 低     | completed |
 
 ---
@@ -239,11 +239,11 @@
 
 ## 第十五阶段：WebGL 相机示例
 
-| 任务ID  | 任务名称               | 示例ID                              | 预计耗时 | 优先级 | 状态    |
-| ------- | ---------------------- | ----------------------------------- | -------- | ------ | ------- |
+| 任务ID  | 任务名称               | 示例ID                              | 预计耗时 | 优先级 | 状态      |
+| ------- | ---------------------- | ----------------------------------- | -------- | ------ | --------- |
 | EX-1501 | Webgl相机              | webgl_camera                        | 10min    | 中     | completed |
 | EX-1502 | Array                  | webgl_camera_array                  | 15min    | 中     | completed |
-| EX-1503 | Logarithmicdepthbuffer | webgl_camera_logarithmicdepthbuffer | 15min    | 中     | pending |
+| EX-1503 | Logarithmicdepthbuffer | webgl_camera_logarithmicdepthbuffer | 15min    | 中     | pending   |
 
 ---
 
@@ -315,24 +315,24 @@
 
 ## 第二十三阶段：WebGL 几何体示例
 
-| 任务ID  | 任务名称     | 示例ID                            | 预计耗时 | 优先级 | 状态    |
-| ------- | ------------ | --------------------------------- | -------- | ------ | ------- |
+| 任务ID  | 任务名称     | 示例ID                            | 预计耗时 | 优先级 | 状态      |
+| ------- | ------------ | --------------------------------- | -------- | ------ | --------- |
 | EX-2301 | 颜色         | webgl_geometry_colors             | 10min    | 中     | completed |
-| EX-2302 | 颜色查找表   | webgl_geometry_colors_lookuptable | 15min    | 中     | pending |
-| EX-2303 | 凸           | webgl_geometry_convex             | 15min    | 中     | pending |
-| EX-2304 | CSG          | webgl_geometry_csg                | 20min    | 中     | pending |
-| EX-2305 | 拉伸形状     | webgl_geometry_extrude_shapes     | 15min    | 中     | pending |
-| EX-2306 | 拉伸splines  | webgl_geometry_extrude_splines    | 15min    | 中     | pending |
-| EX-2307 | 我的世界     | webgl_geometry_minecraft          | 20min    | 中     | pending |
-| EX-2308 | NURBS        | webgl_geometry_nurbs              | 20min    | 中     | pending |
-| EX-2309 | 形状         | webgl_geometry_shapes             | 10min    | 中     | pending |
-| EX-2310 | 样条编辑器   | webgl_geometry_spline_editor      | 20min    | 中     | pending |
-| EX-2311 | 茶壶         | webgl_geometry_teapot             | 15min    | 中     | pending |
-| EX-2312 | 地形         | webgl_geometry_terrain            | 20min    | 中     | pending |
-| EX-2313 | 地形射线检测 | webgl_geometry_terrain_raycast    | 20min    | 中     | pending |
-| EX-2314 | 文字         | webgl_geometry_text               | 15min    | 中     | pending |
-| EX-2315 | 文字形状     | webgl_geometry_text_shapes        | 15min    | 中     | pending |
-| EX-2316 | 文字描边     | webgl_geometry_text_stroke        | 15min    | 中     | pending |
+| EX-2302 | 颜色查找表   | webgl_geometry_colors_lookuptable | 15min    | 中     | pending   |
+| EX-2303 | 凸           | webgl_geometry_convex             | 15min    | 中     | completed |
+| EX-2304 | CSG          | webgl_geometry_csg                | 20min    | 中     | pending   |
+| EX-2305 | 拉伸形状     | webgl_geometry_extrude_shapes     | 15min    | 中     | pending   |
+| EX-2306 | 拉伸splines  | webgl_geometry_extrude_splines    | 15min    | 中     | pending   |
+| EX-2307 | 我的世界     | webgl_geometry_minecraft          | 20min    | 中     | pending   |
+| EX-2308 | NURBS        | webgl_geometry_nurbs              | 20min    | 中     | pending   |
+| EX-2309 | 形状         | webgl_geometry_shapes             | 10min    | 中     | pending   |
+| EX-2310 | 样条编辑器   | webgl_geometry_spline_editor      | 20min    | 中     | pending   |
+| EX-2311 | 茶壶         | webgl_geometry_teapot             | 15min    | 中     | pending   |
+| EX-2312 | 地形         | webgl_geometry_terrain            | 20min    | 中     | pending   |
+| EX-2313 | 地形射线检测 | webgl_geometry_terrain_raycast    | 20min    | 中     | pending   |
+| EX-2314 | 文字         | webgl_geometry_text               | 15min    | 中     | pending   |
+| EX-2315 | 文字形状     | webgl_geometry_text_shapes        | 15min    | 中     | pending   |
+| EX-2316 | 文字描边     | webgl_geometry_text_stroke        | 15min    | 中     | pending   |
 
 ---
 

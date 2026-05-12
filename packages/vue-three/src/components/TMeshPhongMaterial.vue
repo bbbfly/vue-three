@@ -93,6 +93,10 @@ const props = defineProps({
   vertexColors: {
     type: Boolean,
     default: false
+  },
+  depthWrite: {
+    type: Boolean,
+    default: undefined
   }
 })
 
@@ -107,7 +111,8 @@ const { material } = useMaterial({
   wireframe: props.wireframe,
   side: props.side,
   flatShading: props.flatShading,
-  vertexColors: props.vertexColors
+  vertexColors: props.vertexColors,
+  depthWrite: props.depthWrite
 })
 
 /**

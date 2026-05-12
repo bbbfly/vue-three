@@ -28,6 +28,7 @@ export type GeometryType =
   | 'sweep'
   | 'edges'
   | 'wireframe'
+  | 'convex'
 
 export type BoxGeometryArgs = [number?, number?, number?, number?, number?, number?]
 export type SphereGeometryArgs = [number?, number?, number?, number?, number?, number?, number?]
@@ -112,6 +113,7 @@ export type MaterialType =
   | 'normal'
   | 'depth'
   | 'shader'
+  | 'points'
   | 'custom'
 
 export interface BaseMaterialConfig {
@@ -183,6 +185,17 @@ export interface ShaderMaterialConfig extends BaseMaterialConfig {
   uniforms?: Record<string, any>
 }
 
+export interface PointsMaterialConfig {
+  type: 'points'
+  color?: string | number
+  size?: number
+  sizeAttenuation?: boolean
+  transparent?: boolean
+  opacity?: number
+  visible?: boolean
+  alphaTest?: number
+}
+
 export interface CustomMaterialConfig {
   type: 'custom'
   instance: Material
@@ -197,6 +210,7 @@ export type MaterialConfig =
   | NormalMaterialConfig
   | DepthMaterialConfig
   | ShaderMaterialConfig
+  | PointsMaterialConfig
   | CustomMaterialConfig
 
 export interface MeshConfig extends Object3DConfig {
@@ -528,3 +542,26 @@ export interface WireframeGeometryConfig {
   type: 'wireframe'
   geometry: GeometryConfig
 }
+
+export interface ConvexGeometryConfig {
+  type: 'convex'
+  vertices: [number, number, number][]
+}
+
+export type GeometryConfig =
+  | BoxGeometryConfig
+  | SphereGeometryConfig
+  | PlaneGeometryConfig
+  | CylinderGeometryConfig
+  | TorusGeometryConfig
+  | ConeGeometryConfig
+  | IcosahedronGeometryConfig
+  | CustomGeometryConfig
+  | TubeGeometryConfig
+  | LatheGeometryConfig
+  | ShapeGeometryConfig
+  | ExtrudeGeometryConfig
+  | SweepGeometryConfig
+  | EdgesGeometryConfig
+  | WireframeGeometryConfig
+  | ConvexGeometryConfig

@@ -4,9 +4,7 @@
 
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { inject, shallowRef, onBeforeUnmount, watch } from 'vue'
-import { PointsMaterial } from 'three'
-import { MeshContextKey } from '../core/context'
+import { useMaterial } from '../composables/useMaterial'
 
 /**
  * 粒子材质组件
@@ -63,50 +61,26 @@ const props = defineProps({
   visible: {
     type: Boolean,
     default: true
+  },
+  alphaTest: {
+    type: Number,
+    default: 0
   }
 })
 
-const meshCtx = inject(MeshContextKey)
-
-if (!meshCtx) {
-  throw new Error('TPointsMaterial must be used within a TPoints or TMesh component')
-}
-
-const material = shallowRef<PointsMaterial>(new PointsMaterial({
+const { material, updateMaterial } = useMaterial({
+  type: 'points',
   color: props.color,
   size: props.size,
   sizeAttenuation: props.sizeAttenuation,
   transparent: props.transparent,
   opacity: props.opacity,
-  visible: props.visible
-}))
-
-meshCtx!.setMaterial(material.value)
-
-watch(
-  () => props,
-  (newProps) => {
-    const mat = material.value
-    mat.color.set(newProps.color)
-    mat.size = newProps.size
-    mat.sizeAttenuation = newProps.sizeAttenuation
-    mat.transparent = newProps.transparent
-    mat.opacity = newProps.opacity
-    mat.visible = newProps.visible
-    mat.needsUpdate = true
-  },
-  { deep: true }
-)
-
-onBeforeUnmount(() => {
-  material.value.dispose()
+  visible: props.visible,
+  alphaTest: props.alphaTest
 })
 
-/**
- * @expose
- * @property material - Three.js PointsMaterial 实例
- */
 defineExpose({
-  material
+  material,
+  updateMaterial
 })
 </script>
