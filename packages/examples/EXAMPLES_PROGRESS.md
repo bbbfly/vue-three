@@ -296,6 +296,27 @@
 
 ---
 
+## 2026-05-12 - Minecraft 几何体示例完成
+
+### 完成任务
+
+#### EX-2307 - webgl_geometry_minecraft 我的世界示例
+
+- **完成时间**: 2026-05-12
+- **内容**:
+  - 创建 webgl_geometry_minecraft.vue 示例组件
+  - 使用 ImprovedNoise 柏林噪声生成地形高度数据
+  - 生成 128x128 网格的体素世界
+  - 使用 PlaneGeometry 构建方块的六个面（仅渲染可见面以优化性能）
+  - 使用 BufferGeometryUtils.mergeGeometries() 合并所有几何体以提升渲染效率
+  - TFirstPersonControls 第一人称控制（移动速度 1000，转头速度 0.125）
+  - 加载 Minecraft 风格纹理图集 atlas.png（使用 NearestFilter 保持像素风格）
+  - 环境光 + 方向光照明系统
+  - 背景色为 #bfd1e5（浅蓝色天空）
+  - 完整的资源清理逻辑（dispose() 处理几何体）
+
+---
+
 ## 后续待完成任务
 
 ### 第二阶段：核心功能组件

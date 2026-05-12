@@ -1,4 +1,4 @@
-import { inject, shallowRef, onMounted, onBeforeUnmount, watch } from 'vue'
+import { inject, shallowRef, onBeforeUnmount, watch } from 'vue'
 import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js'
 import { ThreeContextKey } from '../core/context'
 import type { FirstPersonControlsConfig } from '../types'
@@ -84,20 +84,23 @@ export function useFirstPersonControls(config: FirstPersonControlsConfig = {}) {
     }
   }
 
-  onMounted(() => {
-    if (!ctx.renderer.value || !ctx.camera.value) {
-      return
+  const stopWatch = watch(
+    [() => ctx.renderer.value, () => ctx.camera.value],
+    ([renderer, camera]) => {
+      if (!renderer || !camera) return
+      if (controls.value) return
+
+      const fpControls = new FirstPersonControls(camera, renderer.domElement)
+      controls.value = fpControls
+
+      if (Object.keys(config).length > 0) {
+        updateConfig(config)
+      }
+
+      ctx.controls.value = fpControls
+      stopWatch()
     }
-
-    const fpControls = new FirstPersonControls(ctx.camera.value, ctx.renderer.value.domElement)
-    controls.value = fpControls
-
-    if (Object.keys(config).length > 0) {
-      updateConfig(config)
-    }
-
-    ctx.controls.value = fpControls
-  })
+  )
 
   watch(
     () => config,
@@ -108,6 +111,7 @@ export function useFirstPersonControls(config: FirstPersonControlsConfig = {}) {
   )
 
   onBeforeUnmount(() => {
+    stopWatch()
     dispose()
   })
 

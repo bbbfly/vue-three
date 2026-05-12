@@ -188,7 +188,8 @@ export function useCanvas(options: CanvasOptions = {}, animateFn: AnimateFn) {
         mixer.update(delta)
       })
 
-      if (controls.value) {
+      // 统一更新所有控制器（OrbitControls、FirstPersonControls、FlyControls 等）
+      if (controls.value && (controls.value as any).update) {
         ;(controls.value as any).update(delta)
       }
 

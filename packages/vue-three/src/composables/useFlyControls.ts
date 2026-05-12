@@ -1,4 +1,4 @@
-import { inject, shallowRef, onMounted, onBeforeUnmount, watch } from 'vue'
+import { inject, shallowRef, onBeforeUnmount, watch } from 'vue'
 import { FlyControls } from 'three/addons/controls/FlyControls.js'
 import { ThreeContextKey } from '../core/context'
 import type { FlyControlsConfig } from '../types'
@@ -44,20 +44,23 @@ export function useFlyControls(config: FlyControlsConfig = {}) {
     }
   }
 
-  onMounted(() => {
-    if (!ctx.renderer.value || !ctx.camera.value) {
-      return
+  const stopWatch = watch(
+    [() => ctx.renderer.value, () => ctx.camera.value],
+    ([renderer, camera]) => {
+      if (!renderer || !camera) return
+      if (controls.value) return
+
+      const flyControls = new FlyControls(camera, renderer.domElement)
+      controls.value = flyControls
+
+      if (Object.keys(config).length > 0) {
+        updateConfig(config)
+      }
+
+      ctx.controls.value = flyControls
+      stopWatch()
     }
-
-    const flyControls = new FlyControls(ctx.camera.value, ctx.renderer.value.domElement)
-    controls.value = flyControls
-
-    if (Object.keys(config).length > 0) {
-      updateConfig(config)
-    }
-
-    ctx.controls.value = flyControls
-  })
+  )
 
   watch(
     () => config,
@@ -68,6 +71,7 @@ export function useFlyControls(config: FlyControlsConfig = {}) {
   )
 
   onBeforeUnmount(() => {
+    stopWatch()
     dispose()
   })
 
