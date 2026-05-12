@@ -321,7 +321,7 @@
 | EX-2302 | 颜色查找表   | webgl_geometry_colors_lookuptable | 15min    | 中     | pending   |
 | EX-2303 | 凸           | webgl_geometry_convex             | 15min    | 中     | completed |
 | EX-2304 | CSG          | webgl_geometry_csg                | 20min    | 中     | pending   |
-| EX-2305 | 拉伸形状     | webgl_geometry_extrude_shapes     | 15min    | 中     | pending   |
+| EX-2305 | 拉伸形状     | webgl_geometry_extrude_shapes     | 15min    | 中     | completed |
 | EX-2306 | 拉伸splines  | webgl_geometry_extrude_splines    | 15min    | 中     | pending   |
 | EX-2307 | 我的世界     | webgl_geometry_minecraft          | 20min    | 中     | completed |
 | EX-2308 | NURBS        | webgl_geometry_nurbs              | 20min    | 中     | pending   |

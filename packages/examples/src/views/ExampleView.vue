@@ -114,8 +114,9 @@ async function loadOfficialSourceCode(id: string) {
     const response = await fetch(`/${id}.html`)
     if (response.ok) {
       const html = await response.text()
-      const scriptMatch = html.match(/<script type="module">([\s\S]*?)<\/script>/)
-      officialSourceCode.value = scriptMatch ? scriptMatch[1].trim() : '// 未找到 script 部分'
+      // const scriptMatch = html.match(/<script type="module">([\s\S]*?)<\/script>/)
+      // officialSourceCode.value = scriptMatch ? scriptMatch[1].trim() : '// 未找到 script 部分'
+      officialSourceCode.value = html
     } else {
       officialSourceCode.value = '// 官方示例 HTML 不存在'
     }

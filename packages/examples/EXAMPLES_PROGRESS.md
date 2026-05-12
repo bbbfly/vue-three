@@ -411,6 +411,26 @@
 
 ---
 
+## 2026-05-12 - WebGL 拉伸形状示例完成
+
+### 完成任务
+
+#### EX-2305 - webgl_geometry_extrude_shapes 拉伸形状示例
+
+- **完成时间**: 2026-05-12
+- **内容**:
+  - 创建 webgl_geometry_extrude_shapes.vue 示例组件
+  - 使用 CatmullRomCurve3 闭合曲线作为拉伸路径，生成三角形拉伸几何体
+  - 随机生成 10 个点作为 CatmullRomCurve3 路径，生成星形拉伸几何体
+  - 展示标准带倒角的 ExtrudeGeometry（深度20，倒角厚度2，倒角大小4）
+  - 使用 TTrackballControls 轨迹球控制器（限制最小距离200，最大距离500）
+  - 环境光 AmbientLight (0x666666, intensity=1) + 点光源 PointLight (intensity=3)
+  - 背景色为深灰色 #222222，与官方示例完全一致
+  - 三个不同颜色的 MeshLambertMaterial：红色 0xb00000，橙色 0xff8000
+  - 使用 TBufferGeometry 组件，通过 .copy() 方法设置动态生成的 ExtrudeGeometry 几何体
+
+---
+
 ## 2026-05-11 - WebGL 几何体颜色示例完成
 
 ### 完成任务

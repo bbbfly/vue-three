@@ -516,7 +516,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_geometry_extrude_shapes',
         title: '拉伸形状',
         category: 'geometry',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_geometry_extrude_splines',
