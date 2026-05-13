@@ -4,10 +4,11 @@
 
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { watch, computed } from 'vue'
+import { watch, computed, provide, onMounted, inject, shallowRef } from 'vue'
 import { useLine } from '../composables/useLine'
+import { MeshContextKey, ThreeContextKey, GroupContextKey } from '../core/context'
 import type { CurveConfig, Object3DConfig } from '../types'
-import type { BufferGeometry } from 'three'
+import type { BufferGeometry, Material } from 'three'
 
 /**
  * 线条渲染组件
@@ -100,11 +101,38 @@ watch(
   { deep: true }
 )
 
+function setGeometry(geometry: BufferGeometry) {
+  if (line.value.geometry) {
+    line.value.geometry.dispose()
+  }
+  line.value.geometry = geometry
+  line.value.updateMatrix()
+}
+
+function setMaterial(material: Material) {
+  if (line.value.material) {
+    const oldMaterial = line.value.material as Material
+    oldMaterial.dispose()
+  }
+  line.value.material = material
+  material.needsUpdate = true
+}
+
+provide(MeshContextKey, {
+  mesh: line,
+  setGeometry,
+  setMaterial
+})
+
 /**
  * @expose
  * @property line - Three.js Line 实例
+ * @property setGeometry - 设置线条几何体
+ * @property setMaterial - 设置线条材质
  */
 defineExpose({
-  line
+  line,
+  setGeometry,
+  setMaterial
 })
 </script>

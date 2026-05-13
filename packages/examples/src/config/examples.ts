@@ -526,7 +526,7 @@ export const exampleCategories: ExampleCategory[] = [
       },
       { id: 'webgl_geometry_minecraft', title: '我的世界', category: 'geometry', completed: true },
       { id: 'webgl_geometry_nurbs', title: 'NURBS', category: 'geometry', completed: false },
-      { id: 'webgl_geometry_shapes', title: '形状', category: 'geometry', completed: false },
+      { id: 'webgl_geometry_shapes', title: '形状', category: 'geometry', completed: true },
       {
         id: 'webgl_geometry_spline_editor',
         title: '样条编辑器',
