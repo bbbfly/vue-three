@@ -1,12 +1,13 @@
 <template>
   <TCanvas antialias :background="0xefd1b5" :enable-controls="false">
     <TScene ref="sceneRef" :fog="fogConfig" :background="0xefd1b5">
-      <TPerspectiveCamera ref="cameraRef" :fov="60" :near="1" :far="10000" />
+      <TPerspectiveCamera ref="cameraRef" :fov="60" :near="1" :far="10000" :position="[100, 800, -800]"
+        :look-at-target="[-100, 810, -800]" />
       <TFirstPersonControls ref="controlsRef" :movement-speed="150" :look-speed="0.1" />
 
       <TMesh ref="meshRef">
         <TBufferGeometry ref="geometryRef" />
-        <TMeshBasicMaterial>
+        <TMeshBasicMaterial v-if="textureCanvas">
           <TCanvasTexture ref="textureRef" :canvas="textureCanvas" :wrap-s="THREE.ClampToEdgeWrapping"
             :wrap-t="THREE.ClampToEdgeWrapping" :color-space="THREE.SRGBColorSpace" />
         </TMeshBasicMaterial>
@@ -139,12 +140,6 @@ function initTerrain() {
 
   geometry.attributes.position.needsUpdate = true
   geometry.computeVertexNormals()
-
-  // 设置相机位置（与官方示例一致）
-  if (cameraRef.value?.camera) {
-    cameraRef.value.camera.position.set(100, 800, -800)
-    cameraRef.value.camera.lookAt(-100, 810, -800)
-  }
 
   // 将几何体复制到 TBufferGeometry
   if (geometryRef.value?.geometry) {
