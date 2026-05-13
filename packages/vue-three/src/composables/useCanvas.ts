@@ -27,8 +27,23 @@ export interface CanvasOptions extends RendererConfig {
   autoClear?: boolean
   enableControls?: boolean
 }
-type AnimateFn = ({ scene, camera, delta }: { scene: Scene; camera: Camera; delta: number }) => void
-export function useCanvas(options: CanvasOptions = {}, animateFn: AnimateFn) {
+type Config = {
+  options: CanvasOptions
+  animateFn: AnimateFn
+  renderFn?: AnimateFn
+}
+export type AnimateFn = ({
+  scene,
+  camera,
+  delta
+}: {
+  scene: Scene
+  camera: Camera
+  delta: number
+  renderer?: WebGLRenderer
+  renderers?: Map<string, THREE.Renderer>
+}) => void
+export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
   const canvasRef = ref<HTMLCanvasElement | null>(null)
   const renderer = shallowRef<WebGLRenderer | null>(null)
   const scene = shallowRef<Scene>(new Scene())
@@ -162,7 +177,17 @@ export function useCanvas(options: CanvasOptions = {}, animateFn: AnimateFn) {
     if (options.autoClear !== false) {
       renderer.value.clear()
     }
-
+    // 调用自定义渲染函数
+    if (renderFn) {
+      return renderFn({
+        scene: scene.value,
+        camera: camera.value,
+        delta,
+        renderers: renderers.value,
+        renderer: renderer.value
+      })
+    }
+    // 貌景处理
     if (postProcessingEnabled && composer.value) {
       composer.value.render(delta)
     } else {

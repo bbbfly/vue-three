@@ -42,6 +42,10 @@ const props = defineProps({
   flatShading: {
     type: Boolean,
     default: undefined
+  },
+  map: {
+    type: [String, Object] as PropType<string | THREE.Texture>,
+    default: undefined
   }
 })
 
@@ -55,7 +59,8 @@ const { material } = useMaterial({
   premultipliedAlpha: props.premultipliedAlpha,
   side: props.side,
   depthWrite: props.depthWrite,
-  flatShading: props.flatShading
+  flatShading: props.flatShading,
+  map: props.map
 })
 
 defineExpose({

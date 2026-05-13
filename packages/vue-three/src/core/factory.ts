@@ -52,7 +52,8 @@ import {
   OneMinusSrcAlphaFactor,
   OneFactor,
   DstColorFactor,
-  OneMinusDstColorFactor
+  OneMinusDstColorFactor,
+  TextureLoader
 } from 'three'
 import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js'
 import type { ShapeConfig } from '../types'
@@ -149,7 +150,7 @@ export class ThreeObjectFactory {
     switch (config.type) {
       case 'basic': {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { type, side, blending, premultipliedAlpha, ...rest } = config
+        const { type, side, blending, premultipliedAlpha, map, ...rest } = config
         const options: any = { ...rest }
         if (side !== undefined) {
           options.side = side
@@ -160,23 +161,47 @@ export class ThreeObjectFactory {
         if (premultipliedAlpha !== undefined) {
           options.premultipliedAlpha = premultipliedAlpha
         }
+        if (map !== undefined) {
+          if (typeof map === 'string') {
+            const loader = new TextureLoader()
+            options.map = loader.load(map)
+          } else {
+            options.map = map
+          }
+        }
         return new MeshBasicMaterial(options)
       }
       case 'standard': {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { type, side, ...rest } = config
+        const { type, side, map, ...rest } = config
         const options: any = { ...rest }
         if (side !== undefined) {
           options.side = side
+        }
+        if (map !== undefined) {
+          if (typeof map === 'string') {
+            const loader = new TextureLoader()
+            options.map = loader.load(map)
+          } else {
+            options.map = map
+          }
         }
         return new MeshStandardMaterial(options)
       }
       case 'physical': {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { type, side, ...rest } = config
+        const { type, side, map, ...rest } = config
         const options: any = { ...rest }
         if (side !== undefined) {
           options.side = side
+        }
+        if (map !== undefined) {
+          if (typeof map === 'string') {
+            const loader = new TextureLoader()
+            options.map = loader.load(map)
+          } else {
+            options.map = map
+          }
         }
         return new MeshPhysicalMaterial(options)
       }

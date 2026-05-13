@@ -1354,7 +1354,7 @@ export const exampleCategories: ExampleCategory[] = [
     id: 'rtt',
     name: 'WebGL - 渲染到纹理',
     icon: '🖼️',
-    examples: [{ id: 'webgl_rtt', title: 'Webglrtt', category: 'rtt', completed: false }]
+    examples: [{ id: 'webgl_rtt', title: 'Webglrtt', category: 'rtt', completed: true }]
   },
   {
     id: 'shadowmap',

@@ -141,6 +141,13 @@ const props = defineProps({
   wireframe: {
     type: Boolean,
     default: false
+  },
+  /**
+   * 纹理贴图，支持 URL 字符串或 Texture 对象
+   */
+  map: {
+    type: [String, Object] as PropType<string | THREE.Texture>,
+    default: undefined
   }
 })
 
@@ -160,111 +167,112 @@ const { material } = useMaterial({
   specularIntensity: props.specularIntensity,
   transparent: props.transparent,
   opacity: props.opacity,
-  wireframe: props.wireframe
+  wireframe: props.wireframe,
+  map: props.map
 })
 
 watch(
   () => props.color,
   newColor => {
-    ;(material.value as MeshPhysicalMaterial).color.set(newColor)
+    ; (material.value as MeshPhysicalMaterial).color.set(newColor)
   }
 )
 
 watch(
   () => props.metalness,
   newValue => {
-    ;(material.value as MeshPhysicalMaterial).metalness = newValue
+    ; (material.value as MeshPhysicalMaterial).metalness = newValue
   }
 )
 
 watch(
   () => props.roughness,
   newValue => {
-    ;(material.value as MeshPhysicalMaterial).roughness = newValue
+    ; (material.value as MeshPhysicalMaterial).roughness = newValue
   }
 )
 
 watch(
   () => props.clearcoat,
   newValue => {
-    ;(material.value as MeshPhysicalMaterial).clearcoat = newValue
+    ; (material.value as MeshPhysicalMaterial).clearcoat = newValue
   }
 )
 
 watch(
   () => props.clearcoatRoughness,
   newValue => {
-    ;(material.value as MeshPhysicalMaterial).clearcoatRoughness = newValue
+    ; (material.value as MeshPhysicalMaterial).clearcoatRoughness = newValue
   }
 )
 
 watch(
   () => props.transmission,
   newValue => {
-    ;(material.value as MeshPhysicalMaterial).transmission = newValue
+    ; (material.value as MeshPhysicalMaterial).transmission = newValue
   }
 )
 
 watch(
   () => props.thickness,
   newValue => {
-    ;(material.value as MeshPhysicalMaterial).thickness = newValue
+    ; (material.value as MeshPhysicalMaterial).thickness = newValue
   }
 )
 
 watch(
   () => props.ior,
   newValue => {
-    ;(material.value as MeshPhysicalMaterial).ior = newValue
+    ; (material.value as MeshPhysicalMaterial).ior = newValue
   }
 )
 
 watch(
   () => props.iridescence,
   newValue => {
-    ;(material.value as MeshPhysicalMaterial).iridescence = newValue
+    ; (material.value as MeshPhysicalMaterial).iridescence = newValue
   }
 )
 
 watch(
   () => props.sheen,
   newValue => {
-    ;(material.value as MeshPhysicalMaterial).sheen = newValue
+    ; (material.value as MeshPhysicalMaterial).sheen = newValue
   }
 )
 
 watch(
   () => props.sheenColor,
   newValue => {
-    ;(material.value as MeshPhysicalMaterial).sheenColor = new Color(newValue)
+    ; (material.value as MeshPhysicalMaterial).sheenColor = new Color(newValue)
   }
 )
 
 watch(
   () => props.specularIntensity,
   newValue => {
-    ;(material.value as MeshPhysicalMaterial).specularIntensity = newValue
+    ; (material.value as MeshPhysicalMaterial).specularIntensity = newValue
   }
 )
 
 watch(
   () => props.opacity,
   newValue => {
-    ;(material.value as MeshPhysicalMaterial).opacity = newValue
+    ; (material.value as MeshPhysicalMaterial).opacity = newValue
   }
 )
 
 watch(
   () => props.transparent,
   newValue => {
-    ;(material.value as MeshPhysicalMaterial).transparent = newValue
+    ; (material.value as MeshPhysicalMaterial).transparent = newValue
   }
 )
 
 watch(
   () => props.wireframe,
   newValue => {
-    ;(material.value as MeshPhysicalMaterial).wireframe = newValue
+    ; (material.value as MeshPhysicalMaterial).wireframe = newValue
   }
 )
 

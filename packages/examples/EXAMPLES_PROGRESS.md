@@ -549,6 +549,40 @@
 
 ---
 
+## 2026-05-13 - WebGL 渲染到纹理示例完成
+
+### 完成任务
+
+#### EX-4601 - webgl_rtt 渲染到纹理示例
+
+- **完成时间**: 2026-05-13
+- **内容**:
+  - 创建 webgl_rtt.vue 示例组件
+  - 实现 Render-to-Texture (RTT) 渲染到纹理技术
+  - 使用 WebGLRenderTarget 创建离屏渲染目标
+  - 创建三个场景：主场景（显示球体）、RTT 场景（渲染动态纹理）、屏幕场景
+  - 使用 ShaderMaterial 实现自定义着色器，生成动态颜色渐变效果
+  - 创建 5x5 的球体网格，每个球体使用 RTT 纹理贴图
+  - 实现鼠标交互控制相机视角（左右和上下移动）
+  - 使用 TCanvas、TScene、TPerspectiveCamera、TMesh、TSphere、TMeshBasicMaterial 组件
+  - 正确处理几何体克隆以避免重复使用问题
+  - 在 onUnmounted 中正确清理资源（纹理和材质）
+  - 更新 examples.ts 配置标记为已完成
+
+#### 组件库增强
+
+- **完成时间**: 2026-05-13
+- **内容**:
+  - 为 TMeshBasicMaterial 组件添加 map 属性支持
+  - 为 TMeshStandardMaterial 组件添加 map 属性支持
+  - 为 TMeshPhysicalMaterial 组件添加 map 属性支持
+  - 在 types/index.ts 中为 BaseMaterialConfig 添加 map?: string | Texture 类型定义
+  - 在 factory.ts 中实现 map 属性处理逻辑，支持 URL 字符串和 Texture 对象两种方式
+  - 当传入 URL 字符串时，自动使用 TextureLoader 加载纹理
+  - 当传入 Texture 对象时，直接使用传入的纹理
+
+---
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例

@@ -9,7 +9,7 @@
 import { provide, computed, watch } from 'vue'
 import type { PropType } from 'vue'
 import { ThreeContextKey, InteractionContextKey } from '../core/context'
-import { useCanvas, type CanvasOptions } from '../composables/useCanvas'
+import { useCanvas, type CanvasOptions, type AnimateFn } from '../composables/useCanvas'
 import { useInteraction } from '../composables/useInteraction'
 import type { ShadowMapType } from 'three'
 
@@ -119,6 +119,14 @@ const props = defineProps({
   enableControls: {
     type: Boolean,
     default: true
+  },
+  /**
+   * 自定义渲染函数
+   * @default undefined
+   */
+  onRender: {
+    type: Function as PropType<AnimateFn>,
+    default: undefined
   }
 })
 
@@ -139,9 +147,14 @@ const emit = defineEmits<{
   animate: [{ scene: THREE.Scene; camera: THREE.Camera; delta: number; renderer: THREE.WebGLRenderer; size: { width: number; height: number } }]
 }>()
 
-const { canvasRef, context } = useCanvas(options.value, ({ scene, camera, delta }) => {
-  emit('animate', { scene, camera, delta, renderer: context.renderer.value!, size: context.size.value })
-})
+const { canvasRef, context } = useCanvas(
+  {
+    options: options.value,
+    animateFn: ({ scene, camera, delta }) => {
+      emit('animate', { scene, camera, delta, renderer: context.renderer.value!, size: context.size.value })
+    },
+    renderFn: props.onRender
+  })
 const interaction = useInteraction(context)
 
 watch(

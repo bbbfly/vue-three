@@ -126,6 +126,7 @@ export interface BaseMaterialConfig {
   premultipliedAlpha?: boolean
   flatShading?: boolean
   vertexColors?: boolean
+  map?: string | Texture
 }
 
 export interface BasicMaterialConfig extends BaseMaterialConfig {
