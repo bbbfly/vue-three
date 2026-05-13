@@ -528,6 +528,27 @@
 
 ---
 
+## 2026-05-13 - WebGL Sprite 射线检测示例完成
+
+### 完成任务
+
+#### EX-4302 - webgl_raycaster_sprite Sprite 射线检测示例
+
+- **完成时间**: 2026-05-13
+- **内容**:
+  - 创建 webgl_raycaster_sprite.vue 示例组件
+  - 使用 TSprite 组件创建三个不同位置和变换的 Sprite 对象
+  - Sprite 1: 位置 [6, 5, 5]，缩放 [2, 5, 1]
+  - Sprite 2: 位置 [8, -2, 2]，禁用尺寸衰减，旋转角度为 4π/3
+  - Sprite 3: 位于嵌套 Group 中，位置 [0, 2, 5]，旋转角度为 π/3
+  - 使用组件库中的 useRaycaster composable 实现射线检测交互
+  - 鼠标悬停时 Sprite 颜色从蓝色 (#69f) 变为红色 (#f00)
+  - TOrbitControls 轨道控制器（最小距离 15，最大距离 250）
+  - 白色背景，清晰展示 Sprite 对象
+  - 更新 examples.ts 配置标记为已完成
+
+---
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例

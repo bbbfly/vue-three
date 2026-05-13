@@ -642,7 +642,7 @@
 | 任务ID  | 任务名称 | 示例ID                  | 预计耗时 | 优先级 | 状态    |
 | ------- | -------- | ----------------------- | -------- | ------ | ------- |
 | EX-4301 | BVH      | webgl_raycaster_bvh     | 20min    | 中     | pending |
-| EX-4302 | Sprite   | webgl_raycaster_sprite  | 15min    | 中     | pending |
+| EX-4302 | Sprite   | webgl_raycaster_sprite  | 15min    | 中     | completed |
 | EX-4303 | 纹理     | webgl_raycaster_texture | 15min    | 中     | pending |
 
 ---

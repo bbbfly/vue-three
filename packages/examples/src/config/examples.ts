@@ -1325,7 +1325,7 @@ export const exampleCategories: ExampleCategory[] = [
     icon: '🔦',
     examples: [
       { id: 'webgl_raycaster_bvh', title: 'BVH', category: 'raycaster', completed: false },
-      { id: 'webgl_raycaster_sprite', title: 'Sprite', category: 'raycaster', completed: false },
+      { id: 'webgl_raycaster_sprite', title: 'Sprite', category: 'raycaster', completed: true },
       { id: 'webgl_raycaster_texture', title: '纹理', category: 'raycaster', completed: false }
     ]
   },
