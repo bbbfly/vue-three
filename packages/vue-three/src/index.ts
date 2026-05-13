@@ -36,6 +36,7 @@ export * from './composables/useCSS2DRenderer'
 export * from './composables/useCSS3DRenderer'
 export * from './composables/useSprite'
 export * from './composables/useHelper'
+export * from './composables/useRaycaster'
 export * from './composables/useGroup'
 export { useGui, type UseGuiOptions } from './composables/useGui'
 
