@@ -1,29 +1,23 @@
-import { inject, onMounted, onBeforeUnmount } from 'vue'
+import { onMounted, onBeforeUnmount, Ref, computed, toValue } from 'vue'
 import { Raycaster, Vector2, Object3D, Intersection } from 'three'
-import { ThreeContextKey, type ThreeContext } from '../core/context'
-
+import { TCanvas } from '../index.ts'
 export interface RaycasterResult {
   intersects: Intersection[]
   point: Vector2
 }
 
 export type RaycasterCallback = (result: RaycasterResult) => void
+export type IntersectObject = (mesh: Object3D, fn: RaycasterCallback) => void
 
-export interface RaycasterConfig {
-  mesh?: Object3D | null
-  callback?: RaycasterCallback
-}
+export type RaycasterConfig = Ref<typeof TCanvas>
 
-export function useRaycaster(config?: RaycasterConfig) {
-  const threeCtx = inject(ThreeContextKey) as ThreeContext
-  if (!threeCtx) {
-    throw new Error('useRaycaster must be used within a TCanvas component')
-  }
+export function useRaycaster(config: RaycasterConfig) {
+  const threeCtx = computed(() => config.value.context)
 
   const raycaster = new Raycaster()
   const mouse = new Vector2()
-  let meshRef = <Object3D | null>(config?.mesh || null)
-  let callbackRef = <RaycasterCallback | null>(config?.callback || null)
+  let meshRef = <Object3D | null>null
+  let callbackRef = <RaycasterCallback | null>null
 
   const setMesh = (mesh: Object3D | null) => {
     meshRef = mesh
@@ -34,7 +28,7 @@ export function useRaycaster(config?: RaycasterConfig) {
   }
 
   const updateMousePosition = (event: MouseEvent) => {
-    const canvas = threeCtx.canvas.value
+    const canvas = toValue(threeCtx.value.canvas)
     if (!canvas) return
 
     const rect = canvas.getBoundingClientRect()
@@ -42,7 +36,10 @@ export function useRaycaster(config?: RaycasterConfig) {
     mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
   }
 
-  const intersectObject = (mesh: Object3D, fn: RaycasterCallback) => {
+  const intersectObject: IntersectObject = (mesh, fn) => {
+    if (!threeCtx.value) {
+      throw new Error('useRaycaster must be used within a TCanvas component')
+    }
     setMesh(mesh)
     setCallback(fn)
   }
@@ -50,7 +47,8 @@ export function useRaycaster(config?: RaycasterConfig) {
   const handleMouseMove = (event: MouseEvent) => {
     updateMousePosition(event)
     if (meshRef && callbackRef) {
-      raycaster.setFromCamera(mouse, threeCtx.camera.value)
+      const camera = toValue(threeCtx.value.camera)
+      raycaster.setFromCamera(mouse, camera)
       const intersects = raycaster.intersectObject(meshRef, true)
       callbackRef({
         intersects,
@@ -62,7 +60,8 @@ export function useRaycaster(config?: RaycasterConfig) {
   const handleClick = (event: MouseEvent) => {
     updateMousePosition(event)
     if (meshRef && callbackRef) {
-      raycaster.setFromCamera(mouse, threeCtx.camera.value)
+      const camera = toValue(threeCtx.value.camera)
+      raycaster.setFromCamera(mouse, camera)
       const intersects = raycaster.intersectObject(meshRef, true)
       callbackRef({
         intersects,
@@ -74,9 +73,8 @@ export function useRaycaster(config?: RaycasterConfig) {
   let canvasElement: HTMLCanvasElement | null = null
 
   const bindEvents = () => {
-    canvasElement = threeCtx.canvas.value
+    canvasElement = toValue(threeCtx.value.canvas)
     if (!canvasElement) return
-
     canvasElement.addEventListener('mousemove', handleMouseMove)
     canvasElement.addEventListener('click', handleClick)
   }

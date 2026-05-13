@@ -539,7 +539,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_geometry_terrain_raycast',
         title: '地形射线检测',
         category: 'geometry',
-        completed: false
+        completed: true
       },
       { id: 'webgl_geometry_text', title: '文字', category: 'geometry', completed: false },
       {

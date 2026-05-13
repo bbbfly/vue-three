@@ -497,6 +497,37 @@
 
 ---
 
+## 2026-05-13 - WebGL 地形射线检测示例完成
+
+### 完成任务
+
+#### EX-2313 - webgl_geometry_terrain_raycast 地形射线检测示例
+
+- **完成时间**: 2026-05-13
+- **内容**:
+  - 创建 webgl_geometry_terrain_raycast.vue 示例组件
+  - 使用 ImprovedNoise 柏林噪声算法生成 256x256 地形高度数据
+  - 基于 PlaneGeometry 创建地形平面（7500x7500）
+  - 动态生成 CanvasTexture 地形纹理，考虑光照方向计算明暗
+  - 使用 useRaycaster composable 实现鼠标射线检测
+  - 圆锥辅助指示器跟随鼠标交互点并指向法线方向
+  - TOrbitControls 轨道控制器（最小距离 1000，最大距离 10000）
+  - 背景色为天空蓝色 #bfd1e5
+  - 修复纹理显示问题：将 TCanvasTexture 组件方式改为直接传递 THREE.CanvasTexture 对象给材质
+
+#### 新增组件
+
+- **TConeGeometry**: 圆锥体几何体组件
+  - 基于 THREE.ConeGeometry 实现
+  - 支持 args prop 配置参数：[radius, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength]
+  - 响应式参数更新支持
+- **TMeshNormalMaterial**: 法线材质组件
+  - 基于 THREE.MeshNormalMaterial 实现
+  - 显示几何体法线方向的颜色编码
+  - 支持 wireframe、flatShading 等常用属性
+
+---
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例

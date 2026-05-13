@@ -62,6 +62,7 @@ import TMeshStandardMaterial from './components/TMeshStandardMaterial.vue'
 import TMeshPhysicalMaterial from './components/TMeshPhysicalMaterial.vue'
 import TMeshLambertMaterial from './components/TMeshLambertMaterial.vue'
 import TMeshPhongMaterial from './components/TMeshPhongMaterial.vue'
+import TMeshNormalMaterial from './components/TMeshNormalMaterial.vue'
 import TShaderMaterial from './components/TShaderMaterial.vue'
 import TGLTFLoader from './components/TGLTFLoader.vue'
 import TAnimationMixer from './components/TAnimationMixer.vue'
@@ -103,6 +104,7 @@ import TEdgesGeometry from './components/TEdgesGeometry.vue'
 import TWireframeGeometry from './components/TWireframeGeometry.vue'
 import TBufferGeometry from './components/TBufferGeometry.vue'
 import TConvexGeometry from './components/TConvexGeometry.vue'
+import TConeGeometry from './components/TConeGeometry.vue'
 import TCSS2DRenderer from './components/TCSS2DRenderer.vue'
 import TPoints from './components/TPoints.vue'
 import TPointsMaterial from './components/TPointsMaterial.vue'
@@ -156,6 +158,7 @@ export {
   TMeshPhysicalMaterial,
   TMeshLambertMaterial,
   TMeshPhongMaterial,
+  TMeshNormalMaterial,
   TShaderMaterial,
   TTexture,
   TCanvasTexture,
@@ -191,6 +194,7 @@ export {
   TWireframeGeometry,
   TBufferGeometry,
   TConvexGeometry,
+  TConeGeometry,
   TPoints,
   TPointsMaterial,
   TGridHelper,
@@ -229,6 +233,7 @@ const components = [
   TMeshPhysicalMaterial,
   TMeshLambertMaterial,
   TMeshPhongMaterial,
+  TMeshNormalMaterial,
   TShaderMaterial,
   TTexture,
   TCanvasTexture,
@@ -262,6 +267,7 @@ const components = [
   TWireframeGeometry,
   TBufferGeometry,
   TConvexGeometry,
+  TConeGeometry,
   TPoints,
   TPointsMaterial,
   TGridHelper,
