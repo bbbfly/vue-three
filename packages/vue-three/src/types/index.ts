@@ -29,6 +29,7 @@ export type GeometryType =
   | 'edges'
   | 'wireframe'
   | 'convex'
+  | 'text'
 
 export type BoxGeometryArgs = [number?, number?, number?, number?, number?, number?]
 export type SphereGeometryArgs = [number?, number?, number?, number?, number?, number?, number?]
@@ -504,6 +505,22 @@ export type ExtrudeGeometryArgs = {
   steps?: number
 }
 
+export type TextGeometryArgs = {
+  size?: number
+  depth?: number
+  curveSegments?: number
+  bevelThickness?: number
+  bevelSize?: number
+  bevelEnabled?: boolean
+}
+
+export interface TextGeometryConfig {
+  type: 'text'
+  text: string
+  font: any
+  args?: TextGeometryArgs
+}
+
 export interface TubeGeometryConfig {
   type: 'tube'
   path: CurveConfig
@@ -566,3 +583,4 @@ export type GeometryConfig =
   | EdgesGeometryConfig
   | WireframeGeometryConfig
   | ConvexGeometryConfig
+  | TextGeometryConfig

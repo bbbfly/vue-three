@@ -56,6 +56,7 @@ import {
   TextureLoader
 } from 'three'
 import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js'
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js'
 import type { ShapeConfig } from '../types'
 import type {
   GeometryConfig,
@@ -140,6 +141,22 @@ export class ThreeObjectFactory {
       case 'convex': {
         const vertices = config.vertices.map(v => new Vector3(v[0], v[1], v[2]))
         return new ConvexGeometry(vertices)
+      }
+      case 'text': {
+        const textConfig = config as any
+        if (!textConfig.text || !textConfig.font) {
+          console.error('createGeometry: text config requires text and font', config)
+          return new BoxGeometry()
+        }
+        return new TextGeometry(textConfig.text, {
+          font: textConfig.font,
+          size: textConfig.args?.size || 100,
+          depth: textConfig.args?.depth || 50,
+          curveSegments: textConfig.args?.curveSegments || 12,
+          bevelThickness: textConfig.args?.bevelThickness || 10,
+          bevelSize: textConfig.args?.bevelSize || 8,
+          bevelEnabled: textConfig.args?.bevelEnabled || false
+        })
       }
       default:
         return new BoxGeometry()

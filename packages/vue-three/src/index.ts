@@ -105,6 +105,7 @@ import TWireframeGeometry from './components/TWireframeGeometry.vue'
 import TBufferGeometry from './components/TBufferGeometry.vue'
 import TConvexGeometry from './components/TConvexGeometry.vue'
 import TConeGeometry from './components/TConeGeometry.vue'
+import TTextGeometry from './components/TTextGeometry.vue'
 import TCSS2DRenderer from './components/TCSS2DRenderer.vue'
 import TPoints from './components/TPoints.vue'
 import TPointsMaterial from './components/TPointsMaterial.vue'
@@ -195,6 +196,7 @@ export {
   TBufferGeometry,
   TConvexGeometry,
   TConeGeometry,
+  TTextGeometry,
   TPoints,
   TPointsMaterial,
   TGridHelper,
@@ -268,6 +270,7 @@ const components = [
   TBufferGeometry,
   TConvexGeometry,
   TConeGeometry,
+  TTextGeometry,
   TPoints,
   TPointsMaterial,
   TGridHelper,
