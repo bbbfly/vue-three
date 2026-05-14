@@ -1,4 +1,4 @@
-import { inject, shallowRef, onBeforeUnmount, watch } from 'vue'
+import { inject, onBeforeUnmount, watch } from 'vue'
 import { FlyControls } from 'three/addons/controls/FlyControls.js'
 import { ThreeContextKey } from '../core/context'
 import type { FlyControlsConfig } from '../types'
@@ -10,54 +10,54 @@ export function useFlyControls(config: FlyControlsConfig = {}) {
     throw new Error('useFlyControls must be used within a TCanvas component')
   }
 
-  const controls = shallowRef<FlyControls | null>(null)
+  let controls: FlyControls | null = null
 
   const update = (delta: number) => {
-    if (controls.value) {
-      controls.value.update(delta)
+    if (controls) {
+      controls.update(delta)
     }
   }
 
   const dispose = () => {
-    if (controls.value) {
-      controls.value.dispose()
+    if (controls) {
+      controls.dispose()
     }
   }
 
   const updateConfig = (newConfig: FlyControlsConfig) => {
-    if (!controls.value) return
+    if (!controls) return
 
     if (newConfig.movementSpeed !== undefined) {
-      controls.value.movementSpeed = newConfig.movementSpeed
+      controls.movementSpeed = newConfig.movementSpeed
     }
 
     if (newConfig.rollSpeed !== undefined) {
-      controls.value.rollSpeed = newConfig.rollSpeed
+      controls.rollSpeed = newConfig.rollSpeed
     }
 
     if (newConfig.dragToLook !== undefined) {
-      controls.value.dragToLook = newConfig.dragToLook
+      controls.dragToLook = newConfig.dragToLook
     }
 
     if (newConfig.autoForward !== undefined) {
-      controls.value.autoForward = newConfig.autoForward
+      controls.autoForward = newConfig.autoForward
     }
   }
 
   const stopWatch = watch(
-    [() => ctx.renderer.value, () => ctx.camera.value],
+    [() => ctx.renderer, () => ctx.camera],
     ([renderer, camera]) => {
       if (!renderer || !camera) return
-      if (controls.value) return
+      if (controls) return
 
       const flyControls = new FlyControls(camera, renderer.domElement)
-      controls.value = flyControls
+      controls = flyControls
 
       if (Object.keys(config).length > 0) {
         updateConfig(config)
       }
 
-      ctx.controls.value = flyControls
+      ctx.controls = flyControls
       stopWatch()
     }
   )

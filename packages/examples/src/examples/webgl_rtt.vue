@@ -74,10 +74,10 @@ void main() {
 `
 
 const initRTT = () => {
-  if (!canvasRef.value?.context.renderer.value) return
+  if (!canvasRef.value?.context.renderer) return
 
-  const width = canvasRef.value.context.canvas.value.getBoundingClientRect().width
-  const height = canvasRef.value.context.canvas.value.getBoundingClientRect().height
+  const width = canvasRef.value.context.canvas.getBoundingClientRect().width
+  const height = canvasRef.value.context.canvas.getBoundingClientRect().height
   cameraRTT.value = new THREE.OrthographicCamera(
     width / -2,
     width / 2,
@@ -199,7 +199,7 @@ const onRender = ({ renderer, camera, scene }) => {
 }
 
 const onDocumentMouseMove = (event: MouseEvent) => {
-  const canvas = canvasRef.value.context.canvas.value
+  const canvas = canvasRef.value.context.canvas
   if (!canvas) return
   mouseX.value = event.clientX - canvas.getBoundingClientRect().width / 2
   mouseY.value = event.clientY - canvas.getBoundingClientRect().height / 2

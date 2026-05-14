@@ -1,5 +1,5 @@
 import { inject, onBeforeUnmount, watch } from 'vue'
-import { shallowRef, toValue } from 'vue'
+import { toValue } from 'vue'
 import type { MaybeRef } from 'vue'
 import { EffectComposerContextKey, ThreeContextKey } from '../core/context'
 import { SSAARenderPass } from 'three/addons/postprocessing/SSAARenderPass.js'
@@ -21,24 +21,24 @@ export function useSSAAPass(config: MaybeRef<SSAAPassConfig> = {}) {
     throw new Error('useSSAAPass must be used within a TCanvas component')
   }
 
-  const ssaaPass = shallowRef<SSAARenderPass | null>(null)
+  let ssaaPass: SSAARenderPass | null = null
 
   const updateConfig = (newConfig: SSAAPassConfig) => {
-    if (!ssaaPass.value) return
+    if (!ssaaPass) return
 
     if (newConfig.sampleLevel !== undefined) {
-      ssaaPass.value.sampleLevel = newConfig.sampleLevel
+      ssaaPass.sampleLevel = newConfig.sampleLevel
     }
     if (newConfig.unbiased !== undefined) {
-      ssaaPass.value.unbiased = newConfig.unbiased
+      ssaaPass.unbiased = newConfig.unbiased
     }
   }
 
   const init = () => {
-    const pass = new SSAARenderPass(threeCtx.scene.value, threeCtx.camera.value)
+    const pass = new SSAARenderPass(threeCtx.scene, threeCtx.camera)
     pass.sampleLevel = 2
     pass.unbiased = true
-    ssaaPass.value = pass
+    ssaaPass = pass
     composerCtx.addPass(pass)
     updateConfig(toValue(config))
   }
@@ -54,9 +54,9 @@ export function useSSAAPass(config: MaybeRef<SSAAPassConfig> = {}) {
   )
 
   onBeforeUnmount(() => {
-    if (ssaaPass.value) {
-      composerCtx.removePass(ssaaPass.value)
-      ssaaPass.value = null
+    if (ssaaPass) {
+      composerCtx.removePass(ssaaPass)
+      ssaaPass = null
     }
   })
 

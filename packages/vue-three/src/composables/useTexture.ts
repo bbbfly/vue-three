@@ -1,4 +1,4 @@
-import { inject, shallowRef, onBeforeUnmount, watch } from 'vue'
+import { inject, onBeforeUnmount, watch } from 'vue'
 import { Texture, TextureLoader, RepeatWrapping } from 'three'
 import { MaterialContextKey, type TextureMapType } from '../core/context'
 
@@ -23,30 +23,31 @@ export function useTexture(options: TextureOptions = {}) {
     throw new Error('useTexture must be used within a Material component')
   }
 
-  const texture = shallowRef<Texture | null>(null)
+  // 使用普通变量存储
+  let texture: Texture | null = null
   const loader = new TextureLoader()
   const mapType = options.mapType || 'map'
 
   function applyTextureToMaterial() {
-    if (texture.value) {
-      materialCtx!.setTextureByType(mapType, texture.value)
+    if (texture) {
+      materialCtx!.setTextureByType(mapType, texture)
     }
   }
 
   function loadTexture(url: string) {
-    if (texture.value) {
-      texture.value.dispose()
+    if (texture) {
+      texture.dispose()
     }
 
-    texture.value = loader.load(url, () => {
+    texture = loader.load(url, () => {
       applyTextureSettings()
     })
   }
 
   function applyTextureSettings() {
-    if (!texture.value) return
+    if (!texture) return
 
-    const tex = texture.value
+    const tex = texture
 
     if (options.wrapS !== undefined) {
       tex.wrapS = options.wrapS
@@ -112,8 +113,8 @@ export function useTexture(options: TextureOptions = {}) {
   )
 
   onBeforeUnmount(() => {
-    if (texture.value) {
-      texture.value.dispose()
+    if (texture) {
+      texture.dispose()
     }
     materialCtx!.setTextureByType(mapType, null)
   })

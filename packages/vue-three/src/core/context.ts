@@ -1,4 +1,4 @@
-import type { InjectionKey, Ref, ShallowRef } from 'vue'
+import type { InjectionKey, Ref } from 'vue'
 import type {
   WebGLRenderer,
   Scene,
@@ -54,7 +54,7 @@ export interface InteractionHandlers {
 export interface InteractionContext {
   registerObject: (object: Object3D, handlers: InteractionHandlers) => void
   unregisterObject: (object: Object3D) => void
-  raycaster: ShallowRef<Raycaster>
+  raycaster: Raycaster
 }
 
 export interface Size {
@@ -63,22 +63,22 @@ export interface Size {
 }
 
 export interface ThreeContext {
-  renderer: ShallowRef<WebGLRenderer | null>
-  scene: ShallowRef<Scene>
-  camera: ShallowRef<Camera>
-  controls: ShallowRef<OrbitControls | null>
-  canvas: Ref<HTMLCanvasElement | null>
-  size: Ref<Size>
-  composer: ShallowRef<EffectComposer | null>
+  renderer: WebGLRenderer | null
+  scene: Scene
+  camera: Camera
+  controls: OrbitControls | null
+  canvas: HTMLCanvasElement | null
+  size: Size
+  composer: EffectComposer | null
 
   // 场景注册表 - 支持多场景渲染
-  scenes: ShallowRef<Map<string, Scene>>
+  scenes: Map<string, Scene>
   registerScene: (name: string, scene: Scene) => void
   getScene: (name: string) => Scene | undefined
   unregisterScene: (name: string) => void
 
   // 渲染器注册表 - 支持多渲染器
-  renderers: ShallowRef<Map<string, THREE.Renderer>>
+  renderers: Map<string, THREE.Renderer>
   registerRenderer: (name: string, renderer: THREE.Renderer) => void
   getRenderer: (name: string) => THREE.Renderer | undefined
   unregisterRenderer: (name: string) => void
@@ -94,17 +94,17 @@ export interface ThreeContext {
 }
 
 export interface MeshContext {
-  mesh: ShallowRef<Mesh>
+  mesh: Mesh
   setGeometry: (geometry: BufferGeometry) => void
   setMaterial: (material: Material) => void
 }
 
 export interface GroupContext {
-  group: ShallowRef<Group>
+  group: Group
 }
 
 export interface AnimationContext {
-  mixer: ShallowRef<AnimationMixer | null>
+  mixer: AnimationMixer | null
 }
 
 export interface EffectComposerContext {
@@ -125,7 +125,7 @@ export type TextureMapType =
   | 'envMap'
 
 export interface MaterialContext {
-  material: ShallowRef<Material>
+  material: Material
   setMap: (texture: Texture | null) => void
   setNormalMap: (texture: Texture | null) => void
   setRoughnessMap: (texture: Texture | null) => void
@@ -158,8 +158,9 @@ export interface CSS2DLabelConfig {
  * CSS2D 上下文接口
  */
 export interface CSS2DContext {
-  renderer: ShallowRef<CSS2DRenderer | null>
-  labelContainer: Ref<HTMLElement | null>
+  renderer: CSS2DRenderer | null
+  labelContainer: HTMLElement | null
+  scene: Scene
   addLabel: (label: CSS2DObject, config?: CSS2DLabelConfig) => void
   updateLabelConfig: (label: CSS2DObject, config: Partial<CSS2DLabelConfig>) => void
   removeLabel: (label: CSS2DObject) => void
@@ -180,9 +181,9 @@ export interface CSS3DObjectConfig {
  * CSS3D 上下文接口
  */
 export interface CSS3DContext {
-  renderer: ShallowRef<CSS3DRenderer | null>
-  container: Ref<HTMLElement | null>
-  scene: ShallowRef<Scene>
+  renderer: CSS3DRenderer | null
+  container: HTMLElement | null
+  scene: Scene
   addObject: (object: CSS3DObject, config?: CSS3DObjectConfig) => void
   removeObject: (object: CSS3DObject) => void
 }
@@ -191,26 +192,14 @@ export interface CSS3DContext {
  * CSS3D 组上下文接口
  */
 export interface CSS3DGroupContext {
-  group: ShallowRef<Group>
-}
-
-/**
- * CSS2D 上下文接口（扩展）
- */
-export interface CSS2DContext {
-  renderer: ShallowRef<CSS2DRenderer | null>
-  labelContainer: Ref<HTMLElement | null>
-  scene: ShallowRef<Scene>
-  addLabel: (label: CSS2DObject, config?: CSS2DLabelConfig) => void
-  updateLabelConfig: (label: CSS2DObject, config: Partial<CSS2DLabelConfig>) => void
-  removeLabel: (label: CSS2DObject) => void
+  group: Group
 }
 
 /**
  * CSS2D 组上下文接口
  */
 export interface CSS2DGroupContext {
-  group: ShallowRef<Group>
+  group: Group
 }
 
 export const ThreeContextKey = Symbol('ThreeContext') as InjectionKey<ThreeContext>
@@ -233,7 +222,7 @@ export const CSS2DGroupContextKey = Symbol('CSS2DGroupContext') as InjectionKey<
  * Sprite 精灵上下文接口
  */
 export interface SpriteContext {
-  sprite: ShallowRef<Sprite>
+  sprite: Sprite
   setMaterial: (material: SpriteMaterial) => void
 }
 

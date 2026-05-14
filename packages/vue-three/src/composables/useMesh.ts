@@ -1,4 +1,4 @@
-import { inject, shallowRef, onBeforeUnmount, watch, provide, computed } from 'vue'
+import { inject, onBeforeUnmount, watch, provide } from 'vue'
 import { Mesh, BufferGeometry, Material } from 'three'
 import { ThreeContextKey, MeshContextKey, GroupContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
@@ -13,30 +13,31 @@ export function useMesh(config?: MeshConfig) {
     throw new Error('useMesh must be used within a TCanvas component')
   }
 
-  const mesh = shallowRef<Mesh>(config ? createMesh(config) : new Mesh())
+  // 直接使用普通变量存储 mesh
+  const mesh: Mesh = config ? createMesh(config) : new Mesh()
 
-  const parent = computed(() => groupCtx?.group.value || ctx.scene.value)
+  // 直接获取 parent，无需 computed
+  const parent = groupCtx?.group || ctx.scene
 
-  watch(parent, (newParent) => {
-    if (newParent && !newParent.children.includes(mesh.value)) {
-      newParent.add(mesh.value)
-    }
-  }, { immediate: true })
+  // 立即添加到父对象
+  if (!parent.children.includes(mesh)) {
+    parent.add(mesh)
+  }
 
   function setGeometry(geometry: BufferGeometry) {
-    if (mesh.value.geometry) {
-      mesh.value.geometry.dispose()
+    if (mesh.geometry) {
+      mesh.geometry.dispose()
     }
-    mesh.value.geometry = geometry
-    mesh.value.updateMatrix()
+    mesh.geometry = geometry
+    mesh.updateMatrix()
   }
 
   function setMaterial(material: Material) {
-    if (mesh.value.material) {
-      const oldMaterial = mesh.value.material as Material
+    if (mesh.material) {
+      const oldMaterial = mesh.material as Material
       oldMaterial.dispose()
     }
-    mesh.value.material = material
+    mesh.material = material
     material.needsUpdate = true
   }
 
@@ -50,17 +51,15 @@ export function useMesh(config?: MeshConfig) {
     watch(
       () => config,
       newConfig => {
-        ThreeObjectFactory.updateObject3DConfig(mesh.value, newConfig)
+        ThreeObjectFactory.updateObject3DConfig(mesh, newConfig)
       },
       { deep: true }
     )
   }
 
   onBeforeUnmount(() => {
-    if (parent.value) {
-      parent.value.remove(mesh.value)
-    }
-    disposeObject3D(mesh.value)
+    parent.remove(mesh)
+    disposeObject3D(mesh)
   })
 
   provide(MeshContextKey, {

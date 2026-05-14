@@ -1,4 +1,4 @@
-import { inject, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { inject, onBeforeUnmount, watch } from 'vue'
 import type { InterpolationModes } from 'three'
 import {
   NumberKeyframeTrack,
@@ -65,9 +65,9 @@ export function useKeyframeAnimation(options: KeyframeAnimationOptions) {
     throw new Error('useKeyframeAnimation must be used within a TAnimationMixer component')
   }
 
-  const mixerRef = animationCtx.mixer
-  const action = shallowRef<AnimationAction | null>(null)
-  const clip = shallowRef<AnimationClip | null>(null)
+  const mixer = animationCtx.mixer
+  let action: AnimationAction | null = null
+  let clip: AnimationClip | null = null
 
   const createClip = () => {
     const tracks = options.tracks.map(createKeyframeTrack)
@@ -75,11 +75,10 @@ export function useKeyframeAnimation(options: KeyframeAnimationOptions) {
   }
 
   const createAction = (animationClip: AnimationClip) => {
-    if (!mixerRef.value) return null
+    if (!mixer) return null
 
-    const mixer = mixerRef.value as any
-    const targetRoot = meshCtx?.mesh?.value
-    const animationAction = mixer.clipAction(animationClip, targetRoot) as AnimationAction
+    const targetRoot = meshCtx?.mesh
+    const animationAction = (mixer as any).clipAction(animationClip, targetRoot) as AnimationAction
 
     animationAction.setLoop((options.loop ?? LoopRepeat) as any, options.repetitions ?? Infinity)
 
@@ -96,66 +95,66 @@ export function useKeyframeAnimation(options: KeyframeAnimationOptions) {
   watch(
     () => options,
     () => {
-      if (action.value) {
-        action.value.stop()
-        action.value = null
+      if (action) {
+        action.stop()
+        action = null
       }
 
-      if (clip.value && mixerRef.value) {
-        ;(mixerRef.value as any).uncacheClip(clip.value)
+      if (clip && mixer) {
+        ;(mixer as any).uncacheClip(clip)
       }
 
-      clip.value = createClip()
-      action.value = createAction(clip.value)
+      clip = createClip()
+      action = createAction(clip)
     },
     { deep: true, immediate: true }
   )
 
   const play = () => {
-    action.value?.play()
+    action?.play()
   }
 
   const pause = () => {
-    if (action.value) {
-      ;(action.value as any).paused = true
+    if (action) {
+      ;(action as any).paused = true
     }
   }
 
   const resume = () => {
-    if (action.value) {
-      ;(action.value as any).paused = false
+    if (action) {
+      ;(action as any).paused = false
     }
   }
 
   const stop = () => {
-    action.value?.stop()
+    action?.stop()
   }
 
   const reset = () => {
-    action.value?.reset()
+    action?.reset()
   }
 
   const setLoop = (loopMode: number, repetitions?: number) => {
-    action.value?.setLoop(loopMode as any, repetitions ?? Infinity)
+    action?.setLoop(loopMode as any, repetitions ?? Infinity)
   }
 
   const setTimeScale = (scale: number) => {
-    if (action.value) {
-      action.value.timeScale = scale
+    if (action) {
+      action.timeScale = scale
     }
   }
 
   const setWeight = (weight: number) => {
-    action.value?.setEffectiveWeight(weight)
+    action?.setEffectiveWeight(weight)
   }
 
   onBeforeUnmount(() => {
-    if (action.value) {
-      action.value.stop()
+    if (action) {
+      action.stop()
     }
 
-    if (clip.value && mixerRef.value) {
-      ;(mixerRef.value as any).uncacheClip(clip.value)
+    if (clip && mixer) {
+      ;(mixer as any).uncacheClip(clip)
     }
   })
 

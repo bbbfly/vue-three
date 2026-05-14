@@ -1,6 +1,5 @@
-import { shallowRef, onUnmounted, getCurrentInstance } from 'vue'
+import { onUnmounted, getCurrentInstance } from 'vue'
 import GUI from 'lil-gui'
-import type { ShallowRef } from 'vue'
 
 export interface UseGuiOptions {
   autoPlace?: boolean
@@ -12,7 +11,7 @@ export interface UseGuiOptions {
 const guiInstances = new WeakMap<any, GUI>()
 
 export function useGui(options: UseGuiOptions = {}): {
-  gui: ShallowRef<GUI>
+  gui: GUI
   addFolder: (name: string) => GUI
   destroy: () => void
 } {
@@ -36,8 +35,6 @@ export function useGui(options: UseGuiOptions = {}): {
     }
   }
 
-  const guiRef = shallowRef(gui)
-
   function addFolder(name: string): GUI {
     return gui.addFolder(name)
   }
@@ -54,7 +51,7 @@ export function useGui(options: UseGuiOptions = {}): {
   })
 
   return {
-    gui: guiRef,
+    gui,
     addFolder,
     destroy
   }

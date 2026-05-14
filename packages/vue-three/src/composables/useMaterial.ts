@@ -1,4 +1,4 @@
-import { inject, shallowRef, onBeforeUnmount, provide } from 'vue'
+import { inject, onBeforeUnmount, provide } from 'vue'
 import { Material, Texture } from 'three'
 import { MeshContextKey, MaterialContextKey, type TextureMapType } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
@@ -11,12 +11,13 @@ export function useMaterial(initialConfig: MaterialConfig) {
     throw new Error('useMaterial must be used within a TMesh component')
   }
 
-  const material = shallowRef<Material>(createMaterial(initialConfig))
+  // 直接使用普通变量
+  let material: Material = createMaterial(initialConfig)
 
-  meshCtx!.setMaterial(material.value)
+  meshCtx!.setMaterial(material)
 
   const setMap = (texture: Texture | null) => {
-    const mat = material.value as any
+    const mat = material as any
     if ('map' in mat) {
       mat.map = texture
       mat.needsUpdate = true
@@ -24,7 +25,7 @@ export function useMaterial(initialConfig: MaterialConfig) {
   }
 
   const setNormalMap = (texture: Texture | null) => {
-    const mat = material.value as any
+    const mat = material as any
     if ('normalMap' in mat) {
       mat.normalMap = texture
       mat.needsUpdate = true
@@ -32,7 +33,7 @@ export function useMaterial(initialConfig: MaterialConfig) {
   }
 
   const setRoughnessMap = (texture: Texture | null) => {
-    const mat = material.value as any
+    const mat = material as any
     if ('roughnessMap' in mat) {
       mat.roughnessMap = texture
       mat.needsUpdate = true
@@ -40,7 +41,7 @@ export function useMaterial(initialConfig: MaterialConfig) {
   }
 
   const setMetalnessMap = (texture: Texture | null) => {
-    const mat = material.value as any
+    const mat = material as any
     if ('metalnessMap' in mat) {
       mat.metalnessMap = texture
       mat.needsUpdate = true
@@ -48,7 +49,7 @@ export function useMaterial(initialConfig: MaterialConfig) {
   }
 
   const setAoMap = (texture: Texture | null) => {
-    const mat = material.value as any
+    const mat = material as any
     if ('aoMap' in mat) {
       mat.aoMap = texture
       mat.needsUpdate = true
@@ -56,7 +57,7 @@ export function useMaterial(initialConfig: MaterialConfig) {
   }
 
   const setDisplacementMap = (texture: Texture | null) => {
-    const mat = material.value as any
+    const mat = material as any
     if ('displacementMap' in mat) {
       mat.displacementMap = texture
       mat.needsUpdate = true
@@ -64,7 +65,7 @@ export function useMaterial(initialConfig: MaterialConfig) {
   }
 
   const setEmissiveMap = (texture: Texture | null) => {
-    const mat = material.value as any
+    const mat = material as any
     if ('emissiveMap' in mat) {
       mat.emissiveMap = texture
       mat.needsUpdate = true
@@ -72,7 +73,7 @@ export function useMaterial(initialConfig: MaterialConfig) {
   }
 
   const setAlphaMap = (texture: Texture | null) => {
-    const mat = material.value as any
+    const mat = material as any
     if ('alphaMap' in mat) {
       mat.alphaMap = texture
       mat.needsUpdate = true
@@ -80,7 +81,7 @@ export function useMaterial(initialConfig: MaterialConfig) {
   }
 
   const setBumpMap = (texture: Texture | null) => {
-    const mat = material.value as any
+    const mat = material as any
     if ('bumpMap' in mat) {
       mat.bumpMap = texture
       mat.needsUpdate = true
@@ -88,7 +89,7 @@ export function useMaterial(initialConfig: MaterialConfig) {
   }
 
   const setEnvMap = (texture: Texture | null) => {
-    const mat = material.value as any
+    const mat = material as any
     if ('envMap' in mat) {
       mat.envMap = texture
       mat.needsUpdate = true
@@ -96,7 +97,7 @@ export function useMaterial(initialConfig: MaterialConfig) {
   }
 
   const setTextureByType = (type: TextureMapType, texture: Texture | null) => {
-    const mat = material.value as any
+    const mat = material as any
     if (type in mat) {
       mat[type] = texture
       mat.needsUpdate = true
@@ -123,13 +124,13 @@ export function useMaterial(initialConfig: MaterialConfig) {
   }
 
   function updateMaterial(newConfig: MaterialConfig) {
-    material.value.dispose()
-    material.value = createMaterial(newConfig)
-    meshCtx!.setMaterial(material.value)
+    material.dispose()
+    material = createMaterial(newConfig)
+    meshCtx!.setMaterial(material)
   }
 
   onBeforeUnmount(() => {
-    material.value.dispose()
+    material.dispose()
   })
 
   return {

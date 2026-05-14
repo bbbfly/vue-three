@@ -1,4 +1,4 @@
-import { inject, shallowRef, onBeforeUnmount, watch, provide, computed } from 'vue'
+import { inject, onBeforeUnmount, watch, provide } from 'vue'
 import { Group } from 'three'
 import {
   ThreeContextKey,
@@ -30,86 +30,64 @@ export function useGroup(config?: GroupConfig) {
     throw new Error('useGroup must be used within a TCanvas component')
   }
 
-  const group = shallowRef<Group>(new Group())
+  // 直接使用普通变量
+  const group = new Group()
 
   // 多场景父容器优先级逻辑
   // 优先级：同类型 GroupContext > 对应渲染器上下文场景 > WebGL 主场景
-  const parent = computed(() => {
-    // 1. 优先使用同类型的父 Group
-    if (css3dGroupCtx) {
-      return css3dGroupCtx.group.value
-    }
-    if (css2dGroupCtx) {
-      return css2dGroupCtx.group.value
-    }
-    if (parentGroupCtx) {
-      return parentGroupCtx.group.value
-    }
-
-    // 2. 检查是否在 CSS3D/CSS2D 上下文中
+  let parent: Group | THREE.Scene
+  if (css3dGroupCtx) {
+    parent = css3dGroupCtx.group
+  } else if (css2dGroupCtx) {
+    parent = css2dGroupCtx.group
+  } else if (parentGroupCtx) {
+    parent = parentGroupCtx.group
+  } else {
     const css3dScene = ctx.getScene('css3d')
     const css2dScene = ctx.getScene('css2d')
-
-    // 根据注入的上下文判断目标场景
-    console.log(css3dCtx, css3dScene, 'hasParent')
     if (css3dCtx && css3dScene) {
-      return css3dScene
+      parent = css3dScene
+    } else if (css2dCtx && css2dScene) {
+      parent = css2dScene
+    } else {
+      parent = ctx.scene
     }
-    if (css2dCtx && css2dScene) {
-      return css2dScene
-    }
+  }
 
-    // 3. 默认使用 WebGL 主场景
-    return ctx.scene.value
-  })
-
-  watch(
-    parent,
-    newParent => {
-      console.log(newParent, 'useGroup')
-      if (newParent && !newParent.children.includes(group.value)) {
-        newParent.add(group.value)
-      }
-    },
-    { immediate: true }
-  )
+  // 立即添加到父对象
+  if (!parent.children.includes(group)) {
+    parent.add(group)
+  }
 
   if (config) {
     watch(
       () => config,
       newConfig => {
-        ThreeObjectFactory.updateObject3DConfig(group.value, newConfig)
+        ThreeObjectFactory.updateObject3DConfig(group, newConfig)
         if (newConfig.name !== undefined) {
-          group.value.name = newConfig.name
+          group.name = newConfig.name
         }
       },
       { deep: true }
     )
 
     if (config.name !== undefined) {
-      group.value.name = config.name
+      group.name = config.name
     }
   }
 
   // 根据上下文提供对应类型的 GroupContext
-  // 在 CSS3D 上下文中提供 CSS3DGroupContext
   if (css3dCtx) {
     provide(CSS3DGroupContextKey, { group })
-  }
-  // 在 CSS2D 上下文中提供 CSS2DGroupContext
-  else if (css2dCtx) {
+  } else if (css2dCtx) {
     provide(CSS2DGroupContextKey, { group })
-  }
-  // 默认提供 WebGL 的 GroupContext
-  else {
+  } else {
     provide(GroupContextKey, { group })
   }
 
   onBeforeUnmount(() => {
-    if (parent.value) {
-      parent.value.remove(group.value)
-    }
-    disposeObject3D(group.value)
+    parent.remove(group)
+    disposeObject3D(group)
   })
 
   return { group }

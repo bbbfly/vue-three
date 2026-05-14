@@ -1,4 +1,4 @@
-import { inject, shallowRef, onMounted, onBeforeUnmount, watch } from 'vue'
+import { inject, ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import type { AnimationClip } from 'three'
 import { Object3D } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
@@ -17,13 +17,15 @@ export function useGLTFLoader(config: GLTFLoaderConfig) {
   }
 
   const scene = threeCtx.scene
-  const model = shallowRef<Object3D | null>(null)
-  const gltf = shallowRef<any>(null)
-  const animations = shallowRef<AnimationClip[]>([])
-  const loading = shallowRef(false)
-  const progress = shallowRef(0)
-  const total = shallowRef(0)
-  const error = shallowRef<Error | null>(null)
+  // Three.js 对象使用普通变量存储
+  let model: Object3D | null = null
+  let gltf: any = null
+  // 状态数据使用 ref
+  const animations = ref<AnimationClip[]>([])
+  const loading = ref(false)
+  const progress = ref(0)
+  const total = ref(0)
+  const error = ref<Error | null>(null)
 
   const loader = new GLTFLoader()
 
@@ -41,9 +43,9 @@ export function useGLTFLoader(config: GLTFLoaderConfig) {
     loader.load(
       src,
       loadedGltf => {
-        if (model.value && scene.value) {
-          scene.value.remove(model.value)
-          disposeModel(model.value)
+        if (model && scene) {
+          scene.remove(model)
+          disposeModel(model)
         }
 
         const loadedModel = loadedGltf.scene || loadedGltf.scenes?.[0]
@@ -52,14 +54,11 @@ export function useGLTFLoader(config: GLTFLoaderConfig) {
           ThreeObjectFactory.applyObject3DConfig(loadedModel, config)
           applyShadowToModel(loadedModel, config)
 
-          if (scene.value) {
-            scene.value.add(loadedModel)
-          }
-
-          model.value = loadedModel
+          scene.add(loadedModel)
+          model = loadedModel
         }
 
-        gltf.value = loadedGltf
+        gltf = loadedGltf
         animations.value = loadedGltf.animations || []
 
         loading.value = false
@@ -124,18 +123,18 @@ export function useGLTFLoader(config: GLTFLoaderConfig) {
   watch(
     () => [config.position, config.rotation, config.scale, config.visible],
     () => {
-      if (model.value) {
-        ThreeObjectFactory.updateObject3DConfig(model.value, config)
-        applyShadowToModel(model.value, config)
+      if (model) {
+        ThreeObjectFactory.updateObject3DConfig(model, config)
+        applyShadowToModel(model, config)
       }
     },
     { deep: true }
   )
 
   onBeforeUnmount(() => {
-    if (model.value && scene.value) {
-      scene.value.remove(model.value)
-      disposeModel(model.value)
+    if (model && scene) {
+      scene.remove(model)
+      disposeModel(model)
     }
   })
 

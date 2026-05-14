@@ -1,4 +1,4 @@
-import { inject, shallowRef, onBeforeUnmount, watch, provide, computed, unref } from 'vue'
+import { inject, onBeforeUnmount, watch, provide, ref, unref } from 'vue'
 import type { MaybeRef } from 'vue'
 import { Sprite, SpriteMaterial as ThreeSpriteMaterial, Color } from 'three'
 import type { SpriteMaterial } from 'three'
@@ -15,8 +15,9 @@ export function useSprite(config?: MaybeRef<SpriteConfig>) {
     throw new Error('useSprite must be used within a TCanvas component')
   }
 
-  const sprite = shallowRef<Sprite>()
-  const spriteMaterial = shallowRef<ThreeSpriteMaterial>()
+  // 使用普通变量存储
+  let sprite: Sprite | undefined
+  let spriteMaterial: ThreeSpriteMaterial | undefined
 
   function applyShaderExtensions(material: SpriteMaterial): void {
     material.onBeforeCompile = shader => {
@@ -84,62 +85,56 @@ export function useSprite(config?: MaybeRef<SpriteConfig>) {
 
   function createSprite(spriteConfig: SpriteConfig): Sprite {
     const newSprite = ThreeObjectFactory.createSprite(spriteConfig)
-    spriteMaterial.value = newSprite.material as ThreeSpriteMaterial
+    spriteMaterial = newSprite.material as ThreeSpriteMaterial
 
     if (
       spriteConfig.material.clip === 'circle' ||
       spriteConfig.material.clip === 'rounded' ||
       spriteConfig.material.tint
     ) {
-      applyShaderExtensions(spriteMaterial.value)
+      applyShaderExtensions(spriteMaterial)
     }
 
     return newSprite
   }
 
-  const ctx_ = ctx!
-  const parent = computed(() => groupCtx?.group.value || ctx_.scene.value)
+  // 直接获取 parent
+  const parent = groupCtx?.group || ctx.scene
 
   if (config) {
     const configValue = unref(config)
-    sprite.value = createSprite(configValue)
-
-    if (parent.value) {
-      parent.value.add(sprite.value)
-    }
+    sprite = createSprite(configValue)
+    parent.add(sprite)
   } else {
     const defaultConfig: SpriteConfig = {
       material: { type: 'sprite' }
     }
-    sprite.value = createSprite(defaultConfig)
-
-    if (parent.value) {
-      parent.value.add(sprite.value)
-    }
+    sprite = createSprite(defaultConfig)
+    parent.add(sprite)
   }
 
   function setMaterial(material: ThreeSpriteMaterial): void {
-    if (!sprite.value) return
+    if (!sprite) return
 
-    if (spriteMaterial.value) {
-      disposeMaterial(spriteMaterial.value)
+    if (spriteMaterial) {
+      disposeMaterial(spriteMaterial)
     }
 
-    spriteMaterial.value = material
-    sprite.value.material = material
+    spriteMaterial = material
+    sprite.material = material
     material.needsUpdate = true
   }
 
   function setCenter(center: [number, number]): void {
-    if (sprite.value) {
-      sprite.value.center.set(...center)
+    if (sprite) {
+      sprite.center.set(...center)
     }
   }
 
   function updateDistanceVisibility(): void {
-    if (!sprite.value || !ctx_.camera.value) return
+    if (!sprite) return
 
-    const material = sprite.value.material as ThreeSpriteMaterial
+    const material = sprite.material as ThreeSpriteMaterial
     const minDistance = material.userData.minDistance
     const maxDistance = material.userData.maxDistance
 
@@ -150,16 +145,16 @@ export function useSprite(config?: MaybeRef<SpriteConfig>) {
       return
     }
 
-    const distance = sprite.value.position.distanceTo(ctx_.camera.value.position)
+    const distance = sprite.position.distanceTo(ctx.camera.position)
     const minOk = hasMinDistance ? distance >= minDistance : true
     const maxOk = hasMaxDistance ? distance <= maxDistance : true
-    sprite.value.visible = minOk && maxOk
+    sprite.visible = minOk && maxOk
   }
 
   function setMaterialConfig(materialConfig: SpriteMaterialConfig): void {
-    if (!sprite.value || !materialConfig) return
+    if (!sprite || !materialConfig) return
 
-    const material = sprite.value.material as ThreeSpriteMaterial
+    const material = sprite.material as ThreeSpriteMaterial
 
     if (materialConfig.color !== undefined) {
       material.color.set(materialConfig.color)
@@ -242,23 +237,43 @@ export function useSprite(config?: MaybeRef<SpriteConfig>) {
     material.needsUpdate = true
   }
 
+  // 使用 ref 来触发距离控制的响应式
+  const hasDistanceControl = ref(false)
+
+  const updateDistanceControl = () => {
+    if (!spriteMaterial) {
+      hasDistanceControl.value = false
+      return
+    }
+    const minDistance = spriteMaterial.userData.minDistance
+    const maxDistance = spriteMaterial.userData.maxDistance
+    const hasMinDistance = typeof minDistance === 'number' && minDistance > 0
+    const hasMaxDistance = typeof maxDistance === 'number' && isFinite(maxDistance)
+    hasDistanceControl.value = hasMinDistance || hasMaxDistance
+  }
+
+  // 初始化时检查
+  updateDistanceControl()
+
+  // 监听配置变化
   if (unref(config) !== undefined) {
     watch(
       () => unref(config),
       newConfig => {
-        if (!newConfig) return
-        ThreeObjectFactory.updateObject3DConfig(sprite.value!, newConfig)
+        if (!newConfig || !sprite) return
+        ThreeObjectFactory.updateObject3DConfig(sprite, newConfig)
 
         if (newConfig.material) {
           setMaterialConfig(newConfig.material)
+          updateDistanceControl()
         }
 
         if (newConfig.center) {
           setCenter(newConfig.center)
         }
 
-        if (newConfig.renderOrder !== undefined && sprite.value) {
-          sprite.value.renderOrder = newConfig.renderOrder
+        if (newConfig.renderOrder !== undefined) {
+          sprite.renderOrder = newConfig.renderOrder
         }
       },
       { deep: true }
@@ -283,15 +298,6 @@ export function useSprite(config?: MaybeRef<SpriteConfig>) {
     }
   }
 
-  const hasDistanceControl = computed(() => {
-    if (!spriteMaterial.value) return false
-    const minDistance = spriteMaterial.value.userData.minDistance
-    const maxDistance = spriteMaterial.value.userData.maxDistance
-    const hasMinDistance = typeof minDistance === 'number' && minDistance > 0
-    const hasMaxDistance = typeof maxDistance === 'number' && isFinite(maxDistance)
-    return hasMinDistance || hasMaxDistance
-  })
-
   watch(
     hasDistanceControl,
     shouldEnable => {
@@ -309,26 +315,22 @@ export function useSprite(config?: MaybeRef<SpriteConfig>) {
       cancelAnimationFrame(animationFrameId)
     }
 
-    if (parent.value && sprite.value) {
-      parent.value.remove(sprite.value)
+    if (sprite) {
+      parent.remove(sprite)
     }
 
-    if (spriteMaterial.value) {
-      disposeMaterial(spriteMaterial.value)
-    }
-
-    if (sprite.value) {
-      sprite.value = undefined
+    if (spriteMaterial) {
+      disposeMaterial(spriteMaterial)
     }
   })
 
   provide(SpriteContextKey, {
-    sprite: sprite as any,
+    sprite: sprite!,
     setMaterial
   })
 
   return {
-    sprite,
+    sprite: sprite!,
     setMaterial,
     setCenter,
     setMaterialConfig,

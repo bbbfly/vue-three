@@ -1,4 +1,4 @@
-import { ref, onMounted, onBeforeUnmount, shallowRef } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import {
   WebGLRenderer,
   Scene,
@@ -45,24 +45,22 @@ export type AnimateFn = ({
 }) => void
 export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
   const canvasRef = ref<HTMLCanvasElement | null>(null)
-  const renderer = shallowRef<WebGLRenderer | null>(null)
-  const scene = shallowRef<Scene>(new Scene())
+  let renderer: WebGLRenderer | null = null
+  const scene = new Scene()
   const size = ref({
     width: options.width || 300,
     height: options.height || 150
   })
 
-  const camera = shallowRef<Camera>(
-    new PerspectiveCamera(
-      options.camera?.fov || 75,
-      size.value.width / size.value.height,
-      options.camera?.near || 0.1,
-      options.camera?.far || 1000
-    )
+  let camera: Camera = new PerspectiveCamera(
+    options.camera?.fov || 75,
+    size.value.width / size.value.height,
+    options.camera?.near || 0.1,
+    options.camera?.far || 1000
   )
 
-  const controls = shallowRef<OrbitControls | null>(null)
-  const composer = shallowRef<EffectComposer | null>(null)
+  let controls: OrbitControls | null = null
+  let composer: EffectComposer | null = null
 
   let animationFrameId: number | null = null
   const animationMixers = new Set<AnimationMixer>()
@@ -71,10 +69,10 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
   let postProcessingEnabled = false
 
   // 场景注册表 - 支持多场景渲染
-  const scenes = shallowRef<Map<string, Scene>>(new Map([['main', scene.value]]))
+  const scenes = new Map<string, Scene>([['main', scene]])
 
   // 渲染器注册表 - 支持多渲染器
-  const renderers = shallowRef<Map<string, THREE.Renderer>>(new Map())
+  const renderers = new Map<string, THREE.Renderer>()
 
   const registerAnimationMixer = (mixer: AnimationMixer) => {
     animationMixers.add(mixer)
@@ -86,15 +84,15 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
 
   const registerRenderPass = (pass: Pass) => {
     renderPasses.add(pass)
-    if (composer.value) {
-      composer.value.addPass(pass)
+    if (composer) {
+      composer.addPass(pass)
     }
   }
 
   const unregisterRenderPass = (pass: Pass) => {
     renderPasses.delete(pass)
-    if (composer.value) {
-      const passes = composer.value.passes
+    if (composer) {
+      const passes = composer.passes
       const index = passes.indexOf(pass)
       if (index > -1) {
         passes.splice(index, 1)
@@ -105,61 +103,61 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
 
   // 场景注册表方法
   const registerScene = (name: string, sceneInstance: Scene) => {
-    scenes.value.set(name, sceneInstance)
+    scenes.set(name, sceneInstance)
   }
 
-  const getScene = (name: string) => scenes.value.get(name)
+  const getScene = (name: string) => scenes.get(name)
 
   const unregisterScene = (name: string) => {
-    scenes.value.delete(name)
+    scenes.delete(name)
   }
 
   // 渲染器注册表方法
   const registerRenderer = (name: string, rendererInstance: THREE.Renderer) => {
-    renderers.value.set(name, rendererInstance)
+    renderers.set(name, rendererInstance)
   }
 
-  const getRenderer = (name: string) => renderers.value.get(name)
+  const getRenderer = (name: string) => renderers.get(name)
 
   const unregisterRenderer = (name: string) => {
-    renderers.value.delete(name)
+    renderers.delete(name)
   }
 
   const enablePostProcessing = () => {
-    if (postProcessingEnabled || !renderer.value) return
+    if (postProcessingEnabled || !renderer) return
 
     postProcessingEnabled = true
 
-    composer.value = new EffectComposer(renderer.value)
+    composer = new EffectComposer(renderer)
 
-    const renderPass = new RenderPass(scene.value, camera.value)
-    composer.value.addPass(renderPass)
+    const renderPass = new RenderPass(scene, camera)
+    composer.addPass(renderPass)
 
     renderPasses.forEach(pass => {
-      composer.value!.addPass(pass)
+      composer!.addPass(pass)
     })
 
     handleResize()
   }
 
   if (options.clearColor !== undefined) {
-    scene.value.background = new Color(options.clearColor)
+    scene.background = new Color(options.clearColor)
   }
 
   const cameraPos = options.camera?.position || [0, 0, 5]
-  camera.value.position.set(...cameraPos)
+  camera.position.set(...cameraPos)
 
   const setCamera = (newCamera: Camera) => {
-    camera.value = newCamera
+    camera = newCamera
 
     // 同步更新 OrbitControls 的相机引用
-    if (controls.value) {
-      controls.value.object = newCamera
+    if (controls) {
+      controls.object = newCamera
     }
 
     // 同步更新 EffectComposer 的 RenderPass 相机引用
-    if (composer.value) {
-      const passes = composer.value.passes
+    if (composer) {
+      const passes = composer.passes
       const renderPass = passes.find(p => (p as any).camera)
       if (renderPass) {
         ;(renderPass as any).camera = newCamera
@@ -171,34 +169,34 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
   }
 
   const renderAll = (delta: number) => {
-    if (!renderer.value || !camera.value) return
+    if (!renderer || !camera) return
 
     // 1. 渲染 WebGL 主场景
     if (options.autoClear !== false) {
-      renderer.value.clear()
+      renderer.clear()
     }
     // 调用自定义渲染函数
     if (renderFn) {
       return renderFn({
-        scene: scene.value,
-        camera: camera.value,
+        scene,
+        camera,
         delta,
-        renderers: renderers.value,
-        renderer: renderer.value
+        renderers,
+        renderer
       })
     }
     // 貌景处理
-    if (postProcessingEnabled && composer.value) {
-      composer.value.render(delta)
+    if (postProcessingEnabled && composer) {
+      composer.render(delta)
     } else {
-      renderer.value.render(scene.value, camera.value)
+      renderer.render(scene, camera)
     }
 
     // 2. 渲染其他注册的场景（CSS3D, CSS2D 等）
-    renderers.value.forEach((customRenderer, name) => {
-      const customScene = scenes.value.get(name)
+    renderers.forEach((customRenderer, name) => {
+      const customScene = scenes.get(name)
       if (customScene) {
-        customRenderer.render(customScene, camera.value)
+        customRenderer.render(customScene, camera)
       }
     })
   }
@@ -207,15 +205,15 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
     const render = () => {
       animationFrameId = requestAnimationFrame(render)
       const delta = clock.getDelta()
-      animateFn({ scene: scene.value, camera: camera.value, delta })
+      animateFn({ scene, camera, delta })
 
       animationMixers.forEach(mixer => {
         mixer.update(delta)
       })
 
       // 统一更新所有控制器（OrbitControls、FirstPersonControls、FlyControls 等）
-      if (controls.value && (controls.value as any).update) {
-        ;(controls.value as any).update(delta)
+      if (controls && (controls as any).update) {
+        ;(controls as any).update(delta)
       }
 
       // 统一渲染调度
@@ -228,7 +226,7 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
   let resizeObserver: ResizeObserver | null = null
 
   const handleResize = () => {
-    if (!camera.value || !renderer.value || !canvasRef.value) return
+    if (!camera || !renderer || !canvasRef.value) return
 
     const container = canvasRef.value.parentElement || canvasRef.value
     const newWidth = options.width || container.clientWidth || 300
@@ -240,25 +238,25 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
     canvasRef.value.width = newWidth
     canvasRef.value.height = newHeight
 
-    const perspectiveCamera = camera.value as PerspectiveCamera
+    const perspectiveCamera = camera as PerspectiveCamera
     if (perspectiveCamera.aspect !== undefined) {
       perspectiveCamera.aspect = newWidth / newHeight
       perspectiveCamera.updateProjectionMatrix()
     }
 
-    renderer.value.setSize(newWidth, newHeight, false)
-    renderer.value.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.setSize(newWidth, newHeight, false)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
-    if (composer.value) {
-      composer.value.setSize(newWidth, newHeight)
-      composer.value.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    if (composer) {
+      composer.setSize(newWidth, newHeight)
+      composer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     }
   }
 
   onMounted(() => {
     if (!canvasRef.value) return
 
-    renderer.value = new WebGLRenderer({
+    renderer = new WebGLRenderer({
       canvas: canvasRef.value,
       antialias: options.antialias !== false,
       alpha: options.alpha || false
@@ -267,21 +265,21 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
     handleResize()
 
     if (options.clearColor !== undefined) {
-      renderer.value.setClearColor(new Color(options.clearColor), options.clearAlpha ?? 1)
+      renderer.setClearColor(new Color(options.clearColor), options.clearAlpha ?? 1)
     }
 
     if (options.shadowMap) {
-      renderer.value.shadowMap.enabled =
+      renderer.shadowMap.enabled =
         options.shadowMap === true || (options.shadowMap as any).enabled === true
       if (typeof options.shadowMap === 'object' && options.shadowMap.type) {
-        renderer.value.shadowMap.type = options.shadowMap.type as any
+        renderer.shadowMap.type = options.shadowMap.type as any
       }
     }
 
     if (options.enableControls !== false) {
-      controls.value = new OrbitControls(camera.value, renderer.value.domElement)
-      controls.value.enableDamping = true
-      controls.value.dampingFactor = 0.05
+      controls = new OrbitControls(camera, renderer.domElement)
+      controls.enableDamping = true
+      controls.dampingFactor = 0.05
     }
 
     if (!options.width || !options.height) {
@@ -305,26 +303,25 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
       resizeObserver = null
     }
 
-    if (controls.value) {
-      controls.value.dispose()
+    if (controls) {
+      controls.dispose()
     }
 
-    if (scene.value) {
-      while (scene.value.children.length > 0) {
-        const child = scene.value.children[0]
-        disposeObject3D(child, false)
-        scene.value.remove(child)
-      }
+    while (scene.children.length > 0) {
+      const child = scene.children[0]
+      disposeObject3D(child, false)
+      scene.remove(child)
     }
 
-    if (renderer.value) {
-      renderer.value.dispose()
-      renderer.value.forceContextLoss()
+    if (renderer) {
+      renderer.dispose()
+      renderer.forceContextLoss()
     }
 
     canvasRef.value = null
-    renderer.value = null
-    controls.value = null
+    renderer = null
+    controls = null
+    composer = null
   })
 
   const context = {
@@ -332,8 +329,8 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
     scene,
     camera,
     controls,
-    canvas: canvasRef,
-    size,
+    canvas: canvasRef.value,
+    size: size.value,
     composer,
 
     // 场景注册表

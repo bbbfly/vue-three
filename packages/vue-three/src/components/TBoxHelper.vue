@@ -6,7 +6,7 @@
 import type { PropType } from 'vue'
 import { BoxHelper, Object3D, Color } from 'three'
 import { useHelper } from '../composables/useHelper'
-import { watch, shallowRef, toValue } from 'vue'
+import { watch, toValue } from 'vue'
 
 /**
  * 包围盒辅助线组件
@@ -36,14 +36,14 @@ const props = defineProps({
   }
 })
 
-const helperInstance = shallowRef<BoxHelper | null>(null)
+let helperInstance: BoxHelper | null = null
 
-const { helper } = useHelper(helperInstance)
+const { helper } = useHelper(() => helperInstance)
 
 function createHelper() {
   const obj = toValue(props.object)
   if (obj) {
-    helperInstance.value = new BoxHelper(obj, props.color)
+    helperInstance = new BoxHelper(obj, props.color)
   }
 }
 
@@ -58,14 +58,14 @@ watch(
 watch(
   () => props.color,
   newColor => {
-    if (helperInstance.value) {
-      ;(helperInstance.value.material as any).color = new Color(newColor)
+    if (helperInstance) {
+      ; (helperInstance.material as any).color = new Color(newColor)
     }
   }
 )
 
 defineExpose({
-  helper,
-  update: () => helperInstance.value?.update()
+  helper: () => helperInstance,
+  update: () => helperInstance?.update()
 })
 </script>

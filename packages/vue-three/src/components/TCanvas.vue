@@ -151,7 +151,7 @@ const { canvasRef, context } = useCanvas(
   {
     options: options.value,
     animateFn: ({ scene, camera, delta }) => {
-      emit('animate', { scene, camera, delta, renderer: context.renderer.value!, size: context.size.value })
+      emit('animate', { scene, camera, delta, renderer: context.renderer!, size: context.size })
     },
     renderFn: props.onRender
   })
@@ -160,10 +160,10 @@ const interaction = useInteraction(context)
 watch(
   options,
   newOptions => {
-    if (context.renderer.value && context.camera.value) {
+    if (context.renderer && context.camera) {
       const cameraPos = newOptions.camera?.position
       if (cameraPos) {
-        context.camera.value.position.set(...cameraPos)
+        context.camera.position.set(...cameraPos)
       }
     }
   },

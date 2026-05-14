@@ -1,4 +1,4 @@
-import { inject, shallowRef, onBeforeUnmount } from 'vue'
+import { inject, onBeforeUnmount } from 'vue'
 import { BufferGeometry } from 'three'
 import { MeshContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
@@ -11,22 +11,23 @@ export function useGeometry(initialConfig: GeometryConfig) {
     throw new Error('useGeometry must be used within a TMesh component')
   }
 
-  const geometry = shallowRef<BufferGeometry>(createGeometry(initialConfig))
+  // 使用普通变量存储
+  let geometry: BufferGeometry = createGeometry(initialConfig)
 
-  meshCtx!.setGeometry(geometry.value)
+  meshCtx!.setGeometry(geometry)
 
   function createGeometry(geometryConfig: GeometryConfig) {
     return ThreeObjectFactory.createGeometry(geometryConfig)
   }
 
   function updateGeometry(newConfig: GeometryConfig) {
-    geometry.value.dispose()
-    geometry.value = createGeometry(newConfig)
-    meshCtx!.setGeometry(geometry.value)
+    geometry.dispose()
+    geometry = createGeometry(newConfig)
+    meshCtx!.setGeometry(geometry)
   }
 
   onBeforeUnmount(() => {
-    geometry.value.dispose()
+    geometry.dispose()
   })
 
   return {

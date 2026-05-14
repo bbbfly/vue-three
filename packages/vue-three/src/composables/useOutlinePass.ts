@@ -1,5 +1,5 @@
 import { inject, onBeforeUnmount, watch } from 'vue'
-import { shallowRef, toValue, type MaybeRef } from 'vue'
+import { toValue, type MaybeRef } from 'vue'
 import type { Object3D, Color } from 'three'
 import { EffectComposerContextKey, ThreeContextKey } from '../core/context'
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js'
@@ -27,31 +27,31 @@ export function useOutlinePass(config: MaybeRef<OutlinePassConfig> = {}) {
     throw new Error('useOutlinePass must be used within a TCanvas component')
   }
 
-  const outlinePass = shallowRef<OutlinePass | null>(null)
+  let outlinePass: OutlinePass | null = null
 
   const updateConfig = (newConfig: OutlinePassConfig) => {
-    if (!outlinePass.value) return
+    if (!outlinePass) return
 
     if (newConfig.edgeStrength !== undefined) {
-      outlinePass.value.edgeStrength = newConfig.edgeStrength
+      outlinePass.edgeStrength = newConfig.edgeStrength
     }
     if (newConfig.edgeGlow !== undefined) {
-      outlinePass.value.edgeGlow = newConfig.edgeGlow
+      outlinePass.edgeGlow = newConfig.edgeGlow
     }
     if (newConfig.edgeThickness !== undefined) {
-      outlinePass.value.edgeThickness = newConfig.edgeThickness
+      outlinePass.edgeThickness = newConfig.edgeThickness
     }
     if (newConfig.pulsePeriod !== undefined) {
-      outlinePass.value.pulsePeriod = newConfig.pulsePeriod
+      outlinePass.pulsePeriod = newConfig.pulsePeriod
     }
     if (newConfig.visibleEdgeColor !== undefined) {
-      outlinePass.value.visibleEdgeColor = new ThreeColor(newConfig.visibleEdgeColor)
+      outlinePass.visibleEdgeColor = new ThreeColor(newConfig.visibleEdgeColor)
     }
     if (newConfig.hiddenEdgeColor !== undefined) {
-      outlinePass.value.hiddenEdgeColor = new ThreeColor(newConfig.hiddenEdgeColor)
+      outlinePass.hiddenEdgeColor = new ThreeColor(newConfig.hiddenEdgeColor)
     }
     if (newConfig.selectedObjects !== undefined) {
-      outlinePass.value.selectedObjects = newConfig.selectedObjects
+      outlinePass.selectedObjects = newConfig.selectedObjects
     }
   }
 
@@ -59,9 +59,9 @@ export function useOutlinePass(config: MaybeRef<OutlinePassConfig> = {}) {
     const { scene, camera, size } = threeCtx
 
     const pass = new OutlinePass(
-      new Vector2(size.value.width, size.value.height),
-      scene.value,
-      camera.value
+      new Vector2(size.width, size.height),
+      scene,
+      camera
     )
 
     pass.edgeStrength = 3
@@ -72,7 +72,7 @@ export function useOutlinePass(config: MaybeRef<OutlinePassConfig> = {}) {
     pass.hiddenEdgeColor = new ThreeColor(0x190a05)
     pass.selectedObjects = []
 
-    outlinePass.value = pass
+    outlinePass = pass
     composerCtx.addPass(pass)
     updateConfig(toValue(config))
   }
@@ -88,9 +88,9 @@ export function useOutlinePass(config: MaybeRef<OutlinePassConfig> = {}) {
   )
 
   onBeforeUnmount(() => {
-    if (outlinePass.value) {
-      composerCtx.removePass(outlinePass.value)
-      outlinePass.value = null
+    if (outlinePass) {
+      composerCtx.removePass(outlinePass)
+      outlinePass = null
     }
   })
 

@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, shallowRef, watch, onMounted } from 'vue'
+import { computed, inject, watch } from 'vue'
 import type { PropType } from 'vue'
 import { ArrayCamera, PerspectiveCamera, Vector3, Vector4, type Camera } from 'three'
 import { ThreeContextKey } from '../core/context'
@@ -50,11 +50,11 @@ if (!ctx) {
 }
 
 // 组件内部创建 ArrayCamera
-const arrayCamera = shallowRef<ArrayCamera>(new ArrayCamera())
+let arrayCamera: ArrayCamera = new ArrayCamera()
 
 // 从配置创建子相机
 const createSubCamerasFromConfig = (configs: SubCameraConfig[]) => {
-  const { width, height } = ctx.size.value
+  const { width, height } = ctx.size
   console.log(width, height, '-==')
   return configs.map(config => {
     const cam = new PerspectiveCamera(
@@ -78,8 +78,8 @@ const createSubCamerasFromConfig = (configs: SubCameraConfig[]) => {
 
 // 更新阵列相机
 const updateArrayCamera = () => {
-  arrayCamera.value.cameras = createSubCamerasFromConfig(props.subCameras)
-  ctx.setCamera(arrayCamera.value)
+  arrayCamera.cameras = createSubCamerasFromConfig(props.subCameras)
+  ctx.setCamera(arrayCamera)
 }
 
 // 初始化
@@ -93,7 +93,7 @@ watch(
   },
   { deep: true }
 )
-watch([() => ctx.size.value.width, () => ctx.size.value.height], () => {
+watch([() => ctx.size.width, () => ctx.size.height], () => {
   updateArrayCamera()
 })
 
@@ -106,6 +106,6 @@ watch([() => ctx.size.value.width, () => ctx.size.value.height], () => {
  */
 defineExpose({
   arrayCamera,
-  subCameras: computed(() => arrayCamera.value.cameras),
+  subCameras: computed(() => arrayCamera.cameras),
 })
 </script>

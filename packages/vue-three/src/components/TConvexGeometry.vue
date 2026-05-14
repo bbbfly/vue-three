@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { inject, shallowRef, watch, onBeforeUnmount } from 'vue'
+import { inject, watch, onBeforeUnmount } from 'vue'
 import { Vector3 } from 'three'
 import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js'
 import { MeshContextKey } from '../core/context'
@@ -27,7 +27,7 @@ if (!meshCtx) {
   throw new Error('TConvexGeometry must be used within a TMesh component')
 }
 
-const geometry = shallowRef<ConvexGeometry>(new ConvexGeometry([]))
+let geometry: ConvexGeometry = new ConvexGeometry([])
 
 function normalizeVertex(v: VertexInput): Vector3 {
   if (v instanceof Vector3) {
@@ -40,12 +40,10 @@ function normalizeVertex(v: VertexInput): Vector3 {
 }
 
 function rebuildGeometry() {
-  if (geometry.value) {
-    geometry.value.dispose()
-  }
+  geometry.dispose()
   const vectors = props.vertices.map(normalizeVertex)
-  geometry.value = new ConvexGeometry(vectors)
-  meshCtx!.setGeometry(geometry.value)
+  geometry = new ConvexGeometry(vectors)
+  meshCtx!.setGeometry(geometry)
 }
 
 rebuildGeometry()
@@ -59,7 +57,7 @@ watch(
 )
 
 onBeforeUnmount(() => {
-  geometry.value.dispose()
+  geometry.dispose()
 })
 
 defineExpose({

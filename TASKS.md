@@ -534,9 +534,78 @@
 
 ---
 
+## 第十二阶段：响应式改造（v1.8.0）
+
+### 12.1 Context 接口改造
+
+| 任务ID    | 任务名称                                   | 预计耗时 | 优先级 | 状态      |
+| --------- | ------------------------------------------ | -------- | ------ | --------- |
+| REACT-001 | ThreeContext 移除 ShallowRef，改为直接类型 | 10min    | 高     | completed |
+| REACT-002 | MeshContext 移除 ShallowRef                | 5min     | 高     | completed |
+| REACT-003 | GroupContext 移除 ShallowRef               | 5min     | 高     | completed |
+| REACT-004 | MaterialContext 移除 ShallowRef            | 5min     | 高     | completed |
+| REACT-005 | CSS2DContext 移除 ShallowRef               | 5min     | 高     | completed |
+| REACT-006 | CSS3DContext 移除 ShallowRef               | 5min     | 高     | completed |
+| REACT-007 | SpriteContext 移除 ShallowRef              | 5min     | 高     | completed |
+| REACT-008 | InteractionContext 移除 ShallowRef         | 5min     | 高     | completed |
+
+### 12.2 Composables 改造
+
+| 任务ID    | 任务名称                               | 预计耗时 | 优先级 | 状态      |
+| --------- | -------------------------------------- | -------- | ------ | --------- |
+| REACT-009 | useCanvas 移除 shallowRef              | 15min    | 高     | completed |
+| REACT-010 | useMesh 移除 shallowRef                | 10min    | 高     | completed |
+| REACT-011 | useGroup 移除 shallowRef               | 10min    | 高     | completed |
+| REACT-012 | useLight 移除 shallowRef               | 10min    | 高     | completed |
+| REACT-013 | useCamera 移除 shallowRef              | 10min    | 高     | completed |
+| REACT-014 | useMaterial 移除 shallowRef            | 10min    | 高     | completed |
+| REACT-015 | useGeometry 移除 shallowRef            | 10min    | 高     | completed |
+| REACT-016 | useSprite 移除 shallowRef              | 10min    | 高     | completed |
+| REACT-017 | useLine 移除 shallowRef                | 10min    | 高     | completed |
+| REACT-018 | useGLTFLoader 移除 shallowRef          | 10min    | 高     | completed |
+| REACT-019 | useFBXLoader 移除 shallowRef           | 10min    | 高     | completed |
+| REACT-020 | useOBJLoader 移除 shallowRef           | 10min    | 高     | completed |
+| REACT-021 | useTexture 移除 shallowRef             | 10min    | 高     | completed |
+| REACT-022 | useCanvasTexture 移除 shallowRef       | 10min    | 高     | completed |
+| REACT-023 | useHelper 移除 shallowRef              | 10min    | 高     | completed |
+| REACT-024 | useControls 移除 shallowRef            | 10min    | 高     | completed |
+| REACT-025 | useFlyControls 移除 shallowRef         | 10min    | 高     | completed |
+| REACT-026 | useFirstPersonControls 移除 shallowRef | 10min    | 高     | completed |
+| REACT-027 | useCSS2DRenderer 移除 shallowRef       | 10min    | 高     | completed |
+| REACT-028 | useCSS3DRenderer 移除 shallowRef       | 10min    | 高     | completed |
+| REACT-029 | useOutlinePass 移除 shallowRef         | 10min    | 高     | completed |
+| REACT-030 | useInteraction 移除 shallowRef         | 10min    | 高     | completed |
+
+### 12.3 Components 改造
+
+| 任务ID    | 任务名称                           | 预计耗时 | 优先级 | 状态      |
+| --------- | ---------------------------------- | -------- | ------ | --------- |
+| REACT-031 | TCanvas 组件适配改造               | 10min    | 高     | completed |
+| REACT-032 | TMesh 组件适配改造                 | 10min    | 高     | completed |
+| REACT-033 | TGroup 组件适配改造                | 10min    | 高     | completed |
+| REACT-034 | TLine 组件适配改造                 | 10min    | 高     | completed |
+| REACT-035 | TPoints 组件适配改造               | 10min    | 高     | completed |
+| REACT-036 | TCamera 相关组件适配改造           | 10min    | 高     | completed |
+| REACT-037 | TLight 相关组件适配改造            | 10min    | 高     | completed |
+| REACT-038 | TMaterial 相关组件适配改造         | 10min    | 高     | completed |
+| REACT-039 | TGeometry 相关组件适配改造         | 10min    | 高     | completed |
+| REACT-040 | TCSS2DLabel/TCSS2DObject 适配改造  | 10min    | 高     | completed |
+| REACT-041 | TCSS3DObject/TCSS3DSprite 适配改造 | 10min    | 高     | completed |
+
+### 12.4 测试与验证
+
+| 任务ID    | 任务名称                | 预计耗时 | 优先级 | 状态      |
+| --------- | ----------------------- | -------- | ------ | --------- |
+| REACT-042 | TypeScript 类型检查验证 | 10min    | 高     | completed |
+| REACT-043 | 组件库构建验证          | 10min    | 高     | completed |
+| REACT-044 | Playground 运行验证     | 15min    | 高     | completed |
+| REACT-045 | 单元测试验证            | 10min    | 高     | completed |
+
+---
+
 ## 任务统计
 
-- **总任务数**：233 个
+- **总任务数**：278 个
 - **MVP 核心任务**：43 个（完成后可发布 v1.0.0）
 - **交互事件系统任务**：17 个（v1.2.0）
 - **曲线与高级几何体任务**：30 个（v1.3.0）
@@ -544,7 +613,8 @@
 - **Sprite 精灵模型系统任务**：35 个（v1.5.0）
 - **TGroup 层级分组系统任务**：15 个（v1.6.0）
 - **多场景渲染架构任务**：26 个（v1.7.0）
-- **高优先级任务**：140 个
+- **响应式改造任务**：45 个（v1.8.0）
+- **高优先级任务**：185 个
 - **平均每个任务**：~10 分钟
 - **MVP 预计总开发时间**：~6.5 小时
 - **交互事件系统预计开发时间**：~2.5 小时
@@ -553,3 +623,4 @@
 - **CSS2D 标签系统预计开发时间**：~4 小时
 - **Sprite 精灵模型预计开发时间**：~5 小时
 - **多场景渲染架构预计开发时间**：~4 小时
+- **响应式改造预计开发时间**：~7.5 小时

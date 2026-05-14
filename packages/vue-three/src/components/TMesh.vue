@@ -128,32 +128,27 @@ const config: Object3DConfig = {
 const { mesh, setGeometry, setMaterial } = useMesh()
 
 onMounted(() => {
-  if (mesh.value) {
-    ThreeObjectFactory.applyObject3DConfig(mesh.value, config)
-  }
+  ThreeObjectFactory.applyObject3DConfig(mesh, config)
 })
 
 watch(
   () => props,
   newProps => {
-    if (mesh.value) {
-      const newConfig: Object3DConfig = {
-        position: newProps.position,
-        rotation: newProps.rotation,
-        scale: newProps.scale,
-        castShadow: newProps.castShadow,
-        receiveShadow: newProps.receiveShadow,
-        visible: newProps.visible
-      }
-      ThreeObjectFactory.updateObject3DConfig(mesh.value, newConfig)
+    const newConfig: Object3DConfig = {
+      position: newProps.position,
+      rotation: newProps.rotation,
+      scale: newProps.scale,
+      castShadow: newProps.castShadow,
+      receiveShadow: newProps.receiveShadow,
+      visible: newProps.visible
     }
+    ThreeObjectFactory.updateObject3DConfig(mesh, newConfig)
   },
   { deep: true }
 )
 
 watch(
   [
-    () => mesh.value,
     () => props.onClick,
     () => props.onDblclick,
     () => props.onContextmenu,
@@ -161,10 +156,10 @@ watch(
     () => props.onPointerLeave,
     () => props.onPointerMove
   ],
-  ([meshObj]) => {
-    if (meshObj && interactionCtx) {
-      interactionCtx.unregisterObject(meshObj)
-      interactionCtx.registerObject(meshObj, {
+  () => {
+    if (interactionCtx) {
+      interactionCtx.unregisterObject(mesh)
+      interactionCtx.registerObject(mesh, {
         onClick: props.onClick,
         onDblclick: props.onDblclick,
         onContextmenu: props.onContextmenu,
@@ -178,8 +173,8 @@ watch(
 )
 
 onBeforeUnmount(() => {
-  if (mesh.value && interactionCtx) {
-    interactionCtx.unregisterObject(mesh.value)
+  if (interactionCtx) {
+    interactionCtx.unregisterObject(mesh)
   }
 })
 

@@ -1,4 +1,4 @@
-import { inject, shallowRef, onMounted, onBeforeUnmount, watch, computed } from 'vue'
+import { inject, ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import type { AnimationClip } from 'three'
 import { Object3D } from 'three'
 import { FBXLoader } from 'three/addons/loaders/FBXLoader.js'
@@ -15,13 +15,13 @@ export function useFBXLoader(config: FBXLoaderConfig) {
   }
 
   const scene = threeCtx.scene
-  const parent = computed(() => groupCtx?.group.value || scene.value)
-  const model = shallowRef<Object3D | null>(null)
-  const animations = shallowRef<AnimationClip[]>([])
-  const loading = shallowRef(false)
-  const progress = shallowRef(0)
-  const total = shallowRef(0)
-  const error = shallowRef<Error | null>(null)
+  const parent = groupCtx?.group || scene
+  let model: Object3D | null = null
+  const animations = ref<AnimationClip[]>([])
+  const loading = ref(false)
+  const progress = ref(0)
+  const total = ref(0)
+  const error = ref<Error | null>(null)
 
   const loader = new FBXLoader()
 
@@ -33,20 +33,20 @@ export function useFBXLoader(config: FBXLoaderConfig) {
     loader.load(
       src,
       loadedModel => {
-        if (model.value && parent.value) {
-          parent.value.remove(model.value)
-          disposeModel(model.value)
+        if (model && parent) {
+          parent.remove(model)
+          disposeModel(model)
         }
 
         if (loadedModel) {
           ThreeObjectFactory.applyObject3DConfig(loadedModel, config)
           applyShadowToModel(loadedModel, config)
 
-          if (parent.value) {
-            parent.value.add(loadedModel)
+          if (parent) {
+            parent.add(loadedModel)
           }
 
-          model.value = loadedModel
+          model = loadedModel
           animations.value = loadedModel.animations || []
         }
 
@@ -112,18 +112,18 @@ export function useFBXLoader(config: FBXLoaderConfig) {
   watch(
     () => [config.position, config.rotation, config.scale, config.visible],
     () => {
-      if (model.value) {
-        ThreeObjectFactory.updateObject3DConfig(model.value, config)
-        applyShadowToModel(model.value, config)
+      if (model) {
+        ThreeObjectFactory.updateObject3DConfig(model, config)
+        applyShadowToModel(model, config)
       }
     },
     { deep: true }
   )
 
   onBeforeUnmount(() => {
-    if (model.value && parent.value) {
-      parent.value.remove(model.value)
-      disposeModel(model.value)
+    if (model && parent) {
+      parent.remove(model)
+      disposeModel(model)
     }
   })
 

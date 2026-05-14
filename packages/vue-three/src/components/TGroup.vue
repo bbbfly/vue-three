@@ -93,42 +93,38 @@ const props = defineProps({
 const { group } = useGroup()
 
 onMounted(() => {
-  if (group.value) {
-    const initConfig: GroupConfig = {
-      name: props.name,
-      position: props.position,
-      rotation: props.rotation,
-      scale: props.scale,
-      visible: props.visible,
-      receiveShadow: props.receiveShadow,
-      castShadow: props.castShadow,
-      userData: props.userData
-    }
-    ThreeObjectFactory.applyObject3DConfig(group.value, initConfig)
-    if (props.name !== undefined) {
-      group.value.name = props.name
-    }
+  const initConfig: GroupConfig = {
+    name: props.name,
+    position: props.position,
+    rotation: props.rotation,
+    scale: props.scale,
+    visible: props.visible,
+    receiveShadow: props.receiveShadow,
+    castShadow: props.castShadow,
+    userData: props.userData
+  }
+  ThreeObjectFactory.applyObject3DConfig(group, initConfig)
+  if (props.name !== undefined) {
+    group.name = props.name
   }
 })
 
 watch(
   () => props,
   newProps => {
-    if (group.value) {
-      const newConfig: GroupConfig = {
-        name: newProps.name,
-        position: newProps.position,
-        rotation: newProps.rotation,
-        scale: newProps.scale,
-        visible: newProps.visible,
-        receiveShadow: newProps.receiveShadow,
-        castShadow: newProps.castShadow,
-        userData: newProps.userData
-      }
-      ThreeObjectFactory.updateObject3DConfig(group.value, newConfig)
-      if (newProps.name !== undefined) {
-        group.value.name = newProps.name
-      }
+    const newConfig: GroupConfig = {
+      name: newProps.name,
+      position: newProps.position,
+      rotation: newProps.rotation,
+      scale: newProps.scale,
+      visible: newProps.visible,
+      receiveShadow: newProps.receiveShadow,
+      castShadow: newProps.castShadow,
+      userData: newProps.userData
+    }
+    ThreeObjectFactory.updateObject3DConfig(group, newConfig)
+    if (newProps.name !== undefined) {
+      group.name = newProps.name
     }
   },
   { deep: true }

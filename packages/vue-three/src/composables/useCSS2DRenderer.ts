@@ -1,4 +1,4 @@
-import { inject, ref, shallowRef, onMounted, onBeforeUnmount, watch, provide } from 'vue'
+import { inject, ref, onMounted, onBeforeUnmount, watch, provide } from 'vue'
 import { Scene } from 'three'
 import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js'
 import type { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'
@@ -12,35 +12,36 @@ export function useCSS2DRenderer() {
     throw new Error('useCSS2DRenderer must be used within a TCanvas component')
   }
 
-  const renderer = shallowRef<CSS2DRenderer | null>(null)
+  // 使用普通变量存储 Three.js 对象
+  let renderer: CSS2DRenderer | null = null
   const labelContainer = ref<HTMLElement | null>(null)
   
   // 创建独立的 CSS2D 场景
-  const scene = shallowRef<Scene>(new Scene())
+  const scene = new Scene()
 
-  const labels = shallowRef<Map<CSS2DObject, CSS2DLabelConfig>>(new Map())
+  const labels = new Map<CSS2DObject, CSS2DLabelConfig>()
 
   const addLabel = (label: CSS2DObject, config?: CSS2DLabelConfig) => {
     if (config) {
-      labels.value.set(label, config)
+      labels.set(label, config)
       applyLabelConfig(label, config)
     }
     // 添加到 CSS2D 独立场景
-    scene.value.add(label)
+    scene.add(label)
   }
 
   const updateLabelConfig = (label: CSS2DObject, config: Partial<CSS2DLabelConfig>) => {
-    const existingConfig = labels.value.get(label)
+    const existingConfig = labels.get(label)
     if (existingConfig) {
       const newConfig = { ...existingConfig, ...config }
-      labels.value.set(label, newConfig)
+      labels.set(label, newConfig)
       applyLabelConfig(label, newConfig)
     }
   }
 
   const removeLabel = (label: CSS2DObject) => {
-    labels.value.delete(label)
-    scene.value.remove(label)
+    labels.delete(label)
+    scene.remove(label)
   }
 
   const applyLabelConfig = (label: CSS2DObject, config: CSS2DLabelConfig) => {
@@ -68,10 +69,10 @@ export function useCSS2DRenderer() {
   }
 
   const applyDistanceEffects = () => {
-    if (!ctx.camera.value) return
+    if (!ctx.camera) return
 
-    labels.value.forEach((config, label) => {
-      const distance = label.position.distanceTo(ctx.camera.value!.position)
+    labels.forEach((config, label) => {
+      const distance = label.position.distanceTo(ctx.camera.position)
 
       let visible = true
 
@@ -102,14 +103,14 @@ export function useCSS2DRenderer() {
   }
 
   const setSize = (width: number, height: number) => {
-    if (renderer.value) {
-      renderer.value.setSize(width, height)
+    if (renderer) {
+      renderer.setSize(width, height)
     }
   }
 
   onMounted(() => {
-    renderer.value = new CSS2DRenderer()
-    labelContainer.value = renderer.value.domElement
+    renderer = new CSS2DRenderer()
+    labelContainer.value = renderer.domElement
 
     labelContainer.value.style.position = 'absolute'
     labelContainer.value.style.top = '0'
@@ -120,19 +121,19 @@ export function useCSS2DRenderer() {
     labelContainer.value.style.overflow = 'hidden'
     labelContainer.value.style.zIndex = '2'
 
-    if (ctx.canvas.value?.parentNode) {
-      ctx.canvas.value.parentNode.appendChild(labelContainer.value)
+    if (ctx.canvas?.parentNode) {
+      ctx.canvas.parentNode.appendChild(labelContainer.value)
     }
 
-    setSize(ctx.size.value.width, ctx.size.value.height)
+    setSize(ctx.size.width, ctx.size.height)
 
     // 注册场景和渲染器到 ThreeContext
-    ctx.registerScene('css2d', scene.value)
-    ctx.registerRenderer('css2d', renderer.value)
+    ctx.registerScene('css2d', scene)
+    ctx.registerRenderer('css2d', renderer)
   })
 
   watch(
-    () => ctx.size.value,
+    () => ctx.size,
     size => {
       setSize(size.width, size.height)
     },
@@ -144,16 +145,16 @@ export function useCSS2DRenderer() {
     ctx.unregisterScene('css2d')
     ctx.unregisterRenderer('css2d')
 
-    labels.value.forEach((_, label) => {
-      scene.value.remove(label)
+    labels.forEach((_, label) => {
+      scene.remove(label)
     })
-    labels.value.clear()
+    labels.clear()
 
     if (labelContainer.value && labelContainer.value.parentNode) {
       labelContainer.value.parentNode.removeChild(labelContainer.value)
     }
 
-    renderer.value = null
+    renderer = null
     labelContainer.value = null
   })
 

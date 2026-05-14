@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, shallowRef, onMounted, onBeforeUnmount, watch } from 'vue'
+import { inject, ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'
 import { CSS2DContextKey, CSS2DGroupContextKey, type CSS2DLabelConfig } from '../core/context'
 
@@ -48,14 +48,14 @@ if (!css2dCtx) {
   throw new Error('TCSS2DObject must be used within a TCSS2DRenderer component')
 }
 
-const objectRef = shallowRef<HTMLElement | null>(null)
-const css2dObject = shallowRef<CSS2DObject | null>(null)
+const objectRef = ref<HTMLElement | null>(null)
+let css2dObject: CSS2DObject | null = null
 
 const createObject = () => {
   if (!objectRef.value) return
 
   const object = new CSS2DObject(objectRef.value)
-  css2dObject.value = object
+  css2dObject = object
 
   applyConfig()
 
@@ -73,23 +73,23 @@ const createObject = () => {
 
   if (css2dGroupCtx) {
     applyConfig()
-    css2dGroupCtx.group.value.add(object)
+    css2dGroupCtx.group.add(object)
   } else {
     css2dCtx.addLabel(object, config)
   }
 }
 
 const applyConfig = () => {
-  if (!css2dObject.value) return
+  if (!css2dObject) return
 
-  css2dObject.value.position.set(...props.position)
-  css2dObject.value.center.set(...props.center)
+  css2dObject.position.set(...props.position)
+  css2dObject.center.set(...props.center)
 
   if (props.layers !== undefined) {
-    css2dObject.value.layers.set(props.layers)
+    css2dObject.layers.set(props.layers)
   }
 
-  const el = css2dObject.value.element
+  const el = css2dObject.element
 
   if (props.offset) {
     el.style.marginLeft = `${props.offset[0]}px`
@@ -148,11 +148,11 @@ watch(
 )
 
 onBeforeUnmount(() => {
-  if (css2dObject.value) {
+  if (css2dObject) {
     if (css2dGroupCtx) {
-      css2dGroupCtx.group.value.remove(css2dObject.value)
+      css2dGroupCtx.group.remove(css2dObject)
     } else {
-      css2dCtx.removeLabel(css2dObject.value)
+      css2dCtx.removeLabel(css2dObject)
     }
   }
 })
@@ -162,7 +162,7 @@ onBeforeUnmount(() => {
  * @property css2dObject - CSS2DObject 实例
  */
 defineExpose({
-  css2dObject
+  css2dObject: () => css2dObject
 })
 </script>
 

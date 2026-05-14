@@ -6,7 +6,7 @@
 import type { PropType } from 'vue'
 import { PointLight, PointLightHelper, Color } from 'three'
 import { useHelper } from '../composables/useHelper'
-import { watch, shallowRef, toValue } from 'vue'
+import { watch, toValue } from 'vue'
 
 /**
  * 点光源辅助线组件
@@ -43,14 +43,14 @@ const props = defineProps({
   }
 })
 
-const helperInstance = shallowRef<PointLightHelper | null>(null)
+let helperInstance: PointLightHelper | null = null
 
-const { helper } = useHelper(helperInstance)
+const { helper } = useHelper(() => helperInstance)
 
 function createHelper() {
   const light = toValue(props.light)
   if (light) {
-    helperInstance.value = new PointLightHelper(
+    helperInstance = new PointLightHelper(
       light,
       props.sphereSize,
       props.color
@@ -69,8 +69,8 @@ watch(
 watch(
   () => [props.sphereSize, props.color],
   () => {
-    if (helperInstance.value) {
-      helperInstance.value.dispose()
+    if (helperInstance) {
+      helperInstance.dispose()
     }
     createHelper()
   }
@@ -79,15 +79,15 @@ watch(
 watch(
   () => props.color,
   newColor => {
-    if (helperInstance.value) {
-      helperInstance.value.color = newColor ? new Color(newColor) : undefined
-      helperInstance.value.update()
+    if (helperInstance) {
+      helperInstance.color = newColor ? new Color(newColor) : undefined
+      helperInstance.update()
     }
   }
 )
 
 defineExpose({
-  helper,
-  update: () => helperInstance.value?.update()
+  helper: () => helperInstance,
+  update: () => helperInstance?.update()
 })
 </script>

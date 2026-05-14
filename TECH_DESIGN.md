@@ -1106,6 +1106,158 @@ export const CSS2DContextKey = Symbol(
 
 ---
 
+## 十二、响应式改造方案（v1.8.0）
+
+### 12.1 问题分析
+
+当前代码库中 `shallowRef` 被广泛用于存储 Three.js 对象（Renderer、Scene、Camera、Mesh、Material、Geometry 等）。这种做法存在以下问题：
+
+| 问题点                  | 具体影响                                                | 影响范围                 |
+| ----------------------- | ------------------------------------------------------- | ------------------------ |
+| 不必要的响应式包装      | Vue 会对对象进行 Proxy 代理，增加内存开销和性能损耗     | 所有 Three.js 对象       |
+| Three.js 内部处理复杂化 | Three.js 对象内部属性访问被响应式拦截，可能导致意外行为 | Mesh、Material、Geometry |
+| 类型定义冗余            | Context 接口大量使用 `ShallowRef<T>`，增加类型复杂度    | context.ts               |
+| 心智负担                | 开发者需要区分 `.value` 和直接访问                      | 所有 composables         |
+
+### 12.2 改造策略
+
+**核心原则**：将 Three.js 对象从响应式容器中剥离，使用普通变量存储，仅对真正需要响应式的状态保留 ref。
+
+#### 12.2.1 Context 接口改造
+
+将 `ShallowRef<T>` 改为直接类型 `T`：
+
+```typescript
+// 改造前
+export interface ThreeContext {
+  renderer: ShallowRef<WebGLRenderer | null>
+  scene: ShallowRef<Scene>
+  camera: ShallowRef<Camera>
+  controls: ShallowRef<OrbitControls | null>
+}
+
+// 改造后
+export interface ThreeContext {
+  renderer: WebGLRenderer | null
+  scene: Scene
+  camera: Camera
+  controls: OrbitControls | null
+}
+```
+
+#### 12.2.2 Composables 改造模式
+
+```typescript
+// 改造前
+export function useMesh(config?: MeshConfig) {
+  const mesh = shallowRef<Mesh>(config ? createMesh(config) : new Mesh())
+
+  // 使用时需要 .value
+  mesh.value.updateMatrix()
+
+  return { mesh }
+}
+
+// 改造后
+export function useMesh(config?: MeshConfig) {
+  // 直接使用普通变量
+  const mesh: Mesh = config ? createMesh(config) : new Mesh()
+
+  // 直接访问，无需 .value
+  mesh.updateMatrix()
+
+  return { mesh }
+}
+```
+
+#### 12.2.3 响应式保留策略
+
+**仅保留真正需要响应式的状态**：
+
+```typescript
+// 需要响应式的状态（保留 ref）
+const loading = ref(false) // UI 状态
+const progress = ref(0) // 加载进度
+const error = ref<Error | null>(null) // 错误状态
+const size = ref({ width: 0, height: 0 }) // 尺寸变化需要触发视图更新
+
+// 不需要响应式的状态（改为普通变量）
+let renderer: WebGLRenderer | null = null // Three.js 对象
+let scene = new Scene() // Three.js 对象
+let mesh = new Mesh() // Three.js 对象
+```
+
+#### 12.2.4 对象初始化时机
+
+| 对象类型      | 初始化时机       | 原因                    |
+| ------------- | ---------------- | ----------------------- |
+| Scene         | 构造时立即创建   | 始终存在，非 null       |
+| Camera        | 构造时立即创建   | 始终存在，非 null       |
+| Renderer      | onMounted 时创建 | 依赖 DOM                |
+| Controls      | onMounted 时创建 | 依赖 renderer 和 camera |
+| Mesh/Material | 构造时创建       | 组件初始化时即存在      |
+
+### 12.3 改造后接口定义
+
+```typescript
+// core/context.ts - 改造后
+
+export interface ThreeContext {
+  renderer: WebGLRenderer | null
+  scene: Scene
+  camera: Camera
+  controls: OrbitControls | null
+  canvas: HTMLCanvasElement | null
+  size: Size
+  composer: EffectComposer | null
+
+  scenes: Map<string, Scene>
+  registerScene: (name: string, scene: Scene) => void
+  getScene: (name: string) => Scene | undefined
+  unregisterScene: (name: string) => void
+
+  renderers: Map<string, THREE.Renderer>
+  registerRenderer: (name: string, renderer: THREE.Renderer) => void
+  getRenderer: (name: string) => THREE.Renderer | undefined
+  unregisterRenderer: (name: string) => void
+
+  registerAnimationMixer: (mixer: AnimationMixer) => void
+  unregisterAnimationMixer: (mixer: AnimationMixer) => void
+  registerRenderPass: (pass: Pass) => void
+  unregisterRenderPass: (pass: Pass) => void
+  enablePostProcessing: () => void
+  setCamera: (camera: Camera) => void
+}
+
+export interface MeshContext {
+  mesh: Mesh
+  setGeometry: (geometry: BufferGeometry) => void
+  setMaterial: (material: Material) => void
+}
+
+export interface GroupContext {
+  group: Group
+}
+
+export interface MaterialContext {
+  material: Material
+  setMap: (texture: Texture | null) => void
+  // ... 其他 set* 方法
+}
+```
+
+### 12.4 方案优势
+
+| 维度                | 改造前                      | 改造后                | 收益               |
+| ------------------- | --------------------------- | --------------------- | ------------------ |
+| **响应式开销**      | 每个对象都有 Proxy 包装     | 无响应式包装          | 消除额外内存开销   |
+| **属性访问**        | 需要 `.value` 访问          | 直接访问              | 简化代码，提升性能 |
+| **类型复杂度**      | 大量 `ShallowRef<T>`        | 直接类型 `T`          | 简化类型定义       |
+| **Three.js 兼容性** | 可能产生冲突                | 完全兼容              | 消除潜在问题       |
+| **代码简洁性**      | `mesh.value.updateMatrix()` | `mesh.updateMatrix()` | 代码更直观         |
+
+---
+
 ## 三、组件系统设计
 
 ### 3.1 组件层级结构

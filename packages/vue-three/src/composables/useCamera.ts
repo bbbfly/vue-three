@@ -1,4 +1,4 @@
-import { inject, shallowRef, watch, onMounted, type ComputedRef, isRef } from 'vue'
+import { inject, watch, onMounted, type ComputedRef, isRef } from 'vue'
 import { Camera, PerspectiveCamera, OrthographicCamera, Vector3 } from 'three'
 import { ThreeContextKey } from '../core/context'
 import type { CameraConfig } from '../types'
@@ -25,110 +25,108 @@ export function useCamera(configOrRef: CameraOptions | ComputedRef<CameraOptions
   const initialConfig = getConfig()
 
   // 组件内部自己创建新相机，不使用上下文中的旧相机
-  const localCamera = shallowRef<Camera>(
-    initialConfig.type === 'orthographic'
-      ? new OrthographicCamera(
-          initialConfig.left || -1,
-          initialConfig.right || 1,
-          initialConfig.top || 1,
-          initialConfig.bottom || -1,
-          initialConfig.near || 0.1,
-          initialConfig.far || 1000
-        )
-      : new PerspectiveCamera(
-          initialConfig.fov || 75,
-          1,
-          initialConfig.near || 0.1,
-          initialConfig.far || 1000
-        )
-  )
+  let localCamera: Camera = initialConfig.type === 'orthographic'
+    ? new OrthographicCamera(
+        initialConfig.left || -1,
+        initialConfig.right || 1,
+        initialConfig.top || 1,
+        initialConfig.bottom || -1,
+        initialConfig.near || 0.1,
+        initialConfig.far || 1000
+      )
+    : new PerspectiveCamera(
+        initialConfig.fov || 75,
+        1,
+        initialConfig.near || 0.1,
+        initialConfig.far || 1000
+      )
 
   const setPosition = (x: number, y: number, z: number) => {
-    localCamera.value.position.set(x, y, z)
+    localCamera.position.set(x, y, z)
   }
 
   const setRotation = (x: number, y: number, z: number) => {
-    localCamera.value.rotation.set(x, y, z)
+    localCamera.rotation.set(x, y, z)
   }
 
   const lookAt = (x: number, y: number, z: number) => {
-    localCamera.value.lookAt(new Vector3(x, y, z))
+    localCamera.lookAt(new Vector3(x, y, z))
   }
 
   const updateProjectionMatrix = () => {
     if (
-      localCamera.value instanceof PerspectiveCamera ||
-      localCamera.value instanceof OrthographicCamera
+      localCamera instanceof PerspectiveCamera ||
+      localCamera instanceof OrthographicCamera
     ) {
-      localCamera.value.updateProjectionMatrix()
+      localCamera.updateProjectionMatrix()
     }
   }
 
   const setFov = (fov: number) => {
-    if (localCamera.value instanceof PerspectiveCamera) {
-      localCamera.value.fov = fov
+    if (localCamera instanceof PerspectiveCamera) {
+      localCamera.fov = fov
       updateProjectionMatrix()
     }
   }
 
   const setNear = (near: number) => {
     if (
-      localCamera.value instanceof PerspectiveCamera ||
-      localCamera.value instanceof OrthographicCamera
+      localCamera instanceof PerspectiveCamera ||
+      localCamera instanceof OrthographicCamera
     ) {
-      localCamera.value.near = near
+      localCamera.near = near
       updateProjectionMatrix()
     }
   }
 
   const setFar = (far: number) => {
     if (
-      localCamera.value instanceof PerspectiveCamera ||
-      localCamera.value instanceof OrthographicCamera
+      localCamera instanceof PerspectiveCamera ||
+      localCamera instanceof OrthographicCamera
     ) {
-      localCamera.value.far = far
+      localCamera.far = far
       updateProjectionMatrix()
     }
   }
 
   const setAspect = (aspect: number) => {
-    if (localCamera.value instanceof PerspectiveCamera) {
-      localCamera.value.aspect = aspect
+    if (localCamera instanceof PerspectiveCamera) {
+      localCamera.aspect = aspect
       updateProjectionMatrix()
     }
   }
 
   const setLeft = (left: number) => {
-    if (localCamera.value instanceof OrthographicCamera) {
-      localCamera.value.left = left
+    if (localCamera instanceof OrthographicCamera) {
+      localCamera.left = left
       updateProjectionMatrix()
     }
   }
 
   const setRight = (right: number) => {
-    if (localCamera.value instanceof OrthographicCamera) {
-      localCamera.value.right = right
+    if (localCamera instanceof OrthographicCamera) {
+      localCamera.right = right
       updateProjectionMatrix()
     }
   }
 
   const setTop = (top: number) => {
-    if (localCamera.value instanceof OrthographicCamera) {
-      localCamera.value.top = top
+    if (localCamera instanceof OrthographicCamera) {
+      localCamera.top = top
       updateProjectionMatrix()
     }
   }
 
   const setBottom = (bottom: number) => {
-    if (localCamera.value instanceof OrthographicCamera) {
-      localCamera.value.bottom = bottom
+    if (localCamera instanceof OrthographicCamera) {
+      localCamera.bottom = bottom
       updateProjectionMatrix()
     }
   }
 
   const setZoom = (zoom: number) => {
-    if (localCamera.value instanceof OrthographicCamera) {
-      localCamera.value.zoom = zoom
+    if (localCamera instanceof OrthographicCamera) {
+      localCamera.zoom = zoom
       updateProjectionMatrix()
     }
   }
@@ -146,7 +144,7 @@ export function useCamera(configOrRef: CameraOptions | ComputedRef<CameraOptions
       lookAt(...newConfig.lookAt)
     }
 
-    if (newConfig.fov !== undefined && localCamera.value instanceof PerspectiveCamera) {
+    if (newConfig.fov !== undefined && localCamera instanceof PerspectiveCamera) {
       setFov(newConfig.fov)
     }
 
@@ -158,27 +156,27 @@ export function useCamera(configOrRef: CameraOptions | ComputedRef<CameraOptions
       setFar(newConfig.far)
     }
 
-    if (newConfig.aspect !== undefined && localCamera.value instanceof PerspectiveCamera) {
+    if (newConfig.aspect !== undefined && localCamera instanceof PerspectiveCamera) {
       setAspect(newConfig.aspect)
     }
 
-    if (newConfig.left !== undefined && localCamera.value instanceof OrthographicCamera) {
+    if (newConfig.left !== undefined && localCamera instanceof OrthographicCamera) {
       setLeft(newConfig.left)
     }
 
-    if (newConfig.right !== undefined && localCamera.value instanceof OrthographicCamera) {
+    if (newConfig.right !== undefined && localCamera instanceof OrthographicCamera) {
       setRight(newConfig.right)
     }
 
-    if (newConfig.top !== undefined && localCamera.value instanceof OrthographicCamera) {
+    if (newConfig.top !== undefined && localCamera instanceof OrthographicCamera) {
       setTop(newConfig.top)
     }
 
-    if (newConfig.bottom !== undefined && localCamera.value instanceof OrthographicCamera) {
+    if (newConfig.bottom !== undefined && localCamera instanceof OrthographicCamera) {
       setBottom(newConfig.bottom)
     }
 
-    if (newConfig.zoom !== undefined && localCamera.value instanceof OrthographicCamera) {
+    if (newConfig.zoom !== undefined && localCamera instanceof OrthographicCamera) {
       setZoom(newConfig.zoom)
     }
   }
@@ -197,7 +195,7 @@ export function useCamera(configOrRef: CameraOptions | ComputedRef<CameraOptions
 
   // 组件挂载时，调用 setCamera 把自己的相机注册为全局相机（后来者居上）
   onMounted(() => {
-    ctx.setCamera(localCamera.value)
+    ctx.setCamera(localCamera)
   })
 
   return {

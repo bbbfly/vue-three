@@ -1,4 +1,4 @@
-import { inject, shallowRef, onBeforeUnmount, watch, computed } from 'vue'
+import { inject, onBeforeUnmount, watch } from 'vue'
 import { Light } from 'three'
 import { ThreeContextKey, GroupContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
@@ -13,15 +13,16 @@ export function useLight(config: LightConfig) {
     throw new Error('useLight must be used within a TCanvas component')
   }
 
-  const light = shallowRef<Light>(createLight(config))
+  // 直接使用普通变量
+  const light: Light = createLight(config)
 
-  const parent = computed(() => groupCtx?.group.value || ctx.scene.value)
+  // 直接获取 parent
+  const parent = groupCtx?.group || ctx.scene
 
-  watch(parent, (newParent) => {
-    if (newParent && !newParent.children.includes(light.value)) {
-      newParent.add(light.value)
-    }
-  }, { immediate: true })
+  // 立即添加到父对象
+  if (!parent.children.includes(light)) {
+    parent.add(light)
+  }
 
   function createLight(lightConfig: LightConfig) {
     const newLight = ThreeObjectFactory.createLight(lightConfig) as Light
@@ -32,16 +33,14 @@ export function useLight(config: LightConfig) {
   watch(
     () => config,
     newConfig => {
-      ThreeObjectFactory.updateObject3DConfig(light.value, newConfig)
+      ThreeObjectFactory.updateObject3DConfig(light, newConfig)
     },
     { deep: true }
   )
 
   onBeforeUnmount(() => {
-    if (parent.value) {
-      parent.value.remove(light.value)
-    }
-    disposeObject3D(light.value)
+    parent.remove(light)
+    disposeObject3D(light)
   })
 
   return {

@@ -1,4 +1,4 @@
-import { inject, shallowRef, onBeforeUnmount, watch } from 'vue'
+import { inject, onBeforeUnmount, watch } from 'vue'
 import { CanvasTexture, RepeatWrapping } from 'three'
 import { MaterialContextKey, type TextureMapType } from '../core/context'
 
@@ -23,29 +23,29 @@ export function useCanvasTexture(options: CanvasTextureOptions = {}) {
     throw new Error('useCanvasTexture must be used within a Material component')
   }
 
-  const texture = shallowRef<CanvasTexture | null>(null)
+  let texture: CanvasTexture | null = null
   const mapType = options.mapType || 'map'
 
   function applyTextureToMaterial() {
-    if (texture.value) {
-      materialCtx!.setTextureByType(mapType, texture.value)
+    if (texture) {
+      materialCtx!.setTextureByType(mapType, texture)
     }
   }
 
   function createCanvasTexture(canvas: HTMLCanvasElement) {
-    if (texture.value) {
+    if (texture) {
       console.log('1111')
-      texture.value.dispose()
+      texture.dispose()
     }
 
-    texture.value = new CanvasTexture(canvas)
+    texture = new CanvasTexture(canvas)
     applyTextureSettings()
   }
 
   function applyTextureSettings() {
-    if (!texture.value) return
+    if (!texture) return
 
-    const tex = texture.value
+    const tex = texture
 
     if (options.wrapS !== undefined) {
       tex.wrapS = options.wrapS
@@ -109,8 +109,8 @@ export function useCanvasTexture(options: CanvasTextureOptions = {}) {
   )
 
   onBeforeUnmount(() => {
-    if (texture.value) {
-      texture.value.dispose()
+    if (texture) {
+      texture.dispose()
     }
     materialCtx!.setTextureByType(mapType, null)
   })

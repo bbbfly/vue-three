@@ -1,4 +1,4 @@
-import { inject, shallowRef, onBeforeUnmount, watch, provide } from 'vue'
+import { inject, onBeforeUnmount, watch, provide } from 'vue'
 import { Curve, Vector3 } from 'three'
 import { ThreeContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
@@ -13,14 +13,12 @@ export function useCurve(config?: CurveConfig) {
     throw new Error('useCurve must be used within a TCanvas component')
   }
 
-  const curve = shallowRef<Curve<Vector3>>(
-    config
-      ? ThreeObjectFactory.createCurve(config)
-      : ThreeObjectFactory.createCurve({ type: 'arc' })
-  )
+  let curve: Curve<Vector3> = config
+    ? ThreeObjectFactory.createCurve(config)
+    : ThreeObjectFactory.createCurve({ type: 'arc' })
 
   function updateCurve(newConfig: CurveConfig) {
-    curve.value = ThreeObjectFactory.createCurve(newConfig)
+    curve = ThreeObjectFactory.createCurve(newConfig)
   }
 
   if (config) {

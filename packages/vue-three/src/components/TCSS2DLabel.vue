@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, shallowRef, watch, onBeforeUnmount, onMounted } from 'vue'
+import { inject, ref, watch, onBeforeUnmount, onMounted } from 'vue'
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'
 import { CSS2DContextKey, CSS2DGroupContextKey, type CSS2DLabelConfig } from '../core/context'
 
@@ -57,14 +57,14 @@ if (!css2dCtx) {
   throw new Error('TCSS2DLabel must be used within a TCSS2DRenderer component')
 }
 
-const labelRef = shallowRef<HTMLElement | null>(null)
-const css2dObject = shallowRef<CSS2DObject | null>(null)
+const labelRef = ref<HTMLElement | null>(null)
+let css2dObject: CSS2DObject | null = null
 
 const createLabel = () => {
   if (!labelRef.value) return
 
   const object = new CSS2DObject(labelRef.value)
-  css2dObject.value = object
+  css2dObject = object
 
   applyConfig()
   bindEvents()
@@ -83,23 +83,23 @@ const createLabel = () => {
 
   if (css2dGroupCtx) {
     applyConfig()
-    css2dGroupCtx.group.value.add(object)
+    css2dGroupCtx.group.add(object)
   } else {
     css2dCtx.addLabel(object, config)
   }
 }
 
 const applyConfig = () => {
-  if (!css2dObject.value) return
+  if (!css2dObject) return
 
-  css2dObject.value.position.set(...props.position)
-  css2dObject.value.center.set(0.5, 0.5)
+  css2dObject.position.set(...props.position)
+  css2dObject.center.set(0.5, 0.5)
 
   if (props.layers !== undefined) {
-    css2dObject.value.layers.set(props.layers)
+    css2dObject.layers.set(props.layers)
   }
 
-  const el = css2dObject.value.element
+  const el = css2dObject.element
 
   if (props.offset) {
     el.style.marginLeft = `${props.offset[0]}px`
@@ -124,9 +124,9 @@ const applyConfig = () => {
 }
 
 const bindEvents = () => {
-  if (!css2dObject.value) return
+  if (!css2dObject) return
 
-  const el = css2dObject.value.element
+  const el = css2dObject.element
 
   el.addEventListener('click', (e: MouseEvent) => {
     e.stopPropagation()
@@ -147,11 +147,11 @@ onMounted(() => {
 })
 
 const updateConfig = () => {
-  if (!css2dObject.value) return
+  if (!css2dObject) return
 
   applyConfig()
 
-  css2dCtx.updateLabelConfig(css2dObject.value, {
+  css2dCtx.updateLabelConfig(css2dObject, {
     position: props.position,
     offset: props.offset,
     minDistance: props.minDistance,
@@ -184,11 +184,11 @@ watch(
 )
 
 onBeforeUnmount(() => {
-  if (css2dObject.value) {
+  if (css2dObject) {
     if (css2dGroupCtx) {
-      css2dGroupCtx.group.value.remove(css2dObject.value)
+      css2dGroupCtx.group.remove(css2dObject)
     } else {
-      css2dCtx.removeLabel(css2dObject.value)
+      css2dCtx.removeLabel(css2dObject)
     }
   }
 })
@@ -198,7 +198,7 @@ onBeforeUnmount(() => {
  * @property css2dObject - CSS2DObject 实例
  */
 defineExpose({
-  css2dObject
+  css2dObject: () => css2dObject
 })
 </script>
 

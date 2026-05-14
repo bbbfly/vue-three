@@ -1,4 +1,4 @@
-import { inject, ref, shallowRef, onMounted, onBeforeUnmount, watch, provide } from 'vue'
+import { inject, ref, onMounted, onBeforeUnmount, watch, provide } from 'vue'
 import { Scene } from 'three'
 import { CSS3DRenderer } from 'three/addons/renderers/CSS3DRenderer.js'
 import type { CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js'
@@ -12,26 +12,27 @@ export function useCSS3DRenderer() {
     throw new Error('useCSS3DRenderer must be used within a TCanvas component')
   }
 
-  const renderer = shallowRef<CSS3DRenderer | null>(null)
+  // 使用普通变量存储 Three.js 对象
+  let renderer: CSS3DRenderer | null = null
   const container = ref<HTMLElement | null>(null)
 
   // 创建独立的 CSS3D 场景
-  const scene = shallowRef<Scene>(new Scene())
+  const scene = new Scene()
 
-  const objects = shallowRef<Map<CSS3DObject, CSS3DObjectConfig>>(new Map())
+  const objects = new Map<CSS3DObject, CSS3DObjectConfig>()
 
   const addObject = (object: CSS3DObject, config?: CSS3DObjectConfig) => {
     if (config) {
-      objects.value.set(object, config)
+      objects.set(object, config)
       applyObjectConfig(object, config)
     }
     // 添加到 CSS3D 独立场景
-    scene.value.add(object)
+    scene.add(object)
   }
 
   const removeObject = (object: CSS3DObject) => {
-    objects.value.delete(object)
-    scene.value.remove(object)
+    objects.delete(object)
+    scene.remove(object)
   }
 
   const applyObjectConfig = (object: CSS3DObject, config: CSS3DObjectConfig) => {
@@ -61,35 +62,35 @@ export function useCSS3DRenderer() {
   }
 
   const setSize = (width: number, height: number) => {
-    if (renderer.value) {
-      renderer.value.setSize(width, height)
+    if (renderer) {
+      renderer.setSize(width, height)
     }
   }
 
-  renderer.value = new CSS3DRenderer()
-  container.value = renderer.value.domElement
-
-  container.value.style.position = 'absolute'
-  container.value.style.top = '0'
-  container.value.style.left = '0'
-  container.value.style.width = '100%'
-  container.value.style.height = '100%'
-  container.value.style.pointerEvents = 'none'
-  container.value.style.overflow = 'hidden'
-  // 注册场景和渲染器到 ThreeContext
-  ctx.registerScene('css3d', scene.value)
-  ctx.registerRenderer('css3d', renderer.value)
   onMounted(() => {
-    // container.value.style.zIndex = '2'
-    setSize(ctx.size.value.width, ctx.size.value.height)
-    console.log(ctx.canvas.value?.parentNode, 'useCSS3DRenderer')
-    if (ctx.canvas.value?.parentNode) {
-      ctx.canvas.value.parentNode.appendChild(container.value)
+    renderer = new CSS3DRenderer()
+    container.value = renderer.domElement
+
+    container.value.style.position = 'absolute'
+    container.value.style.top = '0'
+    container.value.style.left = '0'
+    container.value.style.width = '100%'
+    container.value.style.height = '100%'
+    container.value.style.pointerEvents = 'none'
+    container.value.style.overflow = 'hidden'
+
+    // 注册场景和渲染器到 ThreeContext
+    ctx.registerScene('css3d', scene)
+    ctx.registerRenderer('css3d', renderer)
+
+    setSize(ctx.size.width, ctx.size.height)
+    if (ctx.canvas?.parentNode) {
+      ctx.canvas.parentNode.appendChild(container.value)
     }
   })
 
   watch(
-    () => ctx.size.value,
+    () => ctx.size,
     size => {
       setSize(size.width, size.height)
     },
@@ -101,16 +102,16 @@ export function useCSS3DRenderer() {
     ctx.unregisterScene('css3d')
     ctx.unregisterRenderer('css3d')
 
-    objects.value.forEach((_, object) => {
-      scene.value.remove(object)
+    objects.forEach((_, object) => {
+      scene.remove(object)
     })
-    objects.value.clear()
+    objects.clear()
 
     if (container.value && container.value.parentNode) {
       container.value.parentNode.removeChild(container.value)
     }
 
-    renderer.value = null
+    renderer = null
     container.value = null
   })
 

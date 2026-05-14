@@ -174,105 +174,105 @@ const { material } = useMaterial({
 watch(
   () => props.color,
   newColor => {
-    ; (material.value as MeshPhysicalMaterial).color.set(newColor)
+    ; (material as MeshPhysicalMaterial).color.set(newColor)
   }
 )
 
 watch(
   () => props.metalness,
   newValue => {
-    ; (material.value as MeshPhysicalMaterial).metalness = newValue
+    ; (material as MeshPhysicalMaterial).metalness = newValue
   }
 )
 
 watch(
   () => props.roughness,
   newValue => {
-    ; (material.value as MeshPhysicalMaterial).roughness = newValue
+    ; (material as MeshPhysicalMaterial).roughness = newValue
   }
 )
 
 watch(
   () => props.clearcoat,
   newValue => {
-    ; (material.value as MeshPhysicalMaterial).clearcoat = newValue
+    ; (material as MeshPhysicalMaterial).clearcoat = newValue
   }
 )
 
 watch(
   () => props.clearcoatRoughness,
   newValue => {
-    ; (material.value as MeshPhysicalMaterial).clearcoatRoughness = newValue
+    ; (material as MeshPhysicalMaterial).clearcoatRoughness = newValue
   }
 )
 
 watch(
   () => props.transmission,
   newValue => {
-    ; (material.value as MeshPhysicalMaterial).transmission = newValue
+    ; (material as MeshPhysicalMaterial).transmission = newValue
   }
 )
 
 watch(
   () => props.thickness,
   newValue => {
-    ; (material.value as MeshPhysicalMaterial).thickness = newValue
+    ; (material as MeshPhysicalMaterial).thickness = newValue
   }
 )
 
 watch(
   () => props.ior,
   newValue => {
-    ; (material.value as MeshPhysicalMaterial).ior = newValue
+    ; (material as MeshPhysicalMaterial).ior = newValue
   }
 )
 
 watch(
   () => props.iridescence,
   newValue => {
-    ; (material.value as MeshPhysicalMaterial).iridescence = newValue
+    ; (material as MeshPhysicalMaterial).iridescence = newValue
   }
 )
 
 watch(
   () => props.sheen,
   newValue => {
-    ; (material.value as MeshPhysicalMaterial).sheen = newValue
+    ; (material as MeshPhysicalMaterial).sheen = newValue
   }
 )
 
 watch(
   () => props.sheenColor,
   newValue => {
-    ; (material.value as MeshPhysicalMaterial).sheenColor = new Color(newValue)
+    ; (material as MeshPhysicalMaterial).sheenColor = new Color(newValue)
   }
 )
 
 watch(
   () => props.specularIntensity,
   newValue => {
-    ; (material.value as MeshPhysicalMaterial).specularIntensity = newValue
+    ; (material as MeshPhysicalMaterial).specularIntensity = newValue
   }
 )
 
 watch(
   () => props.opacity,
   newValue => {
-    ; (material.value as MeshPhysicalMaterial).opacity = newValue
+    ; (material as MeshPhysicalMaterial).opacity = newValue
   }
 )
 
 watch(
   () => props.transparent,
   newValue => {
-    ; (material.value as MeshPhysicalMaterial).transparent = newValue
+    ; (material as MeshPhysicalMaterial).transparent = newValue
   }
 )
 
 watch(
   () => props.wireframe,
   newValue => {
-    ; (material.value as MeshPhysicalMaterial).wireframe = newValue
+    ; (material as MeshPhysicalMaterial).wireframe = newValue
   }
 )
 

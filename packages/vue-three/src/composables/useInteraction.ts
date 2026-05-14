@@ -1,9 +1,10 @@
-import { shallowRef, onMounted, onBeforeUnmount } from 'vue'
+import { onMounted, onBeforeUnmount } from 'vue'
 import { Raycaster, Vector2, Vector3, Object3D } from 'three'
 import type { InteractionEvent, InteractionHandlers, ThreeContext } from '../core/context'
 
 export function useInteraction(threeCtx: ThreeContext) {
-  const raycaster = shallowRef(new Raycaster())
+  // 使用普通变量存储
+  const raycaster = new Raycaster()
   const mouse = new Vector2()
 
   const interactionMap = new Map<Object3D, InteractionHandlers>()
@@ -20,7 +21,7 @@ export function useInteraction(threeCtx: ThreeContext) {
   }
 
   const updateMousePosition = (event: MouseEvent) => {
-    const canvas = threeCtx.canvas.value
+    const canvas = threeCtx.canvas
     if (!canvas) return
 
     const rect = canvas.getBoundingClientRect()
@@ -50,9 +51,9 @@ export function useInteraction(threeCtx: ThreeContext) {
   }
 
   const getIntersects = () => {
-    raycaster.value.setFromCamera(mouse, threeCtx.camera.value)
+    raycaster.setFromCamera(mouse, threeCtx.camera)
     const objects = Array.from(interactionMap.keys())
-    return raycaster.value.intersectObjects(objects, true)
+    return raycaster.intersectObjects(objects, true)
   }
 
   const handleClick = (event: MouseEvent) => {
@@ -167,7 +168,7 @@ export function useInteraction(threeCtx: ThreeContext) {
   let canvasElement: HTMLCanvasElement | null = null
 
   const bindEvents = () => {
-    canvasElement = threeCtx.canvas.value
+    canvasElement = threeCtx.canvas
     if (!canvasElement) return
 
     canvasElement.addEventListener('click', handleClick)

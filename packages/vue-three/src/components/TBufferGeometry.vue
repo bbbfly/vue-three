@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, shallowRef, watch, onBeforeUnmount } from 'vue'
+import { inject, watch, onBeforeUnmount } from 'vue'
 import { BufferGeometry, BufferAttribute } from 'three'
 import { MeshContextKey } from '../core/context'
 
@@ -28,19 +28,19 @@ if (!meshCtx) {
   throw new Error('TBufferGeometry must be used within a TMesh component')
 }
 
-const geometry = shallowRef<BufferGeometry>(new BufferGeometry())
+const geometry: BufferGeometry = new BufferGeometry()
 
-meshCtx!.setGeometry(geometry.value)
+meshCtx!.setGeometry(geometry)
 
 function updateAttributes() {
   if (!props.attributes) return
 
   for (const [name, attr] of Object.entries(props.attributes)) {
     if (attr instanceof BufferAttribute) {
-      geometry.value.setAttribute(name, attr)
+      geometry.setAttribute(name, attr)
     } else if (attr.array && attr.itemSize !== undefined) {
       const array = attr.array instanceof Float32Array ? attr.array : new Float32Array(attr.array)
-      geometry.value.setAttribute(name, new BufferAttribute(array, attr.itemSize))
+      geometry.setAttribute(name, new BufferAttribute(array, attr.itemSize))
     }
   }
 }
@@ -56,7 +56,7 @@ watch(
 )
 
 onBeforeUnmount(() => {
-  geometry.value.dispose()
+  geometry.dispose()
 })
 
 /**

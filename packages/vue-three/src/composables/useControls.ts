@@ -32,105 +32,106 @@ export function useControls(config: ControlsConfig = {}) {
     throw new Error('useControls must be used within a TCanvas component')
   }
 
+  // 直接获取 controls，不再使用 .value
   const controls = ctx.controls
 
   const update = () => {
-    if (controls.value) {
-      controls.value.update()
+    if (controls) {
+      controls.update()
     }
   }
 
   const reset = () => {
-    if (controls.value) {
-      controls.value.reset()
+    if (controls) {
+      controls.reset()
     }
   }
 
   const saveState = () => {
-    if (controls.value) {
-      controls.value.saveState()
+    if (controls) {
+      controls.saveState()
     }
   }
 
   const setTarget = (x: number, y: number, z: number) => {
-    if (controls.value && 'target' in controls.value) {
-      controls.value.target.set(x, y, z)
+    if (controls && 'target' in controls) {
+      controls.target.set(x, y, z)
     }
   }
 
   const updateConfig = (newConfig: ControlsConfig) => {
-    if (!controls.value) return
+    if (!controls) return
 
     if (newConfig.enableDamping !== undefined) {
-      controls.value.enableDamping = newConfig.enableDamping
+      controls.enableDamping = newConfig.enableDamping
     }
 
     if (newConfig.dampingFactor !== undefined) {
-      controls.value.dampingFactor = newConfig.dampingFactor
+      controls.dampingFactor = newConfig.dampingFactor
     }
 
     if (newConfig.enableZoom !== undefined) {
-      controls.value.enableZoom = newConfig.enableZoom
+      controls.enableZoom = newConfig.enableZoom
     }
 
     if (newConfig.zoomSpeed !== undefined) {
-      controls.value.zoomSpeed = newConfig.zoomSpeed
+      controls.zoomSpeed = newConfig.zoomSpeed
     }
 
     if (newConfig.enableRotate !== undefined) {
-      controls.value.enableRotate = newConfig.enableRotate
+      controls.enableRotate = newConfig.enableRotate
     }
 
     if (newConfig.rotateSpeed !== undefined) {
-      controls.value.rotateSpeed = newConfig.rotateSpeed
+      controls.rotateSpeed = newConfig.rotateSpeed
     }
 
     if (newConfig.enablePan !== undefined) {
-      controls.value.enablePan = newConfig.enablePan
+      controls.enablePan = newConfig.enablePan
     }
 
     if (newConfig.panSpeed !== undefined) {
-      controls.value.panSpeed = newConfig.panSpeed
+      controls.panSpeed = newConfig.panSpeed
     }
 
     if (newConfig.screenSpacePanning !== undefined) {
-      controls.value.screenSpacePanning = newConfig.screenSpacePanning
+      controls.screenSpacePanning = newConfig.screenSpacePanning
     }
 
     if (newConfig.cursorStyle !== undefined) {
-      controls.value.cursorStyle = newConfig.cursorStyle
+      controls.cursorStyle = newConfig.cursorStyle
     }
 
     if (newConfig.minDistance !== undefined) {
-      controls.value.minDistance = newConfig.minDistance
+      controls.minDistance = newConfig.minDistance
     }
 
     if (newConfig.maxDistance !== undefined) {
-      controls.value.maxDistance = newConfig.maxDistance
+      controls.maxDistance = newConfig.maxDistance
     }
 
     if (newConfig.minPolarAngle !== undefined) {
-      controls.value.minPolarAngle = newConfig.minPolarAngle
+      controls.minPolarAngle = newConfig.minPolarAngle
     }
 
     if (newConfig.maxPolarAngle !== undefined) {
-      controls.value.maxPolarAngle = newConfig.maxPolarAngle
+      controls.maxPolarAngle = newConfig.maxPolarAngle
     }
 
     if (newConfig.minAzimuthAngle !== undefined) {
-      controls.value.minAzimuthAngle = newConfig.minAzimuthAngle
+      controls.minAzimuthAngle = newConfig.minAzimuthAngle
     }
 
     if (newConfig.maxAzimuthAngle !== undefined) {
-      controls.value.maxAzimuthAngle = newConfig.maxAzimuthAngle
+      controls.maxAzimuthAngle = newConfig.maxAzimuthAngle
     }
 
     if (newConfig.autoRotate !== undefined) {
-      controls.value.autoRotate = newConfig.autoRotate
+      controls.autoRotate = newConfig.autoRotate
     }
 
     if (newConfig.autoRotateSpeed !== undefined) {
-      controls.value.autoRotateSpeed = newConfig.autoRotateSpeed
+      controls.autoRotateSpeed = newConfig.autoRotateSpeed
     }
 
     if (newConfig.target) {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, shallowRef, onMounted, onBeforeUnmount, watch } from 'vue'
+import { inject, ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js'
 import { CSS3DContextKey, CSS3DGroupContextKey, type CSS3DObjectConfig } from '../core/context'
 
@@ -34,14 +34,14 @@ if (!css3dCtx) {
   throw new Error('TCSS3DObject must be used within a TCSS3DRenderer component')
 }
 
-const objectRef = shallowRef<HTMLElement | null>(null)
-const css3dObject = shallowRef<CSS3DObject | null>(null)
+const objectRef = ref<HTMLElement | null>(null)
+let css3dObject: CSS3DObject | null = null
 
 const createObject = () => {
   if (!objectRef.value) return
 
   const object = new CSS3DObject(objectRef.value)
-  css3dObject.value = object
+  css3dObject = object
 
   applyConfig()
 
@@ -55,17 +55,17 @@ const createObject = () => {
 
   if (css3dGroupCtx) {
     applyConfig()
-    css3dGroupCtx.group.value.add(object)
+    css3dGroupCtx.group.add(object)
   } else {
     css3dCtx.addObject(object, config)
   }
 }
 
 const applyConfig = () => {
-  if (!css3dObject.value) return
-  css3dObject.value.position.set(...props.position)
-  css3dObject.value.rotation.set(...props.rotation)
-  css3dObject.value.scale.set(...props.scale)
+  if (!css3dObject) return
+  css3dObject.position.set(...props.position)
+  css3dObject.rotation.set(...props.rotation)
+  css3dObject.scale.set(...props.scale)
 }
 
 onMounted(() => {
@@ -102,11 +102,11 @@ watch(
 )
 
 onBeforeUnmount(() => {
-  if (css3dObject.value) {
+  if (css3dObject) {
     if (css3dGroupCtx) {
-      css3dGroupCtx.group.value.remove(css3dObject.value)
+      css3dGroupCtx.group.remove(css3dObject)
     } else {
-      css3dCtx.removeObject(css3dObject.value)
+      css3dCtx.removeObject(css3dObject)
     }
   }
 })
@@ -116,7 +116,7 @@ onBeforeUnmount(() => {
  * @property css3dObject - CSS3DObject 实例
  */
 defineExpose({
-  css3dObject
+  css3dObject: () => css3dObject
 })
 </script>
 

@@ -1,4 +1,4 @@
-import { inject, onBeforeUnmount, shallowRef, provide } from 'vue'
+import { inject, onBeforeUnmount, provide } from 'vue'
 import { AnimationMixer, Object3D } from 'three'
 import { ThreeContextKey, AnimationContextKey } from '../core/context'
 
@@ -8,27 +8,27 @@ export interface AnimationMixerOptions {
 
 export function useAnimationMixer(options: AnimationMixerOptions = {}) {
   const ctx = inject(ThreeContextKey)!
-  const mixer = shallowRef<AnimationMixer | null>(null)
+  let mixer: AnimationMixer | null = null
 
-  mixer.value = new AnimationMixer(new Object3D())
+  mixer = new AnimationMixer(new Object3D())
 
   if (options.autoUpdate !== false) {
-    ctx.registerAnimationMixer(mixer.value)
+    ctx.registerAnimationMixer(mixer)
   }
 
   const setRoot = (root: Object3D) => {
-    if (mixer.value) {
+    if (mixer) {
       if (options.autoUpdate !== false) {
-        ctx.unregisterAnimationMixer(mixer.value)
+        ctx.unregisterAnimationMixer(mixer)
       }
-      mixer.value.stopAllAction()
-      mixer.value.uncacheRoot(mixer.value.getRoot())
+      mixer.stopAllAction()
+      mixer.uncacheRoot(mixer.getRoot())
     }
 
-    mixer.value = new AnimationMixer(root)
+    mixer = new AnimationMixer(root)
 
     if (options.autoUpdate !== false) {
-      ctx.registerAnimationMixer(mixer.value)
+      ctx.registerAnimationMixer(mixer)
     }
   }
 
@@ -37,12 +37,12 @@ export function useAnimationMixer(options: AnimationMixerOptions = {}) {
   })
 
   onBeforeUnmount(() => {
-    if (mixer.value) {
+    if (mixer) {
       if (options.autoUpdate !== false) {
-        ctx.unregisterAnimationMixer(mixer.value)
+        ctx.unregisterAnimationMixer(mixer)
       }
-      mixer.value.stopAllAction()
-      mixer.value.uncacheRoot(mixer.value.getRoot())
+      mixer.stopAllAction()
+      mixer.uncacheRoot(mixer.getRoot())
     }
   })
 

@@ -1,4 +1,4 @@
-import { inject, shallowRef, onBeforeUnmount, watch, provide, computed } from 'vue'
+import { inject, onBeforeUnmount, watch, provide } from 'vue'
 import * as THREE from 'three'
 import {
   Line,
@@ -23,30 +23,23 @@ export function useLine(config?: LineConfig) {
     throw new Error('useLine must be used within a TCanvas component')
   }
 
-  const line = shallowRef<Line>(
-    config
-      ? ThreeObjectFactory.createLine(config)
-      : ThreeObjectFactory.createLine({
-          curve: { type: 'arc' },
-          color: 0xffffff
-        })
-  )
+  // 使用普通变量存储
+  let line: Line = config
+    ? ThreeObjectFactory.createLine(config)
+    : ThreeObjectFactory.createLine({
+        curve: { type: 'arc' },
+        color: 0xffffff
+      })
 
-  const parent = computed(() => groupCtx?.group.value || ctx.scene.value)
-
-  if (parent.value) {
-    parent.value.add(line.value)
-  }
+  // 直接获取 parent
+  const parent = groupCtx?.group || ctx.scene
+  parent.add(line)
 
   function updateLine(newConfig: LineConfig) {
-    if (parent.value) {
-      parent.value.remove(line.value)
-    }
-    disposeObject3D(line.value)
-    line.value = ThreeObjectFactory.createLine(newConfig)
-    if (parent.value) {
-      parent.value.add(line.value)
-    }
+    parent.remove(line)
+    disposeObject3D(line)
+    line = ThreeObjectFactory.createLine(newConfig)
+    parent.add(line)
   }
 
   if (config) {
@@ -60,10 +53,8 @@ export function useLine(config?: LineConfig) {
   }
 
   onBeforeUnmount(() => {
-    if (parent.value) {
-      parent.value.remove(line.value)
-    }
-    disposeObject3D(line.value)
+    parent.remove(line)
+    disposeObject3D(line)
   })
 
   provide(LineContextKey, {
@@ -85,30 +76,23 @@ export function useLineLoop(config?: LineLoopConfig) {
     throw new Error('useLineLoop must be used within a TCanvas component')
   }
 
-  const lineLoop = shallowRef<LineLoop>(
-    config
-      ? ThreeObjectFactory.createLineLoop(config)
-      : ThreeObjectFactory.createLineLoop({
-          curve: { type: 'arc' },
-          color: 0xffffff
-        })
-  )
+  // 使用普通变量存储
+  let lineLoop: LineLoop = config
+    ? ThreeObjectFactory.createLineLoop(config)
+    : ThreeObjectFactory.createLineLoop({
+        curve: { type: 'arc' },
+        color: 0xffffff
+      })
 
-  const parent = computed(() => groupCtx?.group.value || ctx.scene.value)
-
-  if (parent.value) {
-    parent.value.add(lineLoop.value)
-  }
+  // 直接获取 parent
+  const parent = groupCtx?.group || ctx.scene
+  parent.add(lineLoop)
 
   function updateLineLoop(newConfig: LineLoopConfig) {
-    if (parent.value) {
-      parent.value.remove(lineLoop.value)
-    }
-    disposeObject3D(lineLoop.value)
-    lineLoop.value = ThreeObjectFactory.createLineLoop(newConfig)
-    if (parent.value) {
-      parent.value.add(lineLoop.value)
-    }
+    parent.remove(lineLoop)
+    disposeObject3D(lineLoop)
+    lineLoop = ThreeObjectFactory.createLineLoop(newConfig)
+    parent.add(lineLoop)
   }
 
   if (config) {
@@ -122,10 +106,8 @@ export function useLineLoop(config?: LineLoopConfig) {
   }
 
   onBeforeUnmount(() => {
-    if (parent.value) {
-      parent.value.remove(lineLoop.value)
-    }
-    disposeObject3D(lineLoop.value)
+    parent.remove(lineLoop)
+    disposeObject3D(lineLoop)
   })
 
   return {
@@ -142,32 +124,25 @@ export function useLineDashed(config?: LineDashedConfig) {
     throw new Error('useLineDashed must be used within a TCanvas component')
   }
 
-  const line = shallowRef<Line>(
-    config
-      ? ThreeObjectFactory.createLineDashed(config)
-      : ThreeObjectFactory.createLineDashed({
-          curve: { type: 'arc' },
-          color: 0xffffff,
-          dashSize: 1,
-          gapSize: 1
-        })
-  )
+  // 使用普通变量存储
+  let line: Line = config
+    ? ThreeObjectFactory.createLineDashed(config)
+    : ThreeObjectFactory.createLineDashed({
+        curve: { type: 'arc' },
+        color: 0xffffff,
+        dashSize: 1,
+        gapSize: 1
+      })
 
-  const parent = computed(() => groupCtx?.group.value || ctx.scene.value)
-
-  if (parent.value) {
-    parent.value.add(line.value)
-  }
+  // 直接获取 parent
+  const parent = groupCtx?.group || ctx.scene
+  parent.add(line)
 
   function updateLineDashed(newConfig: LineDashedConfig) {
-    if (parent.value) {
-      parent.value.remove(line.value)
-    }
-    disposeObject3D(line.value)
-    line.value = ThreeObjectFactory.createLineDashed(newConfig)
-    if (parent.value) {
-      parent.value.add(line.value)
-    }
+    parent.remove(line)
+    disposeObject3D(line)
+    line = ThreeObjectFactory.createLineDashed(newConfig)
+    parent.add(line)
   }
 
   if (config) {
@@ -181,10 +156,8 @@ export function useLineDashed(config?: LineDashedConfig) {
   }
 
   onBeforeUnmount(() => {
-    if (parent.value) {
-      parent.value.remove(line.value)
-    }
-    disposeObject3D(line.value)
+    parent.remove(line)
+    disposeObject3D(line)
   })
 
   return {
@@ -201,30 +174,23 @@ export function useLineSegments(config?: LineSegmentsConfig) {
     throw new Error('useLineSegments must be used within a TCanvas component')
   }
 
-  const lineSegments = shallowRef<LineSegments>(
-    config
-      ? ThreeObjectFactory.createLineSegments(config)
-      : ThreeObjectFactory.createLineSegments({
-          geometry: new THREE.BufferGeometry(),
-          color: 0xffffff
-        })
-  )
+  // 使用普通变量存储
+  let lineSegments: LineSegments = config
+    ? ThreeObjectFactory.createLineSegments(config)
+    : ThreeObjectFactory.createLineSegments({
+        geometry: new THREE.BufferGeometry(),
+        color: 0xffffff
+      })
 
-  const parent = computed(() => groupCtx?.group.value || ctx.scene.value)
-
-  if (parent.value) {
-    parent.value.add(lineSegments.value)
-  }
+  // 直接获取 parent
+  const parent = groupCtx?.group || ctx.scene
+  parent.add(lineSegments)
 
   function updateLineSegments(newConfig: LineSegmentsConfig) {
-    if (parent.value) {
-      parent.value.remove(lineSegments.value)
-    }
-    disposeObject3D(lineSegments.value)
-    lineSegments.value = ThreeObjectFactory.createLineSegments(newConfig)
-    if (parent.value) {
-      parent.value.add(lineSegments.value)
-    }
+    parent.remove(lineSegments)
+    disposeObject3D(lineSegments)
+    lineSegments = ThreeObjectFactory.createLineSegments(newConfig)
+    parent.add(lineSegments)
   }
 
   if (config) {
@@ -238,10 +204,8 @@ export function useLineSegments(config?: LineSegmentsConfig) {
   }
 
   onBeforeUnmount(() => {
-    if (parent.value) {
-      parent.value.remove(lineSegments.value)
-    }
-    disposeObject3D(lineSegments.value)
+    parent.remove(lineSegments)
+    disposeObject3D(lineSegments)
   })
 
   return {
@@ -264,7 +228,8 @@ export function useLineMaterial(config: {
   gapSize?: number
   scale?: number
 }) {
-  const material = shallowRef<LineBasicMaterial | LineDashedMaterial>(createLineMaterial(config))
+  // 使用普通变量存储
+  let material: LineBasicMaterial | LineDashedMaterial = createLineMaterial(config)
 
   function createLineMaterial(lineMaterialConfig: typeof config) {
     if (lineMaterialConfig.type === 'dashed') {
@@ -295,12 +260,12 @@ export function useLineMaterial(config: {
   }
 
   function updateMaterial(newConfig: typeof config) {
-    material.value.dispose()
-    material.value = createLineMaterial(newConfig)
+    material.dispose()
+    material = createLineMaterial(newConfig)
   }
 
   onBeforeUnmount(() => {
-    material.value.dispose()
+    material.dispose()
   })
 
   return {

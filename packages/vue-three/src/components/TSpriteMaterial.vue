@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { watch, inject, onBeforeUnmount, computed, shallowRef } from 'vue'
+import { watch, inject, onBeforeUnmount, computed } from 'vue'
 import { Texture, TextureLoader } from 'three'
 import { SpriteContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
@@ -239,19 +239,19 @@ spriteCtx.setMaterial(material)
  * 加载纹理贴图
  */
 const loader = new TextureLoader()
-const mapTexture = shallowRef<Texture | null>(null)
-const alphaMapTexture = shallowRef<Texture | null>(null)
+let mapTexture: Texture | null = null
+let alphaMapTexture: Texture | null = null
 
 if (props.map) {
-  mapTexture.value = loader.load(props.map, () => {
-    material.map = mapTexture.value
+  mapTexture = loader.load(props.map, () => {
+    material.map = mapTexture
     material.needsUpdate = true
   })
 }
 
 if (props.alphaMap) {
-  alphaMapTexture.value = loader.load(props.alphaMap, () => {
-    material.alphaMap = alphaMapTexture.value
+  alphaMapTexture = loader.load(props.alphaMap, () => {
+    material.alphaMap = alphaMapTexture
     material.needsUpdate = true
   })
 }

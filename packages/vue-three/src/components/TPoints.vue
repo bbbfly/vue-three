@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { watch, onMounted, inject, onBeforeUnmount, shallowRef, provide, computed } from 'vue'
+import { watch, onMounted, inject, onBeforeUnmount, provide } from 'vue'
 import { Points, BufferGeometry, Material } from 'three'
 import { ThreeContextKey, MeshContextKey, GroupContextKey, InteractionContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
@@ -107,15 +107,13 @@ if (!ctx) {
   throw new Error('TPoints must be used within a TCanvas component')
 }
 
-const points = shallowRef<Points>(new Points())
+const points: Points = new Points()
 
-const parent = computed(() => groupCtx?.group.value || ctx.scene.value)
+const parent = groupCtx?.group || ctx.scene
 
-watch(parent, (newParent) => {
-  if (newParent && !newParent.children.includes(points.value)) {
-    newParent.add(points.value)
-  }
-}, { immediate: true })
+if (!parent.children.includes(points)) {
+  parent.add(points)
+}
 
 const config: Object3DConfig = {
   position: props.position,
@@ -125,7 +123,7 @@ const config: Object3DConfig = {
 }
 
 onMounted(() => {
-  ThreeObjectFactory.applyObject3DConfig(points.value, config)
+  ThreeObjectFactory.applyObject3DConfig(points, config)
 })
 
 watch(
@@ -137,25 +135,25 @@ watch(
       scale: newProps.scale,
       visible: newProps.visible
     }
-    ThreeObjectFactory.updateObject3DConfig(points.value, newConfig)
+    ThreeObjectFactory.updateObject3DConfig(points, newConfig)
   },
   { deep: true }
 )
 
 function setGeometry(geometry: BufferGeometry) {
-  if (points.value.geometry) {
-    points.value.geometry.dispose()
+  if (points.geometry) {
+    points.geometry.dispose()
   }
-  points.value.geometry = geometry
-  points.value.updateMatrix()
+  points.geometry = geometry
+  points.updateMatrix()
 }
 
 function setMaterial(material: Material) {
-  if (points.value.material) {
-    const oldMaterial = points.value.material as Material
+  if (points.material) {
+    const oldMaterial = points.material as Material
     oldMaterial.dispose()
   }
-  points.value.material = material
+  points.material = material
   material.needsUpdate = true
 }
 
@@ -167,7 +165,6 @@ provide(MeshContextKey, {
 
 watch(
   [
-    () => points.value,
     () => props.onClick,
     () => props.onDblclick,
     () => props.onContextmenu,
@@ -175,10 +172,10 @@ watch(
     () => props.onPointerLeave,
     () => props.onPointerMove
   ],
-  ([pointsObj]) => {
-    if (pointsObj && interactionCtx) {
-      interactionCtx.unregisterObject(pointsObj)
-      interactionCtx.registerObject(pointsObj, {
+  () => {
+    if (interactionCtx) {
+      interactionCtx.unregisterObject(points)
+      interactionCtx.registerObject(points, {
         onClick: props.onClick,
         onDblclick: props.onDblclick,
         onContextmenu: props.onContextmenu,
@@ -192,10 +189,8 @@ watch(
 )
 
 onBeforeUnmount(() => {
-  if (parent.value) {
-    parent.value.remove(points.value)
-  }
-  disposeObject3D(points.value)
+  parent.remove(points)
+  disposeObject3D(points)
 })
 
 

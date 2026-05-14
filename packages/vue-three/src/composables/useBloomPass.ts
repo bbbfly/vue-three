@@ -1,5 +1,5 @@
 import { inject, onBeforeUnmount, watch } from 'vue'
-import { shallowRef, toValue } from 'vue'
+import { toValue } from 'vue'
 import type { MaybeRef } from 'vue'
 import { EffectComposerContextKey } from '../core/context'
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
@@ -18,25 +18,25 @@ export function useBloomPass(config: MaybeRef<BloomPassConfig> = {}) {
     throw new Error('useBloomPass must be used within a TEffectComposer component')
   }
 
-  const bloomPass = shallowRef<UnrealBloomPass | null>(null)
+  let bloomPass: UnrealBloomPass | null = null
 
   const updateConfig = (newConfig: BloomPassConfig) => {
-    if (!bloomPass.value) return
+    if (!bloomPass) return
 
     if (newConfig.threshold !== undefined) {
-      bloomPass.value.threshold = newConfig.threshold
+      bloomPass.threshold = newConfig.threshold
     }
     if (newConfig.strength !== undefined) {
-      bloomPass.value.strength = newConfig.strength
+      bloomPass.strength = newConfig.strength
     }
     if (newConfig.radius !== undefined) {
-      bloomPass.value.radius = newConfig.radius
+      bloomPass.radius = newConfig.radius
     }
   }
 
   const init = () => {
     const pass = new UnrealBloomPass(new Vector2(256, 256), 1.5, 0.4, 0.85)
-    bloomPass.value = pass
+    bloomPass = pass
     composerCtx.addPass(pass)
     updateConfig(toValue(config))
   }
@@ -52,9 +52,9 @@ export function useBloomPass(config: MaybeRef<BloomPassConfig> = {}) {
   )
 
   onBeforeUnmount(() => {
-    if (bloomPass.value) {
-      composerCtx.removePass(bloomPass.value)
-      bloomPass.value = null
+    if (bloomPass) {
+      composerCtx.removePass(bloomPass)
+      bloomPass = null
     }
   })
 

@@ -4,9 +4,9 @@
 
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { watch, computed, provide, onMounted, inject, shallowRef } from 'vue'
+import { watch, computed, provide } from 'vue'
 import { useLine } from '../composables/useLine'
-import { MeshContextKey, ThreeContextKey, GroupContextKey } from '../core/context'
+import { MeshContextKey } from '../core/context'
 import type { CurveConfig, Object3DConfig } from '../types'
 import type { BufferGeometry, Material } from 'three'
 
@@ -102,19 +102,19 @@ watch(
 )
 
 function setGeometry(geometry: BufferGeometry) {
-  if (line.value.geometry) {
-    line.value.geometry.dispose()
+  if (line.geometry) {
+    line.geometry.dispose()
   }
-  line.value.geometry = geometry
-  line.value.updateMatrix()
+  line.geometry = geometry
+  line.updateMatrix()
 }
 
 function setMaterial(material: Material) {
-  if (line.value.material) {
-    const oldMaterial = line.value.material as Material
+  if (line.material) {
+    const oldMaterial = line.material as Material
     oldMaterial.dispose()
   }
-  line.value.material = material
+  line.material = material
   material.needsUpdate = true
 }
 

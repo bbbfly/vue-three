@@ -1,4 +1,4 @@
-import { inject, watch, shallowRef, onBeforeUnmount, toValue } from 'vue'
+import { inject, watch, onBeforeUnmount, toValue } from 'vue'
 import { Object3D } from 'three'
 import { ThreeContextKey } from '../core/context'
 import type { MaybeRefOrGetter } from 'vue'
@@ -10,53 +10,51 @@ export interface HelperConfig {
   scale?: [number, number, number]
 }
 
-export function useHelper<T extends Object3D>(
-  helperInstance: MaybeRefOrGetter<T | null>
-) {
+export function useHelper<T extends Object3D>(helperInstance: MaybeRefOrGetter<T | null>) {
   const ctx = inject(ThreeContextKey)
 
   if (!ctx) {
     throw new Error('useHelper must be used within a TCanvas component')
   }
 
-  const helper = shallowRef<T | null>(null)
+  let helper: T | null = null
 
   const addToScene = () => {
     const instance = toValue(helperInstance)
-    if (instance && ctx.scene.value) {
-      ctx.scene.value.add(instance)
-      helper.value = instance
+    if (instance && ctx.scene) {
+      ctx.scene.add(instance)
+      helper = instance
     }
   }
 
   const removeFromScene = () => {
-    if (helper.value && ctx.scene.value) {
-      ctx.scene.value.remove(helper.value)
-      disposeObject3D(helper.value, false)
-      helper.value = null
+    if (helper && ctx.scene) {
+      ctx.scene.remove(helper)
+      disposeObject3D(helper, false)
+      helper = null
     }
   }
 
   const setPosition = (x: number, y: number, z: number) => {
-    if (helper.value) {
-      helper.value.position.set(x, y, z)
+    if (helper) {
+      helper.position.set(x, y, z)
     }
   }
 
   const setRotation = (x: number, y: number, z: number) => {
-    if (helper.value) {
-      helper.value.rotation.set(x, y, z)
+    if (helper) {
+      helper.rotation.set(x, y, z)
     }
   }
 
   const setScale = (x: number, y: number, z: number) => {
-    if (helper.value) {
-      helper.value.scale.set(x, y, z)
+    if (helper) {
+      helper.scale.set(x, y, z)
     }
   }
 
   const applyConfig = (config: HelperConfig) => {
-    if (!helper.value) return
+    if (!helper) return
 
     if (config.position) {
       setPosition(...config.position)
@@ -72,25 +70,16 @@ export function useHelper<T extends Object3D>(
   watch(
     () => toValue(helperInstance),
     (newInstance, oldInstance) => {
-      if (oldInstance && ctx.scene.value) {
-        ctx.scene.value.remove(oldInstance)
+      if (oldInstance && ctx.scene) {
+        ctx.scene.remove(oldInstance)
         disposeObject3D(oldInstance, false)
       }
-      if (newInstance && ctx.scene.value) {
-        ctx.scene.value.add(newInstance)
-        helper.value = newInstance
+      if (newInstance && ctx.scene) {
+        ctx.scene.add(newInstance)
+        helper = newInstance
       }
     },
     { immediate: true }
-  )
-
-  watch(
-    () => ctx.scene.value,
-    scene => {
-      if (scene) {
-        addToScene()
-      }
-    }
   )
 
   onBeforeUnmount(() => {

@@ -1,4 +1,4 @@
-import { inject, shallowRef, onMounted, watch } from 'vue'
+import { inject, onMounted, watch } from 'vue'
 import { WebGLRenderer, Color, ShadowMapType } from 'three'
 import { ThreeContextKey } from '../core/context'
 import type { RendererConfig } from '../types'
@@ -18,43 +18,43 @@ export function useRenderer(config: RendererOptions = {}) {
     throw new Error('useRenderer must be used within a TCanvas component')
   }
 
-  const renderer = shallowRef<WebGLRenderer | null>(null)
+  let renderer: WebGLRenderer | null = null
 
   const render = () => {
-    if (renderer.value && ctx.scene.value && ctx.camera.value) {
-      renderer.value.render(ctx.scene.value, ctx.camera.value)
+    if (renderer && ctx.scene && ctx.camera) {
+      renderer.render(ctx.scene, ctx.camera)
     }
   }
 
   const setClearColor = (color: string | number, alpha = 1) => {
-    if (renderer.value) {
-      renderer.value.setClearColor(new Color(color), alpha)
+    if (renderer) {
+      renderer.setClearColor(new Color(color), alpha)
     }
   }
 
   const setSize = (width: number, height: number) => {
-    if (renderer.value) {
-      renderer.value.setSize(width, height)
+    if (renderer) {
+      renderer.setSize(width, height)
     }
   }
 
   const setPixelRatio = (ratio: number) => {
-    if (renderer.value) {
-      renderer.value.setPixelRatio(ratio)
+    if (renderer) {
+      renderer.setPixelRatio(ratio)
     }
   }
 
   const setShadowMap = (enabled: boolean, type?: ShadowMapType) => {
-    if (renderer.value) {
-      renderer.value.shadowMap.enabled = enabled
+    if (renderer) {
+      renderer.shadowMap.enabled = enabled
       if (type !== undefined) {
-        renderer.value.shadowMap.type = type
+        renderer.shadowMap.type = type
       }
     }
   }
 
   const updateConfig = (newConfig: RendererOptions) => {
-    if (!renderer.value) return
+    if (!renderer) return
 
     if (newConfig.clearColor !== undefined) {
       setClearColor(newConfig.clearColor, newConfig.clearAlpha ?? 1)
@@ -72,24 +72,24 @@ export function useRenderer(config: RendererOptions = {}) {
     }
 
     if (newConfig.autoClear !== undefined) {
-      renderer.value.autoClear = newConfig.autoClear
+      renderer.autoClear = newConfig.autoClear
     }
 
     if (newConfig.autoClearColor !== undefined) {
-      renderer.value.autoClearColor = newConfig.autoClearColor
+      renderer.autoClearColor = newConfig.autoClearColor
     }
 
     if (newConfig.autoClearDepth !== undefined) {
-      renderer.value.autoClearDepth = newConfig.autoClearDepth
+      renderer.autoClearDepth = newConfig.autoClearDepth
     }
 
     if (newConfig.autoClearStencil !== undefined) {
-      renderer.value.autoClearStencil = newConfig.autoClearStencil
+      renderer.autoClearStencil = newConfig.autoClearStencil
     }
   }
 
   onMounted(() => {
-    renderer.value = ctx.renderer.value
+    renderer = ctx.renderer
 
     if (Object.keys(config).length > 0) {
       updateConfig(config)

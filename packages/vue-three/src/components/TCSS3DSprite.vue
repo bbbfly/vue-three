@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, shallowRef, onMounted, onBeforeUnmount, watch } from 'vue'
+import { inject, ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { CSS3DSprite } from 'three/addons/renderers/CSS3DRenderer.js'
 import { CSS3DContextKey, CSS3DGroupContextKey, type CSS3DObjectConfig } from '../core/context'
 
@@ -34,14 +34,14 @@ if (!css3dCtx) {
   throw new Error('TCSS3DSprite must be used within a TCSS3DRenderer component')
 }
 
-const objectRef = shallowRef<HTMLElement | null>(null)
-const css3dSprite = shallowRef<CSS3DSprite | null>(null)
+const objectRef = ref<HTMLElement | null>(null)
+let css3dSprite: CSS3DSprite | null = null
 
 const createSprite = () => {
   if (!objectRef.value) return
 
   const sprite = new CSS3DSprite(objectRef.value)
-  css3dSprite.value = sprite
+  css3dSprite = sprite
 
   applyConfig()
 
@@ -55,19 +55,19 @@ const createSprite = () => {
 
   if (css3dGroupCtx) {
     applyConfig()
-    css3dGroupCtx.group.value.add(sprite)
+    css3dGroupCtx.group.add(sprite)
   } else {
     css3dCtx.addObject(sprite, config)
   }
 }
 
 const applyConfig = () => {
-  if (!css3dSprite.value) return
-  css3dSprite.value.position.set(...props.position)
-  css3dSprite.value.rotation.set(...props.rotation)
-  css3dSprite.value.scale.set(...props.scale)
+  if (!css3dSprite) return
+  css3dSprite.position.set(...props.position)
+  css3dSprite.rotation.set(...props.rotation)
+  css3dSprite.scale.set(...props.scale)
 
-  const el = css3dSprite.value.element
+  const el = css3dSprite.element
 
   if (props.className) {
     el.className = props.className
@@ -108,11 +108,11 @@ watch(
 )
 
 onBeforeUnmount(() => {
-  if (css3dSprite.value) {
+  if (css3dSprite) {
     if (css3dGroupCtx) {
-      css3dGroupCtx.group.value.remove(css3dSprite.value)
+      css3dGroupCtx.group.remove(css3dSprite)
     } else {
-      css3dCtx.removeObject(css3dSprite.value)
+      css3dCtx.removeObject(css3dSprite)
     }
   }
 })
@@ -122,7 +122,7 @@ onBeforeUnmount(() => {
  * @property css3dSprite - CSS3DSprite 实例
  */
 defineExpose({
-  css3dSprite
+  css3dSprite: () => css3dSprite
 })
 </script>
 
