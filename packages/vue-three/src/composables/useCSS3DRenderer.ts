@@ -1,4 +1,4 @@
-import { inject, ref, onMounted, onBeforeUnmount, watch, provide } from 'vue'
+import { inject, onBeforeUnmount, watch, provide } from 'vue'
 import { Scene } from 'three'
 import { CSS3DRenderer } from 'three/addons/renderers/CSS3DRenderer.js'
 import type { CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js'
@@ -12,9 +12,9 @@ export function useCSS3DRenderer() {
     throw new Error('useCSS3DRenderer must be used within a TCanvas component')
   }
 
-  // 使用普通变量存储 Three.js 对象
-  let renderer: CSS3DRenderer | null = null
-  const container = ref<HTMLElement | null>(null)
+  // 使用普通变量存储 Three.js 对象，在组件初始化时创建
+  let renderer: CSS3DRenderer = new CSS3DRenderer()
+  const container = renderer.domElement
 
   // 创建独立的 CSS3D 场景
   const scene = new Scene()
@@ -67,26 +67,24 @@ export function useCSS3DRenderer() {
     }
   }
 
-  onMounted(() => {
-    renderer = new CSS3DRenderer()
-    container.value = renderer.domElement
+  // 使用 ctx.ready() 确保 canvas 已准备好再进行 DOM 操作
+  ctx.ready(({ canvas }) => {
+    container.style.position = 'absolute'
+    container.style.top = '0'
+    container.style.left = '0'
+    container.style.width = '100%'
+    container.style.height = '100%'
+    container.style.pointerEvents = 'none'
+    container.style.overflow = 'hidden'
+    container.style.zIndex = '2'
 
-    container.value.style.position = 'absolute'
-    container.value.style.top = '0'
-    container.value.style.left = '0'
-    container.value.style.width = '100%'
-    container.value.style.height = '100%'
-    container.value.style.pointerEvents = 'none'
-    container.value.style.overflow = 'hidden'
+    canvas.parentNode.appendChild(container)
+    const { width, height } = canvas.getBoundingClientRect()
+    setSize(width, height)
 
     // 注册场景和渲染器到 ThreeContext
     ctx.registerScene('css3d', scene)
     ctx.registerRenderer('css3d', renderer)
-
-    setSize(ctx.size.width, ctx.size.height)
-    if (ctx.canvas?.parentNode) {
-      ctx.canvas.parentNode.appendChild(container.value)
-    }
   })
 
   watch(
@@ -107,12 +105,9 @@ export function useCSS3DRenderer() {
     })
     objects.clear()
 
-    if (container.value && container.value.parentNode) {
-      container.value.parentNode.removeChild(container.value)
+    if (container && container.parentNode) {
+      container.parentNode.removeChild(container)
     }
-
-    renderer = null
-    container.value = null
   })
 
   provide(CSS3DContextKey, {

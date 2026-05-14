@@ -1,4 +1,4 @@
-import { inject, ref, onMounted, onBeforeUnmount, watch, provide } from 'vue'
+import { inject, onBeforeUnmount, watch, provide } from 'vue'
 import { Scene } from 'three'
 import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js'
 import type { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'
@@ -7,15 +7,14 @@ import type { CSS2DLabelConfig } from '../core/context'
 
 export function useCSS2DRenderer() {
   const ctx = inject(ThreeContextKey)
-
   if (!ctx) {
     throw new Error('useCSS2DRenderer must be used within a TCanvas component')
   }
 
   // 使用普通变量存储 Three.js 对象
-  let renderer: CSS2DRenderer | null = null
-  const labelContainer = ref<HTMLElement | null>(null)
-  
+  let renderer: CSS2DRenderer = new CSS2DRenderer()
+  const labelContainer = renderer.domElement
+
   // 创建独立的 CSS2D 场景
   const scene = new Scene()
 
@@ -107,26 +106,20 @@ export function useCSS2DRenderer() {
       renderer.setSize(width, height)
     }
   }
+  ctx.ready(({ canvas }) => {
+    labelContainer.style.position = 'absolute'
+    labelContainer.style.top = '0'
+    labelContainer.style.left = '0'
+    labelContainer.style.width = '100%'
+    labelContainer.style.height = '100%'
+    labelContainer.style.pointerEvents = 'none'
+    labelContainer.style.overflow = 'hidden'
+    labelContainer.style.zIndex = '2'
 
-  onMounted(() => {
-    renderer = new CSS2DRenderer()
-    labelContainer.value = renderer.domElement
+    const { width, height } = canvas.getBoundingClientRect()
+    canvas.parentNode.appendChild(labelContainer)
 
-    labelContainer.value.style.position = 'absolute'
-    labelContainer.value.style.top = '0'
-    labelContainer.value.style.left = '0'
-    labelContainer.value.style.width = '100%'
-    labelContainer.value.style.height = '100%'
-    labelContainer.value.style.pointerEvents = 'none'
-    labelContainer.value.style.overflow = 'hidden'
-    labelContainer.value.style.zIndex = '2'
-
-    if (ctx.canvas?.parentNode) {
-      ctx.canvas.parentNode.appendChild(labelContainer.value)
-    }
-
-    setSize(ctx.size.width, ctx.size.height)
-
+    setSize(width, height)
     // 注册场景和渲染器到 ThreeContext
     ctx.registerScene('css2d', scene)
     ctx.registerRenderer('css2d', renderer)
@@ -150,12 +143,9 @@ export function useCSS2DRenderer() {
     })
     labels.clear()
 
-    if (labelContainer.value && labelContainer.value.parentNode) {
-      labelContainer.value.parentNode.removeChild(labelContainer.value)
+    if (labelContainer && labelContainer.parentNode) {
+      labelContainer.parentNode.removeChild(labelContainer)
     }
-
-    renderer = null
-    labelContainer.value = null
   })
 
   // 距离效果需要在每次渲染后调用，通过全局渲染循环调度

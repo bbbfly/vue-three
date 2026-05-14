@@ -43,7 +43,14 @@ export type AnimateFn = ({
   renderer?: WebGLRenderer
   renderers?: Map<string, THREE.Renderer>
 }) => void
+
+type ReadyResolve = (context: ThreeContext) => void
+
 export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
+  let readyResolve: ReadyResolve | null = null
+  const readyPromise = new Promise(resolve => {
+    readyResolve = resolve
+  })
   const canvasRef = ref<HTMLCanvasElement | null>(null)
   let renderer: WebGLRenderer | null = null
   const scene = new Scene()
@@ -219,7 +226,6 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
       // 统一渲染调度
       renderAll(delta)
     }
-
     render()
   }
 
@@ -227,7 +233,6 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
 
   const handleResize = () => {
     if (!camera || !renderer || !canvasRef.value) return
-
     const container = canvasRef.value.parentElement || canvasRef.value
     const newWidth = options.width || container.clientWidth || 300
     const newHeight = options.height || container.clientHeight || 150
@@ -253,7 +258,7 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
     }
   }
 
-  onMounted(() => {
+  onMounted(async () => {
     if (!canvasRef.value) return
 
     renderer = new WebGLRenderer({
@@ -261,8 +266,6 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
       antialias: options.antialias !== false,
       alpha: options.alpha || false
     })
-
-    handleResize()
 
     if (options.clearColor !== undefined) {
       renderer.setClearColor(new Color(options.clearColor), options.clearAlpha ?? 1)
@@ -290,6 +293,9 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
       resizeObserver.observe(observeTarget)
     }
 
+    handleResize()
+    context.canvas = canvasRef.value
+    readyResolve!(context)
     startRenderLoop()
   })
 
@@ -323,8 +329,15 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
     controls = null
     composer = null
   })
-
+  const ready = (fn?: ReadyResolve) => {
+    if (fn) {
+      readyPromise.then(fn)
+    } else {
+      return readyPromise
+    }
+  }
   const context = {
+    ready,
     renderer,
     scene,
     camera,
@@ -350,7 +363,6 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
     registerRenderPass,
     unregisterRenderPass,
     enablePostProcessing,
-
     setCamera
   }
 

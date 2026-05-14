@@ -91,6 +91,7 @@ export interface ThreeContext {
 
   // 动态设置全局相机（后来者居上）
   setCamera: (camera: Camera) => void
+  ready: (fn?: (ctx: ThreeContext) => void) => void | Promise<ThreeContext>
 }
 
 export interface MeshContext {

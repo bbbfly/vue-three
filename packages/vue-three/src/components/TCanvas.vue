@@ -1,6 +1,6 @@
 <template>
-  <div class="t-canvas relative">
-    <canvas ref="canvasRef" width="100%" height="100%" class="block"></canvas>
+  <div class="t-canvas-wrapper relative">
+    <canvas id="t-canvas" ref="canvasRef" width="100%" height="100%" class="block"></canvas>
     <slot></slot>
   </div>
 </template>
@@ -185,7 +185,7 @@ defineExpose({
 </script>
 
 <style scoped>
-.t-canvas {
+.t-canvas-wrapper {
   position: relative;
   width: 100%;
   height: 100%;
