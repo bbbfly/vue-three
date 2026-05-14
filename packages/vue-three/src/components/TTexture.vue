@@ -3,6 +3,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import type { PropType } from 'vue'
 import { toRefs, watch } from 'vue'
 import { useTexture } from '../composables/useTexture'

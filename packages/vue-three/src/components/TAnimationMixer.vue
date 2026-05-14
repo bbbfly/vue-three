@@ -3,6 +3,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import type { PropType } from 'vue'
 import { computed, watch } from 'vue'
 import type { Object3D } from 'three'

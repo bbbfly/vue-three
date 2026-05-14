@@ -7,6 +7,10 @@ import { inject, onMounted, watch } from 'vue'
 import { TrackballControls } from 'three/addons/controls/TrackballControls.js'
 import { ThreeContextKey } from '../core/context'
 
+defineOptions({
+  inheritAttrs: false,
+})
+
 const props = defineProps({
   enableDamping: {
     type: Boolean,

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import { computed } from 'vue'
 import { useBloomPass } from '../composables/useBloomPass'
 import type { BloomPassConfig } from '../composables/useBloomPass'

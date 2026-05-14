@@ -3,6 +3,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import type { PropType } from 'vue'
 import { watch, onMounted, inject, onBeforeUnmount, provide } from 'vue'
 import { Points, BufferGeometry, Material } from 'three'

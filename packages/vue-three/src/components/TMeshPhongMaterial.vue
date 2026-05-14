@@ -3,6 +3,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import type { PropType } from 'vue'
 import { useMaterial } from '../composables/useMaterial'
 import * as THREE from 'three'

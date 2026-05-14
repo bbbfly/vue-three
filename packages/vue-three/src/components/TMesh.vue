@@ -3,6 +3,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import type { PropType } from 'vue'
 import { watch, onMounted, inject, onBeforeUnmount } from 'vue'
 import { useMesh } from '../composables/useMesh'

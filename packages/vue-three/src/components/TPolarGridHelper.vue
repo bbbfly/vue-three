@@ -3,6 +3,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import type { PropType } from 'vue'
 import { PolarGridHelper } from 'three'
 import { useHelper } from '../composables/useHelper'

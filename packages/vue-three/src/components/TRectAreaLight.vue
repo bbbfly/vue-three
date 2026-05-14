@@ -3,6 +3,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import type { PropType } from 'vue'
 import { useLight } from '../composables/useLight'
 import type { RectAreaLightConfig } from '../types'

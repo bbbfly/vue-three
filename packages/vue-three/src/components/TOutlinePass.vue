@@ -1,4 +1,8 @@
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import { computed } from 'vue'
 import { useOutlinePass } from '../composables/useOutlinePass'
 import type { OutlinePassConfig } from '../composables/useOutlinePass'

@@ -3,6 +3,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import { useFlyControls } from '../composables/useFlyControls'
 
 /**

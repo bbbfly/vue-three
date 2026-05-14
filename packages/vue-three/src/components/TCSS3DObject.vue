@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { inject, ref, onMounted, onBeforeUnmount, watch, useSlots } from 'vue'
 import { CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js'
 import { CSS3DContextKey, CSS3DGroupContextKey, type CSS3DObjectConfig } from '../core/context'
 
@@ -67,7 +67,7 @@ const applyConfig = () => {
   css3dObject.rotation.set(...props.rotation)
   css3dObject.scale.set(...props.scale)
 }
-
+const slots = useSlots()
 onMounted(() => {
   createObject()
 })

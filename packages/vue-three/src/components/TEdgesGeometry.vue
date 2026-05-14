@@ -3,6 +3,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import type { PropType } from 'vue'
 import { watch, computed, inject } from 'vue'
 import { Line, BufferGeometry, LineBasicMaterial, EdgesGeometry } from 'three'

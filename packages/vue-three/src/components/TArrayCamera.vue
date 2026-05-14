@@ -3,6 +3,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import { computed, inject, watch } from 'vue'
 import type { PropType } from 'vue'
 import { ArrayCamera, PerspectiveCamera, Vector3, Vector4, type Camera } from 'three'

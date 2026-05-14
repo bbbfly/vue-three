@@ -3,6 +3,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import { inject, watch, onBeforeUnmount } from 'vue'
 import { BufferGeometry, BufferAttribute } from 'three'
 import { MeshContextKey } from '../core/context'

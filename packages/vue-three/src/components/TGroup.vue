@@ -3,6 +3,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import { watch, onMounted } from 'vue'
 import type { PropType } from 'vue'
 import { useGroup, type GroupConfig } from '../composables/useGroup'

@@ -11,6 +11,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import type { PropType } from 'vue'
 import { watch } from 'vue'
 import { useFBXLoader } from '../composables/useFBXLoader'

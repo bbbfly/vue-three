@@ -11,6 +11,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import type { PropType } from 'vue'
 import type { KeyframeTrackConfig } from '../composables/useKeyframeAnimation'
 import { useKeyframeAnimation } from '../composables/useKeyframeAnimation'

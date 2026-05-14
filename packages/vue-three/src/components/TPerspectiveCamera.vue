@@ -3,6 +3,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import { computed } from 'vue'
 import type { PropType } from 'vue'
 import { useCamera } from '../composables/useCamera'

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import { useCSS2DRenderer } from '../composables/useCSS2DRenderer'
 
 /**

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import { computed } from 'vue'
 import { useSSAAPass } from '../composables/useSSAAPass'
 import type { SSAAPassConfig } from '../composables/useSSAAPass'

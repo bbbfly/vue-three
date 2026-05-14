@@ -3,6 +3,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import type { PropType } from 'vue'
 import { watch, inject, onBeforeUnmount, computed } from 'vue'
 import { Texture, TextureLoader } from 'three'

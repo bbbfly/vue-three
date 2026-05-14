@@ -1,4 +1,8 @@
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+})
+
 import { provide } from 'vue'
 import { EffectComposerContextKey } from '../core/context'
 import { useRenderPipeline } from '../composables/useRenderPipeline'
