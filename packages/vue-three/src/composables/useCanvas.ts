@@ -266,6 +266,7 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
       antialias: options.antialias !== false,
       alpha: options.alpha || false
     })
+    context.renderer = renderer
 
     if (options.clearColor !== undefined) {
       renderer.setClearColor(new Color(options.clearColor), options.clearAlpha ?? 1)
@@ -338,7 +339,6 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
   }
   const context = {
     ready,
-    renderer,
     scene,
     camera,
     controls,

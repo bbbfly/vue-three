@@ -43,8 +43,8 @@ export function useGroup(config?: GroupConfig) {
   } else if (parentGroupCtx) {
     parent = parentGroupCtx.group
   } else {
-    const css3dScene = ctx.getScene('css3d')
-    const css2dScene = ctx.getScene('css2d')
+    const css3dScene = css3dCtx?.scene
+    const css2dScene = css2dCtx?.scene
     if (css3dCtx && css3dScene) {
       parent = css3dScene
     } else if (css2dCtx && css2dScene) {

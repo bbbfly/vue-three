@@ -47,7 +47,7 @@ const onAnimate = () => {
 
 onMounted(async () => {
   await nextTick()
-  const { width, height } = canvasRef.value.context.size.value
+  const { width, height } = canvasRef.value.context.canvas.getBoundingClientRect()
   const w = (width / AMOUNT) * window.devicePixelRatio
   const h = (height / AMOUNT) * window.devicePixelRatio
   const subCameraList: any[] = []

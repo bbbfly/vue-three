@@ -67,7 +67,6 @@ const applyConfig = () => {
   css3dObject.rotation.set(...props.rotation)
   css3dObject.scale.set(...props.scale)
 }
-const slots = useSlots()
 onMounted(() => {
   createObject()
 })

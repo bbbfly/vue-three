@@ -78,10 +78,9 @@ export function useCSS3DRenderer() {
     container.style.overflow = 'hidden'
     container.style.zIndex = '2'
 
-    canvas.parentNode.appendChild(container)
+    canvas.parentNode?.appendChild(container)
     const { width, height } = canvas.getBoundingClientRect()
     setSize(width, height)
-
     // 注册场景和渲染器到 ThreeContext
     ctx.registerScene('css3d', scene)
     ctx.registerRenderer('css3d', renderer)

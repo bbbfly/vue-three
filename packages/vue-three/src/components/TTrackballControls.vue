@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, onMounted, watch } from 'vue'
+import { inject, watch } from 'vue'
 import { TrackballControls } from 'three/addons/controls/TrackballControls.js'
 import { ThreeContextKey } from '../core/context'
 
@@ -68,7 +68,7 @@ if (!ctx) {
   throw new Error('TTrackballControls must be used within a TCanvas component')
 }
 
-let controls: TrackballControls | null = null
+let controls: TrackballControls = new TrackballControls(ctx.camera)
 
 const update = () => {
   if (controls) {
@@ -94,47 +94,46 @@ const setTarget = (x: number, y: number, z: number) => {
   }
 }
 
-onMounted(() => {
-  if (ctx && ctx.camera && ctx.renderer) {
-    controls = new TrackballControls(ctx.camera, ctx.renderer.domElement)
+ctx.ready((context) => {
+  controls.domElement = context.renderer!.domElement
 
-    if (props.enableDamping !== undefined) {
-      controls.enableDamping = props.enableDamping
-    }
-    if (props.dampingFactor !== undefined) {
-      controls.dampingFactor = props.dampingFactor
-    }
-    if (props.enableZoom !== undefined) {
-      controls.enableZoom = props.enableZoom
-    }
-    if (props.zoomSpeed !== undefined) {
-      controls.zoomSpeed = props.zoomSpeed
-    }
-    if (props.enableRotate !== undefined) {
-      controls.enableRotate = props.enableRotate
-    }
-    if (props.rotateSpeed !== undefined) {
-      controls.rotateSpeed = props.rotateSpeed
-    }
-    if (props.enablePan !== undefined) {
-      controls.enablePan = props.enablePan
-    }
-    if (props.panSpeed !== undefined) {
-      controls.panSpeed = props.panSpeed
-    }
-    if (props.minDistance !== undefined) {
-      controls.minDistance = props.minDistance
-    }
-    if (props.maxDistance !== undefined) {
-      controls.maxDistance = props.maxDistance
-    }
-    if (props.minZoom !== undefined) {
-      controls.minZoom = props.minZoom
-    }
-    if (props.maxZoom !== undefined) {
-      controls.maxZoom = props.maxZoom
-    }
+  if (props.enableDamping !== undefined) {
+    controls.enableDamping = props.enableDamping
   }
+  if (props.dampingFactor !== undefined) {
+    controls.dampingFactor = props.dampingFactor
+  }
+  if (props.enableZoom !== undefined) {
+    controls.enableZoom = props.enableZoom
+  }
+  if (props.zoomSpeed !== undefined) {
+    controls.zoomSpeed = props.zoomSpeed
+  }
+  if (props.enableRotate !== undefined) {
+    controls.enableRotate = props.enableRotate
+  }
+  if (props.rotateSpeed !== undefined) {
+    controls.rotateSpeed = props.rotateSpeed
+  }
+  if (props.enablePan !== undefined) {
+    controls.enablePan = props.enablePan
+  }
+  if (props.panSpeed !== undefined) {
+    controls.panSpeed = props.panSpeed
+  }
+  if (props.minDistance !== undefined) {
+    controls.minDistance = props.minDistance
+  }
+  if (props.maxDistance !== undefined) {
+    controls.maxDistance = props.maxDistance
+  }
+  if (props.minZoom !== undefined) {
+    controls.minZoom = props.minZoom
+  }
+  if (props.maxZoom !== undefined) {
+    controls.maxZoom = props.maxZoom
+  }
+  update()
 })
 
 watch(
@@ -183,7 +182,7 @@ watch(
 )
 
 defineExpose({
-  controls: () => controls,
+  controls,
   update,
   reset,
   saveState,
