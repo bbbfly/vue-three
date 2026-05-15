@@ -623,6 +623,26 @@
   - 修复 TLine 组件缺少 MeshContextKey 提供的问题
   - 更新 examples.ts 配置标记为已完成
 
+---
+
+## 2026-05-15 - WebGL 数学 OBB 示例完成
+
+### 完成任务
+
+#### EX-3501 - webgl_math_obb OBB 有向包围盒示例
+
+- **完成时间**: 2026-05-15
+- **内容**:
+  - 创建 webgl_math_obb.vue 示例组件
+  - 实现 100 个随机位置的立方体，每个都有独立的 OBB（Oriented Bounding Box）碰撞检测
+  - 使用 `OBB` 类（three/addons/math/OBB.js）进行有向包围盒计算
+  - 使用 `intersectRay()` 方法进行射线-OBB 相交检测，支持鼠标点击选择
+  - 使用 `intersectsOBB()` 方法进行 OBB-OBB 碰撞检测，碰撞的立方体会显示为红色
+  - 立方体持续旋转动画效果
+  - 点击选中的立方体显示线框包围盒高亮
+  - 更新 examples.ts 配置标记为已完成
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例

@@ -1048,7 +1048,7 @@ export const exampleCategories: ExampleCategory[] = [
     name: 'WebGL - 数学',
     icon: '📐',
     examples: [
-      { id: 'webgl_math_obb', title: 'OBB', category: 'math', completed: false },
+      { id: 'webgl_math_obb', title: 'OBB', category: 'math', completed: true },
       {
         id: 'webgl_math_orientation_transform',
         title: '方向变换',
