@@ -198,6 +198,17 @@ export function useCamera(configOrRef: CameraOptions | ComputedRef<CameraOptions
     ctx.setCamera(localCamera)
   })
 
+  // 监听全局相机变化（其他组件可能会调用 setCamera）
+  watch(
+    () => ctx.camera,
+    (newCamera, oldCamera) => {
+      if (newCamera !== localCamera) {
+        // 全局相机已被其他组件替换
+        localCamera = newCamera
+      }
+    }
+  )
+
   return {
     camera: localCamera,
     setPosition,

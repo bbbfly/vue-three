@@ -1174,18 +1174,172 @@ export function useMesh(config?: MeshConfig) {
 
 **仅保留真正需要响应式的状态**：
 
-```typescript
+````typescript
 // 需要响应式的状态（保留 ref）
 const loading = ref(false) // UI 状态
 const progress = ref(0) // 加载进度
 const error = ref<Error | null>(null) // 错误状态
-const size = ref({ width: 0, height: 0 }) // 尺寸变化需要触发视图更新
+
+---
+
+## 十三、响应式 Context 优化方案（v1.9.0）
+
+### 13.1 问题分析
+
+当前 `useCanvas` 创建的 `context` 是普通 JavaScript 对象，子组件通过 `inject` 获取后无法使用 `watch` 监听 `camera`、`renderer` 等属性的变化。
+
+**问题示例**：
+
+```typescript
+// 当前实现 - 无法监听
+const ctx = inject(ThreeContextKey)
+watch(() => ctx.camera, () => {
+  // 此回调永远不会触发，因为 context 不是响应式的
+})
+````
+
+### 13.2 优化方案
+
+#### 13.2.1 核心思路
+
+将 `context` 整体定义为 `reactive()` 对象，使子组件可以通过 `watch` 监听全局上下文中 `camera`、`renderer`、`controls`、`size` 等属性的变化。
+
+```typescript
+// 优化后 - 纯 reactive 方案
+const context = reactive<ThreeContext>({
+  renderer: null,
+  scene: new Scene(),
+  camera: new PerspectiveCamera(...),
+  controls: null,
+  canvas: null,
+  size: { width: 300, height: 150 },
+  composer: null,
+
+  // 注册表（Map 本身是响应式的）
+  scenes: new Map([['main', scene]]),
+  renderers: new Map(),
+
+  // 方法
+  registerScene,
+  getScene,
+  unregisterScene,
+  registerRenderer,
+  getRenderer,
+  unregisterRenderer,
+  registerAnimationMixer,
+  unregisterAnimationMixer,
+  registerRenderPass,
+  unregisterRenderPass,
+  enablePostProcessing,
+  setCamera
+})
+```
+
+#### 13.2.2 setCamera 函数优化
+
+```typescript
+// 优化前：仅更新局部变量
+const setCamera = (newCamera: Camera) => {
+  camera = newCamera // 局部变量更新，context.camera 不会同步
+}
+
+// 优化后：直接更新 reactive 属性
+const setCamera = (newCamera: Camera) => {
+  context.camera = newCamera // ✅ 触发响应式更新，子组件可监听
+  // ... 同步 controls、composer 等
+}
+```
+
+#### 13.2.3 onMounted 初始化优化
+
+```typescript
+onMounted(() => {
+  // 直接赋值更新 reactive 属性
+  context.renderer = new WebGLRenderer({...})
+  context.canvas = canvasRef.value
+  context.controls = new OrbitControls(context.camera, context.renderer.domElement)
+  context.size = { width, height }
+})
+```
+
+### 13.3 子组件监听示例
+
+```typescript
+// 子组件监听相机变化
+const ctx = inject(ThreeContextKey)
+
+// ✅ 可以监听相机变化
+watch(
+  () => ctx.camera,
+  (newCamera, oldCamera) => {
+    console.log('相机已切换:', newCamera)
+  }
+)
+
+// ✅ 监听 renderer 初始化
+watch(
+  () => ctx.renderer,
+  renderer => {
+    if (renderer) {
+      console.log('渲染器已初始化')
+    }
+  }
+)
+
+// ✅ 监听尺寸变化
+watch(
+  () => [ctx.size.width, ctx.size.height],
+  ([width, height]) => {
+    console.log(`尺寸变化: ${width}x${height}`)
+  }
+)
+```
+
+### 13.4 方案优势
+
+| 维度         | 原实现             | 优化后                           |
+| ------------ | ------------------ | -------------------------------- |
+| **响应式**   | 非响应式，无法监听 | 完全响应式，支持 watch           |
+| **访问方式** | 直接访问           | 直接访问（无需 `.value`）        |
+| **对象替换** | 无法响应           | `context.camera = newCam` 可响应 |
+| **向后兼容** | -                  | 现有代码访问方式不变             |
+| **类型安全** | 保持类型安全       | 保持类型安全                     |
+
+### 13.5 类型定义更新
+
+```typescript
+// core/context.ts - 优化后类型定义
+export interface ThreeContext {
+  renderer: WebGLRenderer | null // 直接类型，非 Ref
+  scene: Scene // 不变
+  camera: Camera // 直接类型，非 Ref
+  controls: OrbitControls | null // 直接类型，非 Ref
+  canvas: HTMLCanvasElement | null // 直接类型，非 Ref
+  size: Size // 直接类型，嵌套对象自动代理
+  composer: EffectComposer | null // 直接类型，非 Ref
+
+  // 方法保持不变
+  scenes: Map<string, Scene>
+  registerScene: (name: string, scene: Scene) => void
+  // ...
+}
+```
+
+### 13.6 适用场景
+
+- ✅ 动态切换相机（如第一人称/第三人称视角切换）
+- ✅ 运行时切换渲染器配置
+- ✅ 响应式调整画布尺寸
+- ✅ 动态启用/禁用后期处理
+- ✅ 子组件依赖相机/渲染器状态变化
+  const size = ref({ width: 0, height: 0 }) // 尺寸变化需要触发视图更新
 
 // 不需要响应式的状态（改为普通变量）
 let renderer: WebGLRenderer | null = null // Three.js 对象
 let scene = new Scene() // Three.js 对象
 let mesh = new Mesh() // Three.js 对象
-```
+
+````
 
 #### 12.2.4 对象初始化时机
 
@@ -1244,7 +1398,7 @@ export interface MaterialContext {
   setMap: (texture: Texture | null) => void
   // ... 其他 set* 方法
 }
-```
+````
 
 ### 12.4 方案优势
 

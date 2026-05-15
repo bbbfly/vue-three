@@ -1,4 +1,4 @@
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
 import {
   WebGLRenderer,
   Scene,
@@ -14,6 +14,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import type { Pass } from 'three/addons/postprocessing/Pass.js'
 import type { RendererConfig } from '../types'
 import { disposeObject3D } from '../core/cleanup'
+import type { ThreeContext } from '../core/context'
 
 export interface CanvasOptions extends RendererConfig {
   width?: number
@@ -48,26 +49,21 @@ type ReadyResolve = (context: ThreeContext) => void
 
 export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
   let readyResolve: ReadyResolve | null = null
-  const readyPromise = new Promise(resolve => {
+  const readyPromise: Promise<ThreeContext> = new Promise(resolve => {
     readyResolve = resolve
   })
   const canvasRef = ref<HTMLCanvasElement | null>(null)
-  let renderer: WebGLRenderer | null = null
-  const scene = new Scene()
-  const size = ref({
-    width: options.width || 300,
-    height: options.height || 150
-  })
 
-  let camera: Camera = new PerspectiveCamera(
+  const scene = new Scene()
+  const initialWidth = options.width || 300
+  const initialHeight = options.height || 150
+
+  const camera = new PerspectiveCamera(
     options.camera?.fov || 75,
-    size.value.width / size.value.height,
+    initialWidth / initialHeight,
     options.camera?.near || 0.1,
     options.camera?.far || 1000
   )
-
-  let controls: OrbitControls | null = null
-  let composer: EffectComposer | null = null
 
   let animationFrameId: number | null = null
   const animationMixers = new Set<AnimationMixer>()
@@ -81,71 +77,92 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
   // 渲染器注册表 - 支持多渲染器
   const renderers = new Map<string, THREE.Renderer>()
 
-  const registerAnimationMixer = (mixer: AnimationMixer) => {
-    animationMixers.add(mixer)
-  }
-
-  const unregisterAnimationMixer = (mixer: AnimationMixer) => {
-    animationMixers.delete(mixer)
-  }
-
-  const registerRenderPass = (pass: Pass) => {
-    renderPasses.add(pass)
-    if (composer) {
-      composer.addPass(pass)
-    }
-  }
-
-  const unregisterRenderPass = (pass: Pass) => {
-    renderPasses.delete(pass)
-    if (composer) {
-      const passes = composer.passes
-      const index = passes.indexOf(pass)
-      if (index > -1) {
-        passes.splice(index, 1)
+  // 创建响应式 context 对象
+  const context = reactive<ThreeContext>({
+    ready: fn => {
+      if (fn) {
+        readyPromise.then(fn)
+      } else {
+        return readyPromise
       }
-      pass.dispose()
+    },
+    renderer: null,
+    scene,
+    camera,
+    controls: null,
+    canvas: null,
+    size: { width: initialWidth, height: initialHeight },
+    composer: null,
+
+    // 场景注册表
+    scenes,
+    registerScene: (name: string, sceneInstance: Scene) => scenes.set(name, sceneInstance),
+    getScene: (name: string) => scenes.get(name),
+    unregisterScene: (name: string) => scenes.delete(name),
+
+    // 渲染器注册表
+    renderers,
+    registerRenderer: (name: string, rendererInstance: THREE.Renderer) =>
+      renderers.set(name, rendererInstance),
+    getRenderer: (name: string) => renderers.get(name),
+    unregisterRenderer: (name: string) => renderers.delete(name),
+
+    registerAnimationMixer: (mixer: AnimationMixer) => animationMixers.add(mixer),
+    unregisterAnimationMixer: (mixer: AnimationMixer) => animationMixers.delete(mixer),
+    registerRenderPass: (pass: Pass) => {
+      renderPasses.add(pass)
+      if (context.composer) {
+        context.composer.addPass(pass)
+      }
+    },
+    unregisterRenderPass: (pass: Pass) => {
+      renderPasses.delete(pass)
+      if (context.composer) {
+        const passes = context.composer.passes
+        const index = passes.indexOf(pass)
+        if (index > -1) {
+          passes.splice(index, 1)
+        }
+        pass.dispose()
+      }
+    },
+    enablePostProcessing: () => {
+      if (postProcessingEnabled || !context.renderer) return
+
+      postProcessingEnabled = true
+
+      context.composer = new EffectComposer(context.renderer)
+
+      const renderPass = new RenderPass(scene, context.camera)
+      context.composer.addPass(renderPass)
+
+      renderPasses.forEach(pass => {
+        context.composer!.addPass(pass)
+      })
+
+      handleResize()
+    },
+    setCamera: (newCamera: Camera) => {
+      context.camera = newCamera
+
+      // 同步更新 OrbitControls 的相机引用
+      if (context.controls) {
+        context.controls.object = newCamera
+      }
+
+      // 同步更新 EffectComposer 的 RenderPass 相机引用
+      if (context.composer) {
+        const passes = context.composer.passes
+        const renderPass = passes.find(p => (p as any).camera)
+        if (renderPass) {
+          ;(renderPass as any).camera = newCamera
+        }
+      }
+
+      // 立即执行一次 resize 让新相机适配画布尺寸
+      handleResize()
     }
-  }
-
-  // 场景注册表方法
-  const registerScene = (name: string, sceneInstance: Scene) => {
-    scenes.set(name, sceneInstance)
-  }
-
-  const getScene = (name: string) => scenes.get(name)
-
-  const unregisterScene = (name: string) => {
-    scenes.delete(name)
-  }
-
-  // 渲染器注册表方法
-  const registerRenderer = (name: string, rendererInstance: THREE.Renderer) => {
-    renderers.set(name, rendererInstance)
-  }
-
-  const getRenderer = (name: string) => renderers.get(name)
-
-  const unregisterRenderer = (name: string) => {
-    renderers.delete(name)
-  }
-
-  const enablePostProcessing = () => {
-    if (postProcessingEnabled || !renderer) return
-
-    postProcessingEnabled = true
-
-    composer = new EffectComposer(renderer)
-
-    const renderPass = new RenderPass(scene, camera)
-    composer.addPass(renderPass)
-
-    renderPasses.forEach(pass => {
-      composer!.addPass(pass)
-    })
-
-    handleResize()
-  }
+  })
 
   if (options.clearColor !== undefined) {
     scene.background = new Color(options.clearColor)
@@ -154,56 +171,35 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
   const cameraPos = options.camera?.position || [0, 0, 5]
   camera.position.set(...cameraPos)
 
-  const setCamera = (newCamera: Camera) => {
-    camera = newCamera
-
-    // 同步更新 OrbitControls 的相机引用
-    if (controls) {
-      controls.object = newCamera
-    }
-
-    // 同步更新 EffectComposer 的 RenderPass 相机引用
-    if (composer) {
-      const passes = composer.passes
-      const renderPass = passes.find(p => (p as any).camera)
-      if (renderPass) {
-        ;(renderPass as any).camera = newCamera
-      }
-    }
-
-    // 立即执行一次 resize 让新相机适配画布尺寸
-    handleResize()
-  }
-
   const renderAll = (delta: number) => {
-    if (!renderer || !camera) return
+    if (!context.renderer || !context.camera) return
 
     // 1. 渲染 WebGL 主场景
     if (options.autoClear !== false) {
-      renderer.clear()
+      context.renderer.clear()
     }
     // 调用自定义渲染函数
     if (renderFn) {
       return renderFn({
         scene,
-        camera,
+        camera: context.camera,
         delta,
         renderers,
-        renderer
+        renderer: context.renderer
       })
     }
-    // 貌景处理
-    if (postProcessingEnabled && composer) {
-      composer.render(delta)
+    // 后期处理
+    if (postProcessingEnabled && context.composer) {
+      context.composer.render(delta)
     } else {
-      renderer.render(scene, camera)
+      context.renderer.render(scene, context.camera)
     }
 
     // 2. 渲染其他注册的场景（CSS3D, CSS2D 等）
     renderers.forEach((customRenderer, name) => {
       const customScene = scenes.get(name)
       if (customScene) {
-        customRenderer.render(customScene, camera)
+        customRenderer.render(customScene, context.camera)
       }
     })
   }
@@ -212,15 +208,15 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
     const render = () => {
       animationFrameId = requestAnimationFrame(render)
       const delta = clock.getDelta()
-      animateFn({ scene, camera, delta })
+      animateFn({ scene, camera: context.camera, delta })
 
       animationMixers.forEach(mixer => {
         mixer.update(delta)
       })
 
       // 统一更新所有控制器（OrbitControls、FirstPersonControls、FlyControls 等）
-      if (controls && (controls as any).update) {
-        ;(controls as any).update(delta)
+      if (context.controls && (context.controls as any).update) {
+        ;(context.controls as any).update(delta)
       }
 
       // 统一渲染调度
@@ -232,36 +228,37 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
   let resizeObserver: ResizeObserver | null = null
 
   const handleResize = () => {
-    if (!camera || !renderer || !canvasRef.value) return
+    if (!context.camera || !context.renderer || !canvasRef.value) return
     const container = canvasRef.value.parentElement || canvasRef.value
     const newWidth = options.width || container.clientWidth || 300
     const newHeight = options.height || container.clientHeight || 150
 
-    size.value = { width: newWidth, height: newHeight }
+    // 更新响应式 size
+    context.size = { width: newWidth, height: newHeight }
     canvasRef.value.style.width = newWidth + 'px'
     canvasRef.value.style.height = newHeight + 'px'
     canvasRef.value.width = newWidth
     canvasRef.value.height = newHeight
 
-    const perspectiveCamera = camera as PerspectiveCamera
+    const perspectiveCamera = context.camera as PerspectiveCamera
     if (perspectiveCamera.aspect !== undefined) {
       perspectiveCamera.aspect = newWidth / newHeight
       perspectiveCamera.updateProjectionMatrix()
     }
 
-    renderer.setSize(newWidth, newHeight, false)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    context.renderer.setSize(newWidth, newHeight, false)
+    context.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
-    if (composer) {
-      composer.setSize(newWidth, newHeight)
-      composer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    if (context.composer) {
+      context.composer.setSize(newWidth, newHeight)
+      context.composer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     }
   }
 
   onMounted(async () => {
     if (!canvasRef.value) return
 
-    renderer = new WebGLRenderer({
+    const renderer = new WebGLRenderer({
       canvas: canvasRef.value,
       antialias: options.antialias !== false,
       alpha: options.alpha || false
@@ -281,9 +278,9 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
     }
 
     if (options.enableControls !== false) {
-      controls = new OrbitControls(camera, renderer.domElement)
-      controls.enableDamping = true
-      controls.dampingFactor = 0.05
+      context.controls = new OrbitControls(context.camera, renderer.domElement)
+      context.controls.enableDamping = true
+      context.controls.dampingFactor = 0.05
     }
 
     if (!options.width || !options.height) {
@@ -310,8 +307,9 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
       resizeObserver = null
     }
 
-    if (controls) {
-      controls.dispose()
+    if (context.controls) {
+      context.controls.dispose()
+      context.controls = null
     }
 
     while (scene.children.length > 0) {
@@ -320,51 +318,16 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
       scene.remove(child)
     }
 
-    if (renderer) {
-      renderer.dispose()
-      renderer.forceContextLoss()
+    if (context.renderer) {
+      context.renderer.dispose()
+      context.renderer.forceContextLoss()
+      context.renderer = null
     }
 
     canvasRef.value = null
-    renderer = null
-    controls = null
-    composer = null
+    context.canvas = null
+    context.composer = null
   })
-  const ready = (fn?: ReadyResolve) => {
-    if (fn) {
-      readyPromise.then(fn)
-    } else {
-      return readyPromise
-    }
-  }
-  const context = {
-    ready,
-    scene,
-    camera,
-    controls,
-    canvas: canvasRef.value,
-    size: size.value,
-    composer,
-
-    // 场景注册表
-    scenes,
-    registerScene,
-    getScene,
-    unregisterScene,
-
-    // 渲染器注册表
-    renderers,
-    registerRenderer,
-    getRenderer,
-    unregisterRenderer,
-
-    registerAnimationMixer,
-    unregisterAnimationMixer,
-    registerRenderPass,
-    unregisterRenderPass,
-    enablePostProcessing,
-    setCamera
-  }
 
   return {
     canvasRef,

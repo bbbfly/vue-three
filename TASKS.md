@@ -603,9 +603,41 @@
 
 ---
 
+---
+
+## 第十三阶段：响应式 Context 优化（v1.9.0）
+
+### 13.1 useCanvas 改造
+
+| 任务ID       | 任务名称                                   | 预计耗时 | 优先级 | 状态      |
+| ------------ | ------------------------------------------ | -------- | ------ | --------- |
+| REACTCTX-001 | useCanvas 创建 reactive context 对象       | 15min    | 高     | completed |
+| REACTCTX-002 | setCamera 改为直接更新 context.camera      | 10min    | 高     | completed |
+| REACTCTX-003 | onMounted 中直接更新 context 属性          | 10min    | 高     | completed |
+| REACTCTX-004 | handleResize 中更新 context.size           | 5min     | 高     | completed |
+| REACTCTX-005 | enablePostProcessing 更新 context.composer | 5min     | 高     | completed |
+
+### 13.2 相关 Composables 适配
+
+| 任务ID       | 任务名称                                     | 预计耗时 | 优先级 | 状态      |
+| ------------ | -------------------------------------------- | -------- | ------ | --------- |
+| REACTCTX-006 | useCamera 适配响应式 context（监听相机切换） | 10min    | 高     | completed |
+| REACTCTX-007 | useRenderer 适配响应式 context               | 10min    | 高     | completed |
+| REACTCTX-008 | useScene 适配响应式 context                  | 5min     | 高     | completed |
+| REACTCTX-009 | useControls 适配响应式 context               | 10min    | 中     | completed |
+
+### 13.3 测试与验证
+
+| 任务ID       | 任务名称                | 预计耗时 | 优先级 | 状态      |
+| ------------ | ----------------------- | -------- | ------ | --------- |
+| REACTCTX-010 | TypeScript 类型检查验证 | 10min    | 高     | completed |
+| REACTCTX-011 | 组件库构建验证          | 10min    | 高     | completed |
+
+---
+
 ## 任务统计
 
-- **总任务数**：278 个
+- **总任务数**：289 个
 - **MVP 核心任务**：43 个（完成后可发布 v1.0.0）
 - **交互事件系统任务**：17 个（v1.2.0）
 - **曲线与高级几何体任务**：30 个（v1.3.0）
@@ -614,7 +646,8 @@
 - **TGroup 层级分组系统任务**：15 个（v1.6.0）
 - **多场景渲染架构任务**：26 个（v1.7.0）
 - **响应式改造任务**：45 个（v1.8.0）
-- **高优先级任务**：185 个
+- **响应式 Context 优化任务**：11 个（v1.9.0）
+- **高优先级任务**：196 个
 - **平均每个任务**：~10 分钟
 - **MVP 预计总开发时间**：~6.5 小时
 - **交互事件系统预计开发时间**：~2.5 小时
@@ -624,3 +657,4 @@
 - **Sprite 精灵模型预计开发时间**：~5 小时
 - **多场景渲染架构预计开发时间**：~4 小时
 - **响应式改造预计开发时间**：~7.5 小时
+- **响应式 Context 优化预计开发时间**：~2 小时

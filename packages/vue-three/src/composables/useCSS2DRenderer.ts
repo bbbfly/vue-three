@@ -106,7 +106,7 @@ export function useCSS2DRenderer() {
       renderer.setSize(width, height)
     }
   }
-  ctx.ready(({ canvas }) => {
+  ctx.ready(({ canvas, size }) => {
     labelContainer.style.position = 'absolute'
     labelContainer.style.top = '0'
     labelContainer.style.left = '0'
@@ -115,10 +115,8 @@ export function useCSS2DRenderer() {
     labelContainer.style.pointerEvents = 'none'
     labelContainer.style.overflow = 'hidden'
     labelContainer.style.zIndex = '2'
-
-    const { width, height } = canvas.getBoundingClientRect()
+    const { width, height } = size
     canvas.parentNode.appendChild(labelContainer)
-
     setSize(width, height)
     // 注册场景和渲染器到 ThreeContext
     ctx.registerScene('css2d', scene)

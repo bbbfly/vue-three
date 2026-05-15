@@ -32,8 +32,8 @@ export function useControls(config: ControlsConfig = {}) {
     throw new Error('useControls must be used within a TCanvas component')
   }
 
-  // 直接获取 controls，不再使用 .value
-  const controls = ctx.controls
+  // 获取初始 controls（响应式 context）
+  let controls = ctx.controls
 
   const update = () => {
     if (controls) {
@@ -144,6 +144,27 @@ export function useControls(config: ControlsConfig = {}) {
       updateConfig(config)
     }
   })
+
+  // 监听 controls 变化（响应式 context 更新）
+  watch(
+    () => ctx.controls,
+    newControls => {
+      controls = newControls
+      if (controls && Object.keys(config).length > 0) {
+        updateConfig(config)
+      }
+    }
+  )
+
+  // 监听相机变化，同步更新 controls 的 object
+  watch(
+    () => ctx.camera,
+    newCamera => {
+      if (controls && 'object' in controls) {
+        controls.object = newCamera
+      }
+    }
+  )
 
   watch(
     () => config,

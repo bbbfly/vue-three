@@ -68,7 +68,7 @@ export function useCSS3DRenderer() {
   }
 
   // 使用 ctx.ready() 确保 canvas 已准备好再进行 DOM 操作
-  ctx.ready(({ canvas }) => {
+  ctx.ready(({ canvas, size }) => {
     container.style.position = 'absolute'
     container.style.top = '0'
     container.style.left = '0'
@@ -79,8 +79,7 @@ export function useCSS3DRenderer() {
     container.style.zIndex = '2'
 
     canvas.parentNode?.appendChild(container)
-    const { width, height } = canvas.getBoundingClientRect()
-    setSize(width, height)
+    setSize(size.width, size.height)
     // 注册场景和渲染器到 ThreeContext
     ctx.registerScene('css3d', scene)
     ctx.registerRenderer('css3d', renderer)
