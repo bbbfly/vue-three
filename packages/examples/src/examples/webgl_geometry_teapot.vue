@@ -113,11 +113,10 @@ function updateMaterial() {
     teapotMeshRef.value.setMaterial(materials[effectController.newShading])
   }
 }
-const { gui: GUI, destroy } = useGui()
+const { gui, destroy } = useGui()
 onMounted(() => {
   nextTick(() => {
     initMaterialsAndTextures()
-    const gui = GUI.value
     gui.add(effectController, 'newTess', [2, 3, 4, 5, 6, 8, 10, 15, 20, 30, 40, 50]).name('Tessellation Level').onChange(() => {
       recreateTeapotGeometry()
     })
