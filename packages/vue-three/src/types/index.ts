@@ -44,6 +44,7 @@ export type CylinderGeometryArgs = [
   number?,
   number?
 ]
+export type TorusKnotGeometryArgs = [number?, number?, number?, number?, number?, number?]
 export type TorusGeometryArgs = [number?, number?, number?, number?, number?]
 export type ConeGeometryArgs = [number?, number?, number?, number?, boolean?, number?, number?]
 export type IcosahedronGeometryArgs = [number?, number?]
@@ -66,6 +67,11 @@ export interface PlaneGeometryConfig {
 export interface CylinderGeometryConfig {
   type: 'cylinder'
   args?: CylinderGeometryArgs
+}
+
+export interface TorusKnotGeometryConfig {
+  type: 'torusKnot'
+  args?: TorusKnotGeometryArgs
 }
 
 export interface TorusGeometryConfig {
@@ -233,6 +239,13 @@ export interface AmbientLightConfig extends BaseLightConfig {
 
 export interface DirectionalLightConfig extends BaseLightConfig {
   type: 'directional'
+  shadowMapSize?: [number, number]
+  shadowCameraNear?: number
+  shadowCameraFar?: number
+  shadowCameraLeft?: number
+  shadowCameraRight?: number
+  shadowCameraTop?: number
+  shadowCameraBottom?: number
 }
 
 export type BlendingMode = 'normal' | 'additive' | 'subtractive' | 'multiply' | 'screen'
@@ -286,6 +299,10 @@ export interface SpotLightConfig extends BaseLightConfig {
   penumbra?: number
   distance?: number
   decay?: number
+  shadowMapSize?: [number, number]
+  shadowCameraNear?: number
+  shadowCameraFar?: number
+  shadowCameraFov?: number
 }
 
 export interface HemisphereLightConfig extends BaseLightConfig {
@@ -325,6 +342,8 @@ export interface RendererConfig {
         enabled: boolean
         type?: number
       }
+  localClippingEnabled?: boolean
+  clippingPlanes?: THREE.Plane[]
 }
 
 export interface GLTFLoaderConfig extends Object3DConfig {

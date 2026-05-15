@@ -56,6 +56,7 @@ import TSphere from './components/TSphere.vue'
 import TPlane from './components/TPlane.vue'
 import TCylinder from './components/TCylinder.vue'
 import TTorus from './components/TTorus.vue'
+import TTorusKnotGeometry from './components/TTorusKnotGeometry.vue'
 import TIcosahedron from './components/TIcosahedron.vue'
 import TMeshBasicMaterial from './components/TMeshBasicMaterial.vue'
 import TMeshStandardMaterial from './components/TMeshStandardMaterial.vue'
@@ -153,6 +154,7 @@ export {
   TCylinder,
   TCone,
   TTorus,
+  TTorusKnotGeometry,
   TIcosahedron,
   TMeshBasicMaterial,
   TMeshStandardMaterial,
@@ -229,6 +231,7 @@ const components = [
   TCylinder,
   TCone,
   TTorus,
+  TTorusKnotGeometry,
   TIcosahedron,
   TMeshBasicMaterial,
   TMeshStandardMaterial,

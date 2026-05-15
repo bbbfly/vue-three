@@ -643,6 +643,47 @@
   - 更新 examples.ts 配置标记为已完成
   - 更新 EXAMPLES_TASKS.md 任务状态为 completed
 
+---
+
+## 2026-05-15 - WebGL 裁剪平面示例完成
+
+### 完成任务
+
+#### EX-1601 - webgl_clipping 裁剪平面示例
+
+- **完成时间**: 2026-05-15
+- **内容**:
+  - 创建 webgl_clipping.vue 示例组件
+  - 实现本地裁剪平面（Local Clipping）和全局裁剪平面（Global Clipping）
+  - 使用 TTorusKnot 几何体（参数：半径 0.4，管径 0.08，95 个径向分段，20 个管分段）
+  - 本地裁剪平面：垂直向下裁剪（法线 [0, -1, 0]，常量 0.8）
+  - 全局裁剪平面：水平向左裁剪（法线 [-1, 0, 0]，常量 0.1）
+  - TMeshPhongMaterial 材质配置：
+    - 颜色：0x80ee10（亮绿色）
+    - 光泽度：100
+    - 双面渲染：THREE.DoubleSide
+    - 裁剪平面：localPlane
+    - 裁剪阴影：clipShadows = true
+    - Alpha To Coverage：true
+  - 地面平面：9x9 网格，颜色 0xa0adaf，光泽度 150
+  - 照明系统：
+    - 环境光：0xcccccc
+    - 聚光灯：位置 [2, 3, 3]，强度 60，角度 π/5，半影 0.2，带阴影
+    - 方向光：位置 [0, 3, 0]，强度 3，颜色 0x55505a，带阴影
+  - GUI 控制面板：
+    - Local Clipping 文件夹：启用/禁用本地裁剪、裁剪阴影开关、本地裁剪平面常量（0.3-1.25）
+    - Global Clipping 文件夹：启用/禁用全局裁剪、全局裁剪平面常量（-0.4-3）
+    - Alpha To Coverage 开关
+  - 动画效果：
+    - TorusKnot 旋转：x 轴 time * 0.5，y 轴 time * 0.2
+    - TorusKnot 缩放：基于 cos(time) 的脉冲效果（0.875-1.0）
+  - TCanvas 组件配置：
+    - antialias：抗锯齿开启
+    - localClippingEnabled：本地裁剪启用状态
+    - clippingPlanes：全局裁剪平面数组
+  - 更新 examples.ts 配置标记为已完成
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例

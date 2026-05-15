@@ -249,12 +249,12 @@
 
 ## 第十六阶段：WebGL 裁剪示例
 
-| 任务ID  | 任务名称      | 示例ID                      | 预计耗时 | 优先级 | 状态    |
-| ------- | ------------- | --------------------------- | -------- | ------ | ------- |
-| EX-1601 | Webglclipping | webgl_clipping              | 15min    | 中     | pending |
-| EX-1602 | Advanced      | webgl_clipping_advanced     | 20min    | 中     | pending |
-| EX-1603 | 相交          | webgl_clipping_intersection | 15min    | 中     | pending |
-| EX-1604 | 模板          | webgl_clipping_stencil      | 15min    | 中     | pending |
+| 任务ID  | 任务名称      | 示例ID                      | 预计耗时 | 优先级 | 状态      |
+| ------- | ------------- | --------------------------- | -------- | ------ | --------- |
+| EX-1601 | Webglclipping | webgl_clipping              | 15min    | 中     | completed |
+| EX-1602 | Advanced      | webgl_clipping_advanced     | 20min    | 中     | pending   |
+| EX-1603 | 相交          | webgl_clipping_intersection | 15min    | 中     | pending   |
+| EX-1604 | 模板          | webgl_clipping_stencil      | 15min    | 中     | pending   |
 
 ---
 
@@ -536,10 +536,10 @@
 
 ## 第三十五阶段：WebGL 数学示例
 
-| 任务ID  | 任务名称 | 示例ID                           | 预计耗时 | 优先级 | 状态    |
-| ------- | -------- | -------------------------------- | -------- | ------ | ------- |
+| 任务ID  | 任务名称 | 示例ID                           | 预计耗时 | 优先级 | 状态      |
+| ------- | -------- | -------------------------------- | -------- | ------ | --------- |
 | EX-3501 | OBB      | webgl_math_obb                   | 15min    | 中     | completed |
-| EX-3502 | 方向变换 | webgl_math_orientation_transform | 15min    | 中     | pending |
+| EX-3502 | 方向变换 | webgl_math_orientation_transform | 15min    | 中     | pending   |
 
 ---
 
@@ -639,11 +639,11 @@
 
 ## 第四十三阶段：WebGL 射线检测示例
 
-| 任务ID  | 任务名称 | 示例ID                  | 预计耗时 | 优先级 | 状态    |
-| ------- | -------- | ----------------------- | -------- | ------ | ------- |
-| EX-4301 | BVH      | webgl_raycaster_bvh     | 20min    | 中     | pending |
+| 任务ID  | 任务名称 | 示例ID                  | 预计耗时 | 优先级 | 状态      |
+| ------- | -------- | ----------------------- | -------- | ------ | --------- |
+| EX-4301 | BVH      | webgl_raycaster_bvh     | 20min    | 中     | pending   |
 | EX-4302 | Sprite   | webgl_raycaster_sprite  | 15min    | 中     | completed |
-| EX-4303 | 纹理     | webgl_raycaster_texture | 15min    | 中     | pending |
+| EX-4303 | 纹理     | webgl_raycaster_texture | 15min    | 中     | pending   |
 
 ---
 
@@ -665,7 +665,7 @@
 
 ## 第四十六阶段：WebGL 渲染到纹理示例
 
-| 任务 ID  | 任务名称 | 示例 ID    | 预计耗时 | 优先级 | 状态      |
+| 任务 ID | 任务名称 | 示例 ID   | 预计耗时 | 优先级 | 状态      |
 | ------- | -------- | --------- | -------- | ------ | --------- |
 | EX-4601 | Webglrtt | webgl_rtt | 15min    | 中     | completed |
 

@@ -11,7 +11,7 @@ import type { PropType } from 'vue'
 import { ThreeContextKey, InteractionContextKey } from '../core/context'
 import { useCanvas, type CanvasOptions, type AnimateFn } from '../composables/useCanvas'
 import { useInteraction } from '../composables/useInteraction'
-import type { ShadowMapType } from 'three'
+import type { ShadowMapType, Plane } from 'three'
 
 /**
  * 画布根组件
@@ -121,6 +121,22 @@ const props = defineProps({
     default: true
   },
   /**
+   * 是否启用本地裁剪
+   * @default false
+   */
+  localClippingEnabled: {
+    type: Boolean,
+    default: false
+  },
+  /**
+   * 全局裁剪平面数组
+   * @default undefined
+   */
+  clippingPlanes: {
+    type: Array as unknown as PropType<Plane[]>,
+    default: undefined
+  },
+  /**
    * 自定义渲染函数
    * @default undefined
    */
@@ -140,7 +156,9 @@ const options = computed<CanvasOptions>(() => ({
   shadowMap: props.shadowMap,
   camera: props.camera,
   autoClear: props.autoClear,
-  enableControls: props.enableControls
+  enableControls: props.enableControls,
+  localClippingEnabled: props.localClippingEnabled,
+  clippingPlanes: props.clippingPlanes
 }))
 
 const emit = defineEmits<{
@@ -164,6 +182,15 @@ watch(
       const cameraPos = newOptions.camera?.position
       if (cameraPos) {
         context.camera.position.set(...cameraPos)
+      }
+
+      // 更新裁剪配置
+      console.log(newOptions.localClippingEnabled, '---')
+      if (newOptions.localClippingEnabled !== undefined && context.renderer) {
+        context.renderer.localClippingEnabled = newOptions.localClippingEnabled
+      }
+      if (newOptions.clippingPlanes !== undefined && context.renderer) {
+        context.renderer.clippingPlanes = newOptions.clippingPlanes
       }
     }
   },

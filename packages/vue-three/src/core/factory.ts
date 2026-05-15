@@ -53,7 +53,8 @@ import {
   OneFactor,
   DstColorFactor,
   OneMinusDstColorFactor,
-  TextureLoader
+  TextureLoader,
+  TorusKnotGeometry
 } from 'three'
 import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js'
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js'
@@ -95,6 +96,8 @@ export class ThreeObjectFactory {
         return new CylinderGeometry(...(config.args || []))
       case 'torus':
         return new TorusGeometry(...(config.args || []))
+      case 'torusKnot':
+        return new TorusKnotGeometry(...(config.args || []))
       case 'cone':
         return new ConeGeometry(...(config.args || []))
       case 'icosahedron':
@@ -305,14 +308,43 @@ export class ThreeObjectFactory {
         const light = new DirectionalLight(config.color, config.intensity)
         this.applyObject3DConfig(light, config)
         if (config.castShadow) {
-          light.shadow.mapSize.width = 2048
-          light.shadow.mapSize.height = 2048
-          light.shadow.camera.near = 0.5
-          light.shadow.camera.far = 50
-          light.shadow.camera.left = -20
-          light.shadow.camera.right = 20
-          light.shadow.camera.top = 20
-          light.shadow.camera.bottom = -20
+          if (config.shadowMapSize) {
+            light.shadow.mapSize.width = config.shadowMapSize[0]
+            light.shadow.mapSize.height = config.shadowMapSize[1]
+          } else {
+            light.shadow.mapSize.width = 2048
+            light.shadow.mapSize.height = 2048
+          }
+          if (config.shadowCameraNear !== undefined) {
+            light.shadow.camera.near = config.shadowCameraNear
+          } else {
+            light.shadow.camera.near = 0.5
+          }
+          if (config.shadowCameraFar !== undefined) {
+            light.shadow.camera.far = config.shadowCameraFar
+          } else {
+            light.shadow.camera.far = 50
+          }
+          if (config.shadowCameraLeft !== undefined) {
+            light.shadow.camera.left = config.shadowCameraLeft
+          } else {
+            light.shadow.camera.left = -20
+          }
+          if (config.shadowCameraRight !== undefined) {
+            light.shadow.camera.right = config.shadowCameraRight
+          } else {
+            light.shadow.camera.right = 20
+          }
+          if (config.shadowCameraTop !== undefined) {
+            light.shadow.camera.top = config.shadowCameraTop
+          } else {
+            light.shadow.camera.top = 20
+          }
+          if (config.shadowCameraBottom !== undefined) {
+            light.shadow.camera.bottom = config.shadowCameraBottom
+          } else {
+            light.shadow.camera.bottom = -20
+          }
         }
         return light
       }
@@ -331,6 +363,28 @@ export class ThreeObjectFactory {
           config.decay
         )
         this.applyObject3DConfig(light, config)
+        if (config.castShadow) {
+          if (config.shadowMapSize) {
+            light.shadow.mapSize.width = config.shadowMapSize[0]
+            light.shadow.mapSize.height = config.shadowMapSize[1]
+          } else {
+            light.shadow.mapSize.width = 2048
+            light.shadow.mapSize.height = 2048
+          }
+          if (config.shadowCameraNear !== undefined) {
+            light.shadow.camera.near = config.shadowCameraNear
+          } else {
+            light.shadow.camera.near = 0.5
+          }
+          if (config.shadowCameraFar !== undefined) {
+            light.shadow.camera.far = config.shadowCameraFar
+          } else {
+            light.shadow.camera.far = 50
+          }
+          if (config.shadowCameraFov !== undefined) {
+            ;(light.shadow.camera as PerspectiveCamera).fov = config.shadowCameraFov
+          }
+        }
         return light
       }
       case 'hemisphere': {

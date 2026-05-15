@@ -1,4 +1,4 @@
-import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
+import { ref, reactive, onMounted, onBeforeUnmount, watch } from 'vue'
 import {
   WebGLRenderer,
   Scene,
@@ -277,6 +277,14 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
       }
     }
 
+    if (options.localClippingEnabled !== undefined) {
+      renderer.localClippingEnabled = options.localClippingEnabled
+    }
+
+    if (options.clippingPlanes !== undefined) {
+      renderer.clippingPlanes = options.clippingPlanes
+    }
+
     if (options.enableControls !== false) {
       context.controls = new OrbitControls(context.camera, renderer.domElement)
       context.controls.enableDamping = true
@@ -295,6 +303,21 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
     context.canvas = canvasRef.value
     readyResolve!(context)
     startRenderLoop()
+
+    watch(
+      () => [options.localClippingEnabled, options.clippingPlanes],
+      ([localClippingEnabled, clippingPlanes]) => {
+        if (context.renderer) {
+          if (localClippingEnabled !== undefined) {
+            context.renderer.localClippingEnabled = localClippingEnabled
+          }
+          if (clippingPlanes !== undefined) {
+            context.renderer.clippingPlanes = clippingPlanes
+          }
+        }
+      },
+      { deep: true }
+    )
   })
 
   onBeforeUnmount(() => {

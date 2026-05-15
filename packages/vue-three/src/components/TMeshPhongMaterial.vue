@@ -8,6 +8,7 @@ defineOptions({
 })
 
 import type { PropType } from 'vue'
+import { watch } from 'vue'
 import { useMaterial } from '../composables/useMaterial'
 import * as THREE from 'three'
 /**
@@ -101,10 +102,34 @@ const props = defineProps({
   depthWrite: {
     type: Boolean,
     default: undefined
+  },
+  /**
+   * 裁剪平面数组
+   * @default undefined
+   */
+  clippingPlanes: {
+    type: Array as unknown as PropType<THREE.Plane[]>,
+    default: undefined
+  },
+  /**
+   * 是否裁剪阴影
+   * @default false
+   */
+  clipShadows: {
+    type: Boolean,
+    default: false
+  },
+  /**
+   * 是否启用 alpha 覆盖
+   * @default false
+   */
+  alphaToCoverage: {
+    type: Boolean,
+    default: false
   }
 })
 
-const { material } = useMaterial({
+const { material, updateMaterial } = useMaterial({
   type: 'phong',
   color: props.color,
   specular: props.specular,
@@ -116,8 +141,35 @@ const { material } = useMaterial({
   side: props.side,
   flatShading: props.flatShading,
   vertexColors: props.vertexColors,
-  depthWrite: props.depthWrite
+  depthWrite: props.depthWrite,
+  clippingPlanes: props.clippingPlanes,
+  clipShadows: props.clipShadows,
+  alphaToCoverage: props.alphaToCoverage
 })
+
+watch(
+  () => [props.clippingPlanes, props.clipShadows, props.alphaToCoverage],
+  () => {
+    updateMaterial({
+      type: 'phong',
+      color: props.color,
+      specular: props.specular,
+      shininess: props.shininess,
+      normalScale: props.normalScale,
+      transparent: props.transparent,
+      opacity: props.opacity,
+      wireframe: props.wireframe,
+      side: props.side,
+      flatShading: props.flatShading,
+      vertexColors: props.vertexColors,
+      depthWrite: props.depthWrite,
+      clippingPlanes: props.clippingPlanes,
+      clipShadows: props.clipShadows,
+      alphaToCoverage: props.alphaToCoverage
+    })
+  },
+  { deep: true }
+)
 
 /**
  * @expose

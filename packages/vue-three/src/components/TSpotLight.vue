@@ -89,6 +89,38 @@ const props = defineProps({
   castShadow: {
     type: Boolean,
     default: false
+  },
+  /**
+   * 阴影贴图尺寸 [width, height]
+   * @default [2048, 2048]
+   */
+  shadowMapSize: {
+    type: Array as unknown as PropType<[number, number]>,
+    default: () => [2048, 2048]
+  },
+  /**
+   * 阴影相机近裁剪面距离
+   * @default 0.5
+   */
+  shadowCameraNear: {
+    type: Number,
+    default: 0.5
+  },
+  /**
+   * 阴影相机远裁剪面距离
+   * @default 50
+   */
+  shadowCameraFar: {
+    type: Number,
+    default: 50
+  },
+  /**
+   * 阴影相机视野角度（仅适用于聚光灯）
+   * @default undefined (使用默认值)
+   */
+  shadowCameraFov: {
+    type: Number,
+    default: undefined
   }
 })
 
@@ -101,7 +133,11 @@ const config: SpotLightConfig = {
   angle: props.angle,
   penumbra: props.penumbra,
   decay: props.decay,
-  castShadow: props.castShadow
+  castShadow: props.castShadow,
+  shadowMapSize: props.shadowMapSize,
+  shadowCameraNear: props.shadowCameraNear,
+  shadowCameraFar: props.shadowCameraFar,
+  shadowCameraFov: props.shadowCameraFov
 }
 
 const { light } = useLight(config)

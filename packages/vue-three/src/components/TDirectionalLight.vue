@@ -55,6 +55,62 @@ const props = defineProps({
   castShadow: {
     type: Boolean,
     default: false
+  },
+  /**
+   * 阴影贴图尺寸 [width, height]
+   * @default [2048, 2048]
+   */
+  shadowMapSize: {
+    type: Array as unknown as PropType<[number, number]>,
+    default: () => [2048, 2048]
+  },
+  /**
+   * 阴影相机近裁剪面距离
+   * @default 0.5
+   */
+  shadowCameraNear: {
+    type: Number,
+    default: 0.5
+  },
+  /**
+   * 阴影相机远裁剪面距离
+   * @default 50
+   */
+  shadowCameraFar: {
+    type: Number,
+    default: 50
+  },
+  /**
+   * 阴影相机左边界
+   * @default -20
+   */
+  shadowCameraLeft: {
+    type: Number,
+    default: -20
+  },
+  /**
+   * 阴影相机右边界
+   * @default 20
+   */
+  shadowCameraRight: {
+    type: Number,
+    default: 20
+  },
+  /**
+   * 阴影相机上边界
+   * @default 20
+   */
+  shadowCameraTop: {
+    type: Number,
+    default: 20
+  },
+  /**
+   * 阴影相机下边界
+   * @default -20
+   */
+  shadowCameraBottom: {
+    type: Number,
+    default: -20
   }
 })
 
@@ -63,7 +119,14 @@ const config: DirectionalLightConfig = {
   color: props.color,
   intensity: props.intensity,
   position: props.position,
-  castShadow: props.castShadow
+  castShadow: props.castShadow,
+  shadowMapSize: props.shadowMapSize,
+  shadowCameraNear: props.shadowCameraNear,
+  shadowCameraFar: props.shadowCameraFar,
+  shadowCameraLeft: props.shadowCameraLeft,
+  shadowCameraRight: props.shadowCameraRight,
+  shadowCameraTop: props.shadowCameraTop,
+  shadowCameraBottom: props.shadowCameraBottom
 }
 
 const { light } = useLight(config)
