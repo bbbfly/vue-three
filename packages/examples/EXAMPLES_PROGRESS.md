@@ -783,6 +783,35 @@
     - TMeshBasicMaterial 添加模板缓冲区相关属性（stencilWrite、stencilFunc、stencilFail、stencilZFail、stencilZPass、depthTest、colorWrite、clippingPlanes）
     - TMeshStandardMaterial 添加模板缓冲区相关属性和 clipShadows、shadowSide 属性
 
+- 窗口大小自适应处理
+
+---
+
+## 2026-05-18 - WebGL BufferGeometry 示例完成
+
+### 完成任务
+
+#### EX-1401 - webgl_buffergeometry BufferGeometry 示例
+
+- **完成时间**: 2026-05-18
+- **内容**:
+  - 创建 webgl_buffergeometry.vue 示例组件
+  - 使用 TBufferGeometry 组件实现自定义缓冲几何体
+  - 生成 160,000 个随机三角形（800x800x800 立方体空间内）
+  - 手动构建顶点位置、法线、颜色属性
+  - 使用 Float32BufferAttribute 存储顶点数据
+  - 每个三角形三个顶点共享法线（平面法线）
+  - 颜色基于空间位置（RGB 对应 XYZ 坐标），随机透明度
+  - MeshPhongMaterial 材质配置：颜色 0xd5d5d5、高光 0xffffff、高光强度 250、双面渲染、顶点颜色、透明
+  - 照明系统：环境光（0xcccccc）+ 两个方向光（intensity 1.5 和 4.5）
+  - 雾效配置（Fog）：颜色 0x050505，near 2000，far 3500
+  - 相机配置：PerspectiveCamera（fov 27，near 1，far 3500，位置 [0, 0, 2750]）
+  - 使用 @animate 事件实现旋转动画（rotation.x = time * 0.25，rotation.y = time * 0.5）
+  - 背景色为深灰色 #050505
+  - onUpload 回调释放数组内存
+  - computeBoundingSphere() 计算包围球
+  - v-if 条件渲染确保几何体数据准备好后再渲染
+
 ---
 
 ### 第三阶段：更多示例

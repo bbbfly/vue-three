@@ -217,7 +217,7 @@
 
 | 任务ID  | 任务名称             | 示例ID                                           | 预计耗时 | 优先级 | 状态    |
 | ------- | -------------------- | ------------------------------------------------ | -------- | ------ | ------- |
-| EX-1401 | Webglbuffergeometry  | webgl_buffergeometry                             | 15min    | 中     | pending |
+| EX-1401 | Webglbuffergeometry  | webgl_buffergeometry                             | 15min    | 中     | completed |
 | EX-1402 | Attributesinteger    | webgl_buffergeometry_attributes_integer          | 10min    | 中     | pending |
 | EX-1403 | Attributesnone       | webgl_buffergeometry_attributes_none             | 10min    | 中     | pending |
 | EX-1404 | 自定义attributes粒子 | webgl_buffergeometry_custom_attributes_particles | 20min    | 中     | pending |
