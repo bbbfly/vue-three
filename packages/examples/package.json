@@ -11,7 +11,7 @@
   "dependencies": {
     "@vue-three/core": "workspace:*",
     "highlight.js": "^11.11.1",
-    "three": "^0.160.0",
+    "three": "^0.184.0",
     "vue": "^3.4.0",
     "vue-router": "^4.2.5"
   },

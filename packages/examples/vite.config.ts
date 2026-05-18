@@ -8,7 +8,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      'three/addons': path.resolve(__dirname, './lib/jsm'),
       '@vue-three/vue-three': path.resolve(__dirname, '../vue-three/src/index.ts')
     }
   },
