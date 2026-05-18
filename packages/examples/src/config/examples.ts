@@ -394,7 +394,7 @@ export const exampleCategories: ExampleCategory[] = [
     icon: '✂️',
     examples: [
       { id: 'webgl_clipping', title: 'Webglclipping', category: 'clipping', completed: true },
-      { id: 'webgl_clipping_advanced', title: 'Advanced', category: 'clipping', completed: false },
+      { id: 'webgl_clipping_advanced', title: 'Advanced', category: 'clipping', completed: true },
       { id: 'webgl_clipping_intersection', title: '相交', category: 'clipping', completed: false },
       { id: 'webgl_clipping_stencil', title: '模板', category: 'clipping', completed: false }
     ]

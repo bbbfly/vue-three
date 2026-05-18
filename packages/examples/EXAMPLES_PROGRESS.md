@@ -684,6 +684,35 @@
   - 更新 examples.ts 配置标记为已完成
   - 更新 EXAMPLES_TASKS.md 任务状态为 completed
 
+---
+
+## 2026-05-18 - WebGL 高级裁剪示例完成
+
+### 完成任务
+
+#### EX-1602 - webgl_clipping_advanced 高级裁剪示例
+
+- **完成时间**: 2026-05-18
+- **内容**:
+  - 创建 webgl_clipping_advanced.vue 示例组件
+  - 实现从凸三角网格（正四面体）创建裁剪体积
+  - 支持本地裁剪和全局裁剪两种模式
+  - 创建 5x5x5=125 个立方体的 InstancedMesh 实例化网格
+  - 动态变换裁剪平面（跟随对象旋转和缩放）
+  - 创建圆柱形裁剪平面用于全局裁剪
+  - 实现体积可视化功能（可切换显示裁剪平面）
+  - GUI 控制面板：
+    - Local Clipping 文件夹：启用/禁用本地裁剪、裁剪阴影开关、可视化开关
+    - Global Clipping 文件夹：启用/禁用全局裁剪
+  - 使用原生 Three.js API 创建 InstancedMesh（因组件库暂不支持 InstancedMesh）
+  - 通过 inject(ThreeContextKey) 获取场景上下文
+  - 使用 ctx.ready() 确保上下文初始化完成后再创建对象
+  - 动画效果：实例化网格旋转（x 轴 time * 0.5，y 轴 time * 0.2）、弹跳缩放效果
+  - 灯光系统：环境光 + 聚光灯 + 方向光，带阴影效果
+  - 正确的资源清理逻辑（dispose() 处理几何体和材质）
+
+---
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例
