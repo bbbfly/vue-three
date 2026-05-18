@@ -14,6 +14,7 @@ import {
   MeshPhongMaterial,
   MeshNormalMaterial,
   MeshDepthMaterial,
+  ShadowMaterial,
   ShaderMaterial,
   PointsMaterial,
   Material,
@@ -262,6 +263,11 @@ export class ThreeObjectFactory {
       }
       case 'depth':
         return new MeshDepthMaterial()
+      case 'shadow': {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { type, ...rest } = config
+        return new ShadowMaterial(rest)
+      }
       case 'shader': {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { type, side, blending, premultipliedAlpha, ...rest } = config
@@ -429,6 +435,10 @@ export class ThreeObjectFactory {
       ;(object as any).receiveShadow = config.receiveShadow
     }
 
+    if (config.renderOrder !== undefined) {
+      object.renderOrder = config.renderOrder
+    }
+
     if (config.userData) {
       object.userData = { ...object.userData, ...config.userData }
     }
@@ -459,6 +469,10 @@ export class ThreeObjectFactory {
 
     if (config.receiveShadow !== undefined && 'receiveShadow' in object) {
       ;(object as any).receiveShadow = config.receiveShadow
+    }
+
+    if (config.renderOrder !== undefined) {
+      object.renderOrder = config.renderOrder
     }
 
     if (config.userData) {

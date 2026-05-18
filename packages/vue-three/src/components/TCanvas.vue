@@ -63,6 +63,14 @@ const props = defineProps({
     default: false
   },
   /**
+   * 是否启用模板缓冲区
+   * @default false
+   */
+  stencil: {
+    type: Boolean,
+    default: false
+  },
+  /**
    * 画布清除颜色
    * @default undefined
    */

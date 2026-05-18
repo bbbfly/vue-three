@@ -757,6 +757,34 @@
 
 ---
 
+## 2026-05-18 - WebGL 裁剪模板示例完成
+
+### 完成任务
+
+#### EX-1604 - webgl_clipping_stencil 裁剪模板示例
+
+- **完成时间**: 2026-05-18
+- **内容**:
+  - 创建 webgl_clipping_stencil.vue 示例组件
+  - 使用模板缓冲区（Stencil Buffer）实现高级裁剪效果
+  - 创建三个裁剪平面（X、Y、Z轴方向）
+  - 每个裁剪平面使用模板组（stencilGroup）实现正反面计数渲染
+  - 使用 TorusKnotGeometry 作为主几何体（半径 0.4，管径 0.15，220 个径向分段，60 个管分段）
+  - 橙色主体（0xFFC107）使用 MeshStandardMaterial，带裁剪平面和阴影
+  - 粉色裁剪面（0xE91E63）使用模板测试实现边缘高亮
+  - GUI 控制面板：
+    - animate 动画开关
+    - planeX/Y/Z 文件夹：displayHelper 开关、constant 滑块（-1 到 1）、negated 反转按钮
+  - 照明系统：环境光（intensity 1.5）+ 方向光（位置 [5, 10, 7.5]，强度 3，带阴影）
+  - TOrbitControls 轨道控制器（最小距离 2，最大距离 20）
+  - 地面阴影平面（ShadowMaterial，透明度 0.25）
+  - 组件库增强：
+    - TCanvas 添加 stencil 属性支持
+    - TMeshBasicMaterial 添加模板缓冲区相关属性（stencilWrite、stencilFunc、stencilFail、stencilZFail、stencilZPass、depthTest、colorWrite、clippingPlanes）
+    - TMeshStandardMaterial 添加模板缓冲区相关属性和 clipShadows、shadowSide 属性
+
+---
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例

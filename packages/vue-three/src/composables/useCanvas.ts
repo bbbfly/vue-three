@@ -27,6 +27,7 @@ export interface CanvasOptions extends RendererConfig {
   }
   autoClear?: boolean
   enableControls?: boolean
+  stencil?: boolean
 }
 type Config = {
   options: CanvasOptions
@@ -261,7 +262,8 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
     const renderer = new WebGLRenderer({
       canvas: canvasRef.value,
       antialias: options.antialias !== false,
-      alpha: options.alpha || false
+      alpha: options.alpha || false,
+      stencil: options.stencil || false
     })
     context.renderer = renderer
 

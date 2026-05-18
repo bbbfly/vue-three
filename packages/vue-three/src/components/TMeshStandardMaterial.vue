@@ -3,6 +3,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, watch } from 'vue'
 defineOptions({
   inheritAttrs: false,
 })
@@ -50,6 +51,42 @@ const props = defineProps({
   map: {
     type: [String, Object] as PropType<string | THREE.Texture>,
     default: undefined
+  },
+  clipShadows: {
+    type: Boolean,
+    default: undefined
+  },
+  shadowSide: {
+    type: Number,
+    default: undefined
+  },
+  clippingPlanes: {
+    type: Array as unknown as PropType<THREE.Plane[]>,
+    default: undefined
+  },
+  stencilWrite: {
+    type: Boolean,
+    default: undefined
+  },
+  stencilRef: {
+    type: Number,
+    default: undefined
+  },
+  stencilFunc: {
+    type: Number,
+    default: undefined
+  },
+  stencilFail: {
+    type: Number,
+    default: undefined
+  },
+  stencilZFail: {
+    type: Number,
+    default: undefined
+  },
+  stencilZPass: {
+    type: Number,
+    default: undefined
   }
 })
 
@@ -66,6 +103,31 @@ const { material } = useMaterial({
   flatShading: props.flatShading,
   map: props.map
 })
+
+const updateStencilProps = () => {
+  const mat = material as any
+  if (props.clipShadows !== undefined) mat.clipShadows = props.clipShadows
+  if (props.shadowSide !== undefined) mat.shadowSide = props.shadowSide
+  if (props.clippingPlanes !== undefined) mat.clippingPlanes = props.clippingPlanes
+  if (props.stencilWrite !== undefined) mat.stencilWrite = props.stencilWrite
+  if (props.stencilRef !== undefined) mat.stencilRef = props.stencilRef
+  if (props.stencilFunc !== undefined) mat.stencilFunc = props.stencilFunc
+  if (props.stencilFail !== undefined) mat.stencilFail = props.stencilFail
+  if (props.stencilZFail !== undefined) mat.stencilZFail = props.stencilZFail
+  if (props.stencilZPass !== undefined) mat.stencilZPass = props.stencilZPass
+}
+
+onMounted(() => {
+  updateStencilProps()
+})
+
+watch(
+  () => [props.clipShadows, props.shadowSide, props.clippingPlanes, props.stencilWrite, props.stencilRef,
+    props.stencilFunc, props.stencilFail, props.stencilZFail, props.stencilZPass],
+  () => {
+    updateStencilProps()
+  }
+)
 
 defineExpose({
   material

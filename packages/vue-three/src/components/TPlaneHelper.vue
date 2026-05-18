@@ -46,6 +46,14 @@ const props = defineProps({
   color: {
     type: [String, Number] as PropType<string | number>,
     default: 0xffff00
+  },
+  /**
+   * 是否显示辅助线
+   * @default true
+   */
+  visible: {
+    type: Boolean,
+    default: true
   }
 })
 
@@ -63,13 +71,11 @@ const { helper } = useHelper(() => {
 function createHelper() {
   const plane = toValue(props.plane)
   if (plane) {
-    // 先释放旧的
     if (helperInstance) {
       helperInstance.dispose()
     }
-    // 创建新的
     helperInstance = new PlaneHelper(plane, props.size, props.color)
-    // 触发更新
+    helperInstance.visible = props.visible
     trigger.value++
   }
 }
@@ -94,6 +100,15 @@ watch(
   newColor => {
     if (helperInstance) {
       ; (helperInstance.material as any).color = new Color(newColor)
+    }
+  }
+)
+
+watch(
+  () => props.visible,
+  newVisible => {
+    if (helperInstance) {
+      helperInstance.visible = newVisible
     }
   }
 )

@@ -9,6 +9,7 @@ export interface Object3DConfig {
   visible?: boolean
   castShadow?: boolean
   receiveShadow?: boolean
+  renderOrder?: number
   userData?: Record<string, any>
 }
 
@@ -119,6 +120,7 @@ export type MaterialType =
   | 'phong'
   | 'normal'
   | 'depth'
+  | 'shadow'
   | 'shader'
   | 'points'
   | 'custom'
@@ -191,6 +193,10 @@ export interface DepthMaterialConfig {
   type: 'depth'
 }
 
+export interface ShadowMaterialConfig extends BaseMaterialConfig {
+  type: 'shadow'
+}
+
 export interface ShaderMaterialConfig extends BaseMaterialConfig {
   type: 'shader'
   vertexShader?: string
@@ -222,6 +228,7 @@ export type MaterialConfig =
   | PhongMaterialConfig
   | NormalMaterialConfig
   | DepthMaterialConfig
+  | ShadowMaterialConfig
   | ShaderMaterialConfig
   | PointsMaterialConfig
   | CustomMaterialConfig

@@ -75,6 +75,14 @@ const props = defineProps({
     default: true
   },
   /**
+   * 渲染顺序
+   * @default 0
+   */
+  renderOrder: {
+    type: Number,
+    default: 0
+  },
+  /**
    * 点击事件回调
    */
   onClick: {
@@ -126,7 +134,8 @@ const config: Object3DConfig = {
   scale: props.scale,
   castShadow: props.castShadow,
   receiveShadow: props.receiveShadow,
-  visible: props.visible
+  visible: props.visible,
+  renderOrder: props.renderOrder
 }
 
 const { mesh, setGeometry, setMaterial } = useMesh()
@@ -144,7 +153,8 @@ watch(
       scale: newProps.scale,
       castShadow: newProps.castShadow,
       receiveShadow: newProps.receiveShadow,
-      visible: newProps.visible
+      visible: newProps.visible,
+      renderOrder: newProps.renderOrder
     }
     ThreeObjectFactory.updateObject3DConfig(mesh, newConfig)
   },
