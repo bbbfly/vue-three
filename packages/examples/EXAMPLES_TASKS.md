@@ -97,7 +97,7 @@
 | EX-806 | 控制器飞行     | misc_controls_fly         | 15min    | 中     | pending |
 | EX-807 | 控制器贴图     | misc_controls_map         | 15min    | 中     | pending |
 | EX-808 | 控制器指针锁定 | misc_controls_pointerlock | 15min    | 中     | pending |
-| EX-809 | 控制器追踪球   | misc_controls_trackball   | 15min    | 中     | pending |
+| EX-809 | 控制器追踪球   | misc_controls_trackball   | 15min    | 中     | completed |
 | EX-810 | 控制器变换     | misc_controls_transform   | 20min    | 中     | pending |
 | EX-811 | 导出器draco    | misc_exporter_draco       | 15min    | 低     | pending |
 | EX-812 | 导出器exr      | misc_exporter_exr         | 15min    | 低     | pending |

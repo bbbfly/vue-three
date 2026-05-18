@@ -713,6 +713,29 @@
 
 ---
 
+## 2026-05-18 - Trackball 控制器示例完成
+
+### 完成任务
+
+#### EX-809 - misc_controls_trackball 控制器追踪球示例
+
+- **完成时间**: 2026-05-18
+- **内容**:
+  - 创建 misc_controls_trackball.vue 示例组件
+  - 使用 TTrackballControls 组件实现轨迹球交互控制
+  - 配置参数：rotateSpeed=1.0, zoomSpeed=1.2, panSpeed=0.8
+  - 创建 500 个随机分布的圆锥体 InstancedMesh
+  - 支持透视相机（PerspectiveCamera）和正交相机（OrthographicCamera）
+  - 配置指数雾效果（FogExp2）增强深度感
+  - 照明系统：两个方向光（白色和深蓝色）+ 环境光
+  - 添加信息提示面板，显示操作说明
+  - 窗口大小自适应处理，相机参数动态更新
+  - 正确的资源清理逻辑（dispose() 处理几何体和材质）
+  - 更新 examples.ts 配置标记为已完成
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例

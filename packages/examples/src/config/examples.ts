@@ -58,7 +58,7 @@ export const exampleCategories: ExampleCategory[] = [
         category: 'misc',
         completed: false
       },
-      { id: 'misc_controls_trackball', title: '控制器追踪球', category: 'misc', completed: false },
+      { id: 'misc_controls_trackball', title: '控制器追踪球', category: 'misc', completed: true },
       { id: 'misc_controls_transform', title: '控制器变换', category: 'misc', completed: false },
       { id: 'misc_exporter_draco', title: '导出器draco', category: 'misc', completed: false },
       { id: 'misc_exporter_exr', title: '导出器exr', category: 'misc', completed: false },
