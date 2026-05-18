@@ -338,9 +338,6 @@ onUnmounted(() => {
     if (clipMaterial) {
       clipMaterial.dispose()
     }
-    if (ctx?.scene) {
-      ctx.scene.remove(instancedMesh)
-    }
   }
 })
 
