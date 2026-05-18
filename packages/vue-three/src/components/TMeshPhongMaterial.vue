@@ -126,6 +126,14 @@ const props = defineProps({
   alphaToCoverage: {
     type: Boolean,
     default: false
+  },
+  /**
+   * 是否使用裁剪平面交集模式
+   * @default false
+   */
+  clipIntersection: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -144,11 +152,12 @@ const { material, updateMaterial } = useMaterial({
   depthWrite: props.depthWrite,
   clippingPlanes: props.clippingPlanes,
   clipShadows: props.clipShadows,
-  alphaToCoverage: props.alphaToCoverage
+  alphaToCoverage: props.alphaToCoverage,
+  clipIntersection: props.clipIntersection
 })
 
 watch(
-  () => [props.clippingPlanes, props.clipShadows, props.alphaToCoverage],
+  () => [props.clippingPlanes, props.clipShadows, props.alphaToCoverage, props.clipIntersection],
   () => {
     updateMaterial({
       type: 'phong',
@@ -165,7 +174,8 @@ watch(
       depthWrite: props.depthWrite,
       clippingPlanes: props.clippingPlanes,
       clipShadows: props.clipShadows,
-      alphaToCoverage: props.alphaToCoverage
+      alphaToCoverage: props.alphaToCoverage,
+      clipIntersection: props.clipIntersection
     })
   },
   { deep: true }

@@ -736,6 +736,27 @@
 
 ---
 
+## 2026-05-18 - WebGL 裁剪相交示例完成
+
+### 完成任务
+
+#### EX-1603 - webgl_clipping_intersection 裁剪相交示例
+
+- **完成时间**: 2026-05-18
+- **内容**:
+  - 创建 webgl_clipping_intersection.vue 示例组件
+  - 实现三个相互垂直的裁剪平面（X轴红色、Y轴绿色、Z轴蓝色）
+  - 使用 clipIntersection 模式实现裁剪平面交集区域的渲染
+  - 创建 15 个同心球体（半径从 1/30 到 29/30），每个球体颜色随机
+  - TMeshPhongMaterial 材质配置：随机 HSL 颜色、双面渲染、alphaToCoverage 启用
+  - GUI 控制面板：alphaToCoverage 开关、clipIntersection 开关、planeConstant 滑块（-1 到 1）、showHelpers 开关
+  - 三个裁剪平面可视化辅助线（PlaneHelper），可通过 GUI 控制显示/隐藏
+  - 照明系统：HemisphereLight（skyColor 0xffffff，groundColor 0x080808，intensity 4.5）
+  - TOrbitControls 轨道控制器（最小距离 1，最大距离 10，禁用平移）
+  - 窗口大小自适应处理
+
+---
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例

@@ -122,6 +122,7 @@ import TPolarGridHelper from './components/TPolarGridHelper.vue'
 import TPointLightHelper from './components/TPointLightHelper.vue'
 import TBoxHelper from './components/TBoxHelper.vue'
 import TAxesHelper from './components/TAxesHelper.vue'
+import TPlaneHelper from './components/TPlaneHelper.vue'
 
 export {
   TCSS2DRenderer,
@@ -205,7 +206,8 @@ export {
   TPolarGridHelper,
   TPointLightHelper,
   TBoxHelper,
-  TAxesHelper
+  TAxesHelper,
+  TPlaneHelper
 }
 
 const components = [
@@ -280,7 +282,8 @@ const components = [
   TPolarGridHelper,
   TPointLightHelper,
   TBoxHelper,
-  TAxesHelper
+  TAxesHelper,
+  TPlaneHelper
 ]
 
 export const VueThree: Plugin = {

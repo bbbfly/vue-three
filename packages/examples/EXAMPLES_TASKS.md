@@ -253,7 +253,7 @@
 | ------- | ------------- | --------------------------- | -------- | ------ | --------- |
 | EX-1601 | Webglclipping | webgl_clipping              | 15min    | 中     | completed |
 | EX-1602 | Advanced      | webgl_clipping_advanced     | 20min    | 中     | completed |
-| EX-1603 | 相交          | webgl_clipping_intersection | 15min    | 中     | pending   |
+| EX-1603 | 相交          | webgl_clipping_intersection | 15min    | 中     | completed |
 | EX-1604 | 模板          | webgl_clipping_stencil      | 15min    | 中     | pending   |
 
 ---

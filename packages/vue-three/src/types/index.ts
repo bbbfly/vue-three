@@ -134,6 +134,11 @@ export interface BaseMaterialConfig {
   flatShading?: boolean
   vertexColors?: boolean
   map?: string | Texture
+  depthWrite?: boolean
+  clippingPlanes?: THREE.Plane[]
+  clipShadows?: boolean
+  clipIntersection?: boolean
+  alphaToCoverage?: boolean
 }
 
 export interface BasicMaterialConfig extends BaseMaterialConfig {

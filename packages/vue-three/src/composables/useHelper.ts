@@ -1,6 +1,6 @@
 import { inject, watch, onBeforeUnmount, toValue } from 'vue'
-import { Object3D } from 'three'
-import { ThreeContextKey } from '../core/context'
+import { Object3D, Group, Scene } from 'three'
+import { ThreeContextKey, GroupContextKey } from '../core/context'
 import type { MaybeRefOrGetter } from 'vue'
 import { disposeObject3D } from '../core/cleanup'
 
@@ -12,24 +12,33 @@ export interface HelperConfig {
 
 export function useHelper<T extends Object3D>(helperInstance: MaybeRefOrGetter<T | null>) {
   const ctx = inject(ThreeContextKey)
+  const parentGroupCtx = inject(GroupContextKey, null)
 
   if (!ctx) {
     throw new Error('useHelper must be used within a TCanvas component')
   }
 
   let helper: T | null = null
+  let parent: Group | Scene
+
+  // 优先使用父级 Group，否则使用场景
+  if (parentGroupCtx) {
+    parent = parentGroupCtx.group
+  } else {
+    parent = ctx.scene
+  }
 
   const addToScene = () => {
     const instance = toValue(helperInstance)
-    if (instance && ctx.scene) {
-      ctx.scene.add(instance)
+    if (instance && parent) {
+      parent.add(instance)
       helper = instance
     }
   }
 
   const removeFromScene = () => {
-    if (helper && ctx.scene) {
-      ctx.scene.remove(helper)
+    if (helper && parent) {
+      parent.remove(helper)
       disposeObject3D(helper, false)
       helper = null
     }
@@ -70,12 +79,12 @@ export function useHelper<T extends Object3D>(helperInstance: MaybeRefOrGetter<T
   watch(
     () => toValue(helperInstance),
     (newInstance, oldInstance) => {
-      if (oldInstance && ctx.scene) {
-        ctx.scene.remove(oldInstance)
+      if (oldInstance && parent) {
+        parent.remove(oldInstance)
         disposeObject3D(oldInstance, false)
       }
-      if (newInstance && ctx.scene) {
-        ctx.scene.add(newInstance)
+      if (newInstance && parent) {
+        parent.add(newInstance)
         helper = newInstance
       }
     },
