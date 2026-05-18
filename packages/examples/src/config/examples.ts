@@ -279,7 +279,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_buffergeometry_attributes_integer',
         title: 'Attributesinteger',
         category: 'buffergeometry',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_buffergeometry_attributes_none',

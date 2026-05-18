@@ -55,7 +55,7 @@ import {
   DstColorFactor,
   OneMinusDstColorFactor,
   TextureLoader,
-  TorusKnotGeometry
+  TorusKnotGeometry,
 } from 'three'
 import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js'
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js'
@@ -270,7 +270,7 @@ export class ThreeObjectFactory {
       }
       case 'shader': {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { type, side, blending, premultipliedAlpha, ...rest } = config
+        const { type, side, blending, premultipliedAlpha, glslVersion, ...rest } = config
         const options: any = { ...rest }
         if (side !== undefined) {
           options.side = side
@@ -280,6 +280,9 @@ export class ThreeObjectFactory {
         }
         if (premultipliedAlpha !== undefined) {
           options.premultipliedAlpha = premultipliedAlpha
+        }
+        if (glslVersion !== undefined) {
+          options.glslVersion = glslVersion
         }
         return new ShaderMaterial(options)
       }

@@ -814,6 +814,30 @@
 
 ---
 
+## 2026-05-18 - WebGL BufferGeometry 整数属性示例完成
+
+### 完成任务
+
+#### EX-1402 - webgl_buffergeometry_attributes_integer 整数属性示例
+
+- **完成时间**: 2026-05-18
+- **内容**:
+  - 创建 webgl_buffergeometry_attributes_integer.vue 示例组件
+  - 使用 TBufferGeometry 组件实现自定义缓冲几何体，包含整数属性
+  - 生成 10,000 个随机三角形（800x800x800 立方体空间内）
+  - 使用 Int16BufferAttribute 存储纹理索引数据（整数类型）
+  - 设置 gpuType 为 THREE.IntType，确保 WebGL 2 整数属性正确传递
+  - 使用 TShaderMaterial 实现自定义着色器，通过 flat out int 接收整数属性
+  - 顶点着色器使用 `flat out int` 传递纹理索引（整数属性不能插值）
+  - 片段着色器根据纹理索引选择三种纹理之一进行采样
+  - 加载三种纹理：crate.gif、FloorsCheckerboard_S_Diffuse.jpg、grasslight-big.jpg
+  - 雾效配置（Fog）：颜色 0x050505，near 2000，far 3500
+  - 相机配置：PerspectiveCamera（fov 27，near 1，far 3500，位置 [0, 0, 2500]）
+  - 使用 @animate 事件实现旋转动画（rotation.x = time * 0.25，rotation.y = time * 0.5）
+  - glslVersion 设置为 GLSL3 以支持整数属性
+
+---
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例

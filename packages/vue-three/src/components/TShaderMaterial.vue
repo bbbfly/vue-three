@@ -85,6 +85,23 @@ const props = defineProps({
   premultipliedAlpha: {
     type: Boolean,
     default: false
+  },
+  /**
+   * 渲染面
+   * @default undefined (使用 THREE 默认值)
+   */
+  side: {
+    type: Number as PropType<number>,
+    default: undefined
+  },
+  /**
+   * GLSL 版本
+   * @default undefined (使用 THREE 默认值)
+   * @description 支持值: THREE.GLSL1 或 THREE.GLSL3
+   */
+  glslVersion: {
+    type: String as PropType<string>,
+    default: undefined
   }
 })
 
@@ -97,7 +114,9 @@ const { material } = useMaterial({
   opacity: props.opacity,
   wireframe: props.wireframe,
   blending: props.blending,
-  premultipliedAlpha: props.premultipliedAlpha
+  premultipliedAlpha: props.premultipliedAlpha,
+  side: props.side,
+  glslVersion: props.glslVersion
 })
 
 /**
