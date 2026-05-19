@@ -297,7 +297,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_buffergeometry_drawrange',
         title: 'Drawrange',
         category: 'buffergeometry',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_buffergeometry_glbufferattribute',

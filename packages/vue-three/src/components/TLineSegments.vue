@@ -8,10 +8,10 @@ defineOptions({
 })
 
 import type { PropType } from 'vue'
-import { watch, computed } from 'vue'
+import { watch, computed, provide } from 'vue'
 import { useLineSegments } from '../composables/useLine'
-import type { CurveConfig, Object3DConfig } from '../types'
-import type { BufferGeometry } from 'three'
+import { MeshContextKey } from '../core/context'
+import type { BufferGeometry, Material } from 'three'
 
 /**
  * 线段渲染组件
@@ -19,11 +19,11 @@ import type { BufferGeometry } from 'three'
  * @component TLineSegments
  * @example
  * <TLineSegments>
- *   <TEdgesGeometry>
- *     <TBox :args="[1, 1, 1]" />
- *   </TEdgesGeometry>
+ *   <TBufferGeometry :attributes="segmentAttributes" />
  *   <TLineBasicMaterial :color="0xff0000" />
  * </TLineSegments>
+ * @example
+ * <TLineSegments :geometry="edgesGeometry" :color="0xffffff" />
  */
 const props = defineProps({
   /**
@@ -31,7 +31,7 @@ const props = defineProps({
    */
   geometry: {
     type: Object as PropType<BufferGeometry>,
-    required: true
+    required: false
   },
   /**
    * 线条颜色
@@ -99,11 +99,38 @@ watch(
   { deep: true }
 )
 
+function setGeometry(geometry: BufferGeometry) {
+  if (lineSegments.geometry) {
+    lineSegments.geometry.dispose()
+  }
+  lineSegments.geometry = geometry
+  lineSegments.updateMatrix()
+}
+
+function setMaterial(material: Material) {
+  if (lineSegments.material) {
+    const oldMaterial = lineSegments.material as Material
+    oldMaterial.dispose()
+  }
+  lineSegments.material = material
+  material.needsUpdate = true
+}
+
+provide(MeshContextKey, {
+  mesh: lineSegments,
+  setGeometry,
+  setMaterial
+})
+
 /**
  * @expose
  * @property lineSegments - Three.js LineSegments 实例
+ * @property setGeometry - 设置线段几何体
+ * @property setMaterial - 设置线段材质
  */
 defineExpose({
-  lineSegments
+  lineSegments,
+  setGeometry,
+  setMaterial
 })
 </script>

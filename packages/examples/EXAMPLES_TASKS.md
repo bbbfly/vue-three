@@ -221,7 +221,7 @@
 | EX-1402 | Attributesinteger    | webgl_buffergeometry_attributes_integer          | 10min    | 中     | completed |
 | EX-1403 | Attributesnone       | webgl_buffergeometry_attributes_none             | 10min    | 中     | pending |
 | EX-1404 | 自定义attributes粒子 | webgl_buffergeometry_custom_attributes_particles | 20min    | 中     | pending |
-| EX-1405 | Drawrange            | webgl_buffergeometry_drawrange                   | 10min    | 中     | pending |
+| EX-1405 | Drawrange            | webgl_buffergeometry_drawrange                   | 10min    | 中     | completed |
 | EX-1406 | Glbufferattribute    | webgl_buffergeometry_glbufferattribute           | 10min    | 中     | pending |
 | EX-1407 | Indexed              | webgl_buffergeometry_indexed                     | 10min    | 中     | pending |
 | EX-1408 | 实例化               | webgl_buffergeometry_instancing                  | 15min    | 中     | pending |

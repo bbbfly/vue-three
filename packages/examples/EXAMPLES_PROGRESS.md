@@ -838,6 +838,31 @@
 
 ---
 
+---
+
+## 2026-05-18 - WebGL BufferGeometry 绘制范围示例完成
+
+### 完成任务
+
+#### EX-1405 - webgl_buffergeometry_drawrange 绘制范围示例
+
+- **完成时间**: 2026-05-18
+- **内容**:
+  - 创建 webgl_buffergeometry_drawrange.vue 示例组件
+  - 实现 500 个粒子的动态连线效果
+  - 使用 TPoints 组件渲染粒子，TLineSegments 组件渲染连线
+  - TBufferGeometry 组件通过 attributes 属性传递顶点数据和颜色数据
+  - 粒子在立方体空间内自由运动，碰撞边界自动反弹
+  - 距离较近的粒子之间自动生成连线（距离阈值 150）
+  - 连线颜色透明度随距离动态变化（距离越近越亮）
+  - 使用 vertexColors 启用顶点颜色，实现连线渐变效果
+  - 场景整体缓慢旋转动画
+  - 修复 TBoxHelper 组件响应式更新问题（添加 trigger ref 触发 watch 检测）
+  - 更新 examples.ts 配置标记为已完成
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例

@@ -10,7 +10,7 @@ defineOptions({
 import type { PropType } from 'vue'
 import { BoxHelper, Object3D, Color } from 'three'
 import { useHelper } from '../composables/useHelper'
-import { watch, toValue } from 'vue'
+import { ref, watch, toValue } from 'vue'
 
 /**
  * 包围盒辅助线组件
@@ -41,13 +41,21 @@ const props = defineProps({
 })
 
 let helperInstance: BoxHelper | null = null
+const trigger = ref(0)
 
-const { helper } = useHelper(() => helperInstance)
+const { helper } = useHelper(() => {
+  trigger.value
+  return helperInstance
+})
 
 function createHelper() {
   const obj = toValue(props.object)
   if (obj) {
+    if (helperInstance) {
+      helperInstance.dispose()
+    }
     helperInstance = new BoxHelper(obj, props.color)
+    trigger.value++
   }
 }
 
