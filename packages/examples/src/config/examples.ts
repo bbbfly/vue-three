@@ -285,7 +285,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_buffergeometry_attributes_none',
         title: 'Attributesnone',
         category: 'buffergeometry',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_buffergeometry_custom_attributes_particles',

@@ -16,6 +16,7 @@ import {
   MeshDepthMaterial,
   ShadowMaterial,
   ShaderMaterial,
+  RawShaderMaterial,
   PointsMaterial,
   Material,
   Mesh,
@@ -55,7 +56,7 @@ import {
   DstColorFactor,
   OneMinusDstColorFactor,
   TextureLoader,
-  TorusKnotGeometry,
+  TorusKnotGeometry
 } from 'three'
 import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js'
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js'
@@ -286,6 +287,24 @@ export class ThreeObjectFactory {
         }
         return new ShaderMaterial(options)
       }
+      case 'rawShader': {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { type, side, blending, premultipliedAlpha, glslVersion, ...rest } = config
+        const options: any = { ...rest }
+        if (side !== undefined) {
+          options.side = side
+        }
+        if (blending !== undefined) {
+          options.blending = blending
+        }
+        if (premultipliedAlpha !== undefined) {
+          options.premultipliedAlpha = premultipliedAlpha
+        }
+        if (glslVersion !== undefined) {
+          options.glslVersion = glslVersion
+        }
+        return new RawShaderMaterial(options)
+      }
       case 'points': {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { type, ...rest } = config
@@ -442,6 +461,10 @@ export class ThreeObjectFactory {
       object.renderOrder = config.renderOrder
     }
 
+    if (config.frustumCulled !== undefined) {
+      object.frustumCulled = config.frustumCulled
+    }
+
     if (config.userData) {
       object.userData = { ...object.userData, ...config.userData }
     }
@@ -476,6 +499,10 @@ export class ThreeObjectFactory {
 
     if (config.renderOrder !== undefined) {
       object.renderOrder = config.renderOrder
+    }
+
+    if (config.frustumCulled !== undefined) {
+      object.frustumCulled = config.frustumCulled
     }
 
     if (config.userData) {

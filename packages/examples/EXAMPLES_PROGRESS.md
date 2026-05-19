@@ -24,7 +24,7 @@
 
 - **完成时间**: 2026-04-29
 - **内容**:
-  - package.json 中添加 workspace:\* 依赖
+  - package.json 中添加 workspace:* 依赖
   - monorepo 内部依赖链接配置完成
 
 #### EX-004 - 配置 jsm 路径别名（three/addons/）
@@ -33,7 +33,7 @@
 - **内容**:
   - vite.config.ts 中配置 resolve.alias
   - tsconfig.json 中配置 paths 映射
-  - three/addons/\* 直接指向本地 lib/jsm 目录
+  - three/addons/* 直接指向本地 lib/jsm 目录
   - 与官方示例导入路径保持完全兼容
 
 #### EX-005 - 集成 Vue Router 4
@@ -170,6 +170,17 @@
 
 ---
 
+## 验证结果
+
+- ✅ TypeScript 类型检查通过
+- ✅ 开发服务器启动成功
+- ✅ 所有 8 个示例 100% 使用 vue-three 封装组件
+- ✅ 无原生 Three.js 直接渲染代码
+- ✅ 所有组件从 @vue-three/core 统一导入
+- ✅ 模型/纹理等资源文件引用官方静态资源
+
+---
+
 ## 2026-05-07 - CSS3D 混合示例完成
 
 ### 完成任务
@@ -187,17 +198,6 @@
   - 实现 css3d_mixed.vue 示例 - 混合 WebGL 和 CSS3D 渲染
   - 包含房间线框、灯光、frame 框架、iframe CSS3D 对象
   - OrbitControls 交互控制，拖动时禁用 iframe 鼠标事件
-
----
-
-## 验证结果
-
-- ✅ TypeScript 类型检查通过
-- ✅ 开发服务器启动成功
-- ✅ 所有 8 个示例 100% 使用 vue-three 封装组件
-- ✅ 无原生 Three.js 直接渲染代码
-- ✅ 所有组件从 @vue-three/core 统一导入
-- ✅ 模型/纹理等资源文件引用官方静态资源
 
 ---
 
@@ -858,6 +858,32 @@
   - 使用 vertexColors 启用顶点颜色，实现连线渐变效果
   - 场景整体缓慢旋转动画
   - 修复 TBoxHelper 组件响应式更新问题（添加 trigger ref 触发 watch 检测）
+  - 更新 examples.ts 配置标记为已完成
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
+## 2026-05-19 - WebGL BufferGeometry 无属性示例完成
+
+### 完成任务
+
+#### EX-1403 - webgl_buffergeometry_attributes_none 无属性示例
+
+- **完成时间**: 2026-05-19
+- **内容**:
+  - 创建 webgl_buffergeometry_attributes_none.vue 示例组件
+  - 实现官方示例的 Vue 组件化版本，生成 10,000 个彩色三角形（30,000 个顶点）
+  - 使用 TBufferGeometry 组件配合 draw-range 属性实现顶点渲染范围控制
+  - 使用 TMesh 组件配合 frustum-culled 属性禁用视锥剔除
+  - 使用 TShaderMaterial 组件实现自定义着色器，通过 gl_VertexID 动态生成顶点位置
+  - 顶点着色器实现伪随机数生成算法，基于 gl_VertexID 生成随机位置和颜色
+  - 片段着色器输出平滑着色的三角形颜色
+  - 场景整体旋转动画效果
+  - 组件库增强：
+    - TBufferGeometry 添加 drawRange 属性支持，实现 setDrawRange 调用及响应式更新
+    - TMesh 添加 frustumCulled 属性，支持视锥剔除控制
+    - TShaderMaterial 支持 shaderType 属性，可选 'shader'（ShaderMaterial）或 'rawShader'（RawShaderMaterial）
+  - 修复着色器编译错误：移除顶点着色器中手动声明的 modelViewMatrix 和 projectionMatrix，使用 ShaderMaterial 自动注入的内置 uniforms
   - 更新 examples.ts 配置标记为已完成
   - 更新 EXAMPLES_TASKS.md 任务状态为 completed
 

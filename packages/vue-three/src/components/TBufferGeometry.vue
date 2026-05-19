@@ -24,6 +24,11 @@ const props = defineProps<{
    * 自定义顶点属性对象，key 为属性名，value 为 BufferAttribute 或属性配置
    */
   attributes?: Record<string, BufferAttribute | { array: number[] | Float32Array; itemSize: number }>
+  /**
+   * 绘制范围 [start, count]，控制几何体渲染的顶点范围
+   * @default undefined
+   */
+  drawRange?: [number, number]
 }>()
 
 const meshCtx = inject(MeshContextKey)
@@ -49,12 +54,27 @@ function updateAttributes() {
   }
 }
 
+function updateDrawRange() {
+  if (props.drawRange) {
+    geometry.setDrawRange(props.drawRange[0], props.drawRange[1])
+  }
+}
+
 updateAttributes()
+updateDrawRange()
 
 watch(
   () => props.attributes,
   () => {
     updateAttributes()
+  },
+  { deep: true }
+)
+
+watch(
+  () => props.drawRange,
+  () => {
+    updateDrawRange()
   },
   { deep: true }
 )

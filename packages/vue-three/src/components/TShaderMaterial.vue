@@ -23,6 +23,15 @@ import { useMaterial } from '../composables/useMaterial'
  */
 const props = defineProps({
   /**
+   * 着色器类型，shader 或 rawShader
+   * @default 'shader'
+   * @description rawShader 使用 RawShaderMaterial，不会自动注入内置 uniforms
+   */
+  shaderType: {
+    type: String as PropType<'shader' | 'rawShader'>,
+    default: 'shader'
+  },
+  /**
    * 着色器 uniform 变量
    * @default {}
    */
@@ -106,7 +115,7 @@ const props = defineProps({
 })
 
 const { material } = useMaterial({
-  type: 'shader',
+  type: props.shaderType,
   uniforms: props.uniforms,
   vertexShader: props.vertexShader,
   fragmentShader: props.fragmentShader,

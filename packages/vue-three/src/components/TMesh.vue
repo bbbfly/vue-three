@@ -83,6 +83,14 @@ const props = defineProps({
     default: 0
   },
   /**
+   * 是否进行视锥剔除
+   * @default true
+   */
+  frustumCulled: {
+    type: Boolean,
+    default: true
+  },
+  /**
    * 点击事件回调
    */
   onClick: {
@@ -135,7 +143,8 @@ const config: Object3DConfig = {
   castShadow: props.castShadow,
   receiveShadow: props.receiveShadow,
   visible: props.visible,
-  renderOrder: props.renderOrder
+  renderOrder: props.renderOrder,
+  frustumCulled: props.frustumCulled
 }
 
 const { mesh, setGeometry, setMaterial } = useMesh()
@@ -154,7 +163,8 @@ watch(
       castShadow: newProps.castShadow,
       receiveShadow: newProps.receiveShadow,
       visible: newProps.visible,
-      renderOrder: newProps.renderOrder
+      renderOrder: newProps.renderOrder,
+      frustumCulled: newProps.frustumCulled
     }
     ThreeObjectFactory.updateObject3DConfig(mesh, newConfig)
   },

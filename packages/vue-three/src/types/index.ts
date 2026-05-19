@@ -10,6 +10,7 @@ export interface Object3DConfig {
   castShadow?: boolean
   receiveShadow?: boolean
   renderOrder?: number
+  frustumCulled?: boolean
   userData?: Record<string, any>
 }
 
@@ -204,6 +205,13 @@ export interface ShaderMaterialConfig extends BaseMaterialConfig {
   uniforms?: Record<string, any>
 }
 
+export interface RawShaderMaterialConfig extends BaseMaterialConfig {
+  type: 'rawShader'
+  vertexShader?: string
+  fragmentShader?: string
+  uniforms?: Record<string, any>
+}
+
 export interface PointsMaterialConfig {
   type: 'points'
   color?: string | number
@@ -230,6 +238,7 @@ export type MaterialConfig =
   | DepthMaterialConfig
   | ShadowMaterialConfig
   | ShaderMaterialConfig
+  | RawShaderMaterialConfig
   | PointsMaterialConfig
   | CustomMaterialConfig
 
