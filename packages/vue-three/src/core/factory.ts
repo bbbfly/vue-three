@@ -20,6 +20,7 @@ import {
   PointsMaterial,
   Material,
   Mesh,
+  InstancedMesh,
   Object3D,
   ArcCurve,
   EllipseCurve,
@@ -321,6 +322,15 @@ export class ThreeObjectFactory {
     const geometry = this.createGeometry(config.geometry)
     const material = this.createMaterial(config.material)
     const mesh = new Mesh(geometry, material)
+    this.applyObject3DConfig(mesh, config)
+    return mesh
+  }
+
+  static createInstancedMesh(config: MeshConfig & { instanceCount?: number }): InstancedMesh {
+    const geometry = this.createGeometry(config.geometry)
+    const material = this.createMaterial(config.material)
+    const instanceCount = config.instanceCount || 1
+    const mesh = new InstancedMesh(geometry, material, instanceCount)
     this.applyObject3DConfig(mesh, config)
     return mesh
   }

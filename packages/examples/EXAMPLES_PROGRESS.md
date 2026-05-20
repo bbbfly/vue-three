@@ -976,6 +976,27 @@
 
 ---
 
+## 2026-05-20 - WebGL BufferGeometry 实例化交错缓冲区示例完成
+
+### 完成任务
+
+#### EX-1410 - webgl_buffergeometry_instancing_interleaved 实例化交错缓冲区示例
+
+- **完成时间**: 2026-05-20
+- **内容**:
+  - 创建 webgl_buffergeometry_instancing_interleaved.vue 示例组件
+  - 使用 THREE.InterleavedBuffer 创建交错顶点缓冲区，将位置和 UV 数据打包在同一缓冲区中
+  - 使用 THREE.InterleavedBufferAttribute 分别定义 position（偏移0，3个元素）和 uv（偏移4，2个元素）属性
+  - 创建 InstancedMesh 实例化网格，包含 5000 个立方体实例
+  - 每个实例具有随机位置偏移和随机朝向
+  - 加载 crate.gif 纹理贴图作为材质
+  - 动画效果：整体场景旋转 + 每个实例独立旋转动画
+  - 使用 Quaternion 实现平滑的旋转增量更新
+  - 正确的资源清理逻辑（dispose() 处理几何体和材质）
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例

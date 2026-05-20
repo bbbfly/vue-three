@@ -327,7 +327,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_buffergeometry_instancing_interleaved',
         title: '实例化interleaved',
         category: 'buffergeometry',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_buffergeometry_lines',

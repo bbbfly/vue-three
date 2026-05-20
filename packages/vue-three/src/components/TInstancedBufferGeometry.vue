@@ -8,7 +8,7 @@ defineOptions({
 })
 
 import { inject, watch, onBeforeUnmount } from 'vue'
-import { InstancedBufferGeometry, BufferAttribute, InstancedBufferAttribute } from 'three'
+import { InstancedBufferGeometry, BufferAttribute, InstancedBufferAttribute, InterleavedBufferAttribute } from 'three'
 import { MeshContextKey } from '../core/context'
 
 /**
@@ -52,7 +52,18 @@ function updateAttributes() {
   if (!props.attributes) return
 
   for (const [name, attr] of Object.entries(props.attributes)) {
-    if (attr instanceof BufferAttribute || attr instanceof InstancedBufferAttribute) {
+    if (name === 'index') {
+      if (attr instanceof BufferAttribute) {
+        geometry.setIndex(attr)
+      } else if (attr.array && attr.itemSize !== undefined) {
+        const array = attr.array instanceof Uint16Array
+          ? attr.array
+          : (attr.array instanceof Uint32Array
+            ? attr.array
+            : new Uint16Array(attr.array))
+        geometry.setIndex(new BufferAttribute(array, attr.itemSize))
+      }
+    } else if (attr instanceof InterleavedBufferAttribute || attr instanceof BufferAttribute || attr instanceof InstancedBufferAttribute) {
       geometry.setAttribute(name, attr)
     } else if (attr.array && attr.itemSize !== undefined) {
       const array = attr.array instanceof Float32Array ? attr.array : new Float32Array(attr.array)

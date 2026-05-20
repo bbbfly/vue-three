@@ -87,29 +87,29 @@
 
 ## 第七阶段：杂项示例
 
-| 任务ID | 任务名称       | 示例ID                    | 预计耗时 | 优先级 | 状态    |
-| ------ | -------------- | ------------------------- | -------- | ------ | ------- |
-| EX-801 | 动画组         | misc_animation_groups     | 15min    | 中     | pending |
-| EX-802 | 动画keys       | misc_animation_keys       | 15min    | 中     | pending |
-| EX-803 | Boxselection   | misc_boxselection         | 15min    | 中     | pending |
-| EX-804 | 控制器轨迹球   | misc_controls_arcball     | 15min    | 中     | pending |
-| EX-805 | 控制器拖拽     | misc_controls_drag        | 15min    | 中     | pending |
-| EX-806 | 控制器飞行     | misc_controls_fly         | 15min    | 中     | pending |
-| EX-807 | 控制器贴图     | misc_controls_map         | 15min    | 中     | pending |
-| EX-808 | 控制器指针锁定 | misc_controls_pointerlock | 15min    | 中     | pending |
+| 任务ID | 任务名称       | 示例ID                    | 预计耗时 | 优先级 | 状态      |
+| ------ | -------------- | ------------------------- | -------- | ------ | --------- |
+| EX-801 | 动画组         | misc_animation_groups     | 15min    | 中     | pending   |
+| EX-802 | 动画keys       | misc_animation_keys       | 15min    | 中     | pending   |
+| EX-803 | Boxselection   | misc_boxselection         | 15min    | 中     | pending   |
+| EX-804 | 控制器轨迹球   | misc_controls_arcball     | 15min    | 中     | pending   |
+| EX-805 | 控制器拖拽     | misc_controls_drag        | 15min    | 中     | pending   |
+| EX-806 | 控制器飞行     | misc_controls_fly         | 15min    | 中     | pending   |
+| EX-807 | 控制器贴图     | misc_controls_map         | 15min    | 中     | pending   |
+| EX-808 | 控制器指针锁定 | misc_controls_pointerlock | 15min    | 中     | pending   |
 | EX-809 | 控制器追踪球   | misc_controls_trackball   | 15min    | 中     | completed |
-| EX-810 | 控制器变换     | misc_controls_transform   | 20min    | 中     | pending |
-| EX-811 | 导出器draco    | misc_exporter_draco       | 15min    | 低     | pending |
-| EX-812 | 导出器exr      | misc_exporter_exr         | 15min    | 低     | pending |
-| EX-813 | 导出器gcode    | misc_exporter_gcode       | 15min    | 低     | pending |
-| EX-814 | 导出器gltf     | misc_exporter_gltf        | 15min    | 低     | pending |
-| EX-815 | 导出器ktx2     | misc_exporter_ktx2        | 15min    | 低     | pending |
-| EX-816 | 导出器obj      | misc_exporter_obj         | 15min    | 低     | pending |
-| EX-817 | 导出器ply      | misc_exporter_ply         | 15min    | 低     | pending |
-| EX-818 | 导出器stl      | misc_exporter_stl         | 15min    | 低     | pending |
-| EX-819 | 导出器usdz     | misc_exporter_usdz        | 15min    | 低     | pending |
-| EX-820 | Raycaster辅助  | misc_raycaster_helper     | 10min    | 低     | pending |
-| EX-821 | Uvtests        | misc_uv_tests             | 10min    | 低     | pending |
+| EX-810 | 控制器变换     | misc_controls_transform   | 20min    | 中     | pending   |
+| EX-811 | 导出器draco    | misc_exporter_draco       | 15min    | 低     | pending   |
+| EX-812 | 导出器exr      | misc_exporter_exr         | 15min    | 低     | pending   |
+| EX-813 | 导出器gcode    | misc_exporter_gcode       | 15min    | 低     | pending   |
+| EX-814 | 导出器gltf     | misc_exporter_gltf        | 15min    | 低     | pending   |
+| EX-815 | 导出器ktx2     | misc_exporter_ktx2        | 15min    | 低     | pending   |
+| EX-816 | 导出器obj      | misc_exporter_obj         | 15min    | 低     | pending   |
+| EX-817 | 导出器ply      | misc_exporter_ply         | 15min    | 低     | pending   |
+| EX-818 | 导出器stl      | misc_exporter_stl         | 15min    | 低     | pending   |
+| EX-819 | 导出器usdz     | misc_exporter_usdz        | 15min    | 低     | pending   |
+| EX-820 | Raycaster辅助  | misc_raycaster_helper     | 10min    | 低     | pending   |
+| EX-821 | Uvtests        | misc_uv_tests             | 10min    | 低     | pending   |
 
 ---
 
@@ -226,7 +226,7 @@
 | EX-1407 | Indexed              | webgl_buffergeometry_indexed                     | 10min    | 中     | completed |
 | EX-1408 | 实例化               | webgl_buffergeometry_instancing                  | 15min    | 中     | completed |
 | EX-1409 | 实例化billboards     | webgl_buffergeometry_instancing_billboards       | 15min    | 中     | completed |
-| EX-1410 | 实例化interleaved    | webgl_buffergeometry_instancing_interleaved      | 15min    | 中     | pending   |
+| EX-1410 | 实例化interleaved    | webgl_buffergeometry_instancing_interleaved      | 15min    | 中     | completed |
 | EX-1411 | 线                   | webgl_buffergeometry_lines                       | 10min    | 中     | pending   |
 | EX-1412 | 线indexed            | webgl_buffergeometry_lines_indexed               | 10min    | 中     | pending   |
 | EX-1413 | 点                   | webgl_buffergeometry_points                      | 10min    | 中     | pending   |
@@ -587,5 +587,5 @@
 
 ## 第四十阶段：WebGL 点云示例
 
-| 任务ID  | 任务名称   | 示例ID                  | 预计耗时 | 优先级 | 状态    |
-| ------- | ---------- | ----------------------- | -------- | ------ | ------- |
+| 任务ID | 任务名称 | 示例ID | 预计耗时 | 优先级 | 状态 |
+| ------ | -------- | ------ | -------- | ------ | ---- |

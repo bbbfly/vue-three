@@ -13,6 +13,7 @@ export * from './composables/useCamera'
 export * from './composables/useControls'
 export * from './composables/useLight'
 export * from './composables/useMesh'
+export * from './composables/useInstancedMesh'
 export * from './composables/useGeometry'
 export * from './composables/useMaterial'
 export * from './composables/useGLTFLoader'
@@ -106,6 +107,7 @@ import TEdgesGeometry from './components/TEdgesGeometry.vue'
 import TWireframeGeometry from './components/TWireframeGeometry.vue'
 import TBufferGeometry from './components/TBufferGeometry.vue'
 import TInstancedBufferGeometry from './components/TInstancedBufferGeometry.vue'
+import TInstancedMesh from './components/TInstancedMesh.vue'
 import TConvexGeometry from './components/TConvexGeometry.vue'
 import TConeGeometry from './components/TConeGeometry.vue'
 import TTextGeometry from './components/TTextGeometry.vue'
@@ -201,6 +203,7 @@ export {
   TWireframeGeometry,
   TBufferGeometry,
   TInstancedBufferGeometry,
+  TInstancedMesh,
   TConvexGeometry,
   TConeGeometry,
   TTextGeometry,
@@ -279,6 +282,7 @@ const components = [
   TWireframeGeometry,
   TBufferGeometry,
   TInstancedBufferGeometry,
+  TInstancedMesh,
   TConvexGeometry,
   TConeGeometry,
   TTextGeometry,
