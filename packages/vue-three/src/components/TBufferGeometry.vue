@@ -25,6 +25,10 @@ const props = defineProps<{
    */
   attributes?: Record<string, BufferAttribute | { array: number[] | Float32Array; itemSize: number }>
   /**
+   * 变形目标属性，用于 morph 动画
+   */
+  morphAttributes?: Record<string, BufferAttribute[]>
+  /**
    * 绘制范围 [start, count]，控制几何体渲染的顶点范围
    * @default undefined
    */
@@ -34,7 +38,7 @@ const props = defineProps<{
 const meshCtx = inject(MeshContextKey)
 
 if (!meshCtx) {
-  throw new Error('TBufferGeometry must be used within a TMesh component')
+  throw new Error('TBufferGeometry must be used within a TMesh or TLine component')
 }
 
 const geometry: BufferGeometry = new BufferGeometry()
@@ -54,6 +58,17 @@ function updateAttributes() {
   }
 }
 
+function updateMorphAttributes() {
+  if (!props.morphAttributes) return
+
+  for (const [name, attrs] of Object.entries(props.morphAttributes)) {
+    console.log(name, attrs)
+    geometry.morphAttributes[name] = attrs
+    // 必须初始化 morphTargetInfluences
+    meshCtx!.mesh.morphTargetInfluences = [0, 0, 0]
+  }
+}
+
 function updateDrawRange() {
   if (props.drawRange) {
     geometry.setDrawRange(props.drawRange[0], props.drawRange[1])
@@ -61,12 +76,21 @@ function updateDrawRange() {
 }
 
 updateAttributes()
+updateMorphAttributes()
 updateDrawRange()
 
 watch(
   () => props.attributes,
   () => {
     updateAttributes()
+  },
+  { deep: true }
+)
+
+watch(
+  () => props.morphAttributes,
+  () => {
+    updateMorphAttributes()
   },
   { deep: true }
 )

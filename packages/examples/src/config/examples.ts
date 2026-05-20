@@ -333,7 +333,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_buffergeometry_lines',
         title: '线',
         category: 'buffergeometry',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_buffergeometry_lines_indexed',

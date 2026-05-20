@@ -6,9 +6,10 @@ import {
   LineSegments,
   LineBasicMaterial,
   LineDashedMaterial,
-  BufferGeometry
+  BufferGeometry,
+  Material
 } from 'three'
-import { ThreeContextKey, GroupContextKey } from '../core/context'
+import { ThreeContextKey, GroupContextKey, MeshContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
 import type { LineConfig, LineLoopConfig, LineDashedConfig, LineSegmentsConfig } from '../types'
 import { disposeObject3D } from '../core/cleanup'
@@ -228,8 +229,16 @@ export function useLineMaterial(config: {
   gapSize?: number
   scale?: number
 }) {
+  // 注入父组件上下文（如果是子组件使用）
+  const meshCtx = inject(MeshContextKey, null)
+
   // 使用普通变量存储
   let material: LineBasicMaterial | LineDashedMaterial = createLineMaterial(config)
+
+  // 如果在 MeshContext 中使用，自动设置材质
+  if (meshCtx) {
+    meshCtx.setMaterial(material)
+  }
 
   function createLineMaterial(lineMaterialConfig: typeof config) {
     if (lineMaterialConfig.type === 'dashed') {
@@ -262,6 +271,9 @@ export function useLineMaterial(config: {
   function updateMaterial(newConfig: typeof config) {
     material.dispose()
     material = createLineMaterial(newConfig)
+    if (meshCtx) {
+      meshCtx.setMaterial(material)
+    }
   }
 
   onBeforeUnmount(() => {

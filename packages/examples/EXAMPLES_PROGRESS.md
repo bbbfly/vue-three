@@ -997,6 +997,25 @@
 
 ---
 
+## 2026-05-20 - WebGL BufferGeometry 线条示例完成
+
+### 完成任务
+
+#### EX-1411 - webgl_buffergeometry_lines 线条示例
+
+- **完成时间**: 2026-05-20
+- **内容**:
+  - 创建 webgl_buffergeometry_lines.vue 示例组件
+  - 使用 TLine 组件渲染动态线条几何体
+  - 生成 10,000 个随机顶点位置，每个顶点具有独立的颜色（基于空间位置计算）
+  - 使用 morph targets 实现线条形状的动态变形效果
+  - 使用 THREE.Timer 精确计时控制动画
+  - 动画效果：线条整体旋转（rotation.x = time * 0.25，rotation.y = time * 0.5）+ morph target 影响权重随正弦函数变化
+  - LineBasicMaterial 材质配置：vertexColors 启用，实现彩色线条效果
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例

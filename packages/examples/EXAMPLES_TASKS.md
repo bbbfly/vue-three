@@ -227,7 +227,7 @@
 | EX-1408 | 实例化               | webgl_buffergeometry_instancing                  | 15min    | 中     | completed |
 | EX-1409 | 实例化billboards     | webgl_buffergeometry_instancing_billboards       | 15min    | 中     | completed |
 | EX-1410 | 实例化interleaved    | webgl_buffergeometry_instancing_interleaved      | 15min    | 中     | completed |
-| EX-1411 | 线                   | webgl_buffergeometry_lines                       | 10min    | 中     | pending   |
+| EX-1411 | 线                   | webgl_buffergeometry_lines                       | 10min    | 中     | completed |
 | EX-1412 | 线indexed            | webgl_buffergeometry_lines_indexed               | 10min    | 中     | pending   |
 | EX-1413 | 点                   | webgl_buffergeometry_points                      | 10min    | 中     | pending   |
 | EX-1414 | 点interleaved        | webgl_buffergeometry_points_interleaved          | 10min    | 中     | pending   |
