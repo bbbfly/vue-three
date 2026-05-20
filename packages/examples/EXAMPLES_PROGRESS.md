@@ -24,7 +24,7 @@
 
 - **完成时间**: 2026-04-29
 - **内容**:
-  - package.json 中添加 workspace:* 依赖
+  - package.json 中添加 workspace:\* 依赖
   - monorepo 内部依赖链接配置完成
 
 #### EX-004 - 配置 jsm 路径别名（three/addons/）
@@ -33,7 +33,7 @@
 - **内容**:
   - vite.config.ts 中配置 resolve.alias
   - tsconfig.json 中配置 paths 映射
-  - three/addons/* 直接指向本地 lib/jsm 目录
+  - three/addons/\* 直接指向本地 lib/jsm 目录
   - 与官方示例导入路径保持完全兼容
 
 #### EX-005 - 集成 Vue Router 4
@@ -675,7 +675,7 @@
     - Global Clipping 文件夹：启用/禁用全局裁剪、全局裁剪平面常量（-0.4-3）
     - Alpha To Coverage 开关
   - 动画效果：
-    - TorusKnot 旋转：x 轴 time * 0.5，y 轴 time * 0.2
+    - TorusKnot 旋转：x 轴 time _ 0.5，y 轴 time _ 0.2
     - TorusKnot 缩放：基于 cos(time) 的脉冲效果（0.875-1.0）
   - TCanvas 组件配置：
     - antialias：抗锯齿开启
@@ -707,7 +707,7 @@
   - 使用原生 Three.js API 创建 InstancedMesh（因组件库暂不支持 InstancedMesh）
   - 通过 inject(ThreeContextKey) 获取场景上下文
   - 使用 ctx.ready() 确保上下文初始化完成后再创建对象
-  - 动画效果：实例化网格旋转（x 轴 time * 0.5，y 轴 time * 0.2）、弹跳缩放效果
+  - 动画效果：实例化网格旋转（x 轴 time _ 0.5，y 轴 time _ 0.2）、弹跳缩放效果
   - 灯光系统：环境光 + 聚光灯 + 方向光，带阴影效果
   - 正确的资源清理逻辑（dispose() 处理几何体和材质）
 
@@ -806,7 +806,7 @@
   - 照明系统：环境光（0xcccccc）+ 两个方向光（intensity 1.5 和 4.5）
   - 雾效配置（Fog）：颜色 0x050505，near 2000，far 3500
   - 相机配置：PerspectiveCamera（fov 27，near 1，far 3500，位置 [0, 0, 2750]）
-  - 使用 @animate 事件实现旋转动画（rotation.x = time * 0.25，rotation.y = time * 0.5）
+  - 使用 @animate 事件实现旋转动画（rotation.x = time _ 0.25，rotation.y = time _ 0.5）
   - 背景色为深灰色 #050505
   - onUpload 回调释放数组内存
   - computeBoundingSphere() 计算包围球
@@ -833,7 +833,7 @@
   - 加载三种纹理：crate.gif、FloorsCheckerboard_S_Diffuse.jpg、grasslight-big.jpg
   - 雾效配置（Fog）：颜色 0x050505，near 2000，far 3500
   - 相机配置：PerspectiveCamera（fov 27，near 1，far 3500，位置 [0, 0, 2500]）
-  - 使用 @animate 事件实现旋转动画（rotation.x = time * 0.25，rotation.y = time * 0.5）
+  - 使用 @animate 事件实现旋转动画（rotation.x = time _ 0.25，rotation.y = time _ 0.5）
   - glslVersion 设置为 GLSL3 以支持整数属性
 
 ---
@@ -926,7 +926,7 @@
   - 顶点颜色根据网格坐标动态生成（X 轴红色渐变，Y 轴绿色渐变）
   - HemisphereLight 半球光源照明（intensity = 3）
   - MeshPhongMaterial 材质配置：双面渲染、顶点颜色启用
-  - 网格整体旋转动画效果（rotation.x = time * 0.25，rotation.y = time * 0.5）
+  - 网格整体旋转动画效果（rotation.x = time _ 0.25，rotation.y = time _ 0.5）
   - 更新 examples.ts 配置标记为已完成
   - 更新 EXAMPLES_TASKS.md 任务状态为 completed
 
@@ -970,7 +970,7 @@
   - 片段着色器实现 HSL 颜色转换，根据 scale 值动态改变粒子颜色
   - 加载圆形纹理贴图（textures/sprites/circle.png）作为 billboard 纹理
   - 实现透明度测试（discard）处理透明区域
-  - 动画效果：实例化网格整体旋转（rotation.x = time * 0.2，rotation.y = time * 0.4）
+  - 动画效果：实例化网格整体旋转（rotation.x = time _ 0.2，rotation.y = time _ 0.4）
   - 粒子随时间动态缩放和颜色变化
   - 更新 examples.ts 配置标记为已完成
 
@@ -1010,7 +1010,7 @@
   - 生成 10,000 个随机顶点位置，每个顶点具有独立的颜色（基于空间位置计算）
   - 使用 morph targets 实现线条形状的动态变形效果
   - 使用 THREE.Timer 精确计时控制动画
-  - 动画效果：线条整体旋转（rotation.x = time * 0.25，rotation.y = time * 0.5）+ morph target 影响权重随正弦函数变化
+  - 动画效果：线条整体旋转（rotation.x = time _ 0.25，rotation.y = time _ 0.5）+ morph target 影响权重随正弦函数变化
   - LineBasicMaterial 材质配置：vertexColors 启用，实现彩色线条效果
   - 更新 EXAMPLES_TASKS.md 任务状态为 completed
 
@@ -1022,3 +1022,24 @@
 - EX-201 ~ EX-205 模型加载示例
 - EX-301 ~ EX-305 动画与后期示例
 - EX-401 ~ EX-405 交互事件示例
+
+---
+
+## 2026-05-20 - WebGL BufferGeometry 索引线条示例完成
+
+### 完成任务
+
+#### EX-1412 - webgl_buffergeometry_lines_indexed 索引线条示例
+
+- **完成时间**: 2026-05-20
+- **内容**:
+  - 创建 webgl_buffergeometry_lines_indexed.vue 示例组件
+  - 使用 TLineSegments 组件渲染索引线条几何体
+  - 实现科赫雪花曲线（Koch Snowflake）分形算法生成复杂几何图形
+  - 生成 4 种不同的雪花图案：直线、三角形、正方形、星形
+  - 每种图案进行 4 次递归迭代，生成精细的分形结构
+  - 使用 BufferGeometry 的 index 属性定义顶点连接关系
+  - 每个顶点具有独立的随机颜色（蓝色系）
+  - 动画效果：整体绕 Z 轴旋转（rotation.z = time \* 0.5）
+  - LineBasicMaterial 材质配置：vertexColors 启用，实现彩色线条效果
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed

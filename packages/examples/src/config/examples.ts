@@ -306,11 +306,11 @@ export const exampleCategories: ExampleCategory[] = [
         completed: true
       },
       {
-          id: 'webgl_buffergeometry_indexed',
-          title: 'Indexed',
-          category: 'buffergeometry',
-          completed: true
-        },
+        id: 'webgl_buffergeometry_indexed',
+        title: 'Indexed',
+        category: 'buffergeometry',
+        completed: true
+      },
       {
         id: 'webgl_buffergeometry_instancing',
         title: '实例化',
@@ -339,7 +339,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_buffergeometry_lines_indexed',
         title: '线indexed',
         category: 'buffergeometry',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_buffergeometry_points',
