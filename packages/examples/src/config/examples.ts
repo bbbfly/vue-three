@@ -303,7 +303,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_buffergeometry_glbufferattribute',
         title: 'Glbufferattribute',
         category: 'buffergeometry',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_buffergeometry_indexed',

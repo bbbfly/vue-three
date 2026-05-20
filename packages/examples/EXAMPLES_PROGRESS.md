@@ -889,6 +889,28 @@
 
 ---
 
+## 2026-05-20 - WebGL BufferGeometry GLBufferAttribute 示例完成
+
+### 完成任务
+
+#### EX-1406 - webgl_buffergeometry_glbufferattribute GLBufferAttribute 示例
+
+- **完成时间**: 2026-05-20
+- **内容**:
+  - 创建 webgl_buffergeometry_glbufferattribute.vue 示例组件
+  - 实现使用原生 WebGL 缓冲区创建粒子系统（300,000 个粒子）
+  - 使用 `gl.createBuffer()` 和 `gl.bufferData()` 创建 GPU 原生缓冲区
+  - 使用 `THREE.GLBufferAttribute` 封装原生 WebGL 缓冲区
+  - 实现两个位置缓冲区的动态切换（每 2 秒切换一次）
+  - 使用 `vertexColors` 启用顶点颜色，每个粒子根据位置呈现不同颜色
+  - 动态绘制范围控制（每帧随机更新绘制点数 5000-300000）
+  - 粒子系统整体旋转动画效果
+  - 场景雾效配置（Fog）增强深度感
+  - 更新 examples.ts 配置标记为已完成
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例
