@@ -105,6 +105,7 @@ import TSweepGeometry from './components/TSweepGeometry.vue'
 import TEdgesGeometry from './components/TEdgesGeometry.vue'
 import TWireframeGeometry from './components/TWireframeGeometry.vue'
 import TBufferGeometry from './components/TBufferGeometry.vue'
+import TInstancedBufferGeometry from './components/TInstancedBufferGeometry.vue'
 import TConvexGeometry from './components/TConvexGeometry.vue'
 import TConeGeometry from './components/TConeGeometry.vue'
 import TTextGeometry from './components/TTextGeometry.vue'
@@ -199,6 +200,7 @@ export {
   TEdgesGeometry,
   TWireframeGeometry,
   TBufferGeometry,
+  TInstancedBufferGeometry,
   TConvexGeometry,
   TConeGeometry,
   TTextGeometry,
@@ -276,6 +278,7 @@ const components = [
   TEdgesGeometry,
   TWireframeGeometry,
   TBufferGeometry,
+  TInstancedBufferGeometry,
   TConvexGeometry,
   TConeGeometry,
   TTextGeometry,

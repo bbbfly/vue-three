@@ -932,6 +932,28 @@
 
 ---
 
+## 2026-05-20 - WebGL BufferGeometry 实例化示例完成
+
+### 完成任务
+
+#### EX-1408 - webgl_buffergeometry_instancing 实例化示例
+
+- **完成时间**: 2026-05-20
+- **内容**:
+  - 创建 webgl_buffergeometry_instancing.vue 示例组件
+  - 使用 TInstancedBufferGeometry 组件实现大规模实例化渲染（50,000 个实例）
+  - 实现自定义顶点着色器和片元着色器，支持实例化属性
+  - 创建 offset、color、orientationStart、orientationEnd 实例化属性
+  - 使用 TShaderMaterial 组件配置 shaderType="rawShader"，使用 RawShaderMaterial
+  - 动画效果：实例化三角形围绕原点旋转，sineTime 控制缩放和朝向变化
+  - 每个实例具有独立的颜色、偏移和朝向动画
+  - 新增组件库组件：
+    - TInstancedBufferGeometry：支持 InstancedBufferAttribute 和 instanceCount 属性
+    - 更新 index.ts 导出新组件
+  - 更新 examples.ts 配置标记为已完成
+
+---
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例
