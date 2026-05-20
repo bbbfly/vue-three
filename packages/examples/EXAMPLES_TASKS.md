@@ -223,7 +223,7 @@
 | EX-1404 | 自定义attributes粒子 | webgl_buffergeometry_custom_attributes_particles | 20min    | 中     | pending   |
 | EX-1405 | Drawrange            | webgl_buffergeometry_drawrange                   | 10min    | 中     | completed |
 | EX-1406 | Glbufferattribute    | webgl_buffergeometry_glbufferattribute           | 10min    | 中     | completed |
-| EX-1407 | Indexed              | webgl_buffergeometry_indexed                     | 10min    | 中     | pending   |
+| EX-1407 | Indexed              | webgl_buffergeometry_indexed                     | 10min    | 中     | completed |
 | EX-1408 | 实例化               | webgl_buffergeometry_instancing                  | 15min    | 中     | pending   |
 | EX-1409 | 实例化billboards     | webgl_buffergeometry_instancing_billboards       | 15min    | 中     | pending   |
 | EX-1410 | 实例化interleaved    | webgl_buffergeometry_instancing_interleaved      | 15min    | 中     | pending   |

@@ -911,6 +911,27 @@
 
 ---
 
+## 2026-05-20 - WebGL BufferGeometry 索引示例完成
+
+### 完成任务
+
+#### EX-1407 - webgl_buffergeometry_indexed 索引化 BufferGeometry 示例
+
+- **完成时间**: 2026-05-20
+- **内容**:
+  - 创建 webgl_buffergeometry_indexed.vue 示例组件
+  - 使用 TBufferGeometry 组件实现索引化缓冲几何体
+  - 生成网格平面几何体（10x10 分段），包含 121 个顶点和 200 个三角形面
+  - 使用 setIndex() 方法设置索引数组，实现顶点共享
+  - 顶点颜色根据网格坐标动态生成（X 轴红色渐变，Y 轴绿色渐变）
+  - HemisphereLight 半球光源照明（intensity = 3）
+  - MeshPhongMaterial 材质配置：双面渲染、顶点颜色启用
+  - 网格整体旋转动画效果（rotation.x = time * 0.25，rotation.y = time * 0.5）
+  - 更新 examples.ts 配置标记为已完成
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例

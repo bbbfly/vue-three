@@ -306,11 +306,11 @@ export const exampleCategories: ExampleCategory[] = [
         completed: true
       },
       {
-        id: 'webgl_buffergeometry_indexed',
-        title: 'Indexed',
-        category: 'buffergeometry',
-        completed: false
-      },
+          id: 'webgl_buffergeometry_indexed',
+          title: 'Indexed',
+          category: 'buffergeometry',
+          completed: true
+        },
       {
         id: 'webgl_buffergeometry_instancing',
         title: '实例化',

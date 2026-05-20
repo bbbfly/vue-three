@@ -157,7 +157,7 @@ const { material, updateMaterial } = useMaterial({
 })
 
 watch(
-  () => [props.clippingPlanes, props.clipShadows, props.alphaToCoverage, props.clipIntersection],
+  () => [props.clippingPlanes, props.clipShadows, props.alphaToCoverage, props.clipIntersection, props.wireframe],
   () => {
     updateMaterial({
       type: 'phong',
