@@ -321,7 +321,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_buffergeometry_instancing_billboards',
         title: '实例化billboards',
         category: 'buffergeometry',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_buffergeometry_instancing_interleaved',

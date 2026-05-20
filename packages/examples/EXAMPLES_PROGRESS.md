@@ -954,6 +954,28 @@
 
 ---
 
+## 2026-05-20 - WebGL BufferGeometry 实例化 Billboards 示例完成
+
+### 完成任务
+
+#### EX-1409 - webgl_buffergeometry_instancing_billboards 实例化广告牌示例
+
+- **完成时间**: 2026-05-20
+- **内容**:
+  - 创建 webgl_buffergeometry_instancing_billboards.vue 示例组件
+  - 使用 TInstancedBufferGeometry 组件实现大规模实例化渲染（75,000 个 billboard 粒子）
+  - 使用 CircleGeometry 作为基础几何体，每个实例具有独立的 translate 属性
+  - 使用 TShaderMaterial 组件配置 shaderType="rawShader"，使用自定义 GLSL 着色器
+  - 顶点着色器实现动态缩放效果，基于时间和位置计算 scale 值
+  - 片段着色器实现 HSL 颜色转换，根据 scale 值动态改变粒子颜色
+  - 加载圆形纹理贴图（textures/sprites/circle.png）作为 billboard 纹理
+  - 实现透明度测试（discard）处理透明区域
+  - 动画效果：实例化网格整体旋转（rotation.x = time * 0.2，rotation.y = time * 0.4）
+  - 粒子随时间动态缩放和颜色变化
+  - 更新 examples.ts 配置标记为已完成
+
+---
+
 ### 第三阶段：更多示例
 
 - EX-103 ~ EX-110 WebGL 基础示例
