@@ -1060,7 +1060,31 @@
   - 粒子在立方体空间内随机分布（1000x1000x1000）
   - 每个粒子根据空间位置生成 RGB 颜色（X→R, Y→G, Z→B）
   - TPointsMaterial 材质配置：size=15, vertexColors=true
-  - TFog 组件添加雾效（near=2000, far=3500）增强深度感
+  - TScene fog 属性添加雾效（near=2000, far=3500）增强深度感
   - 动画效果：粒子系统整体旋转（rotation.x = time * 0.25，rotation.y = time * 0.5）
   - 使用 shallowRef 避免 Vue 响应式代理干扰 Three.js 对象
   - 更新 examples.ts 配置标记为已完成
+
+---
+
+## 2026-05-20 - WebGL BufferGeometry 点粒子交错缓冲区示例完成
+
+### 完成任务
+
+#### EX-1414 - webgl_buffergeometry_points_interleaved 点粒子交错缓冲区示例
+
+- **完成时间**: 2026-05-20
+- **内容**:
+  - 创建 webgl_buffergeometry_points_interleaved.vue 示例组件
+  - 使用 THREE.InterleavedBuffer 实现高效的交错顶点数据存储
+  - 生成 500,000 个点粒子，位置和颜色数据交错存储在同一 ArrayBuffer 中
+  - 使用 Float32Array 存储位置数据（偏移0，3个元素）
+  - 使用 Uint8Array 存储颜色数据（偏移12，3个元素，归一化）
+  - 通过 TBufferGeometry 组件的 geometry 属性直接传递 THREE.BufferGeometry 对象
+  - TPointsMaterial 材质配置：size=15, vertexColors=true
+  - TScene fog 属性添加雾效（near=2000, far=3500）增强深度感
+  - 动画效果：粒子系统整体旋转（rotation.x = time * 0.25，rotation.y = time * 0.5）
+  - 使用 shallowRef 避免 Vue 响应式代理干扰 Three.js 对象
+  - 修复 webgl_buffergeometry_points.vue 中 TFog 组件不存在的问题，改用 TScene fog 属性
+  - 更新 examples.ts 配置标记为已完成
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
