@@ -357,7 +357,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_buffergeometry_rawshader',
         title: '原始着色器',
         category: 'buffergeometry',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_buffergeometry_selective_draw',

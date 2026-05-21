@@ -1088,3 +1088,20 @@
   - 修复 webgl_buffergeometry_points.vue 中 TFog 组件不存在的问题，改用 TScene fog 属性
   - 更新 examples.ts 配置标记为已完成
   - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
+## 2026-05-21 - WebGL BufferGeometry 原始着色器示例完成
+
+### 完成任务
+
+#### EX-1415 - webgl_buffergeometry_rawshader 原始着色器示例
+
+- **完成时间**: 2026-05-21
+- **内容**: 
+  - 创建 webgl_buffergeometry_rawshader.vue 示例组件
+  - 使用 TShaderMaterial 组件的 rawShader 模式实现自定义着色器渲染
+  - 创建 200 个三角形的 BufferGeometry，包含 position 和 color 属性
+  - 动画循环更新 mesh 旋转和 time uniform，实现颜色动态变化效果
+  - 更新 examples.ts 配置标记为已完成
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
