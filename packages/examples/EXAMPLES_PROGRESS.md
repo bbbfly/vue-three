@@ -1108,6 +1108,29 @@
 
 ---
 
+## 2026-05-21 - WebGL BufferGeometry Uint 示例完成
+
+### 完成任务
+
+#### EX-1417 - webgl_buffergeometry_uint Uint 示例
+
+- **完成时间**: 2026-05-21
+- **内容**:
+  - 创建 webgl_buffergeometry_uint.vue 示例组件
+  - 使用整数类型缓冲区属性优化内存占用：法线使用 Int16BufferAttribute（乘以 32767 缩放），颜色使用 Uint8BufferAttribute（乘以 255 缩放）
+  - 通过 normalized = true 将整数映射到 shader 中的 0.0-1.0 范围
+  - 相比 Float32 节省 50%-75% 的内存空间
+  - 生成 500,000 个三角形，每个三角形包含位置、法线和颜色属性
+  - TMeshPhongMaterial 材质配置：颜色 0xd5d5d5、高光 0xffffff、高光强度 250、双面渲染、顶点颜色启用
+  - 照明系统：环境光（0xcccccc）+ 两个方向光（intensity 1.5 和 4.5）
+  - 雾效配置（Fog）：颜色 0x050505，near 2000，far 3500
+  - 相机配置：PerspectiveCamera（fov 27，near 1，far 3500，位置 [0, 0, 2750]）
+  - 使用 @animate 事件实现旋转动画（rotation.x = time * 0.25，rotation.y = time * 0.5）
+  - 更新 examples.ts 配置标记为已完成
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
 ## 2026-05-21 - WebGL BufferGeometry Selective 绘制示例完成
 
 ### 完成任务
@@ -1125,5 +1148,28 @@
   - **SHOW ALL LINES** 按钮：恢复所有被隐藏的线条
   - 显示统计信息：1 draw call, X lines, Y culled
   - 组件库优化：使用 `attributes` prop 直接传递给 TBufferGeometry，无需手动创建 BufferGeometry 对象
+  - 更新 examples.ts 配置标记为已完成
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
+## 2026-05-21 - WebGL BufferGeometry Uint 示例完成
+
+### 完成任务
+
+#### EX-1417 - webgl_buffergeometry_uint Uint 示例
+
+- **完成时间**: 2026-05-21
+- **内容**:
+  - 创建 webgl_buffergeometry_uint.vue 示例组件
+  - 使用整数类型缓冲区属性优化内存占用：法线使用 Int16BufferAttribute（乘以 32767 缩放），颜色使用 Uint8BufferAttribute（乘以 255 缩放）
+  - 通过 normalized = true 将整数映射到 shader 中的 0.0-1.0 范围
+  - 相比 Float32 节省 50%-75% 的内存空间
+  - 生成 500,000 个三角形，每个三角形包含位置、法线和颜色属性
+  - TMeshPhongMaterial 材质配置：颜色 0xd5d5d5、高光 0xffffff、高光强度 250、双面渲染、顶点颜色启用
+  - 照明系统：环境光（0xcccccc）+ 两个方向光（intensity 1.5 和 4.5）
+  - 雾效配置（Fog）：颜色 0x050505，near 2000，far 3500
+  - 相机配置：PerspectiveCamera（fov 27，near 1，far 3500，位置 [0, 0, 2750]）
+  - 使用 @animate 事件实现旋转动画（rotation.x = time * 0.25，rotation.y = time * 0.5）
   - 更新 examples.ts 配置标记为已完成
   - 更新 EXAMPLES_TASKS.md 任务状态为 completed

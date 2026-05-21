@@ -369,7 +369,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_buffergeometry_uint',
         title: 'Uint',
         category: 'buffergeometry',
-        completed: false
+        completed: true
       }
     ]
   },

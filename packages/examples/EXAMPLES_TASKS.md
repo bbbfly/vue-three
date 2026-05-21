@@ -233,7 +233,7 @@
 | EX-1414 | 点interleaved        | webgl_buffergeometry_points_interleaved          | 10min    | 中     | completed |
 | EX-1415 | 原始着色器           | webgl_buffergeometry_rawshader                   | 20min    | 中     | completed |
 | EX-1416 | Selective绘制        | webgl_buffergeometry_selective_draw              | 15min    | 中     | completed |
-| EX-1417 | Uint                 | webgl_buffergeometry_uint                        | 10min    | 中     | pending   |
+| EX-1417 | Uint                 | webgl_buffergeometry_uint                        | 10min    | 中     | completed |
 
 ---
 
