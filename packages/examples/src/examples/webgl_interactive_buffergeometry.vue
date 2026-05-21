@@ -132,8 +132,8 @@ function createLineGeometry() {
 
 function onPointerMove(event: PointerEvent) {
   const { width, height } = event.target.getBoundingClientRect()
-  pointer.x = (event.clientX / width) * 2 - 1
-  pointer.y = -(event.clientY / height) * 2 + 1
+  pointer.x = (event.offsetX / width) * 2 - 1
+  pointer.y = -(event.offsetY / height) * 2 + 1
 }
 
 function onAnimate({ camera }) {
