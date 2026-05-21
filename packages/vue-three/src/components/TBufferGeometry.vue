@@ -48,14 +48,26 @@ meshCtx!.setGeometry(geometry)
 function updateAttributes() {
   if (!props.attributes) return
 
+  // 先清除旧的属性
+  const oldAttributes = Object.keys(geometry.attributes)
+  for (const name of oldAttributes) {
+    if (!(name in props.attributes)) {
+      geometry.deleteAttribute(name)
+    }
+  }
+
   for (const [name, attr] of Object.entries(props.attributes)) {
     if (attr instanceof BufferAttribute) {
       geometry.setAttribute(name, attr)
     } else if (attr.array && attr.itemSize !== undefined) {
       const array = attr.array instanceof Float32Array ? attr.array : new Float32Array(attr.array)
-      geometry.setAttribute(name, new BufferAttribute(array, attr.itemSize))
+      const bufferAttr = new BufferAttribute(array, attr.itemSize)
+      bufferAttr.needsUpdate = true
+      geometry.setAttribute(name, bufferAttr)
     }
   }
+
+  geometry.needsUpdate = true
 }
 
 function updateMorphAttributes() {
@@ -67,6 +79,7 @@ function updateMorphAttributes() {
     // 必须初始化 morphTargetInfluences
     meshCtx!.mesh.morphTargetInfluences = [0, 0, 0]
   }
+  geometry.needsUpdate = true
 }
 
 function updateDrawRange() {

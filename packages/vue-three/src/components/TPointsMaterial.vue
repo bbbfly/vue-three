@@ -69,6 +69,14 @@ const props = defineProps({
   alphaTest: {
     type: Number,
     default: 0
+  },
+  /**
+   * 是否启用顶点颜色
+   * @default false
+   */
+  vertexColors: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -80,7 +88,8 @@ const { material, updateMaterial } = useMaterial({
   transparent: props.transparent,
   opacity: props.opacity,
   visible: props.visible,
-  alphaTest: props.alphaTest
+  alphaTest: props.alphaTest,
+  vertexColors: props.vertexColors
 })
 
 defineExpose({

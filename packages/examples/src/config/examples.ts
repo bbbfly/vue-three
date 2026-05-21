@@ -345,7 +345,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_buffergeometry_points',
         title: '点',
         category: 'buffergeometry',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_buffergeometry_points_interleaved',

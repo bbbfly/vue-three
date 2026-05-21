@@ -229,7 +229,7 @@
 | EX-1410 | 实例化interleaved    | webgl_buffergeometry_instancing_interleaved      | 15min    | 中     | completed |
 | EX-1411 | 线                   | webgl_buffergeometry_lines                       | 10min    | 中     | completed |
 | EX-1412 | 线indexed            | webgl_buffergeometry_lines_indexed               | 10min    | 中     | completed |
-| EX-1413 | 点                   | webgl_buffergeometry_points                      | 10min    | 中     | pending   |
+| EX-1413 | 点                   | webgl_buffergeometry_points                      | 10min    | 中     | completed |
 | EX-1414 | 点interleaved        | webgl_buffergeometry_points_interleaved          | 10min    | 中     | pending   |
 | EX-1415 | 原始着色器           | webgl_buffergeometry_rawshader                   | 20min    | 中     | pending   |
 | EX-1416 | Selective绘制        | webgl_buffergeometry_selective_draw              | 15min    | 中     | pending   |
