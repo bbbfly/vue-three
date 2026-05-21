@@ -10,7 +10,6 @@ import {
 } from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import type { Pass } from 'three/addons/postprocessing/Pass.js'
 import type { RendererConfig } from '../types'
 import { disposeObject3D } from '../core/cleanup'
@@ -114,6 +113,13 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
       renderPasses.add(pass)
       if (context.composer) {
         context.composer.addPass(pass)
+      } else if (context.renderer) {
+        postProcessingEnabled = true
+        context.composer = new EffectComposer(context.renderer)
+        renderPasses.forEach(p => {
+          context.composer!.addPass(p)
+        })
+        handleResize()
       }
     },
     unregisterRenderPass: (pass: Pass) => {
@@ -133,9 +139,6 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
       postProcessingEnabled = true
 
       context.composer = new EffectComposer(context.renderer)
-
-      const renderPass = new RenderPass(scene, context.camera)
-      context.composer.addPass(renderPass)
 
       renderPasses.forEach(pass => {
         context.composer!.addPass(pass)

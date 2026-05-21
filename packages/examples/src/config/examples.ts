@@ -874,7 +874,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_materials_alphahash',
         title: 'Alpha哈希',
         category: 'materials',
-        completed: false
+        completed: true
       },
       { id: 'webgl_materials_blending', title: '混合', category: 'materials', completed: false },
       {
