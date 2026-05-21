@@ -1105,3 +1105,25 @@
   - 动画循环更新 mesh 旋转和 time uniform，实现颜色动态变化效果
   - 更新 examples.ts 配置标记为已完成
   - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
+## 2026-05-21 - WebGL BufferGeometry Selective 绘制示例完成
+
+### 完成任务
+
+#### EX-1416 - webgl_buffergeometry_selective_draw Selective 绘制示例
+
+- **完成时间**: 2026-05-21
+- **内容**:
+  - 创建 webgl_buffergeometry_selective_draw.vue 示例组件
+  - 实现选择性绘制（Selective Draw）技术：在单次 draw call 中通过自定义 `visible` 属性和 fragment shader 的 `discard` 命令选择性地渲染部分区域
+  - 使用 TLineSegments 组件渲染球体网格线条（100x200 = 20,000 条线）
+  - 使用 TBufferGeometry 组件的 `attributes` 属性配置几何体属性（position、vertColor、visible）
+  - 自定义 GLSL 着色器：vertex shader 传递 visible 属性，fragment shader 使用 `discard` 隐藏不可见片段
+  - **CULL SOME LINES** 按钮：随机隐藏 25% 的线条
+  - **SHOW ALL LINES** 按钮：恢复所有被隐藏的线条
+  - 显示统计信息：1 draw call, X lines, Y culled
+  - 组件库优化：使用 `attributes` prop 直接传递给 TBufferGeometry，无需手动创建 BufferGeometry 对象
+  - 更新 examples.ts 配置标记为已完成
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed

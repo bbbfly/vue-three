@@ -363,7 +363,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_buffergeometry_selective_draw',
         title: 'Selective绘制',
         category: 'buffergeometry',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_buffergeometry_uint',
