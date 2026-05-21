@@ -178,6 +178,7 @@ export interface PhysicalMaterialConfig extends BaseMaterialConfig {
 
 export interface LambertMaterialConfig extends BaseMaterialConfig {
   type: 'lambert'
+  emissive?: string | number
 }
 
 export interface PhongMaterialConfig extends BaseMaterialConfig {

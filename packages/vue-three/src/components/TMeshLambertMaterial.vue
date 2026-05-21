@@ -8,6 +8,7 @@ defineOptions({
 })
 
 import type { PropType } from 'vue'
+import { watch } from 'vue'
 import { useMaterial } from '../composables/useMaterial'
 
 const props = defineProps({
@@ -38,10 +39,14 @@ const props = defineProps({
   flatShading: {
     type: Boolean,
     default: undefined
+  },
+  emissive: {
+    type: [String, Number] as PropType<string | number>,
+    default: 0x000000
   }
 })
 
-const { material } = useMaterial({
+const { material, updateMaterial } = useMaterial({
   type: 'lambert',
   color: props.color,
   transparent: props.transparent,
@@ -49,8 +54,27 @@ const { material } = useMaterial({
   wireframe: props.wireframe,
   side: props.side,
   depthWrite: props.depthWrite,
-  flatShading: props.flatShading
+  flatShading: props.flatShading,
+  emissive: props.emissive
 })
+
+watch(
+  () => [props.color, props.transparent, props.opacity, props.wireframe, props.side, props.depthWrite, props.flatShading, props.emissive],
+  () => {
+    updateMaterial({
+      type: 'lambert',
+      color: props.color,
+      transparent: props.transparent,
+      opacity: props.opacity,
+      wireframe: props.wireframe,
+      side: props.side,
+      depthWrite: props.depthWrite,
+      flatShading: props.flatShading,
+      emissive: props.emissive
+    })
+  },
+  { deep: true }
+)
 
 defineExpose({
   material

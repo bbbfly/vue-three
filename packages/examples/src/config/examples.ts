@@ -613,7 +613,7 @@ export const exampleCategories: ExampleCategory[] = [
         category: 'interactive',
         completed: true
       },
-      { id: 'webgl_interactive_cubes', title: 'Cubes', category: 'interactive', completed: false },
+      { id: 'webgl_interactive_cubes', title: 'Cubes', category: 'interactive', completed: true },
       {
         id: 'webgl_interactive_cubes_gpu',
         title: 'Cubesgpu',
