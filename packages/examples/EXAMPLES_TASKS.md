@@ -363,7 +363,7 @@
 
 | 任务ID  | 任务名称       | 示例ID                              | 预计耗时 | 优先级 | 状态    |
 | ------- | -------------- | ----------------------------------- | -------- | ------ | ------- |
-| EX-2601 | Buffergeometry | webgl_interactive_buffergeometry    | 15min    | 中     | pending |
+| EX-2601 | Buffergeometry | webgl_interactive_buffergeometry    | 15min    | 中     | completed |
 | EX-2602 | Cubes          | webgl_interactive_cubes             | 15min    | 中     | pending |
 | EX-2603 | Cubesgpu       | webgl_interactive_cubes_gpu         | 20min    | 中     | pending |
 | EX-2604 | Cubesortho     | webgl_interactive_cubes_ortho       | 15min    | 中     | pending |

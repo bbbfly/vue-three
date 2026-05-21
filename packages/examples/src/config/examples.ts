@@ -611,7 +611,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_interactive_buffergeometry',
         title: 'Buffergeometry',
         category: 'interactive',
-        completed: false
+        completed: true
       },
       { id: 'webgl_interactive_cubes', title: 'Cubes', category: 'interactive', completed: false },
       {
