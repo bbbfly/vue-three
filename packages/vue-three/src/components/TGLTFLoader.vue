@@ -37,6 +37,11 @@ const props = defineProps({
    */
   draco: { type: Boolean, default: false },
   /**
+   * Draco解码器路径，用于自定义解码器位置
+   * @default 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
+   */
+  dracoDecoderPath: { type: String, default: '' },
+  /**
    * 模型位置坐标 [x, y, z]
    * @default [0, 0, 0]
    */
@@ -78,17 +83,15 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  load: [model: Object3D, animations: AnimationClip[], gltf: any]
+  load: [model: Object3D, animations: AnimationClip[]]
   progress: [event: { loaded: number; total: number }]
   error: [error: Error]
 }>()
 
-const { model, animations, loading, progress, total, error, gltf } = useGLTFLoader(props)
+const { model, animations, loading, progress, total, error } = useGLTFLoader(props)
 
-watch(gltf, newGltf => {
-  if (newGltf && model.value) {
-    emit('load', model.value, animations.value, newGltf)
-  }
+watch(model, newModel => {
+  emit('load', newModel!, animations.value)
 })
 
 watch(

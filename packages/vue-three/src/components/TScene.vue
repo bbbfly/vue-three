@@ -46,6 +46,14 @@ const props = defineProps({
   fog: {
     type: Object as PropType<SceneConfig['fog']>,
     default: undefined
+  },
+  /**
+   * 环境贴图，用于 PBR 材质的反射
+   * @default undefined
+   */
+  environment: {
+    type: Object as PropType<Texture>,
+    default: undefined
   }
 })
 

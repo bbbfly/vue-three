@@ -1,4 +1,4 @@
-import { inject, ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { inject, ref, shallowRef, onMounted, onBeforeUnmount, watch } from 'vue'
 import type { AnimationClip } from 'three'
 import { Object3D, Mesh, BufferGeometry } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
@@ -7,7 +7,7 @@ import { ThreeContextKey, MeshContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
 import type { Object3DConfig, GLTFLoaderConfig } from '../types'
 
-const dracoDecoderPath = 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
+const defaultDracoDecoderPath = 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
 
 export function useGLTFLoader(config: GLTFLoaderConfig) {
   const threeCtx = inject(ThreeContextKey)
@@ -18,8 +18,7 @@ export function useGLTFLoader(config: GLTFLoaderConfig) {
   }
 
   const scene = threeCtx.scene
-  let model: Object3D | null = null
-  let gltf: any = null
+  const model = shallowRef<Object3D | null>(null)
   const animations = ref<AnimationClip[]>([])
   const loading = ref(false)
   const progress = ref(0)
@@ -30,7 +29,11 @@ export function useGLTFLoader(config: GLTFLoaderConfig) {
 
   if (config.draco) {
     const dracoLoader = new DRACOLoader()
-    dracoLoader.setDecoderPath(dracoDecoderPath)
+    const decoderPath =
+      config.dracoDecoderPath && config.dracoDecoderPath.length > 0
+        ? config.dracoDecoderPath
+        : defaultDracoDecoderPath
+    dracoLoader.setDecoderPath(decoderPath)
     loader.setDRACOLoader(dracoLoader)
   }
 
@@ -42,9 +45,9 @@ export function useGLTFLoader(config: GLTFLoaderConfig) {
     loader.load(
       src,
       loadedGltf => {
-        if (model && scene) {
-          scene.remove(model)
-          disposeModel(model)
+        if (model.value && scene) {
+          scene.remove(model.value)
+          disposeModel(model.value)
         }
 
         const loadedModel = loadedGltf.scene || loadedGltf.scenes?.[0]
@@ -57,11 +60,10 @@ export function useGLTFLoader(config: GLTFLoaderConfig) {
             handleMeshParentCase(loadedModel, loadedGltf)
           } else {
             scene.add(loadedModel)
-            model = loadedModel
+            model.value = loadedModel
           }
         }
 
-        gltf = loadedGltf
         animations.value = loadedGltf.animations || []
 
         loading.value = false
@@ -93,7 +95,7 @@ export function useGLTFLoader(config: GLTFLoaderConfig) {
       meshCtx.setGeometry(geometry)
     }
 
-    model = loadedModel
+    model.value = loadedModel
   }
 
   const applyShadowToModel = (object: Object3D, config: Object3DConfig) => {
@@ -141,24 +143,23 @@ export function useGLTFLoader(config: GLTFLoaderConfig) {
   watch(
     () => [config.position, config.rotation, config.scale, config.visible],
     () => {
-      if (model) {
-        ThreeObjectFactory.updateObject3DConfig(model, config)
-        applyShadowToModel(model, config)
+      if (model.value) {
+        ThreeObjectFactory.updateObject3DConfig(model.value, config)
+        applyShadowToModel(model.value, config)
       }
     },
     { deep: true }
   )
 
   onBeforeUnmount(() => {
-    if (model && scene) {
-      scene.remove(model)
-      disposeModel(model)
+    if (model.value && scene) {
+      scene.remove(model.value)
+      disposeModel(model.value)
     }
   })
 
   return {
     model,
-    gltf,
     animations,
     loading,
     progress,

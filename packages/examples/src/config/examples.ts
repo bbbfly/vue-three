@@ -884,7 +884,7 @@ export const exampleCategories: ExampleCategory[] = [
         completed: true
       },
       { id: 'webgl_materials_bumpmap', title: '凹凸贴图', category: 'materials', completed: true },
-      { id: 'webgl_materials_car', title: 'Car', category: 'materials', completed: false },
+      { id: 'webgl_materials_car', title: 'Car', category: 'materials', completed: true },
       {
         id: 'webgl_materials_channels',
         title: 'Channels',

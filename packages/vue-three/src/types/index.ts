@@ -374,6 +374,7 @@ export interface RendererConfig {
 export interface GLTFLoaderConfig extends Object3DConfig {
   src: string
   draco?: boolean
+  dracoDecoderPath?: string
 }
 
 export interface OBJLoaderConfig extends Object3DConfig {

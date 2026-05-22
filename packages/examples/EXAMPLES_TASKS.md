@@ -500,7 +500,7 @@
 | EX-3402 | 混合                   | webgl_materials_blending                    | 15min    | 中     | completed |
 | EX-3403 | 混合自定义             | webgl_materials_blending_custom             | 20min    | 中     | completed |
 | EX-3404 | 凹凸贴图               | webgl_materials_bumpmap                     | 15min    | 中     | completed |
-| EX-3405 | Car                    | webgl_materials_car                         | 20min    | 中     | pending   |
+| EX-3405 | Car                    | webgl_materials_car                         | 20min    | 中     | completed |
 | EX-3406 | Channels               | webgl_materials_channels                    | 15min    | 中     | pending   |
 | EX-3407 | Cubemap                | webgl_materials_cubemap                     | 15min    | 中     | pending   |
 | EX-3408 | Cubemapdynamic         | webgl_materials_cubemap_dynamic             | 20min    | 中     | pending   |

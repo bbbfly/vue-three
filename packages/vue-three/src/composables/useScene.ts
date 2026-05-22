@@ -14,6 +14,7 @@ export interface SceneConfig extends Object3DConfig {
     far?: number
     density?: number
   }
+  environment?: Texture
 }
 
 export function useScene(config: SceneConfig = {}) {
@@ -49,6 +50,10 @@ export function useScene(config: SceneConfig = {}) {
       } else {
         scene.fog = new Fog(fogColor, newConfig.fog.near || 1, newConfig.fog.far || 100)
       }
+    }
+
+    if (newConfig.environment !== undefined) {
+      scene.environment = newConfig.environment
     }
   }
 
