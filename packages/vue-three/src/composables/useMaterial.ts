@@ -1,5 +1,5 @@
 import { inject, onBeforeUnmount, provide } from 'vue'
-import { Material, Texture } from 'three'
+import { Material, Texture, Color } from 'three'
 import { MeshContextKey, MaterialContextKey, type TextureMapType } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
 import type { MaterialConfig } from '../types'
@@ -11,7 +11,6 @@ export function useMaterial(initialConfig: MaterialConfig) {
     throw new Error('useMaterial must be used within a TMesh component')
   }
 
-  // 直接使用普通变量
   let material: Material = createMaterial(initialConfig)
 
   meshCtx!.setMaterial(material)
@@ -119,14 +118,28 @@ export function useMaterial(initialConfig: MaterialConfig) {
     setTextureByType
   })
 
-  function createMaterial(materialConfig: MaterialConfig) {
+  function createMaterial(materialConfig: MaterialConfig): Material {
     return ThreeObjectFactory.createMaterial(materialConfig)
   }
 
   function updateMaterial(newConfig: MaterialConfig) {
-    material.dispose()
-    material = createMaterial(newConfig)
-    meshCtx!.setMaterial(material)
+    const mat = material as any
+
+    const { type, ...properties } = newConfig
+
+    const colorProperties = ['color', 'specular', 'emissive', 'attenuationColor', 'sheenColor']
+
+    for (const [key, value] of Object.entries(properties)) {
+      if (value !== undefined && key in mat) {
+        if (colorProperties.includes(key) && value instanceof Color === false) {
+          mat[key] = new Color(value as string | number)
+        } else {
+          mat[key] = value
+        }
+      }
+    }
+
+    mat.needsUpdate = true
   }
 
   onBeforeUnmount(() => {

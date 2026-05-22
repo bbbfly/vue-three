@@ -1,9 +1,9 @@
 import { inject, ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import type { AnimationClip } from 'three'
-import { Object3D } from 'three'
+import { Object3D, Mesh, BufferGeometry } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
-import { ThreeContextKey } from '../core/context'
+import { ThreeContextKey, MeshContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
 import type { Object3DConfig, GLTFLoaderConfig } from '../types'
 
@@ -11,16 +11,15 @@ const dracoDecoderPath = 'https://www.gstatic.com/draco/versioned/decoders/1.5.6
 
 export function useGLTFLoader(config: GLTFLoaderConfig) {
   const threeCtx = inject(ThreeContextKey)
+  const meshCtx = inject(MeshContextKey, null)
 
   if (!threeCtx) {
     throw new Error('useGLTFLoader must be used within a TCanvas component')
   }
 
   const scene = threeCtx.scene
-  // Three.js 对象使用普通变量存储
   let model: Object3D | null = null
   let gltf: any = null
-  // 状态数据使用 ref
   const animations = ref<AnimationClip[]>([])
   const loading = ref(false)
   const progress = ref(0)
@@ -54,8 +53,12 @@ export function useGLTFLoader(config: GLTFLoaderConfig) {
           ThreeObjectFactory.applyObject3DConfig(loadedModel, config)
           applyShadowToModel(loadedModel, config)
 
-          scene.add(loadedModel)
-          model = loadedModel
+          if (meshCtx) {
+            handleMeshParentCase(loadedModel, loadedGltf)
+          } else {
+            scene.add(loadedModel)
+            model = loadedModel
+          }
         }
 
         gltf = loadedGltf
@@ -76,6 +79,21 @@ export function useGLTFLoader(config: GLTFLoaderConfig) {
         console.error('Failed to load GLTF model:', err)
       }
     )
+  }
+
+  const handleMeshParentCase = (loadedModel: Object3D, loadedGltf: any) => {
+    let geometry: BufferGeometry | null = null
+    loadedModel.traverse(child => {
+      if (child instanceof Mesh && child.geometry) {
+        geometry = child.geometry.clone()
+      }
+    })
+
+    if (geometry && meshCtx?.setGeometry) {
+      meshCtx.setGeometry(geometry)
+    }
+
+    model = loadedModel
   }
 
   const applyShadowToModel = (object: Object3D, config: Object3DConfig) => {

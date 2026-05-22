@@ -52,6 +52,14 @@ const props = defineProps({
     default: undefined
   },
   /**
+   * 凹凸贴图的强度
+   * @default 1
+   */
+  bumpScale: {
+    type: Number,
+    default: 1
+  },
+  /**
    * 是否启用透明度
    * @default false
    */
@@ -143,6 +151,7 @@ const { material, updateMaterial } = useMaterial({
   specular: props.specular,
   shininess: props.shininess,
   normalScale: props.normalScale,
+  bumpScale: props.bumpScale,
   transparent: props.transparent,
   opacity: props.opacity,
   wireframe: props.wireframe,
@@ -157,7 +166,7 @@ const { material, updateMaterial } = useMaterial({
 })
 
 watch(
-  () => [props.clippingPlanes, props.clipShadows, props.alphaToCoverage, props.clipIntersection, props.wireframe],
+  () => [props.clippingPlanes, props.clipShadows, props.alphaToCoverage, props.clipIntersection, props.wireframe, props.bumpScale],
   () => {
     updateMaterial({
       type: 'phong',
@@ -165,6 +174,7 @@ watch(
       specular: props.specular,
       shininess: props.shininess,
       normalScale: props.normalScale,
+      bumpScale: props.bumpScale,
       transparent: props.transparent,
       opacity: props.opacity,
       wireframe: props.wireframe,
