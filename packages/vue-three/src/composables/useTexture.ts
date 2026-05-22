@@ -34,11 +34,11 @@ export function useTexture(options: TextureOptions = {}) {
     }
   }
 
-  function loadTexture(url: string) {
+  function loadTexture(url?: string) {
     if (texture) {
       texture.dispose()
     }
-
+    if (!url) return
     texture = loader.load(url, () => {
       applyTextureSettings()
     })

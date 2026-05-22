@@ -133,6 +133,9 @@ export interface BaseMaterialConfig {
   wireframe?: boolean
   side?: number
   blending?: number
+  blendSrc?: number
+  blendDst?: number
+  blendEquation?: number
   premultipliedAlpha?: boolean
   flatShading?: boolean
   vertexColors?: boolean

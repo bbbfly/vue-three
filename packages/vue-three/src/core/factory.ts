@@ -173,13 +173,22 @@ export class ThreeObjectFactory {
     switch (config.type) {
       case 'basic': {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { type, side, blending, premultipliedAlpha, map, ...rest } = config
+        const { type, side, blending, blendSrc, blendDst, blendEquation, premultipliedAlpha, map, ...rest } = config
         const options: any = { ...rest }
         if (side !== undefined) {
           options.side = side
         }
         if (blending !== undefined) {
           options.blending = blending
+        }
+        if (blendSrc !== undefined) {
+          options.blendSrc = blendSrc
+        }
+        if (blendDst !== undefined) {
+          options.blendDst = blendDst
+        }
+        if (blendEquation !== undefined) {
+          options.blendEquation = blendEquation
         }
         if (premultipliedAlpha !== undefined) {
           options.premultipliedAlpha = premultipliedAlpha

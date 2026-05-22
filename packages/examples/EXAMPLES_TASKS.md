@@ -361,16 +361,16 @@
 
 ## 第二十六阶段：WebGL 交互示例
 
-| 任务ID  | 任务名称       | 示例ID                              | 预计耗时 | 优先级 | 状态    |
-| ------- | -------------- | ----------------------------------- | -------- | ------ | ------- |
+| 任务ID  | 任务名称       | 示例ID                              | 预计耗时 | 优先级 | 状态      |
+| ------- | -------------- | ----------------------------------- | -------- | ------ | --------- |
 | EX-2601 | Buffergeometry | webgl_interactive_buffergeometry    | 15min    | 中     | completed |
-| EX-2602 | Cubes          | webgl_interactive_cubes             | 15min    | 中     | pending |
-| EX-2603 | Cubesgpu       | webgl_interactive_cubes_gpu         | 20min    | 中     | pending |
-| EX-2604 | Cubesortho     | webgl_interactive_cubes_ortho       | 15min    | 中     | pending |
-| EX-2605 | 线             | webgl_interactive_lines             | 10min    | 中     | pending |
-| EX-2606 | 点             | webgl_interactive_points            | 10min    | 中     | pending |
-| EX-2607 | 射线检测点     | webgl_interactive_raycasting_points | 15min    | 中     | pending |
-| EX-2608 | Voxelpainter   | webgl_interactive_voxelpainter      | 20min    | 中     | pending |
+| EX-2602 | Cubes          | webgl_interactive_cubes             | 15min    | 中     | pending   |
+| EX-2603 | Cubesgpu       | webgl_interactive_cubes_gpu         | 20min    | 中     | pending   |
+| EX-2604 | Cubesortho     | webgl_interactive_cubes_ortho       | 15min    | 中     | pending   |
+| EX-2605 | 线             | webgl_interactive_lines             | 10min    | 中     | pending   |
+| EX-2606 | 点             | webgl_interactive_points            | 10min    | 中     | pending   |
+| EX-2607 | 射线检测点     | webgl_interactive_raycasting_points | 15min    | 中     | pending   |
+| EX-2608 | Voxelpainter   | webgl_interactive_voxelpainter      | 20min    | 中     | pending   |
 
 ---
 
@@ -494,43 +494,43 @@
 
 ## 第三十四阶段：WebGL 材质示例
 
-| 任务ID  | 任务名称               | 示例ID                                      | 预计耗时 | 优先级 | 状态    |
-| ------- | ---------------------- | ------------------------------------------- | -------- | ------ | ------- |
+| 任务ID  | 任务名称               | 示例ID                                      | 预计耗时 | 优先级 | 状态      |
+| ------- | ---------------------- | ------------------------------------------- | -------- | ------ | --------- |
 | EX-3401 | Alpha哈希              | webgl_materials_alphahash                   | 15min    | 中     | completed |
 | EX-3402 | 混合                   | webgl_materials_blending                    | 15min    | 中     | completed |
-| EX-3403 | 混合自定义             | webgl_materials_blending_custom             | 20min    | 中     | pending |
-| EX-3404 | 凹凸贴图               | webgl_materials_bumpmap                     | 15min    | 中     | pending |
-| EX-3405 | Car                    | webgl_materials_car                         | 20min    | 中     | pending |
-| EX-3406 | Channels               | webgl_materials_channels                    | 15min    | 中     | pending |
-| EX-3407 | Cubemap                | webgl_materials_cubemap                     | 15min    | 中     | pending |
-| EX-3408 | Cubemapdynamic         | webgl_materials_cubemap_dynamic             | 20min    | 中     | pending |
-| EX-3409 | Cubemapmipmaps         | webgl_materials_cubemap_mipmaps             | 15min    | 中     | pending |
-| EX-3410 | Cubemap折射            | webgl_materials_cubemap_refraction          | 15min    | 中     | pending |
-| EX-3411 | Cubemap渲染tomipmaps   | webgl_materials_cubemap_render_to_mipmaps   | 20min    | 中     | pending |
-| EX-3412 | Displacementmap        | webgl_materials_displacementmap             | 15min    | 中     | pending |
-| EX-3413 | Envmapsexr             | webgl_materials_envmaps_exr                 | 15min    | 中     | pending |
-| EX-3414 | Envmapsfasthdr         | webgl_materials_envmaps_fasthdr             | 15min    | 中     | pending |
-| EX-3415 | Envmapsgroundprojected | webgl_materials_envmaps_groundprojected     | 15min    | 中     | pending |
-| EX-3416 | Envmapshdr             | webgl_materials_envmaps_hdr                 | 15min    | 中     | pending |
-| EX-3417 | 材质捕获               | webgl_materials_matcap                      | 15min    | 中     | pending |
-| EX-3418 | Modified               | webgl_materials_modified                    | 15min    | 中     | pending |
-| EX-3419 | Normalmap              | webgl_materials_normalmap                   | 15min    | 中     | pending |
-| EX-3420 | Normalmap对象space     | webgl_materials_normalmap_object_space      | 15min    | 中     | pending |
-| EX-3421 | 物理材质clearcoat      | webgl_materials_physical_clearcoat          | 15min    | 中     | pending |
-| EX-3422 | 物理材质透射           | webgl_materials_physical_transmission       | 15min    | 中     | pending |
-| EX-3423 | 物理材质透射alpha      | webgl_materials_physical_transmission_alpha | 15min    | 中     | pending |
-| EX-3424 | Subsurfacescattering   | webgl_materials_subsurface_scattering       | 20min    | 中     | pending |
-| EX-3425 | 纹理各向异性           | webgl_materials_texture_anisotropy          | 15min    | 中     | pending |
-| EX-3426 | 纹理画布               | webgl_materials_texture_canvas              | 15min    | 中     | pending |
-| EX-3427 | 纹理filters            | webgl_materials_texture_filters             | 10min    | 中     | pending |
-| EX-3428 | 纹理html               | webgl_materials_texture_html                | 15min    | 中     | pending |
-| EX-3429 | 纹理manualmipmap       | webgl_materials_texture_manualmipmap        | 15min    | 中     | pending |
-| EX-3430 | 纹理partialupdate      | webgl_materials_texture_partialupdate       | 15min    | 中     | pending |
-| EX-3431 | 纹理rotation           | webgl_materials_texture_rotation            | 10min    | 中     | pending |
-| EX-3432 | Toon                   | webgl_materials_toon                        | 15min    | 中     | pending |
-| EX-3433 | 视频                   | webgl_materials_video                       | 15min    | 中     | pending |
-| EX-3434 | 视频webcam             | webgl_materials_video_webcam                | 15min    | 中     | pending |
-| EX-3435 | 线框                   | webgl_materials_wireframe                   | 10min    | 中     | pending |
+| EX-3403 | 混合自定义             | webgl_materials_blending_custom             | 20min    | 中     | completed |
+| EX-3404 | 凹凸贴图               | webgl_materials_bumpmap                     | 15min    | 中     | pending   |
+| EX-3405 | Car                    | webgl_materials_car                         | 20min    | 中     | pending   |
+| EX-3406 | Channels               | webgl_materials_channels                    | 15min    | 中     | pending   |
+| EX-3407 | Cubemap                | webgl_materials_cubemap                     | 15min    | 中     | pending   |
+| EX-3408 | Cubemapdynamic         | webgl_materials_cubemap_dynamic             | 20min    | 中     | pending   |
+| EX-3409 | Cubemapmipmaps         | webgl_materials_cubemap_mipmaps             | 15min    | 中     | pending   |
+| EX-3410 | Cubemap折射            | webgl_materials_cubemap_refraction          | 15min    | 中     | pending   |
+| EX-3411 | Cubemap渲染tomipmaps   | webgl_materials_cubemap_render_to_mipmaps   | 20min    | 中     | pending   |
+| EX-3412 | Displacementmap        | webgl_materials_displacementmap             | 15min    | 中     | pending   |
+| EX-3413 | Envmapsexr             | webgl_materials_envmaps_exr                 | 15min    | 中     | pending   |
+| EX-3414 | Envmapsfasthdr         | webgl_materials_envmaps_fasthdr             | 15min    | 中     | pending   |
+| EX-3415 | Envmapsgroundprojected | webgl_materials_envmaps_groundprojected     | 15min    | 中     | pending   |
+| EX-3416 | Envmapshdr             | webgl_materials_envmaps_hdr                 | 15min    | 中     | pending   |
+| EX-3417 | 材质捕获               | webgl_materials_matcap                      | 15min    | 中     | pending   |
+| EX-3418 | Modified               | webgl_materials_modified                    | 15min    | 中     | pending   |
+| EX-3419 | Normalmap              | webgl_materials_normalmap                   | 15min    | 中     | pending   |
+| EX-3420 | Normalmap对象space     | webgl_materials_normalmap_object_space      | 15min    | 中     | pending   |
+| EX-3421 | 物理材质clearcoat      | webgl_materials_physical_clearcoat          | 15min    | 中     | pending   |
+| EX-3422 | 物理材质透射           | webgl_materials_physical_transmission       | 15min    | 中     | pending   |
+| EX-3423 | 物理材质透射alpha      | webgl_materials_physical_transmission_alpha | 15min    | 中     | pending   |
+| EX-3424 | Subsurfacescattering   | webgl_materials_subsurface_scattering       | 20min    | 中     | pending   |
+| EX-3425 | 纹理各向异性           | webgl_materials_texture_anisotropy          | 15min    | 中     | pending   |
+| EX-3426 | 纹理画布               | webgl_materials_texture_canvas              | 15min    | 中     | pending   |
+| EX-3427 | 纹理filters            | webgl_materials_texture_filters             | 10min    | 中     | pending   |
+| EX-3428 | 纹理html               | webgl_materials_texture_html                | 15min    | 中     | pending   |
+| EX-3429 | 纹理manualmipmap       | webgl_materials_texture_manualmipmap        | 15min    | 中     | pending   |
+| EX-3430 | 纹理partialupdate      | webgl_materials_texture_partialupdate       | 15min    | 中     | pending   |
+| EX-3431 | 纹理rotation           | webgl_materials_texture_rotation            | 10min    | 中     | pending   |
+| EX-3432 | Toon                   | webgl_materials_toon                        | 15min    | 中     | pending   |
+| EX-3433 | 视频                   | webgl_materials_video                       | 15min    | 中     | pending   |
+| EX-3434 | 视频webcam             | webgl_materials_video_webcam                | 15min    | 中     | pending   |
+| EX-3435 | 线框                   | webgl_materials_wireframe                   | 10min    | 中     | pending   |
 
 ---
 

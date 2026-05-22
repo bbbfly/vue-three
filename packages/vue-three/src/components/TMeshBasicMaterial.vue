@@ -32,6 +32,18 @@ const props = defineProps({
     type: Number as PropType<number>,
     default: undefined
   },
+  blendSrc: {
+    type: Number as PropType<number>,
+    default: undefined
+  },
+  blendDst: {
+    type: Number as PropType<number>,
+    default: undefined
+  },
+  blendEquation: {
+    type: Number as PropType<number>,
+    default: undefined
+  },
   premultipliedAlpha: {
     type: Boolean,
     default: false
@@ -101,12 +113,22 @@ const { material } = useMaterial({
   opacity: props.opacity,
   wireframe: props.wireframe,
   blending: props.blending,
+  blendSrc: props.blendSrc,
+  blendDst: props.blendDst,
+  blendEquation: props.blendEquation,
   premultipliedAlpha: props.premultipliedAlpha,
   side: props.side,
   depthWrite: props.depthWrite,
   flatShading: props.flatShading,
   map: props.map
 })
+
+const updateBlendProps = () => {
+  const mat = material as any
+  if (props.blendSrc !== undefined) mat.blendSrc = props.blendSrc
+  if (props.blendDst !== undefined) mat.blendDst = props.blendDst
+  if (props.blendEquation !== undefined) mat.blendEquation = props.blendEquation
+}
 
 const updateStencilProps = () => {
   const mat = material as any
@@ -124,6 +146,7 @@ const updateStencilProps = () => {
 
 onMounted(() => {
   updateStencilProps()
+  updateBlendProps()
 })
 
 watch(
@@ -131,6 +154,36 @@ watch(
   props.stencilMask, props.stencilFail, props.stencilZFail, props.stencilZPass, props.clippingPlanes],
   () => {
     updateStencilProps()
+  }
+)
+
+watch(
+  () => props.blendEquation,
+  (newVal) => {
+    console.log('blendEquation changed:', newVal)
+    const mat = material as any
+    mat.blendEquation = newVal
+    mat.needsUpdate = true
+  }
+)
+
+watch(
+  () => props.blendSrc,
+  (newVal) => {
+    console.log('blendSrc changed:', newVal)
+    const mat = material as any
+    mat.blendSrc = newVal
+    mat.needsUpdate = true
+  }
+)
+
+watch(
+  () => props.blendDst,
+  (newVal) => {
+    console.log('blendDst changed:', newVal)
+    const mat = material as any
+    mat.blendDst = newVal
+    mat.needsUpdate = true
   }
 )
 

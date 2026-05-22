@@ -881,7 +881,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_materials_blending_custom',
         title: '混合自定义',
         category: 'materials',
-        completed: false
+        completed: true
       },
       { id: 'webgl_materials_bumpmap', title: '凹凸贴图', category: 'materials', completed: false },
       { id: 'webgl_materials_car', title: 'Car', category: 'materials', completed: false },
