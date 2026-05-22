@@ -9,6 +9,7 @@ defineOptions({
 
 import type { PropType } from 'vue'
 import { useScene, type SceneConfig } from '../composables/useScene'
+import type { ColorRepresentation, Texture } from 'three'
 
 /**
  * 场景组件
@@ -23,11 +24,11 @@ import { useScene, type SceneConfig } from '../composables/useScene'
  */
 const props = defineProps({
   /**
-   * 场景背景颜色
+   * 场景背景颜色或纹理
    * @default undefined (透明)
    */
   background: {
-    type: [String, Number] as PropType<string | number>,
+    type: [String, Number, Object] as PropType<ColorRepresentation | Texture>,
     default: undefined
   },
   /**

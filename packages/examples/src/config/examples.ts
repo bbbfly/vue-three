@@ -876,7 +876,7 @@ export const exampleCategories: ExampleCategory[] = [
         category: 'materials',
         completed: true
       },
-      { id: 'webgl_materials_blending', title: '混合', category: 'materials', completed: false },
+      { id: 'webgl_materials_blending', title: '混合', category: 'materials', completed: true },
       {
         id: 'webgl_materials_blending_custom',
         title: '混合自定义',

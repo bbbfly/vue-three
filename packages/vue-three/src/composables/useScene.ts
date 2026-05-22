@@ -1,11 +1,11 @@
 import { inject, watch, onBeforeUnmount } from 'vue'
-import { Scene, Color, Fog, FogExp2, Object3D } from 'three'
+import { Scene, Color, Fog, FogExp2, Object3D, Texture, ColorRepresentation } from 'three'
 import { ThreeContextKey } from '../core/context'
 import type { Object3DConfig } from '../types'
 import { disposeObject3D } from '../core/cleanup'
 
 export interface SceneConfig extends Object3DConfig {
-  background?: string | number
+  background?: ColorRepresentation | Texture
   backgroundAlpha?: number
   fog?: {
     type: 'linear' | 'exp'
@@ -35,7 +35,11 @@ export function useScene(config: SceneConfig = {}) {
 
   const updateConfig = (newConfig: SceneConfig) => {
     if (newConfig.background !== undefined) {
-      scene.background = new Color(newConfig.background)
+      if (newConfig.background instanceof Texture) {
+        scene.background = newConfig.background
+      } else {
+        scene.background = new Color(newConfig.background)
+      }
     }
 
     if (newConfig.fog) {
