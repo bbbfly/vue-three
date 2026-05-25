@@ -96,23 +96,6 @@ export interface CustomGeometryConfig {
   buffer: BufferGeometry
 }
 
-export type GeometryConfig =
-  | BoxGeometryConfig
-  | SphereGeometryConfig
-  | PlaneGeometryConfig
-  | CylinderGeometryConfig
-  | TorusGeometryConfig
-  | ConeGeometryConfig
-  | IcosahedronGeometryConfig
-  | CustomGeometryConfig
-  | TubeGeometryConfig
-  | LatheGeometryConfig
-  | ShapeGeometryConfig
-  | ExtrudeGeometryConfig
-  | SweepGeometryConfig
-  | EdgesGeometryConfig
-  | WireframeGeometryConfig
-
 export type MaterialType =
   | 'basic'
   | 'standard'

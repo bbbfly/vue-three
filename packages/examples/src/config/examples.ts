@@ -889,7 +889,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_materials_channels',
         title: 'Channels',
         category: 'materials',
-        completed: false
+        completed: true
       },
       { id: 'webgl_materials_cubemap', title: 'Cubemap', category: 'materials', completed: false },
       {

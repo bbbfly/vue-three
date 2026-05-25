@@ -1,13 +1,14 @@
-import { inject, ref, onMounted, onBeforeUnmount, watch } from 'vue'
-import { Object3D } from 'three'
+import { inject, ref, shallowRef, onMounted, onBeforeUnmount, watch } from 'vue'
+import { Object3D, Mesh, BufferGeometry } from 'three'
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'
-import { ThreeContextKey, GroupContextKey } from '../core/context'
+import { ThreeContextKey, GroupContextKey, MeshContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
 import type { OBJLoaderConfig } from '../types'
 
 export function useOBJLoader(config: OBJLoaderConfig) {
   const threeCtx = inject(ThreeContextKey)
   const groupCtx = inject(GroupContextKey, null)
+  const meshCtx = inject(MeshContextKey, null)
 
   if (!threeCtx) {
     throw new Error('useOBJLoader must be used within a TCanvas component')
@@ -15,7 +16,7 @@ export function useOBJLoader(config: OBJLoaderConfig) {
 
   const scene = threeCtx.scene
   const parent = groupCtx?.group || scene
-  let model: Object3D | null = null
+  const model = shallowRef<Object3D | null>(null)
   const loading = ref(false)
   const progress = ref(0)
   const total = ref(0)
@@ -31,20 +32,24 @@ export function useOBJLoader(config: OBJLoaderConfig) {
     loader.load(
       src,
       loadedModel => {
-        if (model && parent) {
-          parent.remove(model)
-          disposeModel(model)
+        if (model.value && parent) {
+          parent.remove(model.value)
+          disposeModel(model.value)
         }
 
         if (loadedModel) {
           ThreeObjectFactory.applyObject3DConfig(loadedModel, config)
           applyShadowToModel(loadedModel, config)
 
-          if (parent) {
-            parent.add(loadedModel)
+          if (meshCtx) {
+            handleMeshParentCase(loadedModel)
+          } else {
+            if (parent) {
+              parent.add(loadedModel)
+            }
           }
 
-          model = loadedModel
+          model.value = loadedModel
         }
 
         loading.value = false
@@ -62,6 +67,32 @@ export function useOBJLoader(config: OBJLoaderConfig) {
         console.error('Failed to load OBJ model:', err)
       }
     )
+  }
+
+  const handleMeshParentCase = (loadedModel: Object3D) => {
+    let geometry: BufferGeometry | null = null
+
+    if (
+      loadedModel.children.length > 0 &&
+      loadedModel.children[0] instanceof Mesh &&
+      loadedModel.children[0].geometry
+    ) {
+      geometry = loadedModel.children[0].geometry.clone()
+      geometry.center()
+    } else {
+      loadedModel.traverse(child => {
+        if (!geometry && child instanceof Mesh && child.geometry) {
+          geometry = child.geometry.clone()
+          geometry.center()
+        }
+      })
+    }
+
+    if (geometry && meshCtx?.setGeometry) {
+      meshCtx.setGeometry(geometry)
+    }
+
+    model.value = loadedModel
   }
 
   const applyShadowToModel = (object: Object3D, config: OBJLoaderConfig) => {
@@ -109,18 +140,18 @@ export function useOBJLoader(config: OBJLoaderConfig) {
   watch(
     () => [config.position, config.rotation, config.scale, config.visible],
     () => {
-      if (model) {
-        ThreeObjectFactory.updateObject3DConfig(model, config)
-        applyShadowToModel(model, config)
+      if (model.value) {
+        ThreeObjectFactory.updateObject3DConfig(model.value, config)
+        applyShadowToModel(model.value, config)
       }
     },
     { deep: true }
   )
 
   onBeforeUnmount(() => {
-    if (model && parent) {
-      parent.remove(model)
-      disposeModel(model)
+    if (model.value && parent) {
+      parent.remove(model.value)
+      disposeModel(model.value)
     }
   })
 

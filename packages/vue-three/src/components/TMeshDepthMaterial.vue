@@ -8,13 +8,13 @@ import type { PropType } from 'vue'
 import { useMaterial } from '../composables/useMaterial'
 
 /**
- * MeshStandardMaterial 材质组件
- * @description 基于物理的渲染(PBR)标准材质，支持金属度/粗糙度工作流
- * @component TMeshStandardMaterial
+ * MeshDepthMaterial 材质组件
+ * @description 用于渲染深度信息的材质，常用于后期处理效果（如景深、运动模糊等）
+ * @component TMeshDepthMaterial
  * @example
  * <TMesh>
  *   <TBoxGeometry />
- *   <TMeshStandardMaterial :color="0xff0000" :metalness="0.5" :roughness="0.5" />
+ *   <TMeshDepthMaterial depthPacking="RGBADepthPacking" />
  * </TMesh>
  */
 defineOptions({
@@ -23,28 +23,16 @@ defineOptions({
 
 const props = defineProps({
   /**
-   * 材质颜色
-   * @default 0xffffff
+   * 深度打包模式
+   * - 'BasicDepthPacking' (0): 基础深度打包
+   * - 'RGBADepthPacking' (1): RGBA深度打包
+   * - 'RGBDepthPacking' (2): RGB深度打包（扩展范围）
+   * - 'RGDepthPacking' (3): RG深度打包
+   * @default undefined (使用默认值 BasicDepthPacking)
    */
-  color: {
-    type: [String, Number] as PropType<string | number>,
-    default: 0xffffff
-  },
-  /**
-   * 金属度 (0-1)
-   * @default 0
-   */
-  metalness: {
-    type: Number,
-    default: 0
-  },
-  /**
-   * 粗糙度 (0-1)
-   * @default 1
-   */
-  roughness: {
-    type: Number,
-    default: 1
+  depthPacking: {
+    type: [Number, String],
+    default: undefined
   },
   /**
    * 是否透明
@@ -95,34 +83,18 @@ const props = defineProps({
     default: undefined
   },
   /**
-   * 是否启用平面着色
-   * @default undefined
-   */
-  flatShading: {
-    type: Boolean,
-    default: undefined
-  },
-  /**
-   * 是否剪裁阴影
-   * @default undefined
-   */
-  clipShadows: {
-    type: Boolean,
-    default: undefined
-  },
-  /**
-   * 阴影面
-   * @default undefined
-   */
-  shadowSide: {
-    type: Number,
-    default: undefined
-  },
-  /**
    * 是否启用剪裁
    * @default false
    */
   clipping: {
+    type: Boolean,
+    default: false
+  },
+  /**
+   * 是否剪裁阴影
+   * @default false
+   */
+  clipShadows: {
     type: Boolean,
     default: false
   },
@@ -135,40 +107,8 @@ const props = defineProps({
     default: undefined
   },
   /**
-   * 发光颜色
-   * @default 0x000000
-   */
-  emissive: {
-    type: [String, Number] as PropType<string | number>,
-    default: 0x000000
-  },
-  /**
-   * 发光强度
-   * @default 1
-   */
-  emissiveIntensity: {
-    type: Number,
-    default: 1
-  },
-  /**
-   * 环境光遮蔽强度
-   * @default 1
-   */
-  aoMapIntensity: {
-    type: Number,
-    default: 1
-  },
-  /**
-   * 法线贴图缩放
-   * @default [1, 1]
-   */
-  normalScale: {
-    type: Array as PropType<[number, number]>,
-    default: () => [1, 1]
-  },
-  /**
    * 位移贴图缩放
-   * @default 1
+   * @default undefined
    */
   displacementScale: {
     type: Number,
@@ -176,17 +116,9 @@ const props = defineProps({
   },
   /**
    * 位移贴图偏移
-   * @default 0
+   * @default undefined
    */
   displacementBias: {
-    type: Number,
-    default: undefined
-  },
-  /**
-   * 凹凸贴图缩放
-   * @default 1
-   */
-  bumpScale: {
     type: Number,
     default: undefined
   }
@@ -196,7 +128,7 @@ const attrs = useAttrs()
 
 // 合并 props 和 attrs，attrs 优先级更高（允许覆盖）
 const getMaterialConfig = () => {
-  return { type: 'standard', ...props, ...attrs }
+  return { type: 'depth', ...props, ...attrs }
 }
 
 const { material, updateMaterial } = useMaterial(getMaterialConfig())

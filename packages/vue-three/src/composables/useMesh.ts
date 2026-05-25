@@ -29,7 +29,10 @@ export function useMesh(config?: MeshConfig) {
       mesh.geometry.dispose()
     }
     mesh.geometry = geometry
+    mesh.geometry.computeBoundingSphere()
+    mesh.geometry.computeBoundingBox()
     mesh.updateMatrix()
+    mesh.matrixWorldNeedsUpdate = true
   }
 
   function setMaterial(material: Material) {

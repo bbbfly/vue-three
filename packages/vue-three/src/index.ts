@@ -68,6 +68,7 @@ import TMeshPhysicalMaterial from './components/TMeshPhysicalMaterial.vue'
 import TMeshLambertMaterial from './components/TMeshLambertMaterial.vue'
 import TMeshPhongMaterial from './components/TMeshPhongMaterial.vue'
 import TMeshNormalMaterial from './components/TMeshNormalMaterial.vue'
+import TMeshDepthMaterial from './components/TMeshDepthMaterial.vue'
 import TShadowMaterial from './components/TShadowMaterial.vue'
 import TShaderMaterial from './components/TShaderMaterial.vue'
 import TGLTFLoader from './components/TGLTFLoader.vue'
@@ -173,6 +174,7 @@ export {
   TMeshLambertMaterial,
   TMeshPhongMaterial,
   TMeshNormalMaterial,
+  TMeshDepthMaterial,
   TShadowMaterial,
   TShaderMaterial,
   TTexture,
@@ -257,6 +259,7 @@ const components = [
   TMeshLambertMaterial,
   TMeshPhongMaterial,
   TMeshNormalMaterial,
+  TMeshDepthMaterial,
   TShadowMaterial,
   TShaderMaterial,
   TTexture,

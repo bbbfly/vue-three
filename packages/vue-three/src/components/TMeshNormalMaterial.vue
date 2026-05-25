@@ -3,10 +3,7 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({
-  inheritAttrs: false,
-})
-
+import { useAttrs, watch, onMounted } from 'vue'
 import type { PropType } from 'vue'
 import { useMaterial } from '../composables/useMaterial'
 
@@ -20,6 +17,10 @@ import { useMaterial } from '../composables/useMaterial'
  *   <TMeshNormalMaterial />
  * </TMesh>
  */
+defineOptions({
+  inheritAttrs: false,
+})
+
 const props = defineProps({
   /**
    * 是否透明
@@ -62,29 +63,61 @@ const props = defineProps({
     default: undefined
   },
   /**
-   * 是否启用平面着色
+   * 是否启用深度测试
+   * @default undefined
+   */
+  depthTest: {
+    type: Boolean,
+    default: undefined
+  },
+  /**
+   * 是否启用剪裁
    * @default false
    */
-  flatShading: {
+  clipping: {
     type: Boolean,
     default: false
+  },
+  /**
+   * 是否剪裁阴影
+   * @default false
+   */
+  clipShadows: {
+    type: Boolean,
+    default: false
+  },
+  /**
+   * 是否预设颜色空间
+   * @default true
+   */
+  colorSpace: {
+    type: String,
+    default: undefined
   }
 })
 
-const { material } = useMaterial({
-  type: 'normal',
-  transparent: props.transparent,
-  opacity: props.opacity,
-  wireframe: props.wireframe,
-  side: props.side,
-  depthWrite: props.depthWrite,
-  flatShading: props.flatShading
+const attrs = useAttrs()
+
+// 合并 props 和 attrs，attrs 优先级更高（允许覆盖）
+const getMaterialConfig = () => {
+  return { type: 'normal', ...props, ...attrs }
+}
+
+const { material, updateMaterial } = useMaterial(getMaterialConfig())
+
+// 监听 props 和 attrs 变化，自动更新材质
+watch(
+  () => ({ ...props, ...attrs }),
+  () => {
+    updateMaterial(getMaterialConfig())
+  },
+  { deep: true }
+)
+
+onMounted(() => {
+  updateMaterial(getMaterialConfig())
 })
 
-/**
- * @expose
- * @property material - Three.js MeshNormalMaterial 实例
- */
 defineExpose({
   material
 })

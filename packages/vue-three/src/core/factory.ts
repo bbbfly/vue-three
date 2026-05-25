@@ -272,8 +272,25 @@ export class ThreeObjectFactory {
         const { type, ...rest } = config
         return new MeshNormalMaterial(rest)
       }
-      case 'depth':
-        return new MeshDepthMaterial()
+      case 'depth': {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { type, depthPacking, ...rest } = config
+        const options: any = { ...rest }
+        if (depthPacking !== undefined) {
+          if (typeof depthPacking === 'string') {
+            const packingMap: Record<string, number> = {
+              BasicDepthPacking: 0,
+              RGBADepthPacking: 1,
+              RGBDepthPacking: 2,
+              RGDepthPacking: 3
+            }
+            options.depthPacking = packingMap[depthPacking] ?? 0
+          } else {
+            options.depthPacking = depthPacking
+          }
+        }
+        return new MeshDepthMaterial(options)
+      }
       case 'shadow': {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { type, ...rest } = config

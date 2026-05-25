@@ -1046,6 +1046,26 @@
 
 ---
 
+## 2026-05-22 - WebGL 材质通道示例完成
+
+### 完成任务
+
+#### EX-3406 - webgl_materials_channels 材质通道示例
+
+- **完成时间**: 2026-05-22
+- **内容**:
+  - 创建 webgl_materials_channels.vue 示例组件
+  - 实现多种材质切换功能：normal（法线材质）、standard（标准材质）、velocity（速度材质）、depthBasic/depthRGBA/depthRGB/depthRG（深度材质）
+  - 使用 OBJLoader 加载 ninja 头部模型
+  - 支持透视相机和正交相机切换
+  - 支持渲染面切换（正面/背面/双面）
+  - GUI 控制面板支持材质、相机、渲染面参数调节
+  - 加载三种纹理：normal.png、ao.jpg、displacement.jpg
+  - 使用 VelocityShader 实现速度着色器效果，需要记录上一帧的矩阵信息
+  - 位移贴图参数：SCALE=2.436143, BIAS=-0.428408
+
+---
+
 ## 2026-05-20 - WebGL BufferGeometry 点粒子示例完成
 
 ### 完成任务
