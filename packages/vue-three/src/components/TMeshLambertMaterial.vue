@@ -8,7 +8,7 @@ defineOptions({
 })
 
 import type { PropType } from 'vue'
-import { watch } from 'vue'
+import { watch, useAttrs, computed } from 'vue'
 import { useMaterial } from '../composables/useMaterial'
 
 const props = defineProps({
@@ -46,32 +46,38 @@ const props = defineProps({
   }
 })
 
-const { material, updateMaterial } = useMaterial({
-  type: 'lambert',
-  color: props.color,
-  transparent: props.transparent,
-  opacity: props.opacity,
-  wireframe: props.wireframe,
-  side: props.side,
-  depthWrite: props.depthWrite,
-  flatShading: props.flatShading,
-  emissive: props.emissive
+const attrs = useAttrs()
+
+const materialConfig = computed(() => {
+  const propKeys = new Set(Object.keys(props))
+  const extraAttrs: Record<string, unknown> = {}
+
+  for (const key in attrs) {
+    if (!propKeys.has(key)) {
+      extraAttrs[key] = attrs[key]
+    }
+  }
+
+  return {
+    type: 'lambert',
+    color: props.color,
+    transparent: props.transparent,
+    opacity: props.opacity,
+    wireframe: props.wireframe,
+    side: props.side,
+    depthWrite: props.depthWrite,
+    flatShading: props.flatShading,
+    emissive: props.emissive,
+    ...extraAttrs
+  }
 })
 
+const { material, updateMaterial } = useMaterial(materialConfig.value)
+
 watch(
-  () => [props.color, props.transparent, props.opacity, props.wireframe, props.side, props.depthWrite, props.flatShading, props.emissive],
-  () => {
-    updateMaterial({
-      type: 'lambert',
-      color: props.color,
-      transparent: props.transparent,
-      opacity: props.opacity,
-      wireframe: props.wireframe,
-      side: props.side,
-      depthWrite: props.depthWrite,
-      flatShading: props.flatShading,
-      emissive: props.emissive
-    })
+  materialConfig,
+  (newConfig) => {
+    updateMaterial(newConfig)
   },
   { deep: true }
 )

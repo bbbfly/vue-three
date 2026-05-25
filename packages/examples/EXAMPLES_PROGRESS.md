@@ -1060,6 +1060,25 @@
   - 支持透视相机和正交相机切换
   - 支持渲染面切换（正面/背面/双面）
   - GUI 控制面板支持材质、相机、渲染面参数调节
+
+---
+
+## 2026-05-25 - WebGL Cubemap 材质示例完成
+
+### 完成任务
+
+#### EX-3407 - webgl_materials_cubemap Cubemap 反射/折射示例
+
+- **完成时间**: 2026-05-25
+- **内容**:
+  - 创建 webgl_materials_cubemap.vue 示例组件
+  - 使用 CubeTextureLoader 加载六面立方体贴图（SwedishRoyalCastle）
+  - 实现三种材质效果：纯反射（reflection）、折射（refraction）、混合反射（mix）
+  - 使用 OBJLoader 加载 WaltHead 3D 模型
+  - 创建三个克隆头部模型，分别应用不同材质效果
+  - 环境光 + 点光源照明系统
+  - TOrbitControls 轨道控制器（禁用缩放和平移，限制极角范围）
+  - 场景背景设置为立方体贴图实现天空盒效果
   - 加载三种纹理：normal.png、ao.jpg、displacement.jpg
   - 使用 VelocityShader 实现速度着色器效果，需要记录上一帧的矩阵信息
   - 位移贴图参数：SCALE=2.436143, BIAS=-0.428408

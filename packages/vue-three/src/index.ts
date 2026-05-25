@@ -32,6 +32,7 @@ export * from './composables/useTAARenderPass'
 export * from './composables/useOutputPass'
 export * from './composables/useOutlinePass'
 export * from './composables/useTexture'
+export * from './composables/useCubeTexture'
 export * from './composables/useCanvasTexture'
 export * from './composables/useCurve'
 export * from './composables/useLine'
@@ -134,6 +135,7 @@ import TPointLightHelper from './components/TPointLightHelper.vue'
 import TBoxHelper from './components/TBoxHelper.vue'
 import TAxesHelper from './components/TAxesHelper.vue'
 import TPlaneHelper from './components/TPlaneHelper.vue'
+import TCubeTexture from './components/TCubeTexture.vue'
 
 export {
   TCSS2DRenderer,
@@ -178,6 +180,7 @@ export {
   TShadowMaterial,
   TShaderMaterial,
   TTexture,
+  TCubeTexture,
   TCanvasTexture,
   TGLTFLoader,
   TOBJLoader,
@@ -263,6 +266,7 @@ const components = [
   TShadowMaterial,
   TShaderMaterial,
   TTexture,
+  TCubeTexture,
   TCanvasTexture,
   TGLTFLoader,
   TOBJLoader,
