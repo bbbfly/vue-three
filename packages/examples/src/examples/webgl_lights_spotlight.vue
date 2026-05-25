@@ -34,7 +34,7 @@ import {
   TSphere,
   TPlane,
   TMeshStandardMaterial
-} from '@vue-three/core'
+} from '@vue-three/vue-three'
 
 const lightPosition = ref([10, 25, 10])
 

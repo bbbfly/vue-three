@@ -61,7 +61,7 @@ import {
   TMeshPhongMaterial,
   TMeshStandardMaterial,
   TMeshPhysicalMaterial
-} from '@vue-three/core'
+} from '@vue-three/vue-three'
 
 const rotation = ref([0, 0, 0])
 

@@ -35,7 +35,7 @@ import {
   TPlane,
   TMeshBasicMaterial,
   TTexture
-} from '@vue-three/core'
+} from '@vue-three/vue-three'
 import * as THREE from 'three'
 
 const mapBg = ref<THREE.CanvasTexture | null>(null)

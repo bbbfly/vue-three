@@ -33,7 +33,7 @@ import {
   TSphere,
   TPlane,
   TMeshStandardMaterial
-} from '@vue-three/core'
+} from '@vue-three/vue-three'
 
 const rotation = ref([0, 0, 0])
 

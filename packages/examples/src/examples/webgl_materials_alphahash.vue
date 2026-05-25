@@ -37,7 +37,7 @@ import {
   TRenderPass,
   TTAARenderPass,
   TOutputPass
-} from '@vue-three/core'
+} from '@vue-three/vue-three'
 import * as THREE from 'three'
 
 const amount = 3
