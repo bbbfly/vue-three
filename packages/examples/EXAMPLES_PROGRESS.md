@@ -296,6 +296,30 @@
 
 ---
 
+## 2026-05-25 - WebGL 动态立方体贴图示例完成
+
+### 完成任务
+
+#### webgl_materials_cubemap_dynamic 动态立方体贴图示例
+
+- **完成时间**: 2026-05-25
+- **内容**:
+  - 创建 webgl_materials_cubemap_dynamic.vue 示例组件
+  - 实现 HDR 环境贴图加载：使用 HDRLoader 加载 quarry_01_1k.hdr 纹理
+  - 实现 CubeCamera 和 WebGLCubeRenderTarget：创建 256 分辨率的立方体渲染目标，使用 HalfFloatType 精度
+  - 创建三个物体：球体（IcosahedronGeometry，半径15，细分8）、立方体（BoxGeometry，15x15x15）、圆环结（TorusKnotGeometry，半径8，管径3）
+  - 球体使用 MeshStandardMaterial，envMap 设置为 cubeRenderTarget.texture，roughness=0.05，metalness=1（高反射）
+  - 立方体和圆环结使用 MeshStandardMaterial，roughness=0.1，metalness=0（低反射）
+  - 实现动画循环：立方体和圆环结沿不同轨道运动（cos/sin 函数），同时自转
+  - 每帧调用 cubeCamera.update(renderer, scene) 更新动态反射
+  - 场景旋转 0.5 弧度避免物体遮挡光源
+  - 使用 TOrbitControls auto-rotate 自动旋转相机
+  - 色调映射：ACESFilmicToneMapping
+  - GUI 控制面板：roughness（0-1）、metalness（0-1）、exposure（0-2）
+  - 更新 examples.ts 配置标记为已完成
+
+---
+
 ## 2026-05-12 - Minecraft 几何体示例完成
 
 ### 完成任务

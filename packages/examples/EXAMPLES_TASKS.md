@@ -503,7 +503,7 @@
 | EX-3405 | Car                    | webgl_materials_car                         | 20min    | 中     | completed |
 | EX-3406 | Channels               | webgl_materials_channels                    | 15min    | 中     | completed |
 | EX-3407 | Cubemap                | webgl_materials_cubemap                     | 15min    | 中     | completed |
-| EX-3408 | Cubemapdynamic         | webgl_materials_cubemap_dynamic             | 20min    | 中     | pending   |
+| EX-3408 | Cubemapdynamic         | webgl_materials_cubemap_dynamic             | 20min    | 中     | completed |
 | EX-3409 | Cubemapmipmaps         | webgl_materials_cubemap_mipmaps             | 15min    | 中     | pending   |
 | EX-3410 | Cubemap折射            | webgl_materials_cubemap_refraction          | 15min    | 中     | pending   |
 | EX-3411 | Cubemap渲染tomipmaps   | webgl_materials_cubemap_render_to_mipmaps   | 20min    | 中     | pending   |
