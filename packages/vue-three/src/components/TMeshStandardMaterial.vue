@@ -6,7 +6,7 @@
 import { useAttrs, watch, onMounted } from 'vue'
 import type { PropType } from 'vue'
 import { useMaterial } from '../composables/useMaterial'
-
+import { useCamelCaseKeys } from '../hooks'
 /**
  * MeshStandardMaterial 材质组件
  * @description 基于物理的渲染(PBR)标准材质，支持金属度/粗糙度工作流
@@ -196,15 +196,16 @@ const attrs = useAttrs()
 
 // 合并 props 和 attrs，attrs 优先级更高（允许覆盖）
 const getMaterialConfig = () => {
-  return { type: 'standard', ...props, ...attrs }
+  return { type: 'standard', ...props, ...useCamelCaseKeys(attrs) }
 }
 
 const { material, updateMaterial } = useMaterial(getMaterialConfig())
 
 // 监听 props 和 attrs 变化，自动更新材质
 watch(
-  () => ({ ...props, ...attrs }),
-  () => {
+  () => ({ ...props, ...useCamelCaseKeys(attrs) }),
+  (val) => {
+    console.log(val)
     updateMaterial(getMaterialConfig())
   },
   { deep: true }

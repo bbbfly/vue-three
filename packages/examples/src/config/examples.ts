@@ -920,7 +920,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_materials_displacementmap',
         title: 'Displacementmap',
         category: 'materials',
-        completed: false
+        completed: true
       },
       { id: 'webgl_materials_envmaps', title: 'Envmaps', category: 'materials', completed: true },
       {

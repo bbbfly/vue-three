@@ -1214,6 +1214,39 @@
 
 ---
 
+## 2026-05-26 - WebGL 材质位移贴图示例完成
+
+### 完成任务
+
+#### webgl_materials_displacementmap 位移贴图示例
+
+- **完成时间**: 2026-05-26
+- **内容**:
+  - 创建 webgl_materials_displacementmap.vue 示例组件
+  - 使用 TOrthographicCamera 正交相机配置（高度500，位置[0,0,1500]）
+  - 使用 TOrbitControls 轨道控制器（禁用缩放，启用阻尼）
+  - 照明系统：环境光（0xffffff，intensity=0.2）+ 三个点光源
+  - 点光源1：红色（0xff0000，intensity=1.5，位置[0,0,2500]），动态旋转动画
+  - 点光源2：粉红色（0xff6666，intensity=3，跟随相机）
+  - 点光源3：蓝色（0x0000ff，intensity=1.5，位置[-1000,0,1000]）
+  - 加载瑞典皇家城堡立方体贴图作为环境贴图
+  - 加载 ninja 头部模型（OBJLoader）+ 三种纹理贴图：
+    - normal.png：法线贴图
+    - ao.jpg：环境光遮蔽贴图
+    - displacement.jpg：位移贴图
+  - TMeshStandardMaterial 材质配置：
+    - 颜色 0xc1c1c1
+    - metalness=1.0，roughness=0.4
+    - normalScale=[1,-1]（Y轴反转）
+    - displacementScale=2.436143，displacementBias=-0.428408
+    - envMapIntensity=1.0，aoMapIntensity=1.0
+    - 双面渲染（side=DoubleSide）
+  - GUI 控制面板：metalness、roughness、aoMapIntensity、ambientIntensity、envMapIntensity、displacementScale、normalScale
+  - 窗口大小自适应处理（更新正交相机投影矩阵）
+  - 更新 examples.ts 配置标记为已完成
+
+---
+
 ## 2026-05-21 - WebGL BufferGeometry Selective 绘制示例完成
 
 ### 完成任务
