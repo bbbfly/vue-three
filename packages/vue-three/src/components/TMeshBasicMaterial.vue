@@ -3,13 +3,14 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
-defineOptions({
-  inheritAttrs: false,
-})
-
+import { onMounted, watch, useAttrs, computed } from 'vue'
 import type { PropType } from 'vue'
+import * as THREE from 'three'
 import { useMaterial } from '../composables/useMaterial'
+
+defineOptions({
+  inheritAttrs: false
+})
 
 const props = defineProps({
   color: {
@@ -106,86 +107,65 @@ const props = defineProps({
   }
 })
 
-const { material } = useMaterial({
-  type: 'basic',
-  color: props.color,
-  transparent: props.transparent,
-  opacity: props.opacity,
-  wireframe: props.wireframe,
-  blending: props.blending,
-  blendSrc: props.blendSrc,
-  blendDst: props.blendDst,
-  blendEquation: props.blendEquation,
-  premultipliedAlpha: props.premultipliedAlpha,
-  side: props.side,
-  depthWrite: props.depthWrite,
-  flatShading: props.flatShading,
-  map: props.map
+const attrs = useAttrs()
+
+// 获取已定义的 props 键名集合
+const propKeys = new Set(Object.keys(props))
+
+const camelCase = (str: string) => {
+  return str.replace(/-(\w)/g, (_, c) => c ? c.toUpperCase() : '')
+}
+
+
+// 合并 props 和 attrs，props 已定义的属性优先级高于 attrs
+const materialConfig = computed(() => {
+  const config: Record<string, unknown> = {
+    type: 'basic',
+    color: props.color,
+    transparent: props.transparent,
+    opacity: props.opacity,
+    wireframe: props.wireframe,
+    blending: props.blending,
+    blendSrc: props.blendSrc,
+    blendDst: props.blendDst,
+    blendEquation: props.blendEquation,
+    premultipliedAlpha: props.premultipliedAlpha,
+    side: props.side,
+    depthWrite: props.depthWrite,
+    flatShading: props.flatShading,
+    map: props.map,
+    depthTest: props.depthTest,
+    colorWrite: props.colorWrite,
+    stencilWrite: props.stencilWrite,
+    stencilFunc: props.stencilFunc,
+    stencilRef: props.stencilRef,
+    stencilMask: props.stencilMask,
+    stencilFail: props.stencilFail,
+    stencilZFail: props.stencilZFail,
+    stencilZPass: props.stencilZPass,
+    clippingPlanes: props.clippingPlanes,
+  }
+  // 转驼峰
+  Object.keys(attrs).forEach(key => {
+    config[camelCase(key)] = attrs[key]
+  })
+  return config
 })
 
-const updateBlendProps = () => {
-  const mat = material as any
-  if (props.blendSrc !== undefined) mat.blendSrc = props.blendSrc
-  if (props.blendDst !== undefined) mat.blendDst = props.blendDst
-  if (props.blendEquation !== undefined) mat.blendEquation = props.blendEquation
-}
+const { material, updateMaterial } = useMaterial(materialConfig.value)
 
-const updateStencilProps = () => {
-  const mat = material as any
-  if (props.depthTest !== undefined) mat.depthTest = props.depthTest
-  if (props.colorWrite !== undefined) mat.colorWrite = props.colorWrite
-  if (props.stencilWrite !== undefined) mat.stencilWrite = props.stencilWrite
-  if (props.stencilFunc !== undefined) mat.stencilFunc = props.stencilFunc
-  if (props.stencilRef !== undefined) mat.stencilRef = props.stencilRef
-  if (props.stencilMask !== undefined) mat.stencilMask = props.stencilMask
-  if (props.stencilFail !== undefined) mat.stencilFail = props.stencilFail
-  if (props.stencilZFail !== undefined) mat.stencilZFail = props.stencilZFail
-  if (props.stencilZPass !== undefined) mat.stencilZPass = props.stencilZPass
-  if (props.clippingPlanes !== undefined) mat.clippingPlanes = props.clippingPlanes
-}
+// 监听 props 和 attrs 变化，自动更新材质
+watch(
+  materialConfig,
+  newConfig => {
+    updateMaterial(newConfig)
+  },
+  { deep: true }
+)
 
 onMounted(() => {
-  updateStencilProps()
-  updateBlendProps()
+  updateMaterial(materialConfig.value)
 })
-
-watch(
-  () => [props.depthTest, props.colorWrite, props.stencilWrite, props.stencilFunc, props.stencilRef,
-  props.stencilMask, props.stencilFail, props.stencilZFail, props.stencilZPass, props.clippingPlanes],
-  () => {
-    updateStencilProps()
-  }
-)
-
-watch(
-  () => props.blendEquation,
-  (newVal) => {
-    console.log('blendEquation changed:', newVal)
-    const mat = material as any
-    mat.blendEquation = newVal
-    mat.needsUpdate = true
-  }
-)
-
-watch(
-  () => props.blendSrc,
-  (newVal) => {
-    console.log('blendSrc changed:', newVal)
-    const mat = material as any
-    mat.blendSrc = newVal
-    mat.needsUpdate = true
-  }
-)
-
-watch(
-  () => props.blendDst,
-  (newVal) => {
-    console.log('blendDst changed:', newVal)
-    const mat = material as any
-    mat.blendDst = newVal
-    mat.needsUpdate = true
-  }
-)
 
 defineExpose({
   material

@@ -902,7 +902,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_materials_cubemap_mipmaps',
         title: 'Cubemapmipmaps',
         category: 'materials',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_materials_cubemap_refraction',
