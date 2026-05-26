@@ -296,6 +296,26 @@
 
 ---
 
+## 2026-05-26 - WebGL 渲染到 Mipmaps 示例完成
+
+### 完成任务
+
+#### EX-3411 - webgl_materials_cubemap_render_to_mipmaps 渲染到 Mipmaps 示例
+
+- **完成时间**: 2026-05-26
+- **内容**:
+  - 创建 webgl_materials_cubemap_render_to_mipmaps.vue 示例组件
+  - 实现自定义着色器 CubemapFilterShader，用于颜色化不同 mip 级别
+  - 使用 WebGLCubeRenderTarget 分配立方体贴图渲染目标（512x512，HalfFloatType）
+  - 预分配 mipmaps 数组，支持多个 mip 级别渲染
+  - 使用 CubeCamera.activeMipmapLevel 属性渲染到特定 mip 级别
+  - 每个 mip 级别渲染时动态设置 viewport 大小（width >> mipmap）
+  - 左球显示原始立方体贴图，右球显示生成的带颜色标记的 mipmaps
+  - 使用 OrbitControls 轨道控制器（限制极角范围）
+  - 加载 Park3Med 环境立方体贴图
+
+---
+
 ## 2026-05-25 - WebGL 动态立方体贴图示例完成
 
 ### 完成任务

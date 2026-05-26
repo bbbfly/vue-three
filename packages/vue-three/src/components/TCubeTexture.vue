@@ -57,6 +57,14 @@ const { texture, load, setMapping } = useCubeTexture({
   mapping: props.mapping === 'refraction' ? 301 : 300
 })
 
+const emit = defineEmits(['load'])
+
+watch(texture, (val) => {
+  if (val) {
+    emit('load', val)
+  }
+})
+
 watch(
   () => props.urls,
   (newUrls) => {

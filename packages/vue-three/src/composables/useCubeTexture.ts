@@ -36,7 +36,7 @@ export function useCubeTexture(options: CubeTextureOptions = {}) {
     error.value = null
 
     try {
-      const loadedTexture = loader.load(targetUrls, (loaded) => {
+      const loadedTexture = loader.load(targetUrls, loaded => {
         if (options.mapping !== undefined) {
           loaded.mapping = options.mapping
         }
@@ -64,7 +64,7 @@ export function useCubeTexture(options: CubeTextureOptions = {}) {
 
   watch(
     () => options.urls,
-    (newUrls) => {
+    newUrls => {
       if (newUrls) {
         load(newUrls)
       }

@@ -506,7 +506,7 @@
 | EX-3408 | Cubemapdynamic         | webgl_materials_cubemap_dynamic             | 20min    | 中     | completed |
 | EX-3409 | Cubemapmipmaps         | webgl_materials_cubemap_mipmaps             | 15min    | 中     | completed |
 | EX-3410 | Cubemap折射            | webgl_materials_cubemap_refraction          | 15min    | 中     | completed |
-| EX-3411 | Cubemap渲染tomipmaps   | webgl_materials_cubemap_render_to_mipmaps   | 20min    | 中     | pending   |
+| EX-3411 | Cubemap渲染tomipmaps   | webgl_materials_cubemap_render_to_mipmaps   | 20min    | 中     | completed |
 | EX-3412 | Displacementmap        | webgl_materials_displacementmap             | 15min    | 中     | pending   |
 | EX-3413 | Envmapsexr             | webgl_materials_envmaps_exr                 | 15min    | 中     | pending   |
 | EX-3414 | Envmapsfasthdr         | webgl_materials_envmaps_fasthdr             | 15min    | 中     | pending   |
