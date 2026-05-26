@@ -8,9 +8,11 @@ defineOptions({
 })
 
 import type { PropType } from 'vue'
-import { watch } from 'vue'
+import { watch, useAttrs, computed } from 'vue'
 import { useMaterial } from '../composables/useMaterial'
+import { useCamelCaseKeys } from '../hooks'
 import * as THREE from 'three'
+
 /**
  * Phong材质组件
  * @description 具有镜面高光的光泽表面材质，适用于塑料、油漆等光滑表面
@@ -145,48 +147,38 @@ const props = defineProps({
   }
 })
 
-const { material, updateMaterial } = useMaterial({
-  type: 'phong',
-  color: props.color,
-  specular: props.specular,
-  shininess: props.shininess,
-  normalScale: props.normalScale,
-  bumpScale: props.bumpScale,
-  transparent: props.transparent,
-  opacity: props.opacity,
-  wireframe: props.wireframe,
-  side: props.side,
-  flatShading: props.flatShading,
-  vertexColors: props.vertexColors,
-  depthWrite: props.depthWrite,
-  clippingPlanes: props.clippingPlanes,
-  clipShadows: props.clipShadows,
-  alphaToCoverage: props.alphaToCoverage,
-  clipIntersection: props.clipIntersection
-})
+const attrs = useAttrs()
+const camelCaseAttrs = computed(() => useCamelCaseKeys(attrs))
+
+const getMaterialConfig = () => {
+  return {
+    type: 'phong' as const,
+    color: props.color,
+    specular: props.specular,
+    shininess: props.shininess,
+    normalScale: props.normalScale,
+    bumpScale: props.bumpScale,
+    transparent: props.transparent,
+    opacity: props.opacity,
+    wireframe: props.wireframe,
+    side: props.side,
+    flatShading: props.flatShading,
+    vertexColors: props.vertexColors,
+    depthWrite: props.depthWrite,
+    clippingPlanes: props.clippingPlanes,
+    clipShadows: props.clipShadows,
+    alphaToCoverage: props.alphaToCoverage,
+    clipIntersection: props.clipIntersection,
+    ...camelCaseAttrs.value
+  }
+}
+
+const { material, updateMaterial } = useMaterial(getMaterialConfig())
 
 watch(
-  () => [props.clippingPlanes, props.clipShadows, props.alphaToCoverage, props.clipIntersection, props.wireframe, props.bumpScale],
+  () => [props, camelCaseAttrs.value],
   () => {
-    updateMaterial({
-      type: 'phong',
-      color: props.color,
-      specular: props.specular,
-      shininess: props.shininess,
-      normalScale: props.normalScale,
-      bumpScale: props.bumpScale,
-      transparent: props.transparent,
-      opacity: props.opacity,
-      wireframe: props.wireframe,
-      side: props.side,
-      flatShading: props.flatShading,
-      vertexColors: props.vertexColors,
-      depthWrite: props.depthWrite,
-      clippingPlanes: props.clippingPlanes,
-      clipShadows: props.clipShadows,
-      alphaToCoverage: props.alphaToCoverage,
-      clipIntersection: props.clipIntersection
-    })
+    updateMaterial(getMaterialConfig())
   },
   { deep: true }
 )

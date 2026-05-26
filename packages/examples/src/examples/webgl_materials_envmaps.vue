@@ -115,16 +115,16 @@ function initScene() {
     textureEquirec.value!.colorSpace = THREE.SRGBColorSpace
   })
 
-  gui.value.add({ Cube: applyCubeTexture }, 'Cube').name('Cube Texture')
-  gui.value.add({ Equirectangular: applyEquirectangularTexture }, 'Equirectangular').name('Equirectangular Map')
+  gui.add({ Cube: applyCubeTexture }, 'Cube').name('Cube Texture')
+  gui.add({ Equirectangular: applyEquirectangularTexture }, 'Equirectangular').name('Equirectangular Map')
 
-  gui.value.add(params.value, 'Refraction').onChange(updateMapping)
+  gui.add(params.value, 'Refraction').onChange(updateMapping)
 
-  gui.value.add(params.value, 'backgroundRotationX').name('Background Rotation X')
-  gui.value.add(params.value, 'backgroundRotationY').name('Background Rotation Y')
-  gui.value.add(params.value, 'backgroundRotationZ').name('Background Rotation Z')
+  gui.add(params.value, 'backgroundRotationX').name('Background Rotation X')
+  gui.add(params.value, 'backgroundRotationY').name('Background Rotation Y')
+  gui.add(params.value, 'backgroundRotationZ').name('Background Rotation Z')
 
-  gui.value.add(params.value, 'syncMaterial').name('Sync Material Rotation')
+  gui.add(params.value, 'syncMaterial').name('Sync Material Rotation')
 
   initialized = true
 }

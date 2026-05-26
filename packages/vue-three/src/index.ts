@@ -19,6 +19,7 @@ export * from './composables/useMaterial'
 export * from './composables/useGLTFLoader'
 export * from './composables/useOBJLoader'
 export * from './composables/useFBXLoader'
+export * from './composables/usePLYLoader'
 export * from './composables/useDRACOLoader'
 export * from './composables/useFlyControls'
 export * from './composables/useFirstPersonControls'
@@ -91,6 +92,7 @@ import TTexture from './components/TTexture.vue'
 import TCanvasTexture from './components/TCanvasTexture.vue'
 import TOBJLoader from './components/TOBJLoader.vue'
 import TFBXLoader from './components/TFBXLoader.vue'
+import TPLYLoader from './components/TPLYLoader.vue'
 import TDRACOLoader from './components/TDRACOLoader.vue'
 import TFlyControls from './components/TFlyControls.vue'
 import TFirstPersonControls from './components/TFirstPersonControls.vue'
@@ -185,6 +187,7 @@ export {
   TGLTFLoader,
   TOBJLoader,
   TFBXLoader,
+  TPLYLoader,
   TDRACOLoader,
   TFlyControls,
   TFirstPersonControls,
@@ -271,6 +274,7 @@ const components = [
   TGLTFLoader,
   TOBJLoader,
   TFBXLoader,
+  TPLYLoader,
   TDRACOLoader,
   TFlyControls,
   TFirstPersonControls,
