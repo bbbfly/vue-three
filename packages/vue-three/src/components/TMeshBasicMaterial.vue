@@ -7,6 +7,7 @@ import { onMounted, watch, useAttrs, computed } from 'vue'
 import type { PropType } from 'vue'
 import * as THREE from 'three'
 import { useMaterial } from '../composables/useMaterial'
+import { useCamelCaseKeys } from '../hooks'
 
 defineOptions({
   inheritAttrs: false
@@ -112,11 +113,6 @@ const attrs = useAttrs()
 // 获取已定义的 props 键名集合
 const propKeys = new Set(Object.keys(props))
 
-const camelCase = (str: string) => {
-  return str.replace(/-(\w)/g, (_, c) => c ? c.toUpperCase() : '')
-}
-
-
 // 合并 props 和 attrs，props 已定义的属性优先级高于 attrs
 const materialConfig = computed(() => {
   const config: Record<string, unknown> = {
@@ -144,11 +140,10 @@ const materialConfig = computed(() => {
     stencilZFail: props.stencilZFail,
     stencilZPass: props.stencilZPass,
     clippingPlanes: props.clippingPlanes,
+    // 转驼峰
+    ...useCamelCaseKeys(attrs)
   }
-  // 转驼峰
-  Object.keys(attrs).forEach(key => {
-    config[camelCase(key)] = attrs[key]
-  })
+
   return config
 })
 
