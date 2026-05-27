@@ -1,5 +1,27 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-05-27 - Modified 材质示例完成
+
+### 完成任务
+
+#### EX-3418 - webgl_materials_modified Modified 材质示例
+
+- **完成时间**: 2026-05-27
+- **内容**:
+  - 创建 webgl_materials_modified.vue 示例组件
+  - 使用 GLTFLoader 加载 LeePerrySmith.glb 头部模型
+  - 实现 buildTwistMaterial 函数创建自定义扭曲材质
+  - 通过 onBeforeCompile 钩子修改顶点着色器，实现扭曲效果
+  - 添加 time 均匀变量控制动画
+  - 使用 customProgramCacheKey 确保不同参数的材质使用不同的着色器程序缓存
+  - 创建两个对称放置的头部模型，分别使用扭曲量 2.0 和 -2.0
+  - 动画循环中更新着色器时间均匀变量，实现实时扭曲动画
+  - 使用 markRaw 标记 Three.js 对象避免 Vue 响应式代理问题
+  - TPerspectiveCamera 配置（fov=27，position=[0, 0, 20]）
+  - TOrbitControls 轨道控制器（minDistance=10，maxDistance=50）
+
+---
+
 ## 2026-05-27 - Envmapsgroundprojected 示例完成
 
 ### 完成任务
