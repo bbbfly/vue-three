@@ -1,5 +1,24 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-05-27 - Envmapsgroundprojected 示例完成
+
+### 完成任务
+
+#### EX-3415 - webgl_materials_envmaps_groundprojected Ground Projected Environment Mapping
+
+- **完成时间**: 2026-05-27
+- **内容**:
+  - GroundedSkybox 地面投影天空盒实现
+  - HDRLoader 加载 HDR 环境贴图 (blouberg_sunrise_2_1k.hdr)
+  - Ferrari GLTF 模型加载与材质应用
+  - MeshPhysicalMaterial 车身材质 (clearcoat 效果)
+  - MeshStandardMaterial 细节材质
+  - MeshPhysicalMaterial 玻璃材质 (transmission 透射效果)
+  - GUI 控制地面投影开关
+  - OrbitControls 轨道控制器配置
+
+---
+
 ## 2026-04-29 - 第一阶段基础框架搭建完成
 
 ### 完成任务
