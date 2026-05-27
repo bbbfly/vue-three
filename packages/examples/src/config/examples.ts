@@ -945,7 +945,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_materials_envmaps_hdr',
         title: 'Envmapshdr',
         category: 'materials',
-        completed: false
+        completed: true
       },
       { id: 'webgl_materials_matcap', title: '材质捕获', category: 'materials', completed: false },
       {

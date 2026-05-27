@@ -511,7 +511,7 @@
 | EX-3413 | Envmapsexr             | webgl_materials_envmaps_exr                 | 15min    | 中     | completed |
 | EX-3414 | Envmapsfasthdr         | webgl_materials_envmaps_fasthdr             | 15min    | 中     | completed |
 | EX-3415 | Envmapsgroundprojected | webgl_materials_envmaps_groundprojected     | 15min    | 中     | completed |
-| EX-3416 | Envmapshdr             | webgl_materials_envmaps_hdr                 | 15min    | 中     | pending   |
+| EX-3416 | Envmapshdr             | webgl_materials_envmaps_hdr                 | 15min    | 中     | completed |
 | EX-3417 | 材质捕获               | webgl_materials_matcap                      | 15min    | 中     | pending   |
 | EX-3418 | Modified               | webgl_materials_modified                    | 15min    | 中     | pending   |
 | EX-3419 | Normalmap              | webgl_materials_normalmap                   | 15min    | 中     | pending   |
