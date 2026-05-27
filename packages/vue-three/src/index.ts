@@ -32,6 +32,8 @@ export * from './composables/useRenderPass'
 export * from './composables/useTAARenderPass'
 export * from './composables/useOutputPass'
 export * from './composables/useOutlinePass'
+export * from './composables/useShaderPass'
+export * from './composables/useFXAAPass'
 export * from './composables/useTexture'
 export * from './composables/useCubeTexture'
 export * from './composables/useCanvasTexture'
@@ -84,6 +86,8 @@ import TRenderPass from './components/TRenderPass.vue'
 import TTAARenderPass from './components/TTAARenderPass.vue'
 import TOutputPass from './components/TOutputPass.vue'
 import TOutlinePass from './components/TOutlinePass.vue'
+import TShaderPass from './components/TShaderPass.vue'
+import TFXAAPass from './components/TFXAAPass.vue'
 import TOrthographicCamera from './components/TOrthographicCamera.vue'
 import TSpotLight from './components/TSpotLight.vue'
 import THemisphereLight from './components/THemisphereLight.vue'
@@ -202,6 +206,8 @@ export {
   TTAARenderPass,
   TOutputPass,
   TOutlinePass,
+  TShaderPass,
+  TFXAAPass,
   TArcCurve,
   TEllipseCurve,
   TBezierCurve,
@@ -290,6 +296,8 @@ const components = [
   TTAARenderPass,
   TOutputPass,
   TOutlinePass,
+  TShaderPass,
+  TFXAAPass,
   TArcCurve,
   TEllipseCurve,
   TBezierCurve,

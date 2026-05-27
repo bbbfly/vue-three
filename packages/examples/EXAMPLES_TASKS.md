@@ -514,7 +514,7 @@
 | EX-3416 | Envmapshdr             | webgl_materials_envmaps_hdr                 | 15min    | 中     | completed |
 | EX-3417 | 材质捕获               | webgl_materials_matcap                      | 15min    | 中     | completed |
 | EX-3418 | Modified               | webgl_materials_modified                    | 15min    | 中     | completed |
-| EX-3419 | Normalmap              | webgl_materials_normalmap                   | 15min    | 中     | pending   |
+| EX-3419 | Normalmap              | webgl_materials_normalmap                   | 15min    | 中     | completed |
 | EX-3420 | Normalmap对象space     | webgl_materials_normalmap_object_space      | 15min    | 中     | pending   |
 | EX-3421 | 物理材质clearcoat      | webgl_materials_physical_clearcoat          | 15min    | 中     | pending   |
 | EX-3422 | 物理材质透射           | webgl_materials_physical_transmission       | 15min    | 中     | pending   |

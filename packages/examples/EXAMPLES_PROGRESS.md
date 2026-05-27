@@ -1,5 +1,25 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-05-27 - Normal Map 法线贴图示例完成
+
+### 完成任务
+
+#### EX-3419 - webgl_materials_normalmap 法线贴图示例
+
+- **完成时间**: 2026-05-27
+- **内容**:
+  - 创建 webgl_materials_normalmap.vue 示例组件
+  - 使用 GLTFLoader 加载 LeePerrySmith.glb 头部模型
+  - 使用 MeshPhongMaterial 材质配置漫反射贴图、高光贴图和法线贴图
+  - 实现后处理管线：BleachBypassShader + ColorCorrectionShader + OutputPass + FXAAPass
+  - 使用 TEffectComposer 和 TRenderPass 组件构建后处理流程
+  - GUI 控制面板：enableNormalMap 开关、normalScale 滑块（0-2）
+  - 照明系统：环境光 + 点光源 + 方向光
+  - TOrbitControls 轨道控制器（minDistance=8，maxDistance=50）
+  - 背景色为灰色 #494949
+
+---
+
 ## 2026-05-27 - Modified 材质示例完成
 
 ### 完成任务

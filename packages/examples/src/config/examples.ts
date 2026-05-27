@@ -958,7 +958,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_materials_normalmap',
         title: 'Normalmap',
         category: 'materials',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_materials_normalmap_object_space',
