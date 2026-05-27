@@ -1,5 +1,25 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-05-27 - Object Space Normal Map 对象空间法线贴图示例完成
+
+### 完成任务
+
+#### EX-3420 - webgl_materials_normalmap_object_space 对象空间法线贴图示例
+
+- **完成时间**: 2026-05-27
+- **内容**:
+  - 创建 webgl_materials_normalmap_object_space.vue 示例组件
+  - 使用 GLTFLoader 加载 Nefertiti.glb 奈费尔提蒂半身像模型
+  - 配置 ObjectSpaceNormalMap 对象空间法线贴图模式
+  - 删除几何体的 normal 属性（对象空间法线贴图不需要）
+  - 设置 DoubleSide 双面渲染
+  - 模型缩放 0.5 倍并重新居中
+  - 照明系统：环境光 + 点光源（挂载在相机上）
+  - TOrbitControls 轨道控制器（minDistance=10，maxDistance=50，禁用平移）
+  - 背景色为深灰色 #1a1a1a
+
+---
+
 ## 2026-05-27 - Normal Map 法线贴图示例完成
 
 ### 完成任务
