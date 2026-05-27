@@ -124,6 +124,7 @@ export type TextureMapType =
   | 'alphaMap'
   | 'bumpMap'
   | 'envMap'
+  | 'matcap'
 
 export interface MaterialContext {
   material: Material
@@ -137,6 +138,7 @@ export interface MaterialContext {
   setAlphaMap: (texture: Texture | null) => void
   setBumpMap: (texture: Texture | null) => void
   setEnvMap: (texture: Texture | null) => void
+  setMatcap: (texture: Texture | null) => void
   setTextureByType: (type: TextureMapType, texture: Texture | null) => void
 }
 

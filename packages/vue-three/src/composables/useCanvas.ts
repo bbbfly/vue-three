@@ -27,6 +27,8 @@ export interface CanvasOptions extends RendererConfig {
   autoClear?: boolean
   enableControls?: boolean
   stencil?: boolean
+  toneMapping?: number
+  toneMappingExposure?: number
 }
 type Config = {
   options: CanvasOptions
@@ -290,6 +292,14 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
       renderer.clippingPlanes = options.clippingPlanes
     }
 
+    if (options.toneMapping !== undefined) {
+      renderer.toneMapping = options.toneMapping
+    }
+
+    if (options.toneMappingExposure !== undefined) {
+      renderer.toneMappingExposure = options.toneMappingExposure
+    }
+
     if (options.enableControls !== false) {
       context.controls = new OrbitControls(context.camera, renderer.domElement)
       context.controls.enableDamping = true
@@ -308,21 +318,6 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
     context.canvas = canvasRef.value
     readyResolve!(context)
     startRenderLoop()
-
-    watch(
-      () => [options.localClippingEnabled, options.clippingPlanes],
-      ([localClippingEnabled, clippingPlanes]) => {
-        if (context.renderer) {
-          if (localClippingEnabled !== undefined) {
-            context.renderer.localClippingEnabled = localClippingEnabled
-          }
-          if (clippingPlanes !== undefined) {
-            context.renderer.clippingPlanes = clippingPlanes
-          }
-        }
-      },
-      { deep: true }
-    )
   })
 
   onBeforeUnmount(() => {

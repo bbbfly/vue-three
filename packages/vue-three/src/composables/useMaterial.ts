@@ -95,6 +95,14 @@ export function useMaterial(initialConfig: MaterialConfig) {
     }
   }
 
+  const setMatcap = (texture: Texture | null) => {
+    const mat = material as any
+    if ('matcap' in mat) {
+      mat.matcap = texture
+      mat.needsUpdate = true
+    }
+  }
+
   const setTextureByType = (type: TextureMapType, texture: Texture | null) => {
     const mat = material as any
     if (type in mat) {
@@ -115,6 +123,7 @@ export function useMaterial(initialConfig: MaterialConfig) {
     setAlphaMap,
     setBumpMap,
     setEnvMap,
+    setMatcap,
     setTextureByType
   })
 

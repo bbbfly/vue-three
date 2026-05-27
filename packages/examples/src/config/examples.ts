@@ -947,7 +947,7 @@ export const exampleCategories: ExampleCategory[] = [
         category: 'materials',
         completed: true
       },
-      { id: 'webgl_materials_matcap', title: '材质捕获', category: 'materials', completed: false },
+      { id: 'webgl_materials_matcap', title: '材质捕获', category: 'materials', completed: true },
       {
         id: 'webgl_materials_modified',
         title: 'Modified',

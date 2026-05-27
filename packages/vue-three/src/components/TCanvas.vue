@@ -151,6 +151,22 @@ const props = defineProps({
   onRender: {
     type: Function as PropType<AnimateFn>,
     default: undefined
+  },
+  /**
+   * 色调映射类型
+   * @default undefined (使用 Three.js 默认值)
+   */
+  toneMapping: {
+    type: Number,
+    default: undefined
+  },
+  /**
+   * 色调映射曝光值
+   * @default undefined (使用 Three.js 默认值)
+   */
+  toneMappingExposure: {
+    type: Number,
+    default: undefined
   }
 })
 
@@ -166,7 +182,9 @@ const options = computed<CanvasOptions>(() => ({
   autoClear: props.autoClear,
   enableControls: props.enableControls,
   localClippingEnabled: props.localClippingEnabled,
-  clippingPlanes: props.clippingPlanes
+  clippingPlanes: props.clippingPlanes,
+  toneMapping: props.toneMapping,
+  toneMappingExposure: props.toneMappingExposure
 }))
 
 const emit = defineEmits<{
@@ -187,18 +205,19 @@ watch(
   options,
   newOptions => {
     if (context.renderer && context.camera) {
-      const cameraPos = newOptions.camera?.position
-      if (cameraPos) {
-        context.camera.position.set(...cameraPos)
-      }
-
       // 更新裁剪配置
-      console.log(newOptions.localClippingEnabled, '---')
       if (newOptions.localClippingEnabled !== undefined && context.renderer) {
         context.renderer.localClippingEnabled = newOptions.localClippingEnabled
       }
       if (newOptions.clippingPlanes !== undefined && context.renderer) {
         context.renderer.clippingPlanes = newOptions.clippingPlanes
+      }
+      // 更新色调映射配置
+      if (newOptions.toneMapping !== undefined && context.renderer) {
+        context.renderer.toneMapping = newOptions.toneMapping
+      }
+      if (newOptions.toneMappingExposure !== undefined && context.renderer) {
+        context.renderer.toneMappingExposure = newOptions.toneMappingExposure
       }
     }
   },

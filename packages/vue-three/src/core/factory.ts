@@ -14,6 +14,7 @@ import {
   MeshPhongMaterial,
   MeshNormalMaterial,
   MeshDepthMaterial,
+  MeshMatcapMaterial,
   ShadowMaterial,
   ShaderMaterial,
   RawShaderMaterial,
@@ -173,7 +174,17 @@ export class ThreeObjectFactory {
     switch (config.type) {
       case 'basic': {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { type, side, blending, blendSrc, blendDst, blendEquation, premultipliedAlpha, map, ...rest } = config
+        const {
+          type,
+          side,
+          blending,
+          blendSrc,
+          blendDst,
+          blendEquation,
+          premultipliedAlpha,
+          map,
+          ...rest
+        } = config
         const options: any = { ...rest }
         if (side !== undefined) {
           options.side = side
@@ -336,6 +347,15 @@ export class ThreeObjectFactory {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { type, ...rest } = config
         return new PointsMaterial(rest)
+      }
+      case 'matcap': {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { type, side, ...rest } = config
+        const options: any = { ...rest }
+        if (side !== undefined) {
+          options.side = side
+        }
+        return new MeshMatcapMaterial(options)
       }
       case 'custom':
         return config.instance
