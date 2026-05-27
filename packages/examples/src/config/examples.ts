@@ -933,7 +933,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_materials_envmaps_fasthdr',
         title: 'Envmapsfasthdr',
         category: 'materials',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_materials_envmaps_groundprojected',

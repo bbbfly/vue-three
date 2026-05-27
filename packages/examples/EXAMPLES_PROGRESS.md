@@ -587,8 +587,38 @@
   - Sprite 3: 位于嵌套 Group 中，位置 [0, 2, 5]，旋转角度为 π/3
   - 使用组件库中的 useRaycaster composable 实现射线检测交互
   - 鼠标悬停时 Sprite 颜色从蓝色 (#69f) 变为红色 (#f00)
-  - TOrbitControls 轨道控制器（最小距离 15，最大距离 250）
-  - 白色背景，清晰展示 Sprite 对象
+
+---
+
+## 2026-05-27 - WebGL FastHDR 环境贴图示例完成
+
+### 完成任务
+
+#### EX-3414 - webgl_materials_envmaps_fasthdr FastHDR 环境贴图示例
+
+- **完成时间**: 2026-05-27
+- **内容**:
+  - 创建 webgl_materials_envmaps_fasthdr.vue 示例组件
+  - 使用 KTX2Loader 加载 FastHDR 格式的环境贴图（.pmrem.ktx2）
+  - 配置 KTX2Loader 转码器路径：/lib/jsm/libs/basis/
+  - 使用 detectSupport 自动检测 WebGL 支持
+  - 创建 5 个不同材质的球体展示不同材质对环境贴图的反射效果：
+    - Sphere 1: MeshPhysicalMaterial（transmission=1.0, thickness=2.0）- 玻璃材质
+    - Sphere 2: MeshStandardMaterial（metalness=0.0, roughness=1.0）- 完全漫反射
+    - Sphere 3: MeshStandardMaterial（metalness=1.0, roughness=0.0）- 完全镜面反射
+    - Sphere 4: MeshStandardMaterial（metalness=1.0, roughness=0.5, color=0x888888）- 半反射
+    - Sphere 5: MeshStandardMaterial（metalness=0.0, roughness=0.0, color=0x6ab440）- 绿色高光
+  - 球体沿 Z 轴排列（z: 2, 1, 0, -1, -2）
+  - 使用 TPerspectiveCamera（fov=40, position=[7, 0, 0]）
+  - TOrbitControls 轨道控制器（minDistance=0.1, maxDistance=20, enableDamping=true）
+  - GUI 控制面板：
+    - Image 选择：8 种 FastHDR 环境贴图（ballroom, brown photostudio, cape hill, cannon, metro noord, the sky is on fire, studio small 09, wide street 01）
+    - Exposure 曝光（0-2）
+    - FOV 视野（10-100）
+    - Background Blurriness 背景模糊（0-1）
+  - 纹理映射设置为 CubeUVReflectionMapping
+  - 场景背景和环境贴图同时设置为加载的纹理
+  - 色调映射：ACESFilmicToneMapping
   - 更新 examples.ts 配置标记为已完成
 
 ---
@@ -1144,7 +1174,7 @@
   - 每个粒子根据空间位置生成 RGB 颜色（X→R, Y→G, Z→B）
   - TPointsMaterial 材质配置：size=15, vertexColors=true
   - TScene fog 属性添加雾效（near=2000, far=3500）增强深度感
-  - 动画效果：粒子系统整体旋转（rotation.x = time * 0.25，rotation.y = time * 0.5）
+  - 动画效果：粒子系统整体旋转（rotation.x = time _ 0.25，rotation.y = time _ 0.5）
   - 使用 shallowRef 避免 Vue 响应式代理干扰 Three.js 对象
   - 更新 examples.ts 配置标记为已完成
 
@@ -1166,7 +1196,7 @@
   - 通过 TBufferGeometry 组件的 geometry 属性直接传递 THREE.BufferGeometry 对象
   - TPointsMaterial 材质配置：size=15, vertexColors=true
   - TScene fog 属性添加雾效（near=2000, far=3500）增强深度感
-  - 动画效果：粒子系统整体旋转（rotation.x = time * 0.25，rotation.y = time * 0.5）
+  - 动画效果：粒子系统整体旋转（rotation.x = time _ 0.25，rotation.y = time _ 0.5）
   - 使用 shallowRef 避免 Vue 响应式代理干扰 Three.js 对象
   - 修复 webgl_buffergeometry_points.vue 中 TFog 组件不存在的问题，改用 TScene fog 属性
   - 更新 examples.ts 配置标记为已完成
@@ -1181,7 +1211,7 @@
 #### EX-1415 - webgl_buffergeometry_rawshader 原始着色器示例
 
 - **完成时间**: 2026-05-21
-- **内容**: 
+- **内容**:
   - 创建 webgl_buffergeometry_rawshader.vue 示例组件
   - 使用 TShaderMaterial 组件的 rawShader 模式实现自定义着色器渲染
   - 创建 200 个三角形的 BufferGeometry，包含 position 和 color 属性
@@ -1208,7 +1238,7 @@
   - 照明系统：环境光（0xcccccc）+ 两个方向光（intensity 1.5 和 4.5）
   - 雾效配置（Fog）：颜色 0x050505，near 2000，far 3500
   - 相机配置：PerspectiveCamera（fov 27，near 1，far 3500，位置 [0, 0, 2750]）
-  - 使用 @animate 事件实现旋转动画（rotation.x = time * 0.25，rotation.y = time * 0.5）
+  - 使用 @animate 事件实现旋转动画（rotation.x = time _ 0.25，rotation.y = time _ 0.5）
   - 更新 examples.ts 配置标记为已完成
   - 更新 EXAMPLES_TASKS.md 任务状态为 completed
 
@@ -1286,6 +1316,6 @@
   - 照明系统：环境光（0xcccccc）+ 两个方向光（intensity 1.5 和 4.5）
   - 雾效配置（Fog）：颜色 0x050505，near 2000，far 3500
   - 相机配置：PerspectiveCamera（fov 27，near 1，far 3500，位置 [0, 0, 2750]）
-  - 使用 @animate 事件实现旋转动画（rotation.x = time * 0.25，rotation.y = time * 0.5）
+  - 使用 @animate 事件实现旋转动画（rotation.x = time _ 0.25，rotation.y = time _ 0.5）
   - 更新 examples.ts 配置标记为已完成
   - 更新 EXAMPLES_TASKS.md 任务状态为 completed
