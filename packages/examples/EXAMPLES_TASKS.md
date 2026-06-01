@@ -517,7 +517,7 @@
 | EX-3419 | Normalmap              | webgl_materials_normalmap                   | 15min    | 中     | completed |
 | EX-3420 | Normalmap对象space     | webgl_materials_normalmap_object_space      | 15min    | 中     | completed |
 | EX-3421 | 物理材质clearcoat      | webgl_materials_physical_clearcoat          | 15min    | 中     | completed |
-| EX-3422 | 物理材质透射           | webgl_materials_physical_transmission       | 15min    | 中     | pending   |
+| EX-3422 | 物理材质透射           | webgl_materials_physical_transmission       | 15min    | 中     | completed   |
 | EX-3423 | 物理材质透射alpha      | webgl_materials_physical_transmission_alpha | 15min    | 中     | pending   |
 | EX-3424 | Subsurfacescattering   | webgl_materials_subsurface_scattering       | 20min    | 中     | pending   |
 | EX-3425 | 纹理各向异性           | webgl_materials_texture_anisotropy          | 15min    | 中     | pending   |

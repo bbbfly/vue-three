@@ -12,20 +12,19 @@
 
 #### 根目录核心文档
 
-- 📄 **PRD.md**: 产品需求文档，记录完整的功能和设计要求
-- 🔧 **TECH_DESIGN.md**: 技术方案文档，记录架构和实现细节
-- 📋 **TASKS.md**: 开发任务列表，所有任务按优先级和阶段划分
-- ✅ **CHECK_LIST.md**: 验收清单，每个任务完成后对照检查
-- 🧪 **UNIT_TEST.md**: 测试用例，每个功能对应测试
-- 📝 **PROGRESS.md**: 任务进度日志，记录已完成的工作
+- **PRD.md**: 产品需求文档，记录完整的功能和设计要求
+- **TECH_DESIGN.md**: 技术方案文档，记录架构和实现细节
+- **TASKS.md**: 开发任务列表，所有任务按优先级和阶段划分
+- **CHECK_LIST.md**: 验收清单，每个任务完成后对照检查
+- **UNIT_TEST.md**: 测试用例，每个功能对应测试
+- **PROGRESS.md**: 任务进度日志，记录已完成的工作
 
 #### Examples 项目专属文档（packages/examples/）
 
-- 📄 **EXAMPLES_PRD.md**: Three.js 官方示例验证平台产品需求
-- 🔧 **EXAMPLES_TECH_DESIGN.md**: Examples 项目技术设计方案
-- 📋 **EXAMPLES_TASKS.md**: Examples 项目开发任务清单
-- ✅ **EXAMPLES_CHECK_LIST.md**: Examples 项目验收清单
-- 🧪 **EXAMPLES_UNIT_TEST.md**: Examples 项目测试用例
+- **EXAMPLES_PRD.md**: Three.js 官方示例验证平台产品需求
+- **EXAMPLES_TECH_DESIGN.md**: Examples 项目技术设计方案
+- **EXAMPLES_TASKS.md**: Examples 项目开发任务清单
+- **EXAMPLES_CHECK_LIST.md**: Examples 项目验收清单
 
 ---
 

@@ -976,7 +976,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_materials_physical_transmission',
         title: '物理材质透射',
         category: 'materials',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_materials_physical_transmission_alpha',

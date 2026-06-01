@@ -1,5 +1,25 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-06-01 - 物理材质透射示例完成
+
+### 完成任务
+
+#### EX-3422 - webgl_materials_physical_transmission 物理材质透射示例
+
+- **完成时间**: 2026-06-01
+- **内容**:
+  - 创建 webgl_materials_physical_transmission.vue 示例组件
+  - 使用 UltraHDRLoader 加载 royal_esplanade_2k.hdr.jpg HDR 环境贴图
+  - 实现 MeshPhysicalMaterial 透射材质效果
+  - 配置主要属性：transmission=1, metalness=0, roughness=0, ior=1.5, thickness=0.01
+  - 使用 CanvasTexture 生成条纹 alphaMap 贴图
+  - alphaMap 设置 NearestFilter 和 RepeatWrapping，repeat 为 (1, 3.5)
+  - TCanvas 配置 ACESFilmicToneMapping 色调映射
+  - TOrbitControls 轨道控制器（minDistance=10, maxDistance=150）
+  - 更新 examples.ts 配置标记为已完成
+
+---
+
 ## 2026-05-27 - 物理材质 Clearcoat 示例完成
 
 ### 完成任务
