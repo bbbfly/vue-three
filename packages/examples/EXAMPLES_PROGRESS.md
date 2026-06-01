@@ -1,5 +1,28 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-06-01 - Subsurface Scattering 次表面散射示例完成
+
+### 完成任务
+
+#### EX-3424 - webgl_materials_subsurface_scattering Subsurface Scattering 次表面散射示例
+
+- **完成时间**: 2026-06-01
+- **内容**:
+  - 创建 webgl_materials_subsurface_scattering.vue 示例组件
+  - 使用 SubsurfaceScatteringShader 实现次表面散射着色器效果
+  - 使用 FBXLoader 加载 stanford-bunny.fbx 斯坦福兔子模型
+  - 配置厚度贴图（bunny_thickness.jpg）实现透光效果
+  - 设置材质参数：diffuse=[1.0, 0.2, 0.2]（红色），shininess=500
+  - 次表面散射参数：thicknessColor=[0.5, 0.3, 0.0]，thicknessDistortion=0.1，thicknessAmbient=0.4，thicknessAttenuation=0.8，thicknessPower=2.0，thicknessScale=16.0
+  - 照明系统：环境光 + 方向光 + 两个点光源（白色和黄色）
+  - 点光源位置可视化（Mesh + PointLight 组合）
+  - TOrbitControls 轨道控制器（minDistance=500，maxDistance=3000）
+  - GUI 控制面板：distortion、ambient、attenuation、power、scale 参数调节
+  - 模型自动旋转动画（rotation.y = performance.now() / 5000）
+  - 更新 examples.ts 配置标记为已完成
+
+---
+
 ## 2026-06-01 - 物理材质透射 Alpha 示例完成
 
 ### 完成任务

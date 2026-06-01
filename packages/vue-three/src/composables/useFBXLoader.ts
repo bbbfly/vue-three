@@ -1,14 +1,15 @@
-import { inject, ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { inject, ref, shallowRef, onMounted, onBeforeUnmount, watch } from 'vue'
 import type { AnimationClip } from 'three'
-import { Object3D } from 'three'
+import { Object3D, Mesh, BufferGeometry } from 'three'
 import { FBXLoader } from 'three/addons/loaders/FBXLoader.js'
-import { ThreeContextKey, GroupContextKey } from '../core/context'
+import { ThreeContextKey, GroupContextKey, MeshContextKey } from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
 import type { FBXLoaderConfig } from '../types'
 
 export function useFBXLoader(config: FBXLoaderConfig) {
   const threeCtx = inject(ThreeContextKey)
   const groupCtx = inject(GroupContextKey, null)
+  const meshCtx = inject(MeshContextKey, null)
 
   if (!threeCtx) {
     throw new Error('useFBXLoader must be used within a TCanvas component')
@@ -16,7 +17,7 @@ export function useFBXLoader(config: FBXLoaderConfig) {
 
   const scene = threeCtx.scene
   const parent = groupCtx?.group || scene
-  let model: Object3D | null = null
+  const model = shallowRef<Object3D | null>(null)
   const animations = ref<AnimationClip[]>([])
   const loading = ref(false)
   const progress = ref(0)
@@ -33,20 +34,24 @@ export function useFBXLoader(config: FBXLoaderConfig) {
     loader.load(
       src,
       loadedModel => {
-        if (model && parent) {
-          parent.remove(model)
-          disposeModel(model)
+        if (model.value && parent) {
+          parent.remove(model.value)
+          disposeModel(model.value)
         }
 
         if (loadedModel) {
           ThreeObjectFactory.applyObject3DConfig(loadedModel, config)
           applyShadowToModel(loadedModel, config)
 
-          if (parent) {
-            parent.add(loadedModel)
+          if (meshCtx) {
+            handleMeshParentCase(loadedModel)
+          } else {
+            if (parent) {
+              parent.add(loadedModel)
+            }
+            model.value = loadedModel
           }
 
-          model = loadedModel
           animations.value = loadedModel.animations || []
         }
 
@@ -78,6 +83,21 @@ export function useFBXLoader(config: FBXLoaderConfig) {
         }
       }
     })
+  }
+
+  const handleMeshParentCase = (loadedModel: Object3D) => {
+    let geometry: BufferGeometry | null = null
+    loadedModel.traverse(child => {
+      if (child instanceof Mesh && child.geometry) {
+        geometry = child.geometry.clone()
+      }
+    })
+
+    if (geometry && meshCtx?.setGeometry) {
+      meshCtx.setGeometry(geometry)
+    }
+
+    model.value = loadedModel
   }
 
   const disposeModel = (object: Object3D) => {
@@ -112,18 +132,18 @@ export function useFBXLoader(config: FBXLoaderConfig) {
   watch(
     () => [config.position, config.rotation, config.scale, config.visible],
     () => {
-      if (model) {
-        ThreeObjectFactory.updateObject3DConfig(model, config)
-        applyShadowToModel(model, config)
+      if (model.value) {
+        ThreeObjectFactory.updateObject3DConfig(model.value, config)
+        applyShadowToModel(model.value, config)
       }
     },
     { deep: true }
   )
 
   onBeforeUnmount(() => {
-    if (model && parent) {
-      parent.remove(model)
-      disposeModel(model)
+    if (model.value && parent) {
+      parent.remove(model.value)
+      disposeModel(model.value)
     }
   })
 

@@ -9,6 +9,7 @@ defineOptions({
 
 import type { PropType } from 'vue'
 import { useMaterial } from '../composables/useMaterial'
+import { watch } from 'vue'
 
 /**
  * 着色器材质组件
@@ -111,6 +112,10 @@ const props = defineProps({
   glslVersion: {
     type: String as PropType<string>,
     default: undefined
+  },
+  lights: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -125,8 +130,10 @@ const { material } = useMaterial({
   blending: props.blending,
   premultipliedAlpha: props.premultipliedAlpha,
   side: props.side,
-  glslVersion: props.glslVersion
+  glslVersion: props.glslVersion,
+  lights: props.lights
 })
+
 
 /**
  * @expose
