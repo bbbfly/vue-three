@@ -1000,7 +1000,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_materials_texture_canvas',
         title: '纹理画布',
         category: 'materials',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_materials_texture_filters',

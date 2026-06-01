@@ -1,5 +1,25 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-06-01 - Canvas 纹理示例完成
+
+### 完成任务
+
+#### EX-3426 - webgl_materials_texture_canvas Canvas 纹理示例
+
+- **完成时间**: 2026-06-01
+- **内容**:
+  - 创建 webgl_materials_texture_canvas.vue 示例组件
+  - 实现 Canvas 作为纹理实时绘制功能
+  - 创建 128x128 像素的绘制画布，用户可在上面绘制
+  - 使用 THREE.CanvasTexture 将 Canvas 作为材质贴图应用到立方体上
+  - 支持指针事件交互：pointerdown、pointermove、pointerup、pointerleave
+  - 绘制时实时更新纹理（material.map.needsUpdate = true）
+  - 立方体自动旋转动画展示纹理效果
+  - 更新 examples.ts 配置标记为已完成
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
 ## 2026-06-01 - 纹理各向异性示例完成
 
 ### 完成任务
