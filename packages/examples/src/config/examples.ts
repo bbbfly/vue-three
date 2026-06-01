@@ -982,7 +982,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_materials_physical_transmission_alpha',
         title: '物理材质透射alpha',
         category: 'materials',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_materials_subsurface_scattering',

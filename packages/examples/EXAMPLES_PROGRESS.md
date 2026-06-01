@@ -1,5 +1,25 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-06-01 - 物理材质透射 Alpha 示例完成
+
+### 完成任务
+
+#### EX-3423 - webgl_materials_physical_transmission_alpha 物理材质透射 alpha 示例
+
+- **完成时间**: 2026-06-01
+- **内容**:
+  - 创建 webgl_materials_physical_transmission_alpha.vue 示例组件
+  - 使用 UltraHDRLoader 加载 royal_esplanade_2k.hdr.jpg HDR 环境贴图
+  - 使用 TGLTF 组件加载 DragonAttenuation.glb 模型
+  - 实现透射材质的 alpha 透明效果，展示不同颜色背景块后的透射效果
+  - 配置主要属性：transmission=1, metalness=0, roughness=0, ior=1.5, thickness=0.01
+  - 支持 attenuationColor 和 attenuationDistance 参数调整颜色衰减效果
+  - TCanvas 配置 ACESFilmicToneMapping 色调映射，开启 alpha 透明背景
+  - TOrbitControls 轨道控制器（minDistance=5, maxDistance=20）
+  - 更新 examples.ts 配置标记为已完成
+
+---
+
 ## 2026-06-01 - 物理材质透射示例完成
 
 ### 完成任务
