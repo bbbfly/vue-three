@@ -99,10 +99,8 @@ const officialExampleUrl = computed(() => {
 
 async function loadVueSourceCode(id: string) {
   try {
-    const response = await fetch(`/src/examples/${id}.vue?raw`)
-    if (response.ok) {
-      vueSourceCode.value = await response.text()
-    }
+    const response = await import(`/src/examples/${id}.vue?raw`)
+    vueSourceCode.value = response.default
   } catch (e) {
     vueSourceCode.value = '// 源码加载失败'
     console.error('Failed to load Vue source:', e)
