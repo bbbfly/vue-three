@@ -994,7 +994,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_materials_texture_anisotropy',
         title: '纹理各向异性',
         category: 'materials',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_materials_texture_canvas',

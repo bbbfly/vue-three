@@ -194,8 +194,8 @@ const emit = defineEmits<{
 const { canvasRef, context } = useCanvas(
   {
     options: options.value,
-    animateFn: ({ scene, camera, delta }) => {
-      emit('animate', { scene, camera, delta, renderer: context.renderer!, size: context.size })
+    animateFn: ({ scene, camera, delta, size }) => {
+      emit('animate', { scene, camera, delta, renderer: context.renderer!, size })
     },
     renderFn: props.onRender
   })

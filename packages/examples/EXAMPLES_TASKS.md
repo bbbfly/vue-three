@@ -520,7 +520,7 @@
 | EX-3422 | 物理材质透射           | webgl_materials_physical_transmission       | 15min    | 中     | completed   |
 | EX-3423 | 物理材质透射alpha      | webgl_materials_physical_transmission_alpha | 15min    | 中     | completed |
 | EX-3424 | Subsurfacescattering   | webgl_materials_subsurface_scattering       | 20min    | 中     | completed |
-| EX-3425 | 纹理各向异性           | webgl_materials_texture_anisotropy          | 15min    | 中     | pending   |
+| EX-3425 | 纹理各向异性           | webgl_materials_texture_anisotropy          | 15min    | 中     | completed |
 | EX-3426 | 纹理画布               | webgl_materials_texture_canvas              | 15min    | 中     | pending   |
 | EX-3427 | 纹理filters            | webgl_materials_texture_filters             | 10min    | 中     | pending   |
 | EX-3428 | 纹理html               | webgl_materials_texture_html                | 15min    | 中     | pending   |

@@ -38,13 +38,15 @@ type Config = {
 export type AnimateFn = ({
   scene,
   camera,
-  delta
+  delta,
+  size
 }: {
   scene: Scene
   camera: Camera
   delta: number
   renderer?: WebGLRenderer
   renderers?: Map<string, THREE.Renderer>
+  size: { width: number; height: number }
 }) => void
 
 type ReadyResolve = (context: ThreeContext) => void
@@ -191,7 +193,8 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
         camera: context.camera,
         delta,
         renderers,
-        renderer: context.renderer
+        renderer: context.renderer,
+        size: context.size
       })
     }
     // 后期处理
@@ -214,7 +217,7 @@ export function useCanvas({ options = {}, animateFn, renderFn }: Config) {
     const render = () => {
       animationFrameId = requestAnimationFrame(render)
       const delta = clock.getDelta()
-      animateFn({ scene, camera: context.camera, delta })
+      animateFn({ scene, camera: context.camera, delta, size: context.size })
 
       animationMixers.forEach(mixer => {
         mixer.update(delta)

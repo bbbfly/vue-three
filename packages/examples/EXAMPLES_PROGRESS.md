@@ -1,5 +1,27 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-06-01 - 纹理各向异性示例完成
+
+### 完成任务
+
+#### EX-3425 - webgl_materials_texture_anisotropy 纹理各向异性示例
+
+- **完成时间**: 2026-06-01
+- **内容**:
+  - 创建 webgl_materials_texture_anisotropy.vue 示例组件
+  - 实现左右分屏对比效果，展示不同各向异性过滤值的渲染差异
+  - 左侧显示最大各向异性值（maxAnisotropy），右侧显示各向异性值为 1
+  - 使用 ScissorTest 实现分屏渲染
+  - 创建两个独立场景（scene1 和 scene2）分别配置不同各向异性的纹理
+  - 使用 TextureLoader 加载 crate.gif 纹理
+  - 纹理配置：wrapS/wrapT = RepeatWrapping，repeat = (512, 512)，colorSpace = SRGBColorSpace
+  - 鼠标移动交互控制相机视角
+  - 环境光 + 方向光照明系统
+  - 背景色为浅蓝色 #f2f7ff，带雾效（Fog）
+  - 底部标签显示各向异性数值
+
+---
+
 ## 2026-06-01 - Subsurface Scattering 次表面散射示例完成
 
 ### 完成任务
