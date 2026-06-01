@@ -1,5 +1,29 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-05-27 - 物理材质 Clearcoat 示例完成
+
+### 完成任务
+
+#### EX-3421 - webgl_materials_physical_clearcoat 物理材质clearcoat示例
+
+- **完成时间**: 2026-05-27
+- **内容**:
+  - 创建 webgl_materials_physical_clearcoat.vue 示例组件
+  - 使用 HDRCubeTextureLoader 加载 PISA HDR 环境贴图
+  - 实现四种不同的 PBR 材质效果展示：
+    - 车漆效果：clearcoat=1.0, clearcoatRoughness=0.1, metalness=0.9, roughness=0.5, 蓝色
+    - 碳纤维效果：roughness=0.5, clearcoat=1.0, clearcoatRoughness=0.1, 带纹理和法线贴图
+    - 高尔夫球效果：metalness=0.0, roughness=0.1, clearcoat=1.0, 带高尔夫球法线贴图和划痕法线贴图
+    - 透明涂层+法线贴图效果：clearcoat=1.0, metalness=1.0, 红色, 带水波纹法线贴图和划痕法线贴图
+  - 使用 FlakesTexture 创建金属片状纹理效果
+  - 动态点光源粒子跟随正弦曲线运动
+  - 四个球体各自独立旋转动画
+  - TCanvas 配置 ACESFilmicToneMapping 色调映射，exposure=1.25
+  - TOrbitControls 轨道控制器（minDistance=3, maxDistance=30）
+  - 更新 examples.ts 配置标记为已完成
+
+---
+
 ## 2026-05-27 - Object Space Normal Map 对象空间法线贴图示例完成
 
 ### 完成任务

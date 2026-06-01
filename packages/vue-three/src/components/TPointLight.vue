@@ -8,6 +8,7 @@ defineOptions({
 })
 
 import type { PropType } from 'vue'
+import { computed, watch } from 'vue'
 import { useLight } from '../composables/useLight'
 import type { PointLightConfig } from '../types'
 
@@ -76,7 +77,7 @@ const props = defineProps({
   }
 })
 
-const config: PointLightConfig = {
+const config = computed<PointLightConfig>(() => ({
   type: 'point',
   color: props.color,
   intensity: props.intensity,
@@ -84,9 +85,19 @@ const config: PointLightConfig = {
   distance: props.distance,
   decay: props.decay,
   castShadow: props.castShadow
-}
+}))
 
-const { light } = useLight(config)
+const { light } = useLight(config.value)
+
+watch(
+  () => props.position,
+  (newPosition) => {
+    if (newPosition && light) {
+      light.position.set(...newPosition)
+    }
+  },
+  { deep: true }
+)
 
 /**
  * @expose

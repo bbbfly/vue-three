@@ -8,9 +8,11 @@ defineOptions({
 })
 
 import type { PropType } from 'vue'
-import { watch } from 'vue'
+import { watch, useAttrs, onMounted, computed } from 'vue'
+import * as THREE from 'three'
 import { MeshPhysicalMaterial, Color } from 'three'
 import { useMaterial } from '../composables/useMaterial'
+import { useCamelCaseKeys } from '../hooks'
 
 /**
  * 增强型PBR物理材质组件
@@ -154,8 +156,9 @@ const props = defineProps({
     default: undefined
   }
 })
-
-const { material } = useMaterial({
+const attrs = useAttrs()
+const camelCaseAttrs = computed(() => useCamelCaseKeys(attrs))
+const { material, updateMaterial } = useMaterial({
   type: 'physical',
   color: props.color,
   metalness: props.metalness,
@@ -172,7 +175,8 @@ const { material } = useMaterial({
   transparent: props.transparent,
   opacity: props.opacity,
   wireframe: props.wireframe,
-  map: props.map
+  map: props.map,
+  ...camelCaseAttrs.value
 })
 
 watch(
@@ -278,6 +282,20 @@ watch(
   newValue => {
     ; (material as MeshPhysicalMaterial).wireframe = newValue
   }
+)
+
+
+
+onMounted(() => {
+
+})
+
+watch(
+  camelCaseAttrs,
+  (val) => {
+    updateMaterial({ type: 'physical', ...val })
+  },
+  { deep: true }
 )
 
 defineExpose({

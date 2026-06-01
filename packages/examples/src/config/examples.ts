@@ -970,7 +970,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_materials_physical_clearcoat',
         title: '物理材质clearcoat',
         category: 'materials',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_materials_physical_transmission',
