@@ -1,5 +1,29 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-06-02 - Toon 卡通材质示例完成
+
+### 完成任务
+
+#### EX-3432 - webgl_materials_toon Toon 卡通材质示例
+
+- **完成时间**: 2026-06-02
+- **内容**:
+  - 创建 TMeshToonMaterial.vue 组件，支持 color、gradientMap 等属性
+  - 在 factory.ts 中添加 'toon' 材质类型支持，导入 MeshToonMaterial
+  - 在 index.ts 中导出 TMeshToonMaterial 组件
+  - 创建 webgl_materials_toon.vue 示例组件
+  - 实现 5x5x5 球体网格展示不同的 HSL 颜色和渐变贴图效果
+  - 动态生成 DataTexture 作为 gradientMap，控制卡通效果的阶梯数量
+  - 加载字体文件 (gentilis_regular.typeface.json) 实现 3D 文字标签
+  - 点光源沿椭圆轨道运动，展示动态光照效果
+  - 环境光 + 点光源组合照明
+  - 轨道控制器支持缩放和旋转
+  - 完善的资源清理：gradientMap 纹理在 onBeforeUnmount 中释放
+  - 更新 examples.ts 配置标记为已完成
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
 ## 2026-06-02 - 纹理手动 Mipmap 示例完成
 
 ### 完成任务

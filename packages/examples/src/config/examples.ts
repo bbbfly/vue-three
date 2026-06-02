@@ -1032,7 +1032,7 @@ export const exampleCategories: ExampleCategory[] = [
         category: 'materials',
         completed: true
       },
-      { id: 'webgl_materials_toon', title: 'Toon', category: 'materials', completed: false },
+      { id: 'webgl_materials_toon', title: 'Toon', category: 'materials', completed: true },
       { id: 'webgl_materials_video', title: '视频', category: 'materials', completed: false },
       {
         id: 'webgl_materials_video_webcam',

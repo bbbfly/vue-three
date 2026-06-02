@@ -15,6 +15,7 @@ import {
   MeshNormalMaterial,
   MeshDepthMaterial,
   MeshMatcapMaterial,
+  MeshToonMaterial,
   ShadowMaterial,
   ShaderMaterial,
   RawShaderMaterial,
@@ -356,6 +357,15 @@ export class ThreeObjectFactory {
           options.side = side
         }
         return new MeshMatcapMaterial(options)
+      }
+      case 'toon': {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { type, side, ...rest } = config
+        const options: any = { ...rest }
+        if (side !== undefined) {
+          options.side = side
+        }
+        return new MeshToonMaterial(options)
       }
       case 'custom':
         return config.instance
