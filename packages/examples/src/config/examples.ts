@@ -1030,7 +1030,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_materials_texture_rotation',
         title: '纹理rotation',
         category: 'materials',
-        completed: false
+        completed: true
       },
       { id: 'webgl_materials_toon', title: 'Toon', category: 'materials', completed: false },
       { id: 'webgl_materials_video', title: '视频', category: 'materials', completed: false },

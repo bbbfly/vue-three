@@ -25,6 +25,7 @@
 - **EXAMPLES_TECH_DESIGN.md**: Examples 项目技术设计方案
 - **EXAMPLES_TASKS.md**: Examples 项目开发任务清单
 - **EXAMPLES_CHECK_LIST.md**: Examples 项目验收清单
+- **EXAMPLES_PROGRESS.md**: Examples 任务进度日志
 
 ---
 
