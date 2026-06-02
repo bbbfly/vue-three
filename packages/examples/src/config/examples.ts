@@ -1018,7 +1018,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_materials_texture_manualmipmap',
         title: '纹理manualmipmap',
         category: 'materials',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_materials_texture_partialupdate',

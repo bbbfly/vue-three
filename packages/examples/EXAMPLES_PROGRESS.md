@@ -1,5 +1,28 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-06-02 - 纹理手动 Mipmap 示例完成
+
+### 完成任务
+
+#### EX-3429 - webgl_materials_texture_manualmipmap 纹理手动 Mipmap 示例
+
+- **完成时间**: 2026-06-02
+- **内容**:
+  - 创建 webgl_materials_texture_manualmipmap.vue 示例组件
+  - 实现双场景对比渲染：左半屏 LinearMipmapLinear 过滤 vs 右半屏 NearestMipmapNearest 过滤
+  - 手动生成 8 级 mipmaps（128x128 到 1x1），每级使用不同颜色（红、绿、蓝、深红、深绿、深蓝、青、紫）
+  - 使用 Canvas 动态生成棋盘格纹理作为地面，repeat=(1000, 1000)，WrapS/WrapT=RepeatWrapping
+  - 加载 Caravaggio 画作纹理（758px-Canestra*di_frutta*(Caravaggio).jpg）
+  - 画作分别应用 Linear 和 Nearest 过滤模式
+  - 实现画作带画框和阴影效果
+  - 鼠标移动控制相机位置，实现平滑跟踪
+  - 通过 TCanvas 的 onRender 回调实现自定义裁剪渲染（setScissor）
+  - 完善的资源清理：纹理、材质、场景2 均在 onUnmounted 中释放
+  - 更新 examples.ts 配置标记为已完成
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
 ## 2026-06-02 - 纹理过滤示例完成
 
 ### 完成任务
