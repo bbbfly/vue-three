@@ -1024,7 +1024,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_materials_texture_partialupdate',
         title: '纹理partialupdate',
         category: 'materials',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_materials_texture_rotation',

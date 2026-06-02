@@ -525,7 +525,7 @@
 | EX-3427 | 纹理filters            | webgl_materials_texture_filters             | 10min    | 中     | completed |
 | EX-3428 | 纹理html               | webgl_materials_texture_html                | 15min    | 中     | pending   |
 | EX-3429 | 纹理manualmipmap       | webgl_materials_texture_manualmipmap        | 15min    | 中     | completed |
-| EX-3430 | 纹理partialupdate      | webgl_materials_texture_partialupdate       | 15min    | 中     | pending   |
+| EX-3430 | 纹理partialupdate      | webgl_materials_texture_partialupdate       | 15min    | 中     | completed |
 | EX-3431 | 纹理rotation           | webgl_materials_texture_rotation            | 10min    | 中     | pending   |
 | EX-3432 | Toon                   | webgl_materials_toon                        | 15min    | 中     | pending   |
 | EX-3433 | 视频                   | webgl_materials_video                       | 15min    | 中     | pending   |
