@@ -1006,7 +1006,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_materials_texture_filters',
         title: '纹理filters',
         category: 'materials',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_materials_texture_html',
