@@ -2,18 +2,14 @@
   <TCanvas ref="canvasRef" antialias animation-loop @animate="animate">
     <TPerspectiveCamera ref="cameraRef" :fov="60" :near="100" :far="10000" />
 
-    <TScene ref="sceneRef" :background="0x99DDFF">
+    <TScene ref="sceneRef" :background="0x99ddff">
       <TDirectionalLight
         ref="directionalLightRef"
         :position="[200, 1000, 50]"
         :cast-shadow="true"
       />
 
-      <THemisphereLight
-        :sky-color="0x99DDFF"
-        :ground-color="0x669933"
-        :intensity="1 / 3"
-      />
+      <THemisphereLight :sky-color="0x99ddff" :ground-color="0x669933" :intensity="1 / 3" />
 
       <TMesh :rotation="[-Math.PI / 2, 0, 0]" :receive-shadow="true">
         <TPlane :args="[1000000, 1000000]" />
@@ -89,11 +85,7 @@ function loadHorseModel() {
 
       // 创建实例化网格
       if (sceneRef.value?.scene && dummy.geometry && dummy.material) {
-        instancedMesh = new THREE.InstancedMesh(
-          dummy.geometry,
-          dummy.material,
-          1024
-        )
+        instancedMesh = new THREE.InstancedMesh(dummy.geometry, dummy.material, 1024)
         instancedMesh.castShadow = true
 
         // 设置实例矩阵和颜色
@@ -103,21 +95,14 @@ function loadHorseModel() {
         let i = 0
         for (let x = 0; x < 32; x++) {
           for (let y = 0; y < 32; y++) {
-            position.set(
-              offset - 300 * x + 200 * Math.random(),
-              0,
-              offset - 300 * y
-            )
-            
+            position.set(offset - 300 * x + 200 * Math.random(), 0, offset - 300 * y)
+
             // 更新 dummy 位置并计算矩阵
             dummy.position.copy(position)
             dummy.updateMatrix()
-            
+
             instancedMesh.setMatrixAt(i, dummy.matrix)
-            instancedMesh.setColorAt(
-              i,
-              color.setHSL(Math.random() * 360, 0.5, 0.66)
-            )
+            instancedMesh.setColorAt(i, color.setHSL(Math.random() * 360, 0.5, 0.66))
 
             i++
           }

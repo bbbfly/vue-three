@@ -2,10 +2,20 @@
   <TCanvas ref="canvasRef" antialias animation-loop @animate="animate">
     <TPerspectiveCamera ref="cameraRef" :fov="45" :near="1" :far="15000" :position="[0, 0, 1000]" />
 
-    <TScene ref="sceneRef" :background="0x000000" :fog="fog">
+    <TScene
+      ref="sceneRef"
+      :background="0x000000"
+      :fog="{ type: 'exp', color: 0x000000, near: 1, far: 15000 }"
+    >
       <TFlyControls ref="flyControlsRef" :movement-speed="1000" :roll-speed="0.314" />
-      
-      <TPointLight :color="0xff2200" :intensity="3" :distance="0" :decay="0" :position="[0, 0, 0]" />
+
+      <TPointLight
+        :color="0xff2200"
+        :intensity="3"
+        :distance="0"
+        :decay="0"
+        :position="[0, 0, 0]"
+      />
       <TDirectionalLight :color="0xffffff" :intensity="3" :position="[0, 0, 1]" />
     </TScene>
   </TCanvas>
@@ -24,13 +34,8 @@ import {
 } from '@vue-three/vue-three'
 
 // 引用
-const canvasRef = ref<any>(null)
-const cameraRef = ref<any>(null)
 const sceneRef = ref<any>(null)
 const flyControlsRef = ref<any>(null)
-
-// 雾效配置
-const fog = new THREE.Fog(0x000000, 1, 15000)
 
 // LOD 网格数组
 const lodMeshes: THREE.LOD[] = []

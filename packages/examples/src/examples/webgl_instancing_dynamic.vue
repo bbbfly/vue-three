@@ -117,7 +117,7 @@ function setupEnvironment() {
   console.log('setupEnvironment called')
   console.log('canvasRef:', canvasRef.value)
   console.log('sceneRef:', sceneRef.value)
-  
+
   if (!canvasRef.value?.context?.renderer || !sceneRef.value?.scene) {
     console.warn('Renderer or scene not ready')
     return
@@ -125,10 +125,10 @@ function setupEnvironment() {
 
   pmremGenerator = new THREE.PMREMGenerator(canvasRef.value.context.renderer)
   pmremGenerator.compileCubemapShader()
-  
+
   const envTexture = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture
   ;(sceneRef.value.scene as any).environment = envTexture
-  
+
   console.log('Environment set:', (sceneRef.value.scene as any).environment)
 }
 

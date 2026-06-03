@@ -13,12 +13,7 @@ import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import * as THREE from 'three'
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js'
 import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js'
-import {
-  TCanvas,
-  TScene,
-  TPerspectiveCamera,
-  TOrbitControls
-} from '@vue-three/vue-three'
+import { TCanvas, TScene, TPerspectiveCamera, TOrbitControls } from '@vue-three/vue-three'
 
 // 渲染方法枚举
 enum Method {
@@ -73,9 +68,12 @@ function initGUI() {
   gui.add(api.value, 'method', Method).onChange(() => {
     initMesh()
   })
-  gui.add(api.value, 'count', 1, 10000).step(1).onChange(() => {
-    initMesh()
-  })
+  gui
+    .add(api.value, 'count', 1, 10000)
+    .step(1)
+    .onChange(() => {
+      initMesh()
+    })
 
   const perfFolder = gui.addFolder('Performance')
 
