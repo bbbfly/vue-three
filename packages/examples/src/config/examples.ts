@@ -591,7 +591,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_instancing_performance',
         title: '性能',
         category: 'instancing',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_instancing_raycast',

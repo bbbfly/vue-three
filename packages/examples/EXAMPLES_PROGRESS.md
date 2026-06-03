@@ -1,5 +1,35 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-06-03 - 实例化性能对比示例完成
+
+### 完成任务
+
+#### EX-2503 - webgl_instancing_performance 实例化性能对比示例
+
+- **完成时间**: 2026-06-03
+- **内容**:
+  - 创建 webgl_instancing_performance.vue 示例组件
+  - 使用 BufferGeometryLoader 加载 suzanne_buffergeometry.json 模型
+  - 实现三种渲染方法性能对比：
+    - **INSTANCED（实例化）**: 使用 THREE.InstancedMesh，1 次 GPU draw call
+    - **MERGED（合并几何体）**: 使用 BufferGeometryUtils.mergeGeometries 合并所有几何体，1 次 GPU draw call
+    - **NAIVE（朴素方法）**: 创建多个独立 Mesh，N 次 GPU draw call
+  - 使用 lil-gui 实现交互控制：
+    - 切换渲染方法（Method 枚举）
+    - 调整实例数量（1-10000，步进 1）
+  - 实现性能统计信息显示：
+    - GPU draw calls 数量
+    - GPU memory 占用（字节格式化）
+  - 使用 MeshNormalMaterial 材质
+  - 实现 randomizeMatrix 函数随机化每个实例的位置、旋转、缩放
+  - OrbitControls 自动旋转
+  - 场景背景色 0xffffff（白色）
+  - 正确的资源清理：几何体、材质、网格、GUI
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+  - 更新 examples.ts 配置标记为已完成
+
+---
+
 ## 2026-06-03 - 实例化变形目标示例完成
 
 ### 完成任务
