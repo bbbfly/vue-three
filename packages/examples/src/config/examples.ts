@@ -460,7 +460,7 @@ export const exampleCategories: ExampleCategory[] = [
     name: 'WebGL - 特效',
     icon: '✨',
     examples: [
-      { id: 'webgl_effects_anaglyph', title: '立体红青', category: 'effects', completed: false },
+      { id: 'webgl_effects_anaglyph', title: '立体红青', category: 'effects', completed: true },
       { id: 'webgl_effects_ascii', title: 'ASCII', category: 'effects', completed: false },
       {
         id: 'webgl_effects_parallaxbarrier',

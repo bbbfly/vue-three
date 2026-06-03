@@ -288,12 +288,12 @@
 
 ## 第二十阶段：WebGL 特效示例
 
-| 任务ID  | 任务名称        | 示例ID                        | 预计耗时 | 优先级 | 状态    |
-| ------- | --------------- | ----------------------------- | -------- | ------ | ------- |
-| EX-2001 | 立体红青        | webgl_effects_anaglyph        | 15min    | 中     | pending |
-| EX-2002 | ASCII           | webgl_effects_ascii           | 15min    | 中     | pending |
-| EX-2003 | Parallaxbarrier | webgl_effects_parallaxbarrier | 15min    | 中     | pending |
-| EX-2004 | 立体声          | webgl_effects_stereo          | 15min    | 中     | pending |
+| 任务ID  | 任务名称        | 示例ID                        | 预计耗时 | 优先级 | 状态      |
+| ------- | --------------- | ----------------------------- | -------- | ------ | --------- |
+| EX-2001 | 立体红青        | webgl_effects_anaglyph        | 15min    | 中     | completed |
+| EX-2002 | ASCII           | webgl_effects_ascii           | 15min    | 中     | pending   |
+| EX-2003 | Parallaxbarrier | webgl_effects_parallaxbarrier | 15min    | 中     | pending   |
+| EX-2004 | 立体声          | webgl_effects_stereo          | 15min    | 中     | pending   |
 
 ---
 

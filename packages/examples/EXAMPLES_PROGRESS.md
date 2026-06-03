@@ -1,5 +1,31 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-06-03 - Anaglyph 立体红青特效示例完成
+
+### 完成任务
+
+#### EX-2001 - webgl_effects_anaglyph 立体红青特效示例
+
+- **完成时间**: 2026-06-03
+- **内容**:
+  - 创建 webgl_effects_anaglyph.vue 示例组件
+  - 使用 AnaglyphEffect 实现立体红青3D效果
+  - 加载 Pisa 立方体贴图（6张PNG图片）作为场景背景和环境贴图
+  - 创建 500 个球体实例，每个球体使用 MeshBasicMaterial + 环境贴图
+  - 球体随机分布在 10x10x10 的空间范围内，缩放 1-4 倍
+  - 配置 AnaglyphEffect 立体参数：
+    - eyeSep: 0.064（人类瞳距默认值 64mm）
+    - planeDistance: 3（零视差平面距离，匹配相机位置）
+  - 实现鼠标移动交互控制相机位置（平滑跟踪）
+  - 球体动画：使用 Date.now() 计时器，球体沿椭圆轨道运动
+  - 相机配置：FOV 60，near 0.01，far 100，位置 [0, 0, 3]
+  - 通过 @animate 事件获取 renderer 并初始化 AnaglyphEffect
+  - 使用 effect.render() 替代默认的 renderer.render() 进行渲染
+  - 完整的资源清理：事件监听移除、effect 实例清理、球体数组清空
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
 ## 2026-06-03 - LOD 级别细节示例完成
 
 ### 完成任务
