@@ -1,5 +1,37 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-06-03 - LOD 级别细节示例完成
+
+### 完成任务
+
+#### EX-3201 - webgl_lod LOD 级别细节示例
+
+- **完成时间**: 2026-06-03
+- **内容**:
+  - 创建 webgl_lod.vue 示例组件
+  - 使用 TFlyControls 实现飞行控制器（movementSpeed: 1000, rollSpeed: 0.314）
+  - 创建 1000 个 THREE.LOD 对象，每个包含 5 个细节层级：
+    - 层级 1: IcosahedronGeometry(100, 16)，距离 50
+    - 层级 2: IcosahedronGeometry(100, 8)，距离 300
+    - 层级 3: IcosahedronGeometry(100, 4)，距离 1000
+    - 层级 4: IcosahedronGeometry(100, 2)，距离 2000
+    - 层级 5: IcosahedronGeometry(100, 1)，距离 8000
+  - 使用 MeshLambertMaterial 材质（白色线框模式）
+  - 每个网格缩放 1.5 倍，matrixAutoUpdate 设为 false 优化性能
+  - LOD 对象随机分布在 10000x7500x10000 的空间范围内
+  - 场景配置：
+    - 雾效：THREE.Fog(0x000000, 1, 15000)
+    - 点光源：0xff2200，强度 3
+    - 方向光：0xffffff，强度 3
+    - 背景色：0x000000（黑色）
+  - 使用 THREE.Timer 计算时间增量
+  - 相机位置 [0, 0, 1000]，FOV 45，near 1，far 15000
+  - 完整的资源清理：移除所有 LOD 对象并释放几何体
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+  - 更新 examples.ts 配置标记为已完成
+
+---
+
 ## 2026-06-03 - 实例化性能对比示例完成
 
 ### 完成任务

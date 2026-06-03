@@ -850,7 +850,7 @@ export const exampleCategories: ExampleCategory[] = [
     id: 'lod',
     name: 'WebGL - LOD',
     icon: '📐',
-    examples: [{ id: 'webgl_lod', title: 'Webgllod', category: 'lod', completed: false }]
+    examples: [{ id: 'webgl_lod', title: 'Webgllod', category: 'lod', completed: true }]
   },
   {
     id: 'marchingcubes',
