@@ -352,7 +352,7 @@
 | 任务ID  | 任务名称 | 示例ID                       | 预计耗时 | 优先级 | 状态      |
 | ------- | -------- | ---------------------------- | -------- | ------ | --------- |
 | EX-2501 | Dynamic  | webgl_instancing_dynamic     | 15min    | 中     | completed |
-| EX-2502 | 变形     | webgl_instancing_morph       | 20min    | 中     | pending   |
+| EX-2502 | 变形     | webgl_instancing_morph       | 20min    | 中     | completed |
 | EX-2503 | 性能     | webgl_instancing_performance | 15min    | 中     | pending   |
 | EX-2504 | 射线检测 | webgl_instancing_raycast     | 15min    | 中     | pending   |
 | EX-2505 | Scatter  | webgl_instancing_scatter     | 15min    | 中     | pending   |

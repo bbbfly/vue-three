@@ -586,7 +586,7 @@ export const exampleCategories: ExampleCategory[] = [
         category: 'instancing',
         completed: true
       },
-      { id: 'webgl_instancing_morph', title: '变形', category: 'instancing', completed: false },
+      { id: 'webgl_instancing_morph', title: '变形', category: 'instancing', completed: true },
       {
         id: 'webgl_instancing_performance',
         title: '性能',

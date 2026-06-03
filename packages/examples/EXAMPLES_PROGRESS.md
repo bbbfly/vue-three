@@ -1,5 +1,35 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-06-03 - 实例化变形目标示例完成
+
+### 完成任务
+
+#### EX-2502 - webgl_instancing_morph 实例化变形目标示例
+
+- **完成时间**: 2026-06-03
+- **内容**:
+  - 创建 webgl_instancing_morph.vue 示例组件
+  - 使用 GLTFLoader 加载 Horse.glb 马模型
+  - 使用 TInstancedMesh 创建 1024 个马实例（32x32 网格布局）
+  - 使用 AnimationMixer 加载并播放马的奔跑动画
+  - 实现每个实例独立的动画时间偏移（timeOffsets 数组，0-3 秒随机）
+  - 每帧调用 mixer.setTime() 为每个实例设置不同的动画帧
+  - 使用 mesh.setMorphAt() 方法设置每个实例的变形目标状态
+  - 标记 morphTexture.needsUpdate = true 确保变形数据每帧更新
+  - 实现相机环绕动画（半径 3000，高度 1500-2500 波动）
+  - 场景配置：
+    - 背景色 0x99DDFF（浅蓝色）
+    - 雾效配置（Fog, 5000-10000 范围）
+    - 方向光带阴影（VSMShadowMap）
+    - 半球光（0x99DDFF, 0x669933）
+    - 地面平面（1000000x1000000，绿色，接收阴影）
+  - 每个实例随机颜色（HSL 色彩空间）
+  - 正确的资源清理：AnimationMixer.stopAllAction()
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+  - 更新 examples.ts 配置标记为已完成
+
+---
+
 ## 2026-06-03 - 动态实例化示例完成
 
 ### 完成任务
