@@ -1,8 +1,16 @@
 <template>
   <TCanvas ref="canvasRef" antialias @animate="animate">
     <TScene ref="sceneRef">
-      <TOrthographicCamera ref="cameraRef" :left="-height * aspect" :right="height * aspect" :top="height"
-        :bottom="-height" :near="1" :far="10000" :position="[0, 0, 1500]" />
+      <TOrthographicCamera
+        ref="cameraRef"
+        :left="-height * aspect"
+        :right="height * aspect"
+        :top="height"
+        :bottom="-height"
+        :near="1"
+        :far="10000"
+        :position="[0, 0, 1500]"
+      />
       <TOrbitControls ref="controlsRef" :enable-zoom="false" :enable-damping="true" />
 
       <TAmbientLight ref="ambientLightRef" color="#ffffff" :intensity="settings.ambientIntensity" />
@@ -29,7 +37,20 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick, watch, shallowRef } from 'vue'
 import * as THREE from 'three'
-import { TCubeTexture, TTexture, TOBJLoader, useGui, TCanvas, TScene, TOrthographicCamera, TOrbitControls, TAmbientLight, TPointLight, TMesh, TMeshStandardMaterial } from '@vue-three/vue-three'
+import {
+  TCubeTexture,
+  TTexture,
+  TOBJLoader,
+  useGui,
+  TCanvas,
+  TScene,
+  TOrthographicCamera,
+  TOrbitControls,
+  TAmbientLight,
+  TPointLight,
+  TMesh,
+  TMeshStandardMaterial
+} from '@vue-three/vue-three'
 
 const materialRef = shallowRef<any>(null)
 const pointLightRef = shallowRef<any>(null)
@@ -44,10 +65,9 @@ const settings = ref({
   ambientIntensity: 0.2,
   aoMapIntensity: 1.0,
   envMapIntensity: 1.0,
-  displacementScale: 2.436143,
+  displacementScale: 2.436143
   // normalScale: 1.0
 })
-
 
 const { gui } = useGui({ width: 300 })
 
@@ -66,7 +86,7 @@ const urls = [
   '/textures/cube/SwedishRoyalCastle/py.jpg',
   '/textures/cube/SwedishRoyalCastle/ny.jpg',
   '/textures/cube/SwedishRoyalCastle/pz.jpg',
-  '/textures/cube/SwedishRoyalCastle/nz.jpg',
+  '/textures/cube/SwedishRoyalCastle/nz.jpg'
 ]
 function initScene() {
   const material = materialRef.value.material as THREE.MeshStandardMaterial
@@ -78,7 +98,6 @@ function initScene() {
   material.displacementBias = -0.428408
   material.envMapIntensity = settings.value.envMapIntensity
   material.needsUpdate = true
-
 
   gui.add(settings.value, 'metalness').min(0).max(1)
 
@@ -93,9 +112,7 @@ function initScene() {
   gui.add(settings.value, 'displacementScale').min(0)
 
   // gui.add(settings.value, 'normalScale', -1, 1)
-
 }
-
 
 onMounted(async () => {
   await nextTick()

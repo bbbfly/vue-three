@@ -1,11 +1,22 @@
 <template>
   <TCanvas antialias>
     <TScene ref="sceneRef">
-      <TPerspectiveCamera ref="cameraRef" :fov="45" :near="1" :far="80000" :position="[-600, 550, 1300]" />
+      <TPerspectiveCamera
+        ref="cameraRef"
+        :fov="45"
+        :near="1"
+        :far="80000"
+        :position="[-600, 550, 1300]"
+      />
       <TOrbitControls ref="controlsRef" />
 
       <TAmbientLight ref="ambientLightRef" :intensity="2.0" :color="0x7c7c7c" />
-      <TDirectionalLight ref="lightRef" :intensity="2.0" :color="0xffffff" :position="[0.32, 0.39, 0.7]" />
+      <TDirectionalLight
+        ref="lightRef"
+        :intensity="2.0"
+        :color="0xffffff"
+        :position="[0.32, 0.39, 0.7]"
+      />
 
       <TMesh ref="teapotMeshRef"></TMesh>
     </TScene>
@@ -24,7 +35,7 @@ import {
   TAmbientLight,
   TDirectionalLight,
   TMesh,
-  useGui,
+  useGui
 } from '@vue-three/vue-three'
 
 const sceneRef = ref<THREE.Scene>()
@@ -81,11 +92,23 @@ function initMaterialsAndTextures() {
   textureCube = cubeTextureLoader.load(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'])
 
   materials['wireframe'] = new THREE.MeshBasicMaterial({ wireframe: true })
-  materials['flat'] = new THREE.MeshPhongMaterial({ specular: 0x000000, flatShading: true, side: THREE.DoubleSide })
+  materials['flat'] = new THREE.MeshPhongMaterial({
+    specular: 0x000000,
+    flatShading: true,
+    side: THREE.DoubleSide
+  })
   materials['smooth'] = new THREE.MeshLambertMaterial({ side: THREE.DoubleSide })
-  materials['glossy'] = new THREE.MeshPhongMaterial({ color: 0xc0c0c0, specular: 0x404040, shininess: 300, side: THREE.DoubleSide })
+  materials['glossy'] = new THREE.MeshPhongMaterial({
+    color: 0xc0c0c0,
+    specular: 0x404040,
+    shininess: 300,
+    side: THREE.DoubleSide
+  })
   materials['textured'] = new THREE.MeshPhongMaterial({ map: textureMap, side: THREE.DoubleSide })
-  materials['reflective'] = new THREE.MeshPhongMaterial({ envMap: textureCube, side: THREE.DoubleSide })
+  materials['reflective'] = new THREE.MeshPhongMaterial({
+    envMap: textureCube,
+    side: THREE.DoubleSide
+  })
 }
 
 function updateSceneBackground() {
@@ -117,28 +140,56 @@ const { gui, destroy } = useGui()
 onMounted(() => {
   nextTick(() => {
     initMaterialsAndTextures()
-    gui.add(effectController, 'newTess', [2, 3, 4, 5, 6, 8, 10, 15, 20, 30, 40, 50]).name('Tessellation Level').onChange(() => {
-      recreateTeapotGeometry()
-    })
-    gui.add(effectController, 'lid').name('display lid').onChange(() => {
-      recreateTeapotGeometry()
-    })
-    gui.add(effectController, 'body').name('display body').onChange(() => {
-      recreateTeapotGeometry()
-    })
-    gui.add(effectController, 'bottom').name('display bottom').onChange(() => {
-      recreateTeapotGeometry()
-    })
-    gui.add(effectController, 'fitLid').name('snug lid').onChange(() => {
-      recreateTeapotGeometry()
-    })
-    gui.add(effectController, 'nonblinn').name('original scale').onChange(() => {
-      recreateTeapotGeometry()
-    })
-    gui.add(effectController, 'newShading', ['wireframe', 'flat', 'smooth', 'glossy', 'textured', 'reflective']).name('Shading').onChange(() => {
-      updateMaterial()
-      updateSceneBackground()
-    })
+    gui
+      .add(effectController, 'newTess', [2, 3, 4, 5, 6, 8, 10, 15, 20, 30, 40, 50])
+      .name('Tessellation Level')
+      .onChange(() => {
+        recreateTeapotGeometry()
+      })
+    gui
+      .add(effectController, 'lid')
+      .name('display lid')
+      .onChange(() => {
+        recreateTeapotGeometry()
+      })
+    gui
+      .add(effectController, 'body')
+      .name('display body')
+      .onChange(() => {
+        recreateTeapotGeometry()
+      })
+    gui
+      .add(effectController, 'bottom')
+      .name('display bottom')
+      .onChange(() => {
+        recreateTeapotGeometry()
+      })
+    gui
+      .add(effectController, 'fitLid')
+      .name('snug lid')
+      .onChange(() => {
+        recreateTeapotGeometry()
+      })
+    gui
+      .add(effectController, 'nonblinn')
+      .name('original scale')
+      .onChange(() => {
+        recreateTeapotGeometry()
+      })
+    gui
+      .add(effectController, 'newShading', [
+        'wireframe',
+        'flat',
+        'smooth',
+        'glossy',
+        'textured',
+        'reflective'
+      ])
+      .name('Shading')
+      .onChange(() => {
+        updateMaterial()
+        updateSceneBackground()
+      })
 
     recreateTeapotGeometry()
     updateMaterial()

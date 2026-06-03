@@ -1,28 +1,66 @@
 <template>
-  <TCanvas ref="canvasRef" antialias :localClippingEnabled="localClippingEnabled" :clippingPlanes="globalClippingPlanes"
-    :shadowMap="{ enabled: true }">
+  <TCanvas
+    ref="canvasRef"
+    antialias
+    :local-clipping-enabled="localClippingEnabled"
+    :clipping-planes="globalClippingPlanes"
+    :shadow-map="{ enabled: true }"
+  >
     <TScene>
       <TPerspectiveCamera :position="[0, 1.3, 3]" :fov="36" :near="0.25" :far="16" />
 
       <TAmbientLight :intensity="0.8" />
 
-      <TSpotLight :position="[2, 3, 3]" :intensity="60" :angle="Math.PI / 5" :penumbra="0.2" :castShadow="true"
-        :shadow-mapSize="[1024, 1024]" :shadow-camera-near="3" :shadow-camera-far="10" />
+      <TSpotLight
+        :position="[2, 3, 3]"
+        :intensity="60"
+        :angle="Math.PI / 5"
+        :penumbra="0.2"
+        :cast-shadow="true"
+        :shadow-map-size="[1024, 1024]"
+        :shadow-camera-near="3"
+        :shadow-camera-far="10"
+      />
 
-      <TDirectionalLight :position="[0, 3, 0]" :intensity="3" :color="0x55505a" :castShadow="true"
-        :shadow-camera-near="1" :shadow-camera-far="10" :shadow-camera-right="1" :shadow-camera-left="-1"
-        :shadow-camera-top="1" :shadow-camera-bottom="-1" :shadow-mapSize="[1024, 1024]" />
+      <TDirectionalLight
+        :position="[0, 3, 0]"
+        :intensity="3"
+        :color="0x55505a"
+        :cast-shadow="true"
+        :shadow-camera-near="1"
+        :shadow-camera-far="10"
+        :shadow-camera-right="1"
+        :shadow-camera-left="-1"
+        :shadow-camera-top="1"
+        :shadow-camera-bottom="-1"
+        :shadow-map-size="[1024, 1024]"
+      />
 
-      <TMesh ref="meshRef" :position="[0, 0.8, 0]" :rotation="rotation" :scale="scale" :castShadow="true">
+      <TMesh
+        ref="meshRef"
+        :position="[0, 0.8, 0]"
+        :rotation="rotation"
+        :scale="scale"
+        :cast-shadow="true"
+      >
         <TTorusKnotGeometry :args="[0.4, 0.08, 95, 20]" />
-        <TMeshPhongMaterial :color="0x80ee10" :shininess="100" :side="THREE.DoubleSide"
-          :clippingPlanes="localClippingEnabled ? localClippingPlanes : undefined" :clipShadows="clipShadows"
-          :alphaToCoverage="alphaToCoverage" />
+        <TMeshPhongMaterial
+          :color="0x80ee10"
+          :shininess="100"
+          :side="THREE.DoubleSide"
+          :clipping-planes="localClippingEnabled ? localClippingPlanes : undefined"
+          :clip-shadows="clipShadows"
+          :alpha-to-coverage="alphaToCoverage"
+        />
       </TMesh>
 
-      <TMesh :rotation="[-Math.PI / 2, 0, 0]" :receiveShadow="true">
+      <TMesh :rotation="[-Math.PI / 2, 0, 0]" :receive-shadow="true">
         <TPlane :args="[9, 9, 1, 1]" />
-        <TMeshPhongMaterial :color="0xa0adaf" :shininess="150" :alphaToCoverage="alphaToCoverage" />
+        <TMeshPhongMaterial
+          :color="0xa0adaf"
+          :shininess="150"
+          :alpha-to-coverage="alphaToCoverage"
+        />
       </TMesh>
     </TScene>
   </TCanvas>

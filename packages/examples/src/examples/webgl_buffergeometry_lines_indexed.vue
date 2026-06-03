@@ -14,14 +14,21 @@
 <script setup lang="ts">
 import { ref, onMounted, shallowRef } from 'vue'
 import * as THREE from 'three'
-import { TCanvas, TScene, TPerspectiveCamera, TLineSegments, TBufferGeometry, TLineBasicMaterial } from '@vue-three/vue-three'
+import {
+  TCanvas,
+  TScene,
+  TPerspectiveCamera,
+  TLineSegments,
+  TBufferGeometry,
+  TLineBasicMaterial
+} from '@vue-three/vue-three'
 
 const lineRef = ref<any>(null)
 const geometryAttributes = shallowRef<Record<string, THREE.BufferAttribute>>({})
 const indices = shallowRef<number[]>([])
 
 const iterationCount = 4
-const rangle = 60 * Math.PI / 180.0
+const rangle = (60 * Math.PI) / 180.0
 let nextPositionsIndex = 0
 
 const positions: number[] = []
@@ -79,22 +86,13 @@ function snowflake(points: THREE.Vector3[], loop: boolean, xOffset: number) {
 onMounted(() => {
   let y = 0
 
-  snowflake(
-    [
-      new THREE.Vector3(0, y, 0),
-      new THREE.Vector3(500, y, 0)
-    ],
-    false, 600
-  )
+  snowflake([new THREE.Vector3(0, y, 0), new THREE.Vector3(500, y, 0)], false, 600)
 
   y += 600
   snowflake(
-    [
-      new THREE.Vector3(0, y, 0),
-      new THREE.Vector3(250, y + 400, 0),
-      new THREE.Vector3(500, y, 0)
-    ],
-    true, 600
+    [new THREE.Vector3(0, y, 0), new THREE.Vector3(250, y + 400, 0), new THREE.Vector3(500, y, 0)],
+    true,
+    600
   )
 
   y += 600
@@ -105,7 +103,8 @@ onMounted(() => {
       new THREE.Vector3(500, y + 500, 0),
       new THREE.Vector3(0, y + 500, 0)
     ],
-    true, 600
+    true,
+    600
   )
 
   y += 1000
@@ -121,7 +120,8 @@ onMounted(() => {
       new THREE.Vector3(250, y - 250, 0),
       new THREE.Vector3(250, y, 0)
     ],
-    false, 600
+    false,
+    600
   )
 
   geometryAttributes.value = {

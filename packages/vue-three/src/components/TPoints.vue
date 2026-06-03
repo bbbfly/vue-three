@@ -4,13 +4,18 @@
 
 <script setup lang="ts">
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import type { PropType } from 'vue'
 import { watch, onMounted, inject, onBeforeUnmount, provide } from 'vue'
 import { Points, BufferGeometry, Material } from 'three'
-import { ThreeContextKey, MeshContextKey, GroupContextKey, InteractionContextKey } from '../core/context'
+import {
+  ThreeContextKey,
+  MeshContextKey,
+  GroupContextKey,
+  InteractionContextKey
+} from '../core/context'
 import { ThreeObjectFactory } from '../core/factory'
 import { disposeObject3D } from '../core/cleanup'
 import type { Object3DConfig } from '../types'
@@ -196,8 +201,6 @@ onBeforeUnmount(() => {
   parent.remove(points)
   disposeObject3D(points)
 })
-
-
 
 /**
  * @expose

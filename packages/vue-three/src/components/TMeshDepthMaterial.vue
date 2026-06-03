@@ -18,7 +18,7 @@ import { useMaterial } from '../composables/useMaterial'
  * </TMesh>
  */
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 const props = defineProps({

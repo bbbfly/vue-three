@@ -1,5 +1,10 @@
 <template>
-  <TCanvas antialias :tone-mapping="toneMapping" :tone-mapping-exposure="params.exposure" background="#000000">
+  <TCanvas
+    antialias
+    :tone-mapping="toneMapping"
+    :tone-mapping-exposure="params.exposure"
+    background="#000000"
+  >
     <TScene>
       <TPerspectiveCamera :fov="40" :near="1" :far="100" :position="[0, 0, 13]" />
       <TOrbitControls :enable-zoom="false" :enable-pan="false" />

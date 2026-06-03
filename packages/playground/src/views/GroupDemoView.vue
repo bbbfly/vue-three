@@ -9,18 +9,10 @@
           <TPerspectiveCamera :position="[8, 8, 8]" :fov="60" />
           <TOrbitControls :enable-damping="true" :enable-pan="true" :enable-zoom="true" />
           <TAmbientLight :intensity="0.5" />
-          <TDirectionalLight
-            :position="[10, 10, 10]"
-            :intensity="1"
-            :cast-shadow="true"
-          />
+          <TDirectionalLight :position="[10, 10, 10]" :intensity="1" :cast-shadow="true" />
 
           <!-- 外层组 - 红色组 -->
-          <TGroup
-            ref="outerGroupRef"
-            :position="[0, 0, 0]"
-            :scale="outerScale"
-          >
+          <TGroup ref="outerGroupRef" :position="[0, 0, 0]" :scale="outerScale">
             <!-- 外层组内的立方体 -->
             <TMesh
               ref="outerCubeRef"
@@ -33,11 +25,7 @@
             </TMesh>
 
             <!-- 中层组 - 绿色组，嵌套在外层组内 -->
-            <TGroup
-              ref="middleGroupRef"
-              :position="[3, 0, 0]"
-              :rotation="middleRotation"
-            >
+            <TGroup ref="middleGroupRef" :position="[3, 0, 0]" :rotation="middleRotation">
               <!-- 中层组内的球体 -->
               <TMesh
                 ref="middleSphereRef"
@@ -50,11 +38,7 @@
               </TMesh>
 
               <!-- 内层组 - 蓝色组，嵌套在中层组内 -->
-              <TGroup
-                ref="innerGroupRef"
-                :position="[2, 0, 0]"
-                :scale="innerScale"
-              >
+              <TGroup ref="innerGroupRef" :position="[2, 0, 0]" :scale="innerScale">
                 <!-- 内层组内的圆锥 -->
                 <TMesh
                   ref="innerConeRef"
@@ -146,7 +130,7 @@ function animate() {
   // 外层组轻微缩放
   const pulse = Math.sin(Date.now() * 0.002) * 0.05 + 1
   outerScale.value = [pulse, pulse, pulse]
-  
+
   animationId = requestAnimationFrame(animate)
 }
 

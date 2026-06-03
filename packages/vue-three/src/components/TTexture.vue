@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import type { PropType } from 'vue'
@@ -130,11 +130,12 @@ const { texture, load, updateSettings } = useTexture({
   colorSpace: props.colorSpace
 })
 
-const { wrapS, wrapT, magFilter, minFilter, repeat, offset, center, rotation, colorSpace } = toRefs(props)
+const { wrapS, wrapT, magFilter, minFilter, repeat, offset, center, rotation, colorSpace } =
+  toRefs(props)
 
 watch(
   () => props.url,
-  (newUrl) => {
+  newUrl => {
     load(newUrl)
   }
 )

@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import type { PropType } from 'vue'
@@ -133,7 +133,6 @@ const { material } = useMaterial({
   glslVersion: props.glslVersion,
   lights: props.lights
 })
-
 
 /**
  * @expose

@@ -8,13 +8,21 @@
         <TCamera />
         <TMesh ref="meshRef">
           <TPlane :args="[1, 1]" />
-          <TShaderMaterial :uniforms="uniforms" :vertexShader="vertexShader" :fragmentShader="fragmentShader" />
+          <TShaderMaterial
+            :uniforms="uniforms"
+            :vertex-shader="vertexShader"
+            :fragment-shader="fragmentShader"
+          />
         </TMesh>
       </TScene>
     </TCanvas>
     <div class="info">
-      <a href="https://threejs.org" target="_blank" rel="noopener noreferrer">three.js</a> webaudio - visualizer<br />
-      music by <a href="http://www.newgrounds.com/audio/listen/376737" target="_blank" rel="noopener">skullbeatz</a>
+      <a href="https://threejs.org" target="_blank" rel="noopener noreferrer">three.js</a> webaudio
+      - visualizer<br />
+      music by
+      <a href="http://www.newgrounds.com/audio/listen/376737" target="_blank" rel="noopener"
+        >skullbeatz</a
+      >
     </div>
   </div>
 </template>
@@ -65,7 +73,7 @@ const initAudio = () => {
 
   if (/(iPad|iPhone|iPod)/g.test(navigator.userAgent)) {
     const loader = new THREE.AudioLoader()
-    loader.load(file, (buffer) => {
+    loader.load(file, buffer => {
       audio.value?.setBuffer(buffer)
       audio.value?.play()
       setupAnalyser()
@@ -82,7 +90,12 @@ const setupAnalyser = () => {
   if (!audio.value) return
 
   analyser.value = new THREE.AudioAnalyser(audio.value, fftSize)
-  audioDataTexture.value = new THREE.DataTexture(analyser.value.data, fftSize / 2, 1, THREE.RedFormat)
+  audioDataTexture.value = new THREE.DataTexture(
+    analyser.value.data,
+    fftSize / 2,
+    1,
+    THREE.RedFormat
+  )
   uniforms.tAudioData.value = audioDataTexture.value
 
   animate()
@@ -97,7 +110,7 @@ const animate = () => {
   requestAnimationFrame(animate)
 }
 
-onMounted(() => { })
+onMounted(() => {})
 
 onUnmounted(() => {
   audio.value?.stop()

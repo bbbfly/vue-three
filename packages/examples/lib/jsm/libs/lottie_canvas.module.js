@@ -1,670 +1,766 @@
-const lottie = {};
+const lottie = {}
 
 if (typeof document !== 'undefined') {
+  const svgNS = 'http://www.w3.org/2000/svg'
 
-const svgNS = 'http://www.w3.org/2000/svg';
+  let locationHref = ''
+  let _useWebWorker = false
 
-let locationHref = '';
-let _useWebWorker = false;
+  const initialDefaultFrame = -999999
 
-const initialDefaultFrame = -999999;
+  const setWebWorker = flag => {
+    _useWebWorker = !!flag
+  }
+  const getWebWorker = () => _useWebWorker
 
-const setWebWorker = (flag) => { _useWebWorker = !!flag; };
-const getWebWorker = () => _useWebWorker;
+  const setLocationHref = value => {
+    locationHref = value
+  }
+  const getLocationHref = () => locationHref
 
-const setLocationHref = (value) => { locationHref = value; };
-const getLocationHref = () => locationHref;
+  function createTag(type) {
+    // return {appendChild:function(){},setAttribute:function(){},style:{}}
+    return document.createElement(type)
+  }
 
-function createTag(type) {
-  // return {appendChild:function(){},setAttribute:function(){},style:{}}
-  return document.createElement(type);
-}
-
-function extendPrototype(sources, destination) {
-  var i;
-  var len = sources.length;
-  var sourcePrototype;
-  for (i = 0; i < len; i += 1) {
-    sourcePrototype = sources[i].prototype;
-    for (var attr in sourcePrototype) {
-      if (Object.prototype.hasOwnProperty.call(sourcePrototype, attr)) destination.prototype[attr] = sourcePrototype[attr];
+  function extendPrototype(sources, destination) {
+    var i
+    var len = sources.length
+    var sourcePrototype
+    for (i = 0; i < len; i += 1) {
+      sourcePrototype = sources[i].prototype
+      for (var attr in sourcePrototype) {
+        if (Object.prototype.hasOwnProperty.call(sourcePrototype, attr))
+          destination.prototype[attr] = sourcePrototype[attr]
+      }
     }
   }
-}
 
-function getDescriptor(object, prop) {
-  return Object.getOwnPropertyDescriptor(object, prop);
-}
-
-function createProxyFunction(prototype) {
-  function ProxyFunction() {}
-  ProxyFunction.prototype = prototype;
-  return ProxyFunction;
-}
-
-// import Howl from '../../3rd_party/howler';
-
-const audioControllerFactory = (function () {
-  function AudioController(audioFactory) {
-    this.audios = [];
-    this.audioFactory = audioFactory;
-    this._volume = 1;
-    this._isMuted = false;
+  function getDescriptor(object, prop) {
+    return Object.getOwnPropertyDescriptor(object, prop)
   }
 
-  AudioController.prototype = {
-    addAudio: function (audio) {
-      this.audios.push(audio);
-    },
-    pause: function () {
-      var i;
-      var len = this.audios.length;
-      for (i = 0; i < len; i += 1) {
-        this.audios[i].pause();
-      }
-    },
-    resume: function () {
-      var i;
-      var len = this.audios.length;
-      for (i = 0; i < len; i += 1) {
-        this.audios[i].resume();
-      }
-    },
-    setRate: function (rateValue) {
-      var i;
-      var len = this.audios.length;
-      for (i = 0; i < len; i += 1) {
-        this.audios[i].setRate(rateValue);
-      }
-    },
-    createAudio: function (assetPath) {
-      if (this.audioFactory) {
-        return this.audioFactory(assetPath);
-      } if (window.Howl) {
-        return new window.Howl({
-          src: [assetPath],
-        });
-      }
-      return {
-        isPlaying: false,
-        play: function () { this.isPlaying = true; },
-        seek: function () { this.isPlaying = false; },
-        playing: function () {},
-        rate: function () {},
-        setVolume: function () {},
-      };
-    },
-    setAudioFactory: function (audioFactory) {
-      this.audioFactory = audioFactory;
-    },
-    setVolume: function (value) {
-      this._volume = value;
-      this._updateVolume();
-    },
-    mute: function () {
-      this._isMuted = true;
-      this._updateVolume();
-    },
-    unmute: function () {
-      this._isMuted = false;
-      this._updateVolume();
-    },
-    getVolume: function () {
-      return this._volume;
-    },
-    _updateVolume: function () {
-      var i;
-      var len = this.audios.length;
-      for (i = 0; i < len; i += 1) {
-        this.audios[i].volume(this._volume * (this._isMuted ? 0 : 1));
-      }
-    },
-  };
+  function createProxyFunction(prototype) {
+    function ProxyFunction() {}
+    ProxyFunction.prototype = prototype
+    return ProxyFunction
+  }
 
-  return function () {
-    return new AudioController();
-  };
-}());
+  // import Howl from '../../3rd_party/howler';
 
-const createTypedArray = (function () {
-  function createRegularArray(type, len) {
-    var i = 0;
-    var arr = [];
-    var value;
-    switch (type) {
-      case 'int16':
-      case 'uint8c':
-        value = 1;
-        break;
+  const audioControllerFactory = (function () {
+    function AudioController(audioFactory) {
+      this.audios = []
+      this.audioFactory = audioFactory
+      this._volume = 1
+      this._isMuted = false
+    }
+
+    AudioController.prototype = {
+      addAudio: function (audio) {
+        this.audios.push(audio)
+      },
+      pause: function () {
+        var i
+        var len = this.audios.length
+        for (i = 0; i < len; i += 1) {
+          this.audios[i].pause()
+        }
+      },
+      resume: function () {
+        var i
+        var len = this.audios.length
+        for (i = 0; i < len; i += 1) {
+          this.audios[i].resume()
+        }
+      },
+      setRate: function (rateValue) {
+        var i
+        var len = this.audios.length
+        for (i = 0; i < len; i += 1) {
+          this.audios[i].setRate(rateValue)
+        }
+      },
+      createAudio: function (assetPath) {
+        if (this.audioFactory) {
+          return this.audioFactory(assetPath)
+        }
+        if (window.Howl) {
+          return new window.Howl({
+            src: [assetPath]
+          })
+        }
+        return {
+          isPlaying: false,
+          play: function () {
+            this.isPlaying = true
+          },
+          seek: function () {
+            this.isPlaying = false
+          },
+          playing: function () {},
+          rate: function () {},
+          setVolume: function () {}
+        }
+      },
+      setAudioFactory: function (audioFactory) {
+        this.audioFactory = audioFactory
+      },
+      setVolume: function (value) {
+        this._volume = value
+        this._updateVolume()
+      },
+      mute: function () {
+        this._isMuted = true
+        this._updateVolume()
+      },
+      unmute: function () {
+        this._isMuted = false
+        this._updateVolume()
+      },
+      getVolume: function () {
+        return this._volume
+      },
+      _updateVolume: function () {
+        var i
+        var len = this.audios.length
+        for (i = 0; i < len; i += 1) {
+          this.audios[i].volume(this._volume * (this._isMuted ? 0 : 1))
+        }
+      }
+    }
+
+    return function () {
+      return new AudioController()
+    }
+  })()
+
+  const createTypedArray = (function () {
+    function createRegularArray(type, len) {
+      var i = 0
+      var arr = []
+      var value
+      switch (type) {
+        case 'int16':
+        case 'uint8c':
+          value = 1
+          break
+        default:
+          value = 1.1
+          break
+      }
+      for (i = 0; i < len; i += 1) {
+        arr.push(value)
+      }
+      return arr
+    }
+    function createTypedArrayFactory(type, len) {
+      if (type === 'float32') {
+        return new Float32Array(len)
+      }
+      if (type === 'int16') {
+        return new Int16Array(len)
+      }
+      if (type === 'uint8c') {
+        return new Uint8ClampedArray(len)
+      }
+      return createRegularArray(type, len)
+    }
+    if (typeof Uint8ClampedArray === 'function' && typeof Float32Array === 'function') {
+      return createTypedArrayFactory
+    }
+    return createRegularArray
+  })()
+
+  function createSizedArray(len) {
+    return Array.apply(null, { length: len })
+  }
+
+  let subframeEnabled = true
+  let expressionsPlugin = null
+  let idPrefix$1 = ''
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+  let _shouldRoundValues = false
+  const bmPow = Math.pow
+  const bmSqrt = Math.sqrt
+  const bmFloor = Math.floor
+  const bmMax = Math.max
+  const bmMin = Math.min
+
+  const BMMath = {}
+  ;(function () {
+    var propertyNames = [
+      'abs',
+      'acos',
+      'acosh',
+      'asin',
+      'asinh',
+      'atan',
+      'atanh',
+      'atan2',
+      'ceil',
+      'cbrt',
+      'expm1',
+      'clz32',
+      'cos',
+      'cosh',
+      'exp',
+      'floor',
+      'fround',
+      'hypot',
+      'imul',
+      'log',
+      'log1p',
+      'log2',
+      'log10',
+      'max',
+      'min',
+      'pow',
+      'random',
+      'round',
+      'sign',
+      'sin',
+      'sinh',
+      'sqrt',
+      'tan',
+      'tanh',
+      'trunc',
+      'E',
+      'LN10',
+      'LN2',
+      'LOG10E',
+      'LOG2E',
+      'PI',
+      'SQRT1_2',
+      'SQRT2'
+    ]
+    var i
+    var len = propertyNames.length
+    for (i = 0; i < len; i += 1) {
+      BMMath[propertyNames[i]] = Math[propertyNames[i]]
+    }
+  })()
+
+  function ProjectInterface$1() {
+    return {}
+  }
+  BMMath.random = Math.random
+  BMMath.abs = function (val) {
+    var tOfVal = typeof val
+    if (tOfVal === 'object' && val.length) {
+      var absArr = createSizedArray(val.length)
+      var i
+      var len = val.length
+      for (i = 0; i < len; i += 1) {
+        absArr[i] = Math.abs(val[i])
+      }
+      return absArr
+    }
+    return Math.abs(val)
+  }
+  let defaultCurveSegments = 150
+  const degToRads = Math.PI / 180
+  const roundCorner = 0.5519
+
+  function roundValues(flag) {
+    _shouldRoundValues = !!flag
+  }
+
+  function bmRnd(value) {
+    if (_shouldRoundValues) {
+      return Math.round(value)
+    }
+    return value
+  }
+
+  function styleDiv(element) {
+    element.style.position = 'absolute'
+    element.style.top = 0
+    element.style.left = 0
+    element.style.display = 'block'
+    element.style.transformOrigin = '0 0'
+    element.style.webkitTransformOrigin = '0 0'
+    element.style.backfaceVisibility = 'visible'
+    element.style.webkitBackfaceVisibility = 'visible'
+    element.style.transformStyle = 'preserve-3d'
+    element.style.webkitTransformStyle = 'preserve-3d'
+    element.style.mozTransformStyle = 'preserve-3d'
+  }
+
+  function BMEnterFrameEvent(type, currentTime, totalTime, frameMultiplier) {
+    this.type = type
+    this.currentTime = currentTime
+    this.totalTime = totalTime
+    this.direction = frameMultiplier < 0 ? -1 : 1
+  }
+
+  function BMCompleteEvent(type, frameMultiplier) {
+    this.type = type
+    this.direction = frameMultiplier < 0 ? -1 : 1
+  }
+
+  function BMCompleteLoopEvent(type, totalLoops, currentLoop, frameMultiplier) {
+    this.type = type
+    this.currentLoop = currentLoop
+    this.totalLoops = totalLoops
+    this.direction = frameMultiplier < 0 ? -1 : 1
+  }
+
+  function BMSegmentStartEvent(type, firstFrame, totalFrames) {
+    this.type = type
+    this.firstFrame = firstFrame
+    this.totalFrames = totalFrames
+  }
+
+  function BMDestroyEvent(type, target) {
+    this.type = type
+    this.target = target
+  }
+
+  function BMRenderFrameErrorEvent(nativeError, currentTime) {
+    this.type = 'renderFrameError'
+    this.nativeError = nativeError
+    this.currentTime = currentTime
+  }
+
+  function BMConfigErrorEvent(nativeError) {
+    this.type = 'configError'
+    this.nativeError = nativeError
+  }
+
+  function BMAnimationConfigErrorEvent(type, nativeError) {
+    this.type = type
+    this.nativeError = nativeError
+  }
+
+  const createElementID = (function () {
+    var _count = 0
+    return function createID() {
+      _count += 1
+      return idPrefix$1 + '__lottie_element_' + _count
+    }
+  })()
+
+  function HSVtoRGB(h, s, v) {
+    var r
+    var g
+    var b
+    var i
+    var f
+    var p
+    var q
+    var t
+    i = Math.floor(h * 6)
+    f = h * 6 - i
+    p = v * (1 - s)
+    q = v * (1 - f * s)
+    t = v * (1 - (1 - f) * s)
+    switch (i % 6) {
+      case 0:
+        r = v
+        g = t
+        b = p
+        break
+      case 1:
+        r = q
+        g = v
+        b = p
+        break
+      case 2:
+        r = p
+        g = v
+        b = t
+        break
+      case 3:
+        r = p
+        g = q
+        b = v
+        break
+      case 4:
+        r = t
+        g = p
+        b = v
+        break
+      case 5:
+        r = v
+        g = p
+        b = q
+        break
       default:
-        value = 1.1;
-        break;
+        break
     }
-    for (i = 0; i < len; i += 1) {
-      arr.push(value);
+    return [r, g, b]
+  }
+
+  function RGBtoHSV(r, g, b) {
+    var max = Math.max(r, g, b)
+    var min = Math.min(r, g, b)
+    var d = max - min
+    var h
+    var s = max === 0 ? 0 : d / max
+    var v = max / 255
+
+    switch (max) {
+      case min:
+        h = 0
+        break
+      case r:
+        h = g - b + d * (g < b ? 6 : 0)
+        h /= 6 * d
+        break
+      case g:
+        h = b - r + d * 2
+        h /= 6 * d
+        break
+      case b:
+        h = r - g + d * 4
+        h /= 6 * d
+        break
+      default:
+        break
     }
-    return arr;
+
+    return [h, s, v]
   }
-  function createTypedArrayFactory(type, len) {
-    if (type === 'float32') {
-      return new Float32Array(len);
-    } if (type === 'int16') {
-      return new Int16Array(len);
-    } if (type === 'uint8c') {
-      return new Uint8ClampedArray(len);
+
+  function addSaturationToRGB(color, offset) {
+    var hsv = RGBtoHSV(color[0] * 255, color[1] * 255, color[2] * 255)
+    hsv[1] += offset
+    if (hsv[1] > 1) {
+      hsv[1] = 1
+    } else if (hsv[1] <= 0) {
+      hsv[1] = 0
     }
-    return createRegularArray(type, len);
+    return HSVtoRGB(hsv[0], hsv[1], hsv[2])
   }
-  if (typeof Uint8ClampedArray === 'function' && typeof Float32Array === 'function') {
-    return createTypedArrayFactory;
-  }
-  return createRegularArray;
-}());
 
-function createSizedArray(len) {
-  return Array.apply(null, { length: len });
-}
-
-let subframeEnabled = true;
-let expressionsPlugin = null;
-let idPrefix$1 = '';
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-let _shouldRoundValues = false;
-const bmPow = Math.pow;
-const bmSqrt = Math.sqrt;
-const bmFloor = Math.floor;
-const bmMax = Math.max;
-const bmMin = Math.min;
-
-const BMMath = {};
-(function () {
-  var propertyNames = ['abs', 'acos', 'acosh', 'asin', 'asinh', 'atan', 'atanh', 'atan2', 'ceil', 'cbrt', 'expm1', 'clz32', 'cos', 'cosh', 'exp', 'floor', 'fround', 'hypot', 'imul', 'log', 'log1p', 'log2', 'log10', 'max', 'min', 'pow', 'random', 'round', 'sign', 'sin', 'sinh', 'sqrt', 'tan', 'tanh', 'trunc', 'E', 'LN10', 'LN2', 'LOG10E', 'LOG2E', 'PI', 'SQRT1_2', 'SQRT2'];
-  var i;
-  var len = propertyNames.length;
-  for (i = 0; i < len; i += 1) {
-    BMMath[propertyNames[i]] = Math[propertyNames[i]];
-  }
-}());
-
-function ProjectInterface$1() { return {}; }
-BMMath.random = Math.random;
-BMMath.abs = function (val) {
-  var tOfVal = typeof val;
-  if (tOfVal === 'object' && val.length) {
-    var absArr = createSizedArray(val.length);
-    var i;
-    var len = val.length;
-    for (i = 0; i < len; i += 1) {
-      absArr[i] = Math.abs(val[i]);
+  function addBrightnessToRGB(color, offset) {
+    var hsv = RGBtoHSV(color[0] * 255, color[1] * 255, color[2] * 255)
+    hsv[2] += offset
+    if (hsv[2] > 1) {
+      hsv[2] = 1
+    } else if (hsv[2] < 0) {
+      hsv[2] = 0
     }
-    return absArr;
-  }
-  return Math.abs(val);
-};
-let defaultCurveSegments = 150;
-const degToRads = Math.PI / 180;
-const roundCorner = 0.5519;
-
-function roundValues(flag) {
-  _shouldRoundValues = !!flag;
-}
-
-function bmRnd(value) {
-  if (_shouldRoundValues) {
-    return Math.round(value);
-  }
-  return value;
-}
-
-function styleDiv(element) {
-  element.style.position = 'absolute';
-  element.style.top = 0;
-  element.style.left = 0;
-  element.style.display = 'block';
-  element.style.transformOrigin = '0 0';
-  element.style.webkitTransformOrigin = '0 0';
-  element.style.backfaceVisibility = 'visible';
-  element.style.webkitBackfaceVisibility = 'visible';
-  element.style.transformStyle = 'preserve-3d';
-  element.style.webkitTransformStyle = 'preserve-3d';
-  element.style.mozTransformStyle = 'preserve-3d';
-}
-
-function BMEnterFrameEvent(type, currentTime, totalTime, frameMultiplier) {
-  this.type = type;
-  this.currentTime = currentTime;
-  this.totalTime = totalTime;
-  this.direction = frameMultiplier < 0 ? -1 : 1;
-}
-
-function BMCompleteEvent(type, frameMultiplier) {
-  this.type = type;
-  this.direction = frameMultiplier < 0 ? -1 : 1;
-}
-
-function BMCompleteLoopEvent(type, totalLoops, currentLoop, frameMultiplier) {
-  this.type = type;
-  this.currentLoop = currentLoop;
-  this.totalLoops = totalLoops;
-  this.direction = frameMultiplier < 0 ? -1 : 1;
-}
-
-function BMSegmentStartEvent(type, firstFrame, totalFrames) {
-  this.type = type;
-  this.firstFrame = firstFrame;
-  this.totalFrames = totalFrames;
-}
-
-function BMDestroyEvent(type, target) {
-  this.type = type;
-  this.target = target;
-}
-
-function BMRenderFrameErrorEvent(nativeError, currentTime) {
-  this.type = 'renderFrameError';
-  this.nativeError = nativeError;
-  this.currentTime = currentTime;
-}
-
-function BMConfigErrorEvent(nativeError) {
-  this.type = 'configError';
-  this.nativeError = nativeError;
-}
-
-function BMAnimationConfigErrorEvent(type, nativeError) {
-  this.type = type;
-  this.nativeError = nativeError;
-}
-
-const createElementID = (function () {
-  var _count = 0;
-  return function createID() {
-    _count += 1;
-    return idPrefix$1 + '__lottie_element_' + _count;
-  };
-}());
-
-function HSVtoRGB(h, s, v) {
-  var r;
-  var g;
-  var b;
-  var i;
-  var f;
-  var p;
-  var q;
-  var t;
-  i = Math.floor(h * 6);
-  f = h * 6 - i;
-  p = v * (1 - s);
-  q = v * (1 - f * s);
-  t = v * (1 - (1 - f) * s);
-  switch (i % 6) {
-    case 0: r = v; g = t; b = p; break;
-    case 1: r = q; g = v; b = p; break;
-    case 2: r = p; g = v; b = t; break;
-    case 3: r = p; g = q; b = v; break;
-    case 4: r = t; g = p; b = v; break;
-    case 5: r = v; g = p; b = q; break;
-    default: break;
-  }
-  return [r,
-    g,
-    b];
-}
-
-function RGBtoHSV(r, g, b) {
-  var max = Math.max(r, g, b);
-  var min = Math.min(r, g, b);
-  var d = max - min;
-  var h;
-  var s = (max === 0 ? 0 : d / max);
-  var v = max / 255;
-
-  switch (max) {
-    case min: h = 0; break;
-    case r: h = (g - b) + d * (g < b ? 6 : 0); h /= 6 * d; break;
-    case g: h = (b - r) + d * 2; h /= 6 * d; break;
-    case b: h = (r - g) + d * 4; h /= 6 * d; break;
-    default: break;
+    return HSVtoRGB(hsv[0], hsv[1], hsv[2])
   }
 
-  return [
-    h,
-    s,
-    v,
-  ];
-}
-
-function addSaturationToRGB(color, offset) {
-  var hsv = RGBtoHSV(color[0] * 255, color[1] * 255, color[2] * 255);
-  hsv[1] += offset;
-  if (hsv[1] > 1) {
-    hsv[1] = 1;
-  } else if (hsv[1] <= 0) {
-    hsv[1] = 0;
-  }
-  return HSVtoRGB(hsv[0], hsv[1], hsv[2]);
-}
-
-function addBrightnessToRGB(color, offset) {
-  var hsv = RGBtoHSV(color[0] * 255, color[1] * 255, color[2] * 255);
-  hsv[2] += offset;
-  if (hsv[2] > 1) {
-    hsv[2] = 1;
-  } else if (hsv[2] < 0) {
-    hsv[2] = 0;
-  }
-  return HSVtoRGB(hsv[0], hsv[1], hsv[2]);
-}
-
-function addHueToRGB(color, offset) {
-  var hsv = RGBtoHSV(color[0] * 255, color[1] * 255, color[2] * 255);
-  hsv[0] += offset / 360;
-  if (hsv[0] > 1) {
-    hsv[0] -= 1;
-  } else if (hsv[0] < 0) {
-    hsv[0] += 1;
-  }
-  return HSVtoRGB(hsv[0], hsv[1], hsv[2]);
-}
-
-const rgbToHex = (function () {
-  var colorMap = [];
-  var i;
-  var hex;
-  for (i = 0; i < 256; i += 1) {
-    hex = i.toString(16);
-    colorMap[i] = hex.length === 1 ? '0' + hex : hex;
-  }
-
-  return function (r, g, b) {
-    if (r < 0) {
-      r = 0;
+  function addHueToRGB(color, offset) {
+    var hsv = RGBtoHSV(color[0] * 255, color[1] * 255, color[2] * 255)
+    hsv[0] += offset / 360
+    if (hsv[0] > 1) {
+      hsv[0] -= 1
+    } else if (hsv[0] < 0) {
+      hsv[0] += 1
     }
-    if (g < 0) {
-      g = 0;
-    }
-    if (b < 0) {
-      b = 0;
-    }
-    return '#' + colorMap[r] + colorMap[g] + colorMap[b];
-  };
-}());
-
-const setSubframeEnabled = (flag) => { subframeEnabled = !!flag; };
-const getSubframeEnabled = () => subframeEnabled;
-const setExpressionsPlugin = (value) => { expressionsPlugin = value; };
-const getExpressionsPlugin = () => expressionsPlugin;
-const setDefaultCurveSegments = (value) => { defaultCurveSegments = value; };
-const getDefaultCurveSegments = () => defaultCurveSegments;
-const setIdPrefix = (value) => { idPrefix$1 = value; };
-const getIdPrefix = () => idPrefix$1;
-
-function createNS(type) {
-  // return {appendChild:function(){},setAttribute:function(){},style:{}}
-  return document.createElementNS(svgNS, type);
-}
-
-const dataManager = (function () {
-  var _counterId = 1;
-  var processes = [];
-  var workerFn;
-  var workerInstance;
-  var workerProxy = {
-    onmessage: function () {
-
-    },
-    postMessage: function (path) {
-      workerFn({
-        data: path,
-      });
-    },
-  };
-  var _workerSelf = {
-    postMessage: function (data) {
-      workerProxy.onmessage({
-        data: data,
-      });
-    },
-  };
-  function createWorker(fn) {
-    if (window.Worker && window.Blob && getWebWorker()) {
-      var blob = new Blob(['var _workerSelf = self; self.onmessage = ', fn.toString()], { type: 'text/javascript' });
-      // var blob = new Blob(['self.onmessage = ', fn.toString()], { type: 'text/javascript' });
-      var url = URL.createObjectURL(blob);
-      return new Worker(url);
-    }
-    workerFn = fn;
-    return workerProxy;
+    return HSVtoRGB(hsv[0], hsv[1], hsv[2])
   }
 
-  function setupWorker() {
-    if (!workerInstance) {
-      workerInstance = createWorker(function workerStart(e) {
-        function dataFunctionManager() {
-          function completeLayers(layers, comps) {
-            var layerData;
-            var i;
-            var len = layers.length;
-            var j;
-            var jLen;
-            var k;
-            var kLen;
-            for (i = 0; i < len; i += 1) {
-              layerData = layers[i];
-              if (('ks' in layerData) && !layerData.completed) {
-                layerData.completed = true;
-                if (layerData.tt) {
-                  layers[i - 1].td = layerData.tt;
-                }
-                if (layerData.hasMask) {
-                  var maskProps = layerData.masksProperties;
-                  jLen = maskProps.length;
-                  for (j = 0; j < jLen; j += 1) {
-                    if (maskProps[j].pt.k.i) {
-                      convertPathsToAbsoluteValues(maskProps[j].pt.k);
-                    } else {
-                      kLen = maskProps[j].pt.k.length;
-                      for (k = 0; k < kLen; k += 1) {
-                        if (maskProps[j].pt.k[k].s) {
-                          convertPathsToAbsoluteValues(maskProps[j].pt.k[k].s[0]);
-                        }
-                        if (maskProps[j].pt.k[k].e) {
-                          convertPathsToAbsoluteValues(maskProps[j].pt.k[k].e[0]);
+  const rgbToHex = (function () {
+    var colorMap = []
+    var i
+    var hex
+    for (i = 0; i < 256; i += 1) {
+      hex = i.toString(16)
+      colorMap[i] = hex.length === 1 ? '0' + hex : hex
+    }
+
+    return function (r, g, b) {
+      if (r < 0) {
+        r = 0
+      }
+      if (g < 0) {
+        g = 0
+      }
+      if (b < 0) {
+        b = 0
+      }
+      return '#' + colorMap[r] + colorMap[g] + colorMap[b]
+    }
+  })()
+
+  const setSubframeEnabled = flag => {
+    subframeEnabled = !!flag
+  }
+  const getSubframeEnabled = () => subframeEnabled
+  const setExpressionsPlugin = value => {
+    expressionsPlugin = value
+  }
+  const getExpressionsPlugin = () => expressionsPlugin
+  const setDefaultCurveSegments = value => {
+    defaultCurveSegments = value
+  }
+  const getDefaultCurveSegments = () => defaultCurveSegments
+  const setIdPrefix = value => {
+    idPrefix$1 = value
+  }
+  const getIdPrefix = () => idPrefix$1
+
+  function createNS(type) {
+    // return {appendChild:function(){},setAttribute:function(){},style:{}}
+    return document.createElementNS(svgNS, type)
+  }
+
+  const dataManager = (function () {
+    var _counterId = 1
+    var processes = []
+    var workerFn
+    var workerInstance
+    var workerProxy = {
+      onmessage: function () {},
+      postMessage: function (path) {
+        workerFn({
+          data: path
+        })
+      }
+    }
+    var _workerSelf = {
+      postMessage: function (data) {
+        workerProxy.onmessage({
+          data: data
+        })
+      }
+    }
+    function createWorker(fn) {
+      if (window.Worker && window.Blob && getWebWorker()) {
+        var blob = new Blob(['var _workerSelf = self; self.onmessage = ', fn.toString()], {
+          type: 'text/javascript'
+        })
+        // var blob = new Blob(['self.onmessage = ', fn.toString()], { type: 'text/javascript' });
+        var url = URL.createObjectURL(blob)
+        return new Worker(url)
+      }
+      workerFn = fn
+      return workerProxy
+    }
+
+    function setupWorker() {
+      if (!workerInstance) {
+        workerInstance = createWorker(function workerStart(e) {
+          function dataFunctionManager() {
+            function completeLayers(layers, comps) {
+              var layerData
+              var i
+              var len = layers.length
+              var j
+              var jLen
+              var k
+              var kLen
+              for (i = 0; i < len; i += 1) {
+                layerData = layers[i]
+                if ('ks' in layerData && !layerData.completed) {
+                  layerData.completed = true
+                  if (layerData.tt) {
+                    layers[i - 1].td = layerData.tt
+                  }
+                  if (layerData.hasMask) {
+                    var maskProps = layerData.masksProperties
+                    jLen = maskProps.length
+                    for (j = 0; j < jLen; j += 1) {
+                      if (maskProps[j].pt.k.i) {
+                        convertPathsToAbsoluteValues(maskProps[j].pt.k)
+                      } else {
+                        kLen = maskProps[j].pt.k.length
+                        for (k = 0; k < kLen; k += 1) {
+                          if (maskProps[j].pt.k[k].s) {
+                            convertPathsToAbsoluteValues(maskProps[j].pt.k[k].s[0])
+                          }
+                          if (maskProps[j].pt.k[k].e) {
+                            convertPathsToAbsoluteValues(maskProps[j].pt.k[k].e[0])
+                          }
                         }
                       }
                     }
                   }
-                }
-                if (layerData.ty === 0) {
-                  layerData.layers = findCompLayers(layerData.refId, comps);
-                  completeLayers(layerData.layers, comps);
-                } else if (layerData.ty === 4) {
-                  completeShapes(layerData.shapes);
-                } else if (layerData.ty === 5) {
-                  completeText(layerData);
-                }
-              }
-            }
-          }
-
-          function completeChars(chars, assets) {
-            if (chars) {
-              var i = 0;
-              var len = chars.length;
-              for (i = 0; i < len; i += 1) {
-                if (chars[i].t === 1) {
-                  // var compData = findComp(chars[i].data.refId, assets);
-                  chars[i].data.layers = findCompLayers(chars[i].data.refId, assets);
-                  // chars[i].data.ip = 0;
-                  // chars[i].data.op = 99999;
-                  // chars[i].data.st = 0;
-                  // chars[i].data.sr = 1;
-                  // chars[i].w = compData.w;
-                  // chars[i].data.ks = {
-                  //   a: { k: [0, 0, 0], a: 0 },
-                  //   p: { k: [0, -compData.h, 0], a: 0 },
-                  //   r: { k: 0, a: 0 },
-                  //   s: { k: [100, 100], a: 0 },
-                  //   o: { k: 100, a: 0 },
-                  // };
-                  completeLayers(chars[i].data.layers, assets);
-                }
-              }
-            }
-          }
-
-          function findComp(id, comps) {
-            var i = 0;
-            var len = comps.length;
-            while (i < len) {
-              if (comps[i].id === id) {
-                return comps[i];
-              }
-              i += 1;
-            }
-            return null;
-          }
-
-          function findCompLayers(id, comps) {
-            var comp = findComp(id, comps);
-            if (comp) {
-              if (!comp.layers.__used) {
-                comp.layers.__used = true;
-                return comp.layers;
-              }
-              return JSON.parse(JSON.stringify(comp.layers));
-            }
-            return null;
-          }
-
-          function completeShapes(arr) {
-            var i;
-            var len = arr.length;
-            var j;
-            var jLen;
-            for (i = len - 1; i >= 0; i -= 1) {
-              if (arr[i].ty === 'sh') {
-                if (arr[i].ks.k.i) {
-                  convertPathsToAbsoluteValues(arr[i].ks.k);
-                } else {
-                  jLen = arr[i].ks.k.length;
-                  for (j = 0; j < jLen; j += 1) {
-                    if (arr[i].ks.k[j].s) {
-                      convertPathsToAbsoluteValues(arr[i].ks.k[j].s[0]);
-                    }
-                    if (arr[i].ks.k[j].e) {
-                      convertPathsToAbsoluteValues(arr[i].ks.k[j].e[0]);
-                    }
-                  }
-                }
-              } else if (arr[i].ty === 'gr') {
-                completeShapes(arr[i].it);
-              }
-            }
-          }
-
-          function convertPathsToAbsoluteValues(path) {
-            var i;
-            var len = path.i.length;
-            for (i = 0; i < len; i += 1) {
-              path.i[i][0] += path.v[i][0];
-              path.i[i][1] += path.v[i][1];
-              path.o[i][0] += path.v[i][0];
-              path.o[i][1] += path.v[i][1];
-            }
-          }
-
-          function checkVersion(minimum, animVersionString) {
-            var animVersion = animVersionString ? animVersionString.split('.') : [100, 100, 100];
-            if (minimum[0] > animVersion[0]) {
-              return true;
-            } if (animVersion[0] > minimum[0]) {
-              return false;
-            }
-            if (minimum[1] > animVersion[1]) {
-              return true;
-            } if (animVersion[1] > minimum[1]) {
-              return false;
-            }
-            if (minimum[2] > animVersion[2]) {
-              return true;
-            } if (animVersion[2] > minimum[2]) {
-              return false;
-            }
-            return null;
-          }
-
-          var checkText = (function () {
-            var minimumVersion = [4, 4, 14];
-
-            function updateTextLayer(textLayer) {
-              var documentData = textLayer.t.d;
-              textLayer.t.d = {
-                k: [
-                  {
-                    s: documentData,
-                    t: 0,
-                  },
-                ],
-              };
-            }
-
-            function iterateLayers(layers) {
-              var i;
-              var len = layers.length;
-              for (i = 0; i < len; i += 1) {
-                if (layers[i].ty === 5) {
-                  updateTextLayer(layers[i]);
-                }
-              }
-            }
-
-            return function (animationData) {
-              if (checkVersion(minimumVersion, animationData.v)) {
-                iterateLayers(animationData.layers);
-                if (animationData.assets) {
-                  var i;
-                  var len = animationData.assets.length;
-                  for (i = 0; i < len; i += 1) {
-                    if (animationData.assets[i].layers) {
-                      iterateLayers(animationData.assets[i].layers);
-                    }
+                  if (layerData.ty === 0) {
+                    layerData.layers = findCompLayers(layerData.refId, comps)
+                    completeLayers(layerData.layers, comps)
+                  } else if (layerData.ty === 4) {
+                    completeShapes(layerData.shapes)
+                  } else if (layerData.ty === 5) {
+                    completeText(layerData)
                   }
                 }
               }
-            };
-          }());
+            }
 
-          var checkChars = (function () {
-            var minimumVersion = [4, 7, 99];
-            return function (animationData) {
-              if (animationData.chars && !checkVersion(minimumVersion, animationData.v)) {
-                var i;
-                var len = animationData.chars.length;
+            function completeChars(chars, assets) {
+              if (chars) {
+                var i = 0
+                var len = chars.length
                 for (i = 0; i < len; i += 1) {
-                  var charData = animationData.chars[i];
-                  if (charData.data && charData.data.shapes) {
-                    completeShapes(charData.data.shapes);
-                    charData.data.ip = 0;
-                    charData.data.op = 99999;
-                    charData.data.st = 0;
-                    charData.data.sr = 1;
-                    charData.data.ks = {
-                      p: { k: [0, 0], a: 0 },
-                      s: { k: [100, 100], a: 0 },
-                      a: { k: [0, 0], a: 0 },
-                      r: { k: 0, a: 0 },
-                      o: { k: 100, a: 0 },
-                    };
-                    if (!animationData.chars[i].t) {
-                      charData.data.shapes.push(
-                        {
-                          ty: 'no',
-                        }
-                      );
-                      charData.data.shapes[0].it.push(
-                        {
+                  if (chars[i].t === 1) {
+                    // var compData = findComp(chars[i].data.refId, assets);
+                    chars[i].data.layers = findCompLayers(chars[i].data.refId, assets)
+                    // chars[i].data.ip = 0;
+                    // chars[i].data.op = 99999;
+                    // chars[i].data.st = 0;
+                    // chars[i].data.sr = 1;
+                    // chars[i].w = compData.w;
+                    // chars[i].data.ks = {
+                    //   a: { k: [0, 0, 0], a: 0 },
+                    //   p: { k: [0, -compData.h, 0], a: 0 },
+                    //   r: { k: 0, a: 0 },
+                    //   s: { k: [100, 100], a: 0 },
+                    //   o: { k: 100, a: 0 },
+                    // };
+                    completeLayers(chars[i].data.layers, assets)
+                  }
+                }
+              }
+            }
+
+            function findComp(id, comps) {
+              var i = 0
+              var len = comps.length
+              while (i < len) {
+                if (comps[i].id === id) {
+                  return comps[i]
+                }
+                i += 1
+              }
+              return null
+            }
+
+            function findCompLayers(id, comps) {
+              var comp = findComp(id, comps)
+              if (comp) {
+                if (!comp.layers.__used) {
+                  comp.layers.__used = true
+                  return comp.layers
+                }
+                return JSON.parse(JSON.stringify(comp.layers))
+              }
+              return null
+            }
+
+            function completeShapes(arr) {
+              var i
+              var len = arr.length
+              var j
+              var jLen
+              for (i = len - 1; i >= 0; i -= 1) {
+                if (arr[i].ty === 'sh') {
+                  if (arr[i].ks.k.i) {
+                    convertPathsToAbsoluteValues(arr[i].ks.k)
+                  } else {
+                    jLen = arr[i].ks.k.length
+                    for (j = 0; j < jLen; j += 1) {
+                      if (arr[i].ks.k[j].s) {
+                        convertPathsToAbsoluteValues(arr[i].ks.k[j].s[0])
+                      }
+                      if (arr[i].ks.k[j].e) {
+                        convertPathsToAbsoluteValues(arr[i].ks.k[j].e[0])
+                      }
+                    }
+                  }
+                } else if (arr[i].ty === 'gr') {
+                  completeShapes(arr[i].it)
+                }
+              }
+            }
+
+            function convertPathsToAbsoluteValues(path) {
+              var i
+              var len = path.i.length
+              for (i = 0; i < len; i += 1) {
+                path.i[i][0] += path.v[i][0]
+                path.i[i][1] += path.v[i][1]
+                path.o[i][0] += path.v[i][0]
+                path.o[i][1] += path.v[i][1]
+              }
+            }
+
+            function checkVersion(minimum, animVersionString) {
+              var animVersion = animVersionString ? animVersionString.split('.') : [100, 100, 100]
+              if (minimum[0] > animVersion[0]) {
+                return true
+              }
+              if (animVersion[0] > minimum[0]) {
+                return false
+              }
+              if (minimum[1] > animVersion[1]) {
+                return true
+              }
+              if (animVersion[1] > minimum[1]) {
+                return false
+              }
+              if (minimum[2] > animVersion[2]) {
+                return true
+              }
+              if (animVersion[2] > minimum[2]) {
+                return false
+              }
+              return null
+            }
+
+            var checkText = (function () {
+              var minimumVersion = [4, 4, 14]
+
+              function updateTextLayer(textLayer) {
+                var documentData = textLayer.t.d
+                textLayer.t.d = {
+                  k: [
+                    {
+                      s: documentData,
+                      t: 0
+                    }
+                  ]
+                }
+              }
+
+              function iterateLayers(layers) {
+                var i
+                var len = layers.length
+                for (i = 0; i < len; i += 1) {
+                  if (layers[i].ty === 5) {
+                    updateTextLayer(layers[i])
+                  }
+                }
+              }
+
+              return function (animationData) {
+                if (checkVersion(minimumVersion, animationData.v)) {
+                  iterateLayers(animationData.layers)
+                  if (animationData.assets) {
+                    var i
+                    var len = animationData.assets.length
+                    for (i = 0; i < len; i += 1) {
+                      if (animationData.assets[i].layers) {
+                        iterateLayers(animationData.assets[i].layers)
+                      }
+                    }
+                  }
+                }
+              }
+            })()
+
+            var checkChars = (function () {
+              var minimumVersion = [4, 7, 99]
+              return function (animationData) {
+                if (animationData.chars && !checkVersion(minimumVersion, animationData.v)) {
+                  var i
+                  var len = animationData.chars.length
+                  for (i = 0; i < len; i += 1) {
+                    var charData = animationData.chars[i]
+                    if (charData.data && charData.data.shapes) {
+                      completeShapes(charData.data.shapes)
+                      charData.data.ip = 0
+                      charData.data.op = 99999
+                      charData.data.st = 0
+                      charData.data.sr = 1
+                      charData.data.ks = {
+                        p: { k: [0, 0], a: 0 },
+                        s: { k: [100, 100], a: 0 },
+                        a: { k: [0, 0], a: 0 },
+                        r: { k: 0, a: 0 },
+                        o: { k: 100, a: 0 }
+                      }
+                      if (!animationData.chars[i].t) {
+                        charData.data.shapes.push({
+                          ty: 'no'
+                        })
+                        charData.data.shapes[0].it.push({
                           p: { k: [0, 0], a: 0 },
                           s: { k: [100, 100], a: 0 },
                           a: { k: [0, 0], a: 0 },
@@ -672,1759 +768,1803 @@ const dataManager = (function () {
                           o: { k: 100, a: 0 },
                           sk: { k: 0, a: 0 },
                           sa: { k: 0, a: 0 },
-                          ty: 'tr',
+                          ty: 'tr'
+                        })
+                      }
+                    }
+                  }
+                }
+              }
+            })()
+
+            var checkPathProperties = (function () {
+              var minimumVersion = [5, 7, 15]
+
+              function updateTextLayer(textLayer) {
+                var pathData = textLayer.t.p
+                if (typeof pathData.a === 'number') {
+                  pathData.a = {
+                    a: 0,
+                    k: pathData.a
+                  }
+                }
+                if (typeof pathData.p === 'number') {
+                  pathData.p = {
+                    a: 0,
+                    k: pathData.p
+                  }
+                }
+                if (typeof pathData.r === 'number') {
+                  pathData.r = {
+                    a: 0,
+                    k: pathData.r
+                  }
+                }
+              }
+
+              function iterateLayers(layers) {
+                var i
+                var len = layers.length
+                for (i = 0; i < len; i += 1) {
+                  if (layers[i].ty === 5) {
+                    updateTextLayer(layers[i])
+                  }
+                }
+              }
+
+              return function (animationData) {
+                if (checkVersion(minimumVersion, animationData.v)) {
+                  iterateLayers(animationData.layers)
+                  if (animationData.assets) {
+                    var i
+                    var len = animationData.assets.length
+                    for (i = 0; i < len; i += 1) {
+                      if (animationData.assets[i].layers) {
+                        iterateLayers(animationData.assets[i].layers)
+                      }
+                    }
+                  }
+                }
+              }
+            })()
+
+            var checkColors = (function () {
+              var minimumVersion = [4, 1, 9]
+
+              function iterateShapes(shapes) {
+                var i
+                var len = shapes.length
+                var j
+                var jLen
+                for (i = 0; i < len; i += 1) {
+                  if (shapes[i].ty === 'gr') {
+                    iterateShapes(shapes[i].it)
+                  } else if (shapes[i].ty === 'fl' || shapes[i].ty === 'st') {
+                    if (shapes[i].c.k && shapes[i].c.k[0].i) {
+                      jLen = shapes[i].c.k.length
+                      for (j = 0; j < jLen; j += 1) {
+                        if (shapes[i].c.k[j].s) {
+                          shapes[i].c.k[j].s[0] /= 255
+                          shapes[i].c.k[j].s[1] /= 255
+                          shapes[i].c.k[j].s[2] /= 255
+                          shapes[i].c.k[j].s[3] /= 255
                         }
-                      );
-                    }
-                  }
-                }
-              }
-            };
-          }());
-
-          var checkPathProperties = (function () {
-            var minimumVersion = [5, 7, 15];
-
-            function updateTextLayer(textLayer) {
-              var pathData = textLayer.t.p;
-              if (typeof pathData.a === 'number') {
-                pathData.a = {
-                  a: 0,
-                  k: pathData.a,
-                };
-              }
-              if (typeof pathData.p === 'number') {
-                pathData.p = {
-                  a: 0,
-                  k: pathData.p,
-                };
-              }
-              if (typeof pathData.r === 'number') {
-                pathData.r = {
-                  a: 0,
-                  k: pathData.r,
-                };
-              }
-            }
-
-            function iterateLayers(layers) {
-              var i;
-              var len = layers.length;
-              for (i = 0; i < len; i += 1) {
-                if (layers[i].ty === 5) {
-                  updateTextLayer(layers[i]);
-                }
-              }
-            }
-
-            return function (animationData) {
-              if (checkVersion(minimumVersion, animationData.v)) {
-                iterateLayers(animationData.layers);
-                if (animationData.assets) {
-                  var i;
-                  var len = animationData.assets.length;
-                  for (i = 0; i < len; i += 1) {
-                    if (animationData.assets[i].layers) {
-                      iterateLayers(animationData.assets[i].layers);
-                    }
-                  }
-                }
-              }
-            };
-          }());
-
-          var checkColors = (function () {
-            var minimumVersion = [4, 1, 9];
-
-            function iterateShapes(shapes) {
-              var i;
-              var len = shapes.length;
-              var j;
-              var jLen;
-              for (i = 0; i < len; i += 1) {
-                if (shapes[i].ty === 'gr') {
-                  iterateShapes(shapes[i].it);
-                } else if (shapes[i].ty === 'fl' || shapes[i].ty === 'st') {
-                  if (shapes[i].c.k && shapes[i].c.k[0].i) {
-                    jLen = shapes[i].c.k.length;
-                    for (j = 0; j < jLen; j += 1) {
-                      if (shapes[i].c.k[j].s) {
-                        shapes[i].c.k[j].s[0] /= 255;
-                        shapes[i].c.k[j].s[1] /= 255;
-                        shapes[i].c.k[j].s[2] /= 255;
-                        shapes[i].c.k[j].s[3] /= 255;
+                        if (shapes[i].c.k[j].e) {
+                          shapes[i].c.k[j].e[0] /= 255
+                          shapes[i].c.k[j].e[1] /= 255
+                          shapes[i].c.k[j].e[2] /= 255
+                          shapes[i].c.k[j].e[3] /= 255
+                        }
                       }
-                      if (shapes[i].c.k[j].e) {
-                        shapes[i].c.k[j].e[0] /= 255;
-                        shapes[i].c.k[j].e[1] /= 255;
-                        shapes[i].c.k[j].e[2] /= 255;
-                        shapes[i].c.k[j].e[3] /= 255;
-                      }
-                    }
-                  } else {
-                    shapes[i].c.k[0] /= 255;
-                    shapes[i].c.k[1] /= 255;
-                    shapes[i].c.k[2] /= 255;
-                    shapes[i].c.k[3] /= 255;
-                  }
-                }
-              }
-            }
-
-            function iterateLayers(layers) {
-              var i;
-              var len = layers.length;
-              for (i = 0; i < len; i += 1) {
-                if (layers[i].ty === 4) {
-                  iterateShapes(layers[i].shapes);
-                }
-              }
-            }
-
-            return function (animationData) {
-              if (checkVersion(minimumVersion, animationData.v)) {
-                iterateLayers(animationData.layers);
-                if (animationData.assets) {
-                  var i;
-                  var len = animationData.assets.length;
-                  for (i = 0; i < len; i += 1) {
-                    if (animationData.assets[i].layers) {
-                      iterateLayers(animationData.assets[i].layers);
-                    }
-                  }
-                }
-              }
-            };
-          }());
-
-          var checkShapes = (function () {
-            var minimumVersion = [4, 4, 18];
-
-            function completeClosingShapes(arr) {
-              var i;
-              var len = arr.length;
-              var j;
-              var jLen;
-              for (i = len - 1; i >= 0; i -= 1) {
-                if (arr[i].ty === 'sh') {
-                  if (arr[i].ks.k.i) {
-                    arr[i].ks.k.c = arr[i].closed;
-                  } else {
-                    jLen = arr[i].ks.k.length;
-                    for (j = 0; j < jLen; j += 1) {
-                      if (arr[i].ks.k[j].s) {
-                        arr[i].ks.k[j].s[0].c = arr[i].closed;
-                      }
-                      if (arr[i].ks.k[j].e) {
-                        arr[i].ks.k[j].e[0].c = arr[i].closed;
-                      }
-                    }
-                  }
-                } else if (arr[i].ty === 'gr') {
-                  completeClosingShapes(arr[i].it);
-                }
-              }
-            }
-
-            function iterateLayers(layers) {
-              var layerData;
-              var i;
-              var len = layers.length;
-              var j;
-              var jLen;
-              var k;
-              var kLen;
-              for (i = 0; i < len; i += 1) {
-                layerData = layers[i];
-                if (layerData.hasMask) {
-                  var maskProps = layerData.masksProperties;
-                  jLen = maskProps.length;
-                  for (j = 0; j < jLen; j += 1) {
-                    if (maskProps[j].pt.k.i) {
-                      maskProps[j].pt.k.c = maskProps[j].cl;
                     } else {
-                      kLen = maskProps[j].pt.k.length;
-                      for (k = 0; k < kLen; k += 1) {
-                        if (maskProps[j].pt.k[k].s) {
-                          maskProps[j].pt.k[k].s[0].c = maskProps[j].cl;
+                      shapes[i].c.k[0] /= 255
+                      shapes[i].c.k[1] /= 255
+                      shapes[i].c.k[2] /= 255
+                      shapes[i].c.k[3] /= 255
+                    }
+                  }
+                }
+              }
+
+              function iterateLayers(layers) {
+                var i
+                var len = layers.length
+                for (i = 0; i < len; i += 1) {
+                  if (layers[i].ty === 4) {
+                    iterateShapes(layers[i].shapes)
+                  }
+                }
+              }
+
+              return function (animationData) {
+                if (checkVersion(minimumVersion, animationData.v)) {
+                  iterateLayers(animationData.layers)
+                  if (animationData.assets) {
+                    var i
+                    var len = animationData.assets.length
+                    for (i = 0; i < len; i += 1) {
+                      if (animationData.assets[i].layers) {
+                        iterateLayers(animationData.assets[i].layers)
+                      }
+                    }
+                  }
+                }
+              }
+            })()
+
+            var checkShapes = (function () {
+              var minimumVersion = [4, 4, 18]
+
+              function completeClosingShapes(arr) {
+                var i
+                var len = arr.length
+                var j
+                var jLen
+                for (i = len - 1; i >= 0; i -= 1) {
+                  if (arr[i].ty === 'sh') {
+                    if (arr[i].ks.k.i) {
+                      arr[i].ks.k.c = arr[i].closed
+                    } else {
+                      jLen = arr[i].ks.k.length
+                      for (j = 0; j < jLen; j += 1) {
+                        if (arr[i].ks.k[j].s) {
+                          arr[i].ks.k[j].s[0].c = arr[i].closed
                         }
-                        if (maskProps[j].pt.k[k].e) {
-                          maskProps[j].pt.k[k].e[0].c = maskProps[j].cl;
+                        if (arr[i].ks.k[j].e) {
+                          arr[i].ks.k[j].e[0].c = arr[i].closed
+                        }
+                      }
+                    }
+                  } else if (arr[i].ty === 'gr') {
+                    completeClosingShapes(arr[i].it)
+                  }
+                }
+              }
+
+              function iterateLayers(layers) {
+                var layerData
+                var i
+                var len = layers.length
+                var j
+                var jLen
+                var k
+                var kLen
+                for (i = 0; i < len; i += 1) {
+                  layerData = layers[i]
+                  if (layerData.hasMask) {
+                    var maskProps = layerData.masksProperties
+                    jLen = maskProps.length
+                    for (j = 0; j < jLen; j += 1) {
+                      if (maskProps[j].pt.k.i) {
+                        maskProps[j].pt.k.c = maskProps[j].cl
+                      } else {
+                        kLen = maskProps[j].pt.k.length
+                        for (k = 0; k < kLen; k += 1) {
+                          if (maskProps[j].pt.k[k].s) {
+                            maskProps[j].pt.k[k].s[0].c = maskProps[j].cl
+                          }
+                          if (maskProps[j].pt.k[k].e) {
+                            maskProps[j].pt.k[k].e[0].c = maskProps[j].cl
+                          }
+                        }
+                      }
+                    }
+                  }
+                  if (layerData.ty === 4) {
+                    completeClosingShapes(layerData.shapes)
+                  }
+                }
+              }
+
+              return function (animationData) {
+                if (checkVersion(minimumVersion, animationData.v)) {
+                  iterateLayers(animationData.layers)
+                  if (animationData.assets) {
+                    var i
+                    var len = animationData.assets.length
+                    for (i = 0; i < len; i += 1) {
+                      if (animationData.assets[i].layers) {
+                        iterateLayers(animationData.assets[i].layers)
+                      }
+                    }
+                  }
+                }
+              }
+            })()
+
+            function completeData(animationData) {
+              if (animationData.__complete) {
+                return
+              }
+              checkColors(animationData)
+              checkText(animationData)
+              checkChars(animationData)
+              checkPathProperties(animationData)
+              checkShapes(animationData)
+              completeLayers(animationData.layers, animationData.assets)
+              completeChars(animationData.chars, animationData.assets)
+              animationData.__complete = true
+            }
+
+            function completeText(data) {
+              if (data.t.a.length === 0 && !('m' in data.t.p)) {
+                // data.singleShape = true;
+              }
+            }
+
+            var moduleOb = {}
+            moduleOb.completeData = completeData
+            moduleOb.checkColors = checkColors
+            moduleOb.checkChars = checkChars
+            moduleOb.checkPathProperties = checkPathProperties
+            moduleOb.checkShapes = checkShapes
+            moduleOb.completeLayers = completeLayers
+
+            return moduleOb
+          }
+          if (!_workerSelf.dataManager) {
+            _workerSelf.dataManager = dataFunctionManager()
+          }
+
+          if (!_workerSelf.assetLoader) {
+            _workerSelf.assetLoader = (function () {
+              function formatResponse(xhr) {
+                // using typeof doubles the time of execution of this method,
+                // so if available, it's better to use the header to validate the type
+                var contentTypeHeader = xhr.getResponseHeader('content-type')
+                if (
+                  contentTypeHeader &&
+                  xhr.responseType === 'json' &&
+                  contentTypeHeader.indexOf('json') !== -1
+                ) {
+                  return xhr.response
+                }
+                if (xhr.response && typeof xhr.response === 'object') {
+                  return xhr.response
+                }
+                if (xhr.response && typeof xhr.response === 'string') {
+                  return JSON.parse(xhr.response)
+                }
+                if (xhr.responseText) {
+                  return JSON.parse(xhr.responseText)
+                }
+                return null
+              }
+
+              function loadAsset(path, fullPath, callback, errorCallback) {
+                var response
+                var xhr = new XMLHttpRequest()
+                // set responseType after calling open or IE will break.
+                try {
+                  // This crashes on Android WebView prior to KitKat
+                  xhr.responseType = 'json'
+                } catch (err) {} // eslint-disable-line no-empty
+                xhr.onreadystatechange = function () {
+                  if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                      response = formatResponse(xhr)
+                      callback(response)
+                    } else {
+                      try {
+                        response = formatResponse(xhr)
+                        callback(response)
+                      } catch (err) {
+                        if (errorCallback) {
+                          errorCallback(err)
                         }
                       }
                     }
                   }
                 }
-                if (layerData.ty === 4) {
-                  completeClosingShapes(layerData.shapes);
+                try {
+                  xhr.open('GET', path, true)
+                } catch (error) {
+                  xhr.open('GET', fullPath + '/' + path, true)
                 }
+                xhr.send()
               }
-            }
-
-            return function (animationData) {
-              if (checkVersion(minimumVersion, animationData.v)) {
-                iterateLayers(animationData.layers);
-                if (animationData.assets) {
-                  var i;
-                  var len = animationData.assets.length;
-                  for (i = 0; i < len; i += 1) {
-                    if (animationData.assets[i].layers) {
-                      iterateLayers(animationData.assets[i].layers);
-                    }
-                  }
-                }
+              return {
+                load: loadAsset
               }
-            };
-          }());
-
-          function completeData(animationData) {
-            if (animationData.__complete) {
-              return;
-            }
-            checkColors(animationData);
-            checkText(animationData);
-            checkChars(animationData);
-            checkPathProperties(animationData);
-            checkShapes(animationData);
-            completeLayers(animationData.layers, animationData.assets);
-            completeChars(animationData.chars, animationData.assets);
-            animationData.__complete = true;
+            })()
           }
 
-          function completeText(data) {
-            if (data.t.a.length === 0 && !('m' in data.t.p)) {
-              // data.singleShape = true;
-            }
+          if (e.data.type === 'loadAnimation') {
+            _workerSelf.assetLoader.load(
+              e.data.path,
+              e.data.fullPath,
+              function (data) {
+                _workerSelf.dataManager.completeData(data)
+                _workerSelf.postMessage({
+                  id: e.data.id,
+                  payload: data,
+                  status: 'success'
+                })
+              },
+              function () {
+                _workerSelf.postMessage({
+                  id: e.data.id,
+                  status: 'error'
+                })
+              }
+            )
+          } else if (e.data.type === 'complete') {
+            var animation = e.data.animation
+            _workerSelf.dataManager.completeData(animation)
+            _workerSelf.postMessage({
+              id: e.data.id,
+              payload: animation,
+              status: 'success'
+            })
+          } else if (e.data.type === 'loadData') {
+            _workerSelf.assetLoader.load(
+              e.data.path,
+              e.data.fullPath,
+              function (data) {
+                _workerSelf.postMessage({
+                  id: e.data.id,
+                  payload: data,
+                  status: 'success'
+                })
+              },
+              function () {
+                _workerSelf.postMessage({
+                  id: e.data.id,
+                  status: 'error'
+                })
+              }
+            )
           }
+        })
 
-          var moduleOb = {};
-          moduleOb.completeData = completeData;
-          moduleOb.checkColors = checkColors;
-          moduleOb.checkChars = checkChars;
-          moduleOb.checkPathProperties = checkPathProperties;
-          moduleOb.checkShapes = checkShapes;
-          moduleOb.completeLayers = completeLayers;
-
-          return moduleOb;
-        }
-        if (!_workerSelf.dataManager) {
-          _workerSelf.dataManager = dataFunctionManager();
-        }
-
-        if (!_workerSelf.assetLoader) {
-          _workerSelf.assetLoader = (function () {
-            function formatResponse(xhr) {
-              // using typeof doubles the time of execution of this method,
-              // so if available, it's better to use the header to validate the type
-              var contentTypeHeader = xhr.getResponseHeader('content-type');
-              if (contentTypeHeader && xhr.responseType === 'json' && contentTypeHeader.indexOf('json') !== -1) {
-                return xhr.response;
-              }
-              if (xhr.response && typeof xhr.response === 'object') {
-                return xhr.response;
-              } if (xhr.response && typeof xhr.response === 'string') {
-                return JSON.parse(xhr.response);
-              } if (xhr.responseText) {
-                return JSON.parse(xhr.responseText);
-              }
-              return null;
-            }
-
-            function loadAsset(path, fullPath, callback, errorCallback) {
-              var response;
-              var xhr = new XMLHttpRequest();
-              // set responseType after calling open or IE will break.
-              try {
-                // This crashes on Android WebView prior to KitKat
-                xhr.responseType = 'json';
-              } catch (err) {} // eslint-disable-line no-empty
-              xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {
-                  if (xhr.status === 200) {
-                    response = formatResponse(xhr);
-                    callback(response);
-                  } else {
-                    try {
-                      response = formatResponse(xhr);
-                      callback(response);
-                    } catch (err) {
-                      if (errorCallback) {
-                        errorCallback(err);
-                      }
-                    }
-                  }
-                }
-              };
-              try {
-                xhr.open('GET', path, true);
-              } catch (error) {
-                xhr.open('GET', fullPath + '/' + path, true);
-              }
-              xhr.send();
-            }
-            return {
-              load: loadAsset,
-            };
-          }());
-        }
-
-        if (e.data.type === 'loadAnimation') {
-          _workerSelf.assetLoader.load(
-            e.data.path,
-            e.data.fullPath,
-            function (data) {
-              _workerSelf.dataManager.completeData(data);
-              _workerSelf.postMessage({
-                id: e.data.id,
-                payload: data,
-                status: 'success',
-              });
-            },
-            function () {
-              _workerSelf.postMessage({
-                id: e.data.id,
-                status: 'error',
-              });
-            }
-          );
-        } else if (e.data.type === 'complete') {
-          var animation = e.data.animation;
-          _workerSelf.dataManager.completeData(animation);
-          _workerSelf.postMessage({
-            id: e.data.id,
-            payload: animation,
-            status: 'success',
-          });
-        } else if (e.data.type === 'loadData') {
-          _workerSelf.assetLoader.load(
-            e.data.path,
-            e.data.fullPath,
-            function (data) {
-              _workerSelf.postMessage({
-                id: e.data.id,
-                payload: data,
-                status: 'success',
-              });
-            },
-            function () {
-              _workerSelf.postMessage({
-                id: e.data.id,
-                status: 'error',
-              });
-            }
-          );
-        }
-      });
-
-      workerInstance.onmessage = function (event) {
-        var data = event.data;
-        var id = data.id;
-        var process = processes[id];
-        processes[id] = null;
-        if (data.status === 'success') {
-          process.onComplete(data.payload);
-        } else if (process.onError) {
-          process.onError();
-        }
-      };
-    }
-  }
-
-  function createProcess(onComplete, onError) {
-    _counterId += 1;
-    var id = 'processId_' + _counterId;
-    processes[id] = {
-      onComplete: onComplete,
-      onError: onError,
-    };
-    return id;
-  }
-
-  function loadAnimation(path, onComplete, onError) {
-    setupWorker();
-    var processId = createProcess(onComplete, onError);
-    workerInstance.postMessage({
-      type: 'loadAnimation',
-      path: path,
-      fullPath: window.location.origin + window.location.pathname,
-      id: processId,
-    });
-  }
-
-  function loadData(path, onComplete, onError) {
-    setupWorker();
-    var processId = createProcess(onComplete, onError);
-    workerInstance.postMessage({
-      type: 'loadData',
-      path: path,
-      fullPath: window.location.origin + window.location.pathname,
-      id: processId,
-    });
-  }
-
-  function completeAnimation(anim, onComplete, onError) {
-    setupWorker();
-    var processId = createProcess(onComplete, onError);
-    workerInstance.postMessage({
-      type: 'complete',
-      animation: anim,
-      id: processId,
-    });
-  }
-
-  return {
-    loadAnimation: loadAnimation,
-    loadData: loadData,
-    completeAnimation: completeAnimation,
-  };
-}());
-
-const ImagePreloader = (function () {
-  var proxyImage = (function () {
-    var canvas = createTag('canvas');
-    canvas.width = 1;
-    canvas.height = 1;
-    var ctx = canvas.getContext('2d');
-    ctx.fillStyle = 'rgba(0,0,0,0)';
-    ctx.fillRect(0, 0, 1, 1);
-    return canvas;
-  }());
-
-  function imageLoaded() {
-    this.loadedAssets += 1;
-    if (this.loadedAssets === this.totalImages && this.loadedFootagesCount === this.totalFootages) {
-      if (this.imagesLoadedCb) {
-        this.imagesLoadedCb(null);
-      }
-    }
-  }
-  function footageLoaded() {
-    this.loadedFootagesCount += 1;
-    if (this.loadedAssets === this.totalImages && this.loadedFootagesCount === this.totalFootages) {
-      if (this.imagesLoadedCb) {
-        this.imagesLoadedCb(null);
-      }
-    }
-  }
-
-  function getAssetsPath(assetData, assetsPath, originalPath) {
-    var path = '';
-    if (assetData.e) {
-      path = assetData.p;
-    } else if (assetsPath) {
-      var imagePath = assetData.p;
-      if (imagePath.indexOf('images/') !== -1) {
-        imagePath = imagePath.split('/')[1];
-      }
-      path = assetsPath + imagePath;
-    } else {
-      path = originalPath;
-      path += assetData.u ? assetData.u : '';
-      path += assetData.p;
-    }
-    return path;
-  }
-
-  function testImageLoaded(img) {
-    var _count = 0;
-    var intervalId = setInterval(function () {
-      var box = img.getBBox();
-      if (box.width || _count > 500) {
-        this._imageLoaded();
-        clearInterval(intervalId);
-      }
-      _count += 1;
-    }.bind(this), 50);
-  }
-
-  function createImageData(assetData) {
-    var path = getAssetsPath(assetData, this.assetsPath, this.path);
-    var img = createNS('image');
-    if (isSafari) {
-      this.testImageLoaded(img);
-    } else {
-      img.addEventListener('load', this._imageLoaded, false);
-    }
-    img.addEventListener('error', function () {
-      ob.img = proxyImage;
-      this._imageLoaded();
-    }.bind(this), false);
-    img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', path);
-    if (this._elementHelper.append) {
-      this._elementHelper.append(img);
-    } else {
-      this._elementHelper.appendChild(img);
-    }
-    var ob = {
-      img: img,
-      assetData: assetData,
-    };
-    return ob;
-  }
-
-  function createImgData(assetData) {
-    var path = getAssetsPath(assetData, this.assetsPath, this.path);
-    var img = createTag('img');
-    img.crossOrigin = 'anonymous';
-    img.addEventListener('load', this._imageLoaded, false);
-    img.addEventListener('error', function () {
-      ob.img = proxyImage;
-      this._imageLoaded();
-    }.bind(this), false);
-    img.src = path;
-    var ob = {
-      img: img,
-      assetData: assetData,
-    };
-    return ob;
-  }
-
-  function createFootageData(data) {
-    var ob = {
-      assetData: data,
-    };
-    var path = getAssetsPath(data, this.assetsPath, this.path);
-    dataManager.loadData(path, function (footageData) {
-      ob.img = footageData;
-      this._footageLoaded();
-    }.bind(this), function () {
-      ob.img = {};
-      this._footageLoaded();
-    }.bind(this));
-    return ob;
-  }
-
-  function loadAssets(assets, cb) {
-    this.imagesLoadedCb = cb;
-    var i;
-    var len = assets.length;
-    for (i = 0; i < len; i += 1) {
-      if (!assets[i].layers) {
-        if (!assets[i].t || assets[i].t === 'seq') {
-          this.totalImages += 1;
-          this.images.push(this._createImageData(assets[i]));
-        } else if (assets[i].t === 3) {
-          this.totalFootages += 1;
-          this.images.push(this.createFootageData(assets[i]));
+        workerInstance.onmessage = function (event) {
+          var data = event.data
+          var id = data.id
+          var process = processes[id]
+          processes[id] = null
+          if (data.status === 'success') {
+            process.onComplete(data.payload)
+          } else if (process.onError) {
+            process.onError()
+          }
         }
       }
     }
-  }
 
-  function setPath(path) {
-    this.path = path || '';
-  }
-
-  function setAssetsPath(path) {
-    this.assetsPath = path || '';
-  }
-
-  function getAsset(assetData) {
-    var i = 0;
-    var len = this.images.length;
-    while (i < len) {
-      if (this.images[i].assetData === assetData) {
-        return this.images[i].img;
+    function createProcess(onComplete, onError) {
+      _counterId += 1
+      var id = 'processId_' + _counterId
+      processes[id] = {
+        onComplete: onComplete,
+        onError: onError
       }
-      i += 1;
+      return id
     }
-    return null;
-  }
 
-  function destroy() {
-    this.imagesLoadedCb = null;
-    this.images.length = 0;
-  }
-
-  function loadedImages() {
-    return this.totalImages === this.loadedAssets;
-  }
-
-  function loadedFootages() {
-    return this.totalFootages === this.loadedFootagesCount;
-  }
-
-  function setCacheType(type, elementHelper) {
-    if (type === 'svg') {
-      this._elementHelper = elementHelper;
-      this._createImageData = this.createImageData.bind(this);
-    } else {
-      this._createImageData = this.createImgData.bind(this);
+    function loadAnimation(path, onComplete, onError) {
+      setupWorker()
+      var processId = createProcess(onComplete, onError)
+      workerInstance.postMessage({
+        type: 'loadAnimation',
+        path: path,
+        fullPath: window.location.origin + window.location.pathname,
+        id: processId
+      })
     }
-  }
 
-  function ImagePreloaderFactory() {
-    this._imageLoaded = imageLoaded.bind(this);
-    this._footageLoaded = footageLoaded.bind(this);
-    this.testImageLoaded = testImageLoaded.bind(this);
-    this.createFootageData = createFootageData.bind(this);
-    this.assetsPath = '';
-    this.path = '';
-    this.totalImages = 0;
-    this.totalFootages = 0;
-    this.loadedAssets = 0;
-    this.loadedFootagesCount = 0;
-    this.imagesLoadedCb = null;
-    this.images = [];
-  }
+    function loadData(path, onComplete, onError) {
+      setupWorker()
+      var processId = createProcess(onComplete, onError)
+      workerInstance.postMessage({
+        type: 'loadData',
+        path: path,
+        fullPath: window.location.origin + window.location.pathname,
+        id: processId
+      })
+    }
 
-  ImagePreloaderFactory.prototype = {
-    loadAssets: loadAssets,
-    setAssetsPath: setAssetsPath,
-    setPath: setPath,
-    loadedImages: loadedImages,
-    loadedFootages: loadedFootages,
-    destroy: destroy,
-    getAsset: getAsset,
-    createImgData: createImgData,
-    createImageData: createImageData,
-    imageLoaded: imageLoaded,
-    footageLoaded: footageLoaded,
-    setCacheType: setCacheType,
-  };
+    function completeAnimation(anim, onComplete, onError) {
+      setupWorker()
+      var processId = createProcess(onComplete, onError)
+      workerInstance.postMessage({
+        type: 'complete',
+        animation: anim,
+        id: processId
+      })
+    }
 
-  return ImagePreloaderFactory;
-}());
+    return {
+      loadAnimation: loadAnimation,
+      loadData: loadData,
+      completeAnimation: completeAnimation
+    }
+  })()
 
-function BaseEvent() {}
-BaseEvent.prototype = {
-  triggerEvent: function (eventName, args) {
-    if (this._cbs[eventName]) {
-      var callbacks = this._cbs[eventName];
-      for (var i = 0; i < callbacks.length; i += 1) {
-        callbacks[i](args);
+  const ImagePreloader = (function () {
+    var proxyImage = (function () {
+      var canvas = createTag('canvas')
+      canvas.width = 1
+      canvas.height = 1
+      var ctx = canvas.getContext('2d')
+      ctx.fillStyle = 'rgba(0,0,0,0)'
+      ctx.fillRect(0, 0, 1, 1)
+      return canvas
+    })()
+
+    function imageLoaded() {
+      this.loadedAssets += 1
+      if (
+        this.loadedAssets === this.totalImages &&
+        this.loadedFootagesCount === this.totalFootages
+      ) {
+        if (this.imagesLoadedCb) {
+          this.imagesLoadedCb(null)
+        }
       }
     }
-  },
-  addEventListener: function (eventName, callback) {
-    if (!this._cbs[eventName]) {
-      this._cbs[eventName] = [];
+    function footageLoaded() {
+      this.loadedFootagesCount += 1
+      if (
+        this.loadedAssets === this.totalImages &&
+        this.loadedFootagesCount === this.totalFootages
+      ) {
+        if (this.imagesLoadedCb) {
+          this.imagesLoadedCb(null)
+        }
+      }
     }
-    this._cbs[eventName].push(callback);
 
-    return function () {
-      this.removeEventListener(eventName, callback);
-    }.bind(this);
-  },
-  removeEventListener: function (eventName, callback) {
-    if (!callback) {
-      this._cbs[eventName] = null;
-    } else if (this._cbs[eventName]) {
-      var i = 0;
-      var len = this._cbs[eventName].length;
+    function getAssetsPath(assetData, assetsPath, originalPath) {
+      var path = ''
+      if (assetData.e) {
+        path = assetData.p
+      } else if (assetsPath) {
+        var imagePath = assetData.p
+        if (imagePath.indexOf('images/') !== -1) {
+          imagePath = imagePath.split('/')[1]
+        }
+        path = assetsPath + imagePath
+      } else {
+        path = originalPath
+        path += assetData.u ? assetData.u : ''
+        path += assetData.p
+      }
+      return path
+    }
+
+    function testImageLoaded(img) {
+      var _count = 0
+      var intervalId = setInterval(
+        function () {
+          var box = img.getBBox()
+          if (box.width || _count > 500) {
+            this._imageLoaded()
+            clearInterval(intervalId)
+          }
+          _count += 1
+        }.bind(this),
+        50
+      )
+    }
+
+    function createImageData(assetData) {
+      var path = getAssetsPath(assetData, this.assetsPath, this.path)
+      var img = createNS('image')
+      if (isSafari) {
+        this.testImageLoaded(img)
+      } else {
+        img.addEventListener('load', this._imageLoaded, false)
+      }
+      img.addEventListener(
+        'error',
+        function () {
+          ob.img = proxyImage
+          this._imageLoaded()
+        }.bind(this),
+        false
+      )
+      img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', path)
+      if (this._elementHelper.append) {
+        this._elementHelper.append(img)
+      } else {
+        this._elementHelper.appendChild(img)
+      }
+      var ob = {
+        img: img,
+        assetData: assetData
+      }
+      return ob
+    }
+
+    function createImgData(assetData) {
+      var path = getAssetsPath(assetData, this.assetsPath, this.path)
+      var img = createTag('img')
+      img.crossOrigin = 'anonymous'
+      img.addEventListener('load', this._imageLoaded, false)
+      img.addEventListener(
+        'error',
+        function () {
+          ob.img = proxyImage
+          this._imageLoaded()
+        }.bind(this),
+        false
+      )
+      img.src = path
+      var ob = {
+        img: img,
+        assetData: assetData
+      }
+      return ob
+    }
+
+    function createFootageData(data) {
+      var ob = {
+        assetData: data
+      }
+      var path = getAssetsPath(data, this.assetsPath, this.path)
+      dataManager.loadData(
+        path,
+        function (footageData) {
+          ob.img = footageData
+          this._footageLoaded()
+        }.bind(this),
+        function () {
+          ob.img = {}
+          this._footageLoaded()
+        }.bind(this)
+      )
+      return ob
+    }
+
+    function loadAssets(assets, cb) {
+      this.imagesLoadedCb = cb
+      var i
+      var len = assets.length
+      for (i = 0; i < len; i += 1) {
+        if (!assets[i].layers) {
+          if (!assets[i].t || assets[i].t === 'seq') {
+            this.totalImages += 1
+            this.images.push(this._createImageData(assets[i]))
+          } else if (assets[i].t === 3) {
+            this.totalFootages += 1
+            this.images.push(this.createFootageData(assets[i]))
+          }
+        }
+      }
+    }
+
+    function setPath(path) {
+      this.path = path || ''
+    }
+
+    function setAssetsPath(path) {
+      this.assetsPath = path || ''
+    }
+
+    function getAsset(assetData) {
+      var i = 0
+      var len = this.images.length
       while (i < len) {
-        if (this._cbs[eventName][i] === callback) {
-          this._cbs[eventName].splice(i, 1);
-          i -= 1;
-          len -= 1;
+        if (this.images[i].assetData === assetData) {
+          return this.images[i].img
         }
-        i += 1;
+        i += 1
       }
-      if (!this._cbs[eventName].length) {
-        this._cbs[eventName] = null;
+      return null
+    }
+
+    function destroy() {
+      this.imagesLoadedCb = null
+      this.images.length = 0
+    }
+
+    function loadedImages() {
+      return this.totalImages === this.loadedAssets
+    }
+
+    function loadedFootages() {
+      return this.totalFootages === this.loadedFootagesCount
+    }
+
+    function setCacheType(type, elementHelper) {
+      if (type === 'svg') {
+        this._elementHelper = elementHelper
+        this._createImageData = this.createImageData.bind(this)
+      } else {
+        this._createImageData = this.createImgData.bind(this)
       }
     }
-  },
-};
 
-const markerParser = (
+    function ImagePreloaderFactory() {
+      this._imageLoaded = imageLoaded.bind(this)
+      this._footageLoaded = footageLoaded.bind(this)
+      this.testImageLoaded = testImageLoaded.bind(this)
+      this.createFootageData = createFootageData.bind(this)
+      this.assetsPath = ''
+      this.path = ''
+      this.totalImages = 0
+      this.totalFootages = 0
+      this.loadedAssets = 0
+      this.loadedFootagesCount = 0
+      this.imagesLoadedCb = null
+      this.images = []
+    }
 
-  function () {
+    ImagePreloaderFactory.prototype = {
+      loadAssets: loadAssets,
+      setAssetsPath: setAssetsPath,
+      setPath: setPath,
+      loadedImages: loadedImages,
+      loadedFootages: loadedFootages,
+      destroy: destroy,
+      getAsset: getAsset,
+      createImgData: createImgData,
+      createImageData: createImageData,
+      imageLoaded: imageLoaded,
+      footageLoaded: footageLoaded,
+      setCacheType: setCacheType
+    }
+
+    return ImagePreloaderFactory
+  })()
+
+  function BaseEvent() {}
+  BaseEvent.prototype = {
+    triggerEvent: function (eventName, args) {
+      if (this._cbs[eventName]) {
+        var callbacks = this._cbs[eventName]
+        for (var i = 0; i < callbacks.length; i += 1) {
+          callbacks[i](args)
+        }
+      }
+    },
+    addEventListener: function (eventName, callback) {
+      if (!this._cbs[eventName]) {
+        this._cbs[eventName] = []
+      }
+      this._cbs[eventName].push(callback)
+
+      return function () {
+        this.removeEventListener(eventName, callback)
+      }.bind(this)
+    },
+    removeEventListener: function (eventName, callback) {
+      if (!callback) {
+        this._cbs[eventName] = null
+      } else if (this._cbs[eventName]) {
+        var i = 0
+        var len = this._cbs[eventName].length
+        while (i < len) {
+          if (this._cbs[eventName][i] === callback) {
+            this._cbs[eventName].splice(i, 1)
+            i -= 1
+            len -= 1
+          }
+          i += 1
+        }
+        if (!this._cbs[eventName].length) {
+          this._cbs[eventName] = null
+        }
+      }
+    }
+  }
+
+  const markerParser = (function () {
     function parsePayloadLines(payload) {
-      var lines = payload.split('\r\n');
-      var keys = {};
-      var line;
-      var keysCount = 0;
+      var lines = payload.split('\r\n')
+      var keys = {}
+      var line
+      var keysCount = 0
       for (var i = 0; i < lines.length; i += 1) {
-        line = lines[i].split(':');
+        line = lines[i].split(':')
         if (line.length === 2) {
-          keys[line[0]] = line[1].trim();
-          keysCount += 1;
+          keys[line[0]] = line[1].trim()
+          keysCount += 1
         }
       }
       if (keysCount === 0) {
-        throw new Error();
+        throw new Error()
       }
-      return keys;
+      return keys
     }
 
     return function (_markers) {
-      var markers = [];
+      var markers = []
       for (var i = 0; i < _markers.length; i += 1) {
-        var _marker = _markers[i];
+        var _marker = _markers[i]
         var markerData = {
           time: _marker.tm,
-          duration: _marker.dr,
-        };
+          duration: _marker.dr
+        }
         try {
-          markerData.payload = JSON.parse(_markers[i].cm);
+          markerData.payload = JSON.parse(_markers[i].cm)
         } catch (_) {
           try {
-            markerData.payload = parsePayloadLines(_markers[i].cm);
+            markerData.payload = parsePayloadLines(_markers[i].cm)
           } catch (__) {
             markerData.payload = {
-              name: _markers[i].cm,
-            };
+              name: _markers[i].cm
+            }
           }
         }
-        markers.push(markerData);
+        markers.push(markerData)
       }
-      return markers;
-    };
-  }());
+      return markers
+    }
+  })()
 
-const ProjectInterface = (function () {
-  function registerComposition(comp) {
-    this.compositions.push(comp);
+  const ProjectInterface = (function () {
+    function registerComposition(comp) {
+      this.compositions.push(comp)
+    }
+
+    return function () {
+      function _thisProjectFunction(name) {
+        var i = 0
+        var len = this.compositions.length
+        while (i < len) {
+          if (this.compositions[i].data && this.compositions[i].data.nm === name) {
+            if (this.compositions[i].prepareFrame && this.compositions[i].data.xt) {
+              this.compositions[i].prepareFrame(this.currentFrame)
+            }
+            return this.compositions[i].compInterface
+          }
+          i += 1
+        }
+        return null
+      }
+
+      _thisProjectFunction.compositions = []
+      _thisProjectFunction.currentFrame = 0
+
+      _thisProjectFunction.registerComposition = registerComposition
+
+      return _thisProjectFunction
+    }
+  })()
+
+  const renderers = {}
+
+  const registerRenderer = (key, value) => {
+    renderers[key] = value
   }
 
-  return function () {
-    function _thisProjectFunction(name) {
-      var i = 0;
-      var len = this.compositions.length;
+  function getRenderer(key) {
+    return renderers[key]
+  }
+
+  const AnimationItem = function () {
+    this._cbs = []
+    this.name = ''
+    this.path = ''
+    this.isLoaded = false
+    this.currentFrame = 0
+    this.currentRawFrame = 0
+    this.firstFrame = 0
+    this.totalFrames = 0
+    this.frameRate = 0
+    this.frameMult = 0
+    this.playSpeed = 1
+    this.playDirection = 1
+    this.playCount = 0
+    this.animationData = {}
+    this.assets = []
+    this.isPaused = true
+    this.autoplay = false
+    this.loop = true
+    this.renderer = null
+    this.animationID = createElementID()
+    this.assetsPath = ''
+    this.timeCompleted = 0
+    this.segmentPos = 0
+    this.isSubframeEnabled = getSubframeEnabled()
+    this.segments = []
+    this._idle = true
+    this._completedLoop = false
+    this.projectInterface = ProjectInterface()
+    this.imagePreloader = new ImagePreloader()
+    this.audioController = audioControllerFactory()
+    this.markers = []
+    this.configAnimation = this.configAnimation.bind(this)
+    this.onSetupError = this.onSetupError.bind(this)
+    this.onSegmentComplete = this.onSegmentComplete.bind(this)
+    this.drawnFrameEvent = new BMEnterFrameEvent('drawnFrame', 0, 0, 0)
+  }
+
+  extendPrototype([BaseEvent], AnimationItem)
+
+  AnimationItem.prototype.setParams = function (params) {
+    if (params.wrapper || params.container) {
+      this.wrapper = params.wrapper || params.container
+    }
+    var animType = 'svg'
+    if (params.animType) {
+      animType = params.animType
+    } else if (params.renderer) {
+      animType = params.renderer
+    }
+    const RendererClass = getRenderer(animType)
+    this.renderer = new RendererClass(this, params.rendererSettings)
+    this.imagePreloader.setCacheType(animType, this.renderer.globalData.defs)
+    this.renderer.setProjectInterface(this.projectInterface)
+    this.animType = animType
+    if (
+      params.loop === '' ||
+      params.loop === null ||
+      params.loop === undefined ||
+      params.loop === true
+    ) {
+      this.loop = true
+    } else if (params.loop === false) {
+      this.loop = false
+    } else {
+      this.loop = parseInt(params.loop, 10)
+    }
+    this.autoplay = 'autoplay' in params ? params.autoplay : true
+    this.name = params.name ? params.name : ''
+    this.autoloadSegments = Object.prototype.hasOwnProperty.call(params, 'autoloadSegments')
+      ? params.autoloadSegments
+      : true
+    this.assetsPath = params.assetsPath
+    this.initialSegment = params.initialSegment
+    if (params.audioFactory) {
+      this.audioController.setAudioFactory(params.audioFactory)
+    }
+    if (params.animationData) {
+      this.setupAnimation(params.animationData)
+    } else if (params.path) {
+      if (params.path.lastIndexOf('\\') !== -1) {
+        this.path = params.path.substr(0, params.path.lastIndexOf('\\') + 1)
+      } else {
+        this.path = params.path.substr(0, params.path.lastIndexOf('/') + 1)
+      }
+      this.fileName = params.path.substr(params.path.lastIndexOf('/') + 1)
+      this.fileName = this.fileName.substr(0, this.fileName.lastIndexOf('.json'))
+      dataManager.loadAnimation(params.path, this.configAnimation, this.onSetupError)
+    }
+  }
+
+  AnimationItem.prototype.onSetupError = function () {
+    this.trigger('data_failed')
+  }
+
+  AnimationItem.prototype.setupAnimation = function (data) {
+    dataManager.completeAnimation(data, this.configAnimation)
+  }
+
+  AnimationItem.prototype.setData = function (wrapper, animationData) {
+    if (animationData) {
+      if (typeof animationData !== 'object') {
+        animationData = JSON.parse(animationData)
+      }
+    }
+    var params = {
+      wrapper: wrapper,
+      animationData: animationData
+    }
+    var wrapperAttributes = wrapper.attributes
+
+    params.path = wrapperAttributes.getNamedItem('data-animation-path') // eslint-disable-line no-nested-ternary
+      ? wrapperAttributes.getNamedItem('data-animation-path').value
+      : wrapperAttributes.getNamedItem('data-bm-path') // eslint-disable-line no-nested-ternary
+        ? wrapperAttributes.getNamedItem('data-bm-path').value
+        : wrapperAttributes.getNamedItem('bm-path')
+          ? wrapperAttributes.getNamedItem('bm-path').value
+          : ''
+    params.animType = wrapperAttributes.getNamedItem('data-anim-type') // eslint-disable-line no-nested-ternary
+      ? wrapperAttributes.getNamedItem('data-anim-type').value
+      : wrapperAttributes.getNamedItem('data-bm-type') // eslint-disable-line no-nested-ternary
+        ? wrapperAttributes.getNamedItem('data-bm-type').value
+        : wrapperAttributes.getNamedItem('bm-type') // eslint-disable-line no-nested-ternary
+          ? wrapperAttributes.getNamedItem('bm-type').value
+          : wrapperAttributes.getNamedItem('data-bm-renderer') // eslint-disable-line no-nested-ternary
+            ? wrapperAttributes.getNamedItem('data-bm-renderer').value
+            : wrapperAttributes.getNamedItem('bm-renderer')
+              ? wrapperAttributes.getNamedItem('bm-renderer').value
+              : 'canvas'
+
+    var loop = wrapperAttributes.getNamedItem('data-anim-loop') // eslint-disable-line no-nested-ternary
+      ? wrapperAttributes.getNamedItem('data-anim-loop').value
+      : wrapperAttributes.getNamedItem('data-bm-loop') // eslint-disable-line no-nested-ternary
+        ? wrapperAttributes.getNamedItem('data-bm-loop').value
+        : wrapperAttributes.getNamedItem('bm-loop')
+          ? wrapperAttributes.getNamedItem('bm-loop').value
+          : ''
+    if (loop === 'false') {
+      params.loop = false
+    } else if (loop === 'true') {
+      params.loop = true
+    } else if (loop !== '') {
+      params.loop = parseInt(loop, 10)
+    }
+    var autoplay = wrapperAttributes.getNamedItem('data-anim-autoplay') // eslint-disable-line no-nested-ternary
+      ? wrapperAttributes.getNamedItem('data-anim-autoplay').value
+      : wrapperAttributes.getNamedItem('data-bm-autoplay') // eslint-disable-line no-nested-ternary
+        ? wrapperAttributes.getNamedItem('data-bm-autoplay').value
+        : wrapperAttributes.getNamedItem('bm-autoplay')
+          ? wrapperAttributes.getNamedItem('bm-autoplay').value
+          : true
+    params.autoplay = autoplay !== 'false'
+
+    params.name = wrapperAttributes.getNamedItem('data-name') // eslint-disable-line no-nested-ternary
+      ? wrapperAttributes.getNamedItem('data-name').value
+      : wrapperAttributes.getNamedItem('data-bm-name') // eslint-disable-line no-nested-ternary
+        ? wrapperAttributes.getNamedItem('data-bm-name').value
+        : wrapperAttributes.getNamedItem('bm-name')
+          ? wrapperAttributes.getNamedItem('bm-name').value
+          : ''
+    var prerender = wrapperAttributes.getNamedItem('data-anim-prerender') // eslint-disable-line no-nested-ternary
+      ? wrapperAttributes.getNamedItem('data-anim-prerender').value
+      : wrapperAttributes.getNamedItem('data-bm-prerender') // eslint-disable-line no-nested-ternary
+        ? wrapperAttributes.getNamedItem('data-bm-prerender').value
+        : wrapperAttributes.getNamedItem('bm-prerender')
+          ? wrapperAttributes.getNamedItem('bm-prerender').value
+          : ''
+
+    if (prerender === 'false') {
+      params.prerender = false
+    }
+    this.setParams(params)
+  }
+
+  AnimationItem.prototype.includeLayers = function (data) {
+    if (data.op > this.animationData.op) {
+      this.animationData.op = data.op
+      this.totalFrames = Math.floor(data.op - this.animationData.ip)
+    }
+    var layers = this.animationData.layers
+    var i
+    var len = layers.length
+    var newLayers = data.layers
+    var j
+    var jLen = newLayers.length
+    for (j = 0; j < jLen; j += 1) {
+      i = 0
       while (i < len) {
-        if (this.compositions[i].data && this.compositions[i].data.nm === name) {
-          if (this.compositions[i].prepareFrame && this.compositions[i].data.xt) {
-            this.compositions[i].prepareFrame(this.currentFrame);
-          }
-          return this.compositions[i].compInterface;
+        if (layers[i].id === newLayers[j].id) {
+          layers[i] = newLayers[j]
+          break
         }
-        i += 1;
+        i += 1
       }
-      return null;
     }
-
-    _thisProjectFunction.compositions = [];
-    _thisProjectFunction.currentFrame = 0;
-
-    _thisProjectFunction.registerComposition = registerComposition;
-
-    return _thisProjectFunction;
-  };
-}());
-
-const renderers = {};
-
-const registerRenderer = (key, value) => {
-  renderers[key] = value;
-};
-
-function getRenderer(key) {
-  return renderers[key];
-}
-
-const AnimationItem = function () {
-  this._cbs = [];
-  this.name = '';
-  this.path = '';
-  this.isLoaded = false;
-  this.currentFrame = 0;
-  this.currentRawFrame = 0;
-  this.firstFrame = 0;
-  this.totalFrames = 0;
-  this.frameRate = 0;
-  this.frameMult = 0;
-  this.playSpeed = 1;
-  this.playDirection = 1;
-  this.playCount = 0;
-  this.animationData = {};
-  this.assets = [];
-  this.isPaused = true;
-  this.autoplay = false;
-  this.loop = true;
-  this.renderer = null;
-  this.animationID = createElementID();
-  this.assetsPath = '';
-  this.timeCompleted = 0;
-  this.segmentPos = 0;
-  this.isSubframeEnabled = getSubframeEnabled();
-  this.segments = [];
-  this._idle = true;
-  this._completedLoop = false;
-  this.projectInterface = ProjectInterface();
-  this.imagePreloader = new ImagePreloader();
-  this.audioController = audioControllerFactory();
-  this.markers = [];
-  this.configAnimation = this.configAnimation.bind(this);
-  this.onSetupError = this.onSetupError.bind(this);
-  this.onSegmentComplete = this.onSegmentComplete.bind(this);
-  this.drawnFrameEvent = new BMEnterFrameEvent('drawnFrame', 0, 0, 0);
-};
-
-extendPrototype([BaseEvent], AnimationItem);
-
-AnimationItem.prototype.setParams = function (params) {
-  if (params.wrapper || params.container) {
-    this.wrapper = params.wrapper || params.container;
-  }
-  var animType = 'svg';
-  if (params.animType) {
-    animType = params.animType;
-  } else if (params.renderer) {
-    animType = params.renderer;
-  }
-  const RendererClass = getRenderer(animType);
-  this.renderer = new RendererClass(this, params.rendererSettings);
-  this.imagePreloader.setCacheType(animType, this.renderer.globalData.defs);
-  this.renderer.setProjectInterface(this.projectInterface);
-  this.animType = animType;
-  if (params.loop === ''
-        || params.loop === null
-        || params.loop === undefined
-        || params.loop === true) {
-    this.loop = true;
-  } else if (params.loop === false) {
-    this.loop = false;
-  } else {
-    this.loop = parseInt(params.loop, 10);
-  }
-  this.autoplay = 'autoplay' in params ? params.autoplay : true;
-  this.name = params.name ? params.name : '';
-  this.autoloadSegments = Object.prototype.hasOwnProperty.call(params, 'autoloadSegments') ? params.autoloadSegments : true;
-  this.assetsPath = params.assetsPath;
-  this.initialSegment = params.initialSegment;
-  if (params.audioFactory) {
-    this.audioController.setAudioFactory(params.audioFactory);
-  }
-  if (params.animationData) {
-    this.setupAnimation(params.animationData);
-  } else if (params.path) {
-    if (params.path.lastIndexOf('\\') !== -1) {
-      this.path = params.path.substr(0, params.path.lastIndexOf('\\') + 1);
-    } else {
-      this.path = params.path.substr(0, params.path.lastIndexOf('/') + 1);
+    if (data.chars || data.fonts) {
+      this.renderer.globalData.fontManager.addChars(data.chars)
+      this.renderer.globalData.fontManager.addFonts(data.fonts, this.renderer.globalData.defs)
     }
-    this.fileName = params.path.substr(params.path.lastIndexOf('/') + 1);
-    this.fileName = this.fileName.substr(0, this.fileName.lastIndexOf('.json'));
-    dataManager.loadAnimation(
-      params.path,
-      this.configAnimation,
-      this.onSetupError
-    );
-  }
-};
-
-AnimationItem.prototype.onSetupError = function () {
-  this.trigger('data_failed');
-};
-
-AnimationItem.prototype.setupAnimation = function (data) {
-  dataManager.completeAnimation(
-    data,
-    this.configAnimation
-  );
-};
-
-AnimationItem.prototype.setData = function (wrapper, animationData) {
-  if (animationData) {
-    if (typeof animationData !== 'object') {
-      animationData = JSON.parse(animationData);
-    }
-  }
-  var params = {
-    wrapper: wrapper,
-    animationData: animationData,
-  };
-  var wrapperAttributes = wrapper.attributes;
-
-  params.path = wrapperAttributes.getNamedItem('data-animation-path') // eslint-disable-line no-nested-ternary
-    ? wrapperAttributes.getNamedItem('data-animation-path').value
-    : wrapperAttributes.getNamedItem('data-bm-path') // eslint-disable-line no-nested-ternary
-      ? wrapperAttributes.getNamedItem('data-bm-path').value
-      : wrapperAttributes.getNamedItem('bm-path')
-        ? wrapperAttributes.getNamedItem('bm-path').value
-        : '';
-  params.animType = wrapperAttributes.getNamedItem('data-anim-type') // eslint-disable-line no-nested-ternary
-    ? wrapperAttributes.getNamedItem('data-anim-type').value
-    : wrapperAttributes.getNamedItem('data-bm-type') // eslint-disable-line no-nested-ternary
-      ? wrapperAttributes.getNamedItem('data-bm-type').value
-      : wrapperAttributes.getNamedItem('bm-type') // eslint-disable-line no-nested-ternary
-        ? wrapperAttributes.getNamedItem('bm-type').value
-        : wrapperAttributes.getNamedItem('data-bm-renderer') // eslint-disable-line no-nested-ternary
-          ? wrapperAttributes.getNamedItem('data-bm-renderer').value
-          : wrapperAttributes.getNamedItem('bm-renderer')
-            ? wrapperAttributes.getNamedItem('bm-renderer').value
-            : 'canvas';
-
-  var loop = wrapperAttributes.getNamedItem('data-anim-loop') // eslint-disable-line no-nested-ternary
-    ? wrapperAttributes.getNamedItem('data-anim-loop').value
-    : wrapperAttributes.getNamedItem('data-bm-loop') // eslint-disable-line no-nested-ternary
-      ? wrapperAttributes.getNamedItem('data-bm-loop').value
-      : wrapperAttributes.getNamedItem('bm-loop')
-        ? wrapperAttributes.getNamedItem('bm-loop').value
-        : '';
-  if (loop === 'false') {
-    params.loop = false;
-  } else if (loop === 'true') {
-    params.loop = true;
-  } else if (loop !== '') {
-    params.loop = parseInt(loop, 10);
-  }
-  var autoplay = wrapperAttributes.getNamedItem('data-anim-autoplay') // eslint-disable-line no-nested-ternary
-    ? wrapperAttributes.getNamedItem('data-anim-autoplay').value
-    : wrapperAttributes.getNamedItem('data-bm-autoplay') // eslint-disable-line no-nested-ternary
-      ? wrapperAttributes.getNamedItem('data-bm-autoplay').value
-      : wrapperAttributes.getNamedItem('bm-autoplay')
-        ? wrapperAttributes.getNamedItem('bm-autoplay').value
-        : true;
-  params.autoplay = autoplay !== 'false';
-
-  params.name = wrapperAttributes.getNamedItem('data-name') // eslint-disable-line no-nested-ternary
-    ? wrapperAttributes.getNamedItem('data-name').value
-    : wrapperAttributes.getNamedItem('data-bm-name') // eslint-disable-line no-nested-ternary
-      ? wrapperAttributes.getNamedItem('data-bm-name').value
-      : wrapperAttributes.getNamedItem('bm-name')
-        ? wrapperAttributes.getNamedItem('bm-name').value
-        : '';
-  var prerender = wrapperAttributes.getNamedItem('data-anim-prerender') // eslint-disable-line no-nested-ternary
-    ? wrapperAttributes.getNamedItem('data-anim-prerender').value
-    : wrapperAttributes.getNamedItem('data-bm-prerender') // eslint-disable-line no-nested-ternary
-      ? wrapperAttributes.getNamedItem('data-bm-prerender').value
-      : wrapperAttributes.getNamedItem('bm-prerender')
-        ? wrapperAttributes.getNamedItem('bm-prerender').value
-        : '';
-
-  if (prerender === 'false') {
-    params.prerender = false;
-  }
-  this.setParams(params);
-};
-
-AnimationItem.prototype.includeLayers = function (data) {
-  if (data.op > this.animationData.op) {
-    this.animationData.op = data.op;
-    this.totalFrames = Math.floor(data.op - this.animationData.ip);
-  }
-  var layers = this.animationData.layers;
-  var i;
-  var len = layers.length;
-  var newLayers = data.layers;
-  var j;
-  var jLen = newLayers.length;
-  for (j = 0; j < jLen; j += 1) {
-    i = 0;
-    while (i < len) {
-      if (layers[i].id === newLayers[j].id) {
-        layers[i] = newLayers[j];
-        break;
+    if (data.assets) {
+      len = data.assets.length
+      for (i = 0; i < len; i += 1) {
+        this.animationData.assets.push(data.assets[i])
       }
-      i += 1;
     }
+    this.animationData.__complete = false
+    dataManager.completeAnimation(this.animationData, this.onSegmentComplete)
   }
-  if (data.chars || data.fonts) {
-    this.renderer.globalData.fontManager.addChars(data.chars);
-    this.renderer.globalData.fontManager.addFonts(data.fonts, this.renderer.globalData.defs);
-  }
-  if (data.assets) {
-    len = data.assets.length;
-    for (i = 0; i < len; i += 1) {
-      this.animationData.assets.push(data.assets[i]);
-    }
-  }
-  this.animationData.__complete = false;
-  dataManager.completeAnimation(
-    this.animationData,
-    this.onSegmentComplete
-  );
-};
 
-AnimationItem.prototype.onSegmentComplete = function (data) {
-  this.animationData = data;
-  var expressionsPlugin = getExpressionsPlugin();
-  if (expressionsPlugin) {
-    expressionsPlugin.initExpressions(this);
-  }
-  this.loadNextSegment();
-};
-
-AnimationItem.prototype.loadNextSegment = function () {
-  var segments = this.animationData.segments;
-  if (!segments || segments.length === 0 || !this.autoloadSegments) {
-    this.trigger('data_ready');
-    this.timeCompleted = this.totalFrames;
-    return;
-  }
-  var segment = segments.shift();
-  this.timeCompleted = segment.time * this.frameRate;
-  var segmentPath = this.path + this.fileName + '_' + this.segmentPos + '.json';
-  this.segmentPos += 1;
-  dataManager.loadData(segmentPath, this.includeLayers.bind(this), function () {
-    this.trigger('data_failed');
-  }.bind(this));
-};
-
-AnimationItem.prototype.loadSegments = function () {
-  var segments = this.animationData.segments;
-  if (!segments) {
-    this.timeCompleted = this.totalFrames;
-  }
-  this.loadNextSegment();
-};
-
-AnimationItem.prototype.imagesLoaded = function () {
-  this.trigger('loaded_images');
-  this.checkLoaded();
-};
-
-AnimationItem.prototype.preloadImages = function () {
-  this.imagePreloader.setAssetsPath(this.assetsPath);
-  this.imagePreloader.setPath(this.path);
-  this.imagePreloader.loadAssets(this.animationData.assets, this.imagesLoaded.bind(this));
-};
-
-AnimationItem.prototype.configAnimation = function (animData) {
-  if (!this.renderer) {
-    return;
-  }
-  try {
-    this.animationData = animData;
-    if (this.initialSegment) {
-      this.totalFrames = Math.floor(this.initialSegment[1] - this.initialSegment[0]);
-      this.firstFrame = Math.round(this.initialSegment[0]);
-    } else {
-      this.totalFrames = Math.floor(this.animationData.op - this.animationData.ip);
-      this.firstFrame = Math.round(this.animationData.ip);
-    }
-    this.renderer.configAnimation(animData);
-    if (!animData.assets) {
-      animData.assets = [];
-    }
-
-    this.assets = this.animationData.assets;
-    this.frameRate = this.animationData.fr;
-    this.frameMult = this.animationData.fr / 1000;
-    this.renderer.searchExtraCompositions(animData.assets);
-    this.markers = markerParser(animData.markers || []);
-    this.trigger('config_ready');
-    this.preloadImages();
-    this.loadSegments();
-    this.updaFrameModifier();
-    this.waitForFontsLoaded();
-    if (this.isPaused) {
-      this.audioController.pause();
-    }
-  } catch (error) {
-    this.triggerConfigError(error);
-  }
-};
-
-AnimationItem.prototype.waitForFontsLoaded = function () {
-  if (!this.renderer) {
-    return;
-  }
-  if (this.renderer.globalData.fontManager.isLoaded) {
-    this.checkLoaded();
-  } else {
-    setTimeout(this.waitForFontsLoaded.bind(this), 20);
-  }
-};
-
-AnimationItem.prototype.checkLoaded = function () {
-  if (!this.isLoaded
-        && this.renderer.globalData.fontManager.isLoaded
-        && (this.imagePreloader.loadedImages() || this.renderer.rendererType !== 'canvas')
-        && (this.imagePreloader.loadedFootages())
-  ) {
-    this.isLoaded = true;
-    var expressionsPlugin = getExpressionsPlugin();
+  AnimationItem.prototype.onSegmentComplete = function (data) {
+    this.animationData = data
+    var expressionsPlugin = getExpressionsPlugin()
     if (expressionsPlugin) {
-      expressionsPlugin.initExpressions(this);
+      expressionsPlugin.initExpressions(this)
     }
-    this.renderer.initItems();
-    setTimeout(function () {
-      this.trigger('DOMLoaded');
-    }.bind(this), 0);
-    this.gotoFrame();
-    if (this.autoplay) {
-      this.play();
+    this.loadNextSegment()
+  }
+
+  AnimationItem.prototype.loadNextSegment = function () {
+    var segments = this.animationData.segments
+    if (!segments || segments.length === 0 || !this.autoloadSegments) {
+      this.trigger('data_ready')
+      this.timeCompleted = this.totalFrames
+      return
     }
+    var segment = segments.shift()
+    this.timeCompleted = segment.time * this.frameRate
+    var segmentPath = this.path + this.fileName + '_' + this.segmentPos + '.json'
+    this.segmentPos += 1
+    dataManager.loadData(
+      segmentPath,
+      this.includeLayers.bind(this),
+      function () {
+        this.trigger('data_failed')
+      }.bind(this)
+    )
   }
-};
 
-AnimationItem.prototype.resize = function () {
-  this.renderer.updateContainerSize();
-};
-
-AnimationItem.prototype.setSubframe = function (flag) {
-  this.isSubframeEnabled = !!flag;
-};
-
-AnimationItem.prototype.gotoFrame = function () {
-  this.currentFrame = this.isSubframeEnabled ? this.currentRawFrame : ~~this.currentRawFrame; // eslint-disable-line no-bitwise
-
-  if (this.timeCompleted !== this.totalFrames && this.currentFrame > this.timeCompleted) {
-    this.currentFrame = this.timeCompleted;
-  }
-  this.trigger('enterFrame');
-  this.renderFrame();
-  this.trigger('drawnFrame');
-};
-
-AnimationItem.prototype.renderFrame = function () {
-  if (this.isLoaded === false || !this.renderer) {
-    return;
-  }
-  try {
-    this.renderer.renderFrame(this.currentFrame + this.firstFrame);
-  } catch (error) {
-    this.triggerRenderFrameError(error);
-  }
-};
-
-AnimationItem.prototype.play = function (name) {
-  if (name && this.name !== name) {
-    return;
-  }
-  if (this.isPaused === true) {
-    this.isPaused = false;
-    this.trigger('_pause');
-    this.audioController.resume();
-    if (this._idle) {
-      this._idle = false;
-      this.trigger('_active');
+  AnimationItem.prototype.loadSegments = function () {
+    var segments = this.animationData.segments
+    if (!segments) {
+      this.timeCompleted = this.totalFrames
     }
+    this.loadNextSegment()
   }
-};
 
-AnimationItem.prototype.pause = function (name) {
-  if (name && this.name !== name) {
-    return;
+  AnimationItem.prototype.imagesLoaded = function () {
+    this.trigger('loaded_images')
+    this.checkLoaded()
   }
-  if (this.isPaused === false) {
-    this.isPaused = true;
-    this.trigger('_play');
-    this._idle = true;
-    this.trigger('_idle');
-    this.audioController.pause();
-  }
-};
 
-AnimationItem.prototype.togglePause = function (name) {
-  if (name && this.name !== name) {
-    return;
+  AnimationItem.prototype.preloadImages = function () {
+    this.imagePreloader.setAssetsPath(this.assetsPath)
+    this.imagePreloader.setPath(this.path)
+    this.imagePreloader.loadAssets(this.animationData.assets, this.imagesLoaded.bind(this))
   }
-  if (this.isPaused === true) {
-    this.play();
-  } else {
-    this.pause();
-  }
-};
 
-AnimationItem.prototype.stop = function (name) {
-  if (name && this.name !== name) {
-    return;
-  }
-  this.pause();
-  this.playCount = 0;
-  this._completedLoop = false;
-  this.setCurrentRawFrameValue(0);
-};
-
-AnimationItem.prototype.getMarkerData = function (markerName) {
-  var marker;
-  for (var i = 0; i < this.markers.length; i += 1) {
-    marker = this.markers[i];
-    if (marker.payload && marker.payload.name === markerName) {
-      return marker;
+  AnimationItem.prototype.configAnimation = function (animData) {
+    if (!this.renderer) {
+      return
     }
-  }
-  return null;
-};
-
-AnimationItem.prototype.goToAndStop = function (value, isFrame, name) {
-  if (name && this.name !== name) {
-    return;
-  }
-  var numValue = Number(value);
-  if (isNaN(numValue)) {
-    var marker = this.getMarkerData(value);
-    if (marker) {
-      this.goToAndStop(marker.time, true);
-    }
-  } else if (isFrame) {
-    this.setCurrentRawFrameValue(value);
-  } else {
-    this.setCurrentRawFrameValue(value * this.frameModifier);
-  }
-  this.pause();
-};
-
-AnimationItem.prototype.goToAndPlay = function (value, isFrame, name) {
-  if (name && this.name !== name) {
-    return;
-  }
-  var numValue = Number(value);
-  if (isNaN(numValue)) {
-    var marker = this.getMarkerData(value);
-    if (marker) {
-      if (!marker.duration) {
-        this.goToAndStop(marker.time, true);
+    try {
+      this.animationData = animData
+      if (this.initialSegment) {
+        this.totalFrames = Math.floor(this.initialSegment[1] - this.initialSegment[0])
+        this.firstFrame = Math.round(this.initialSegment[0])
       } else {
-        this.playSegments([marker.time, marker.time + marker.duration], true);
+        this.totalFrames = Math.floor(this.animationData.op - this.animationData.ip)
+        this.firstFrame = Math.round(this.animationData.ip)
       }
-    }
-  } else {
-    this.goToAndStop(numValue, isFrame, name);
-  }
-  this.play();
-};
+      this.renderer.configAnimation(animData)
+      if (!animData.assets) {
+        animData.assets = []
+      }
 
-AnimationItem.prototype.advanceTime = function (value) {
-  if (this.isPaused === true || this.isLoaded === false) {
-    return;
-  }
-  var nextValue = this.currentRawFrame + value * this.frameModifier;
-  var _isComplete = false;
-  // Checking if nextValue > totalFrames - 1 for addressing non looping and looping animations.
-  // If animation won't loop, it should stop at totalFrames - 1. If it will loop it should complete the last frame and then loop.
-  if (nextValue >= this.totalFrames - 1 && this.frameModifier > 0) {
-    if (!this.loop || this.playCount === this.loop) {
-      if (!this.checkSegments(nextValue > this.totalFrames ? nextValue % this.totalFrames : 0)) {
-        _isComplete = true;
-        nextValue = this.totalFrames - 1;
+      this.assets = this.animationData.assets
+      this.frameRate = this.animationData.fr
+      this.frameMult = this.animationData.fr / 1000
+      this.renderer.searchExtraCompositions(animData.assets)
+      this.markers = markerParser(animData.markers || [])
+      this.trigger('config_ready')
+      this.preloadImages()
+      this.loadSegments()
+      this.updaFrameModifier()
+      this.waitForFontsLoaded()
+      if (this.isPaused) {
+        this.audioController.pause()
       }
-    } else if (nextValue >= this.totalFrames) {
-      this.playCount += 1;
-      if (!this.checkSegments(nextValue % this.totalFrames)) {
-        this.setCurrentRawFrameValue(nextValue % this.totalFrames);
-        this._completedLoop = true;
-        this.trigger('loopComplete');
-      }
-    } else {
-      this.setCurrentRawFrameValue(nextValue);
+    } catch (error) {
+      this.triggerConfigError(error)
     }
-  } else if (nextValue < 0) {
-    if (!this.checkSegments(nextValue % this.totalFrames)) {
-      if (this.loop && !(this.playCount-- <= 0 && this.loop !== true)) { // eslint-disable-line no-plusplus
-        this.setCurrentRawFrameValue(this.totalFrames + (nextValue % this.totalFrames));
-        if (!this._completedLoop) {
-          this._completedLoop = true;
+  }
+
+  AnimationItem.prototype.waitForFontsLoaded = function () {
+    if (!this.renderer) {
+      return
+    }
+    if (this.renderer.globalData.fontManager.isLoaded) {
+      this.checkLoaded()
+    } else {
+      setTimeout(this.waitForFontsLoaded.bind(this), 20)
+    }
+  }
+
+  AnimationItem.prototype.checkLoaded = function () {
+    if (
+      !this.isLoaded &&
+      this.renderer.globalData.fontManager.isLoaded &&
+      (this.imagePreloader.loadedImages() || this.renderer.rendererType !== 'canvas') &&
+      this.imagePreloader.loadedFootages()
+    ) {
+      this.isLoaded = true
+      var expressionsPlugin = getExpressionsPlugin()
+      if (expressionsPlugin) {
+        expressionsPlugin.initExpressions(this)
+      }
+      this.renderer.initItems()
+      setTimeout(
+        function () {
+          this.trigger('DOMLoaded')
+        }.bind(this),
+        0
+      )
+      this.gotoFrame()
+      if (this.autoplay) {
+        this.play()
+      }
+    }
+  }
+
+  AnimationItem.prototype.resize = function () {
+    this.renderer.updateContainerSize()
+  }
+
+  AnimationItem.prototype.setSubframe = function (flag) {
+    this.isSubframeEnabled = !!flag
+  }
+
+  AnimationItem.prototype.gotoFrame = function () {
+    this.currentFrame = this.isSubframeEnabled ? this.currentRawFrame : ~~this.currentRawFrame // eslint-disable-line no-bitwise
+
+    if (this.timeCompleted !== this.totalFrames && this.currentFrame > this.timeCompleted) {
+      this.currentFrame = this.timeCompleted
+    }
+    this.trigger('enterFrame')
+    this.renderFrame()
+    this.trigger('drawnFrame')
+  }
+
+  AnimationItem.prototype.renderFrame = function () {
+    if (this.isLoaded === false || !this.renderer) {
+      return
+    }
+    try {
+      this.renderer.renderFrame(this.currentFrame + this.firstFrame)
+    } catch (error) {
+      this.triggerRenderFrameError(error)
+    }
+  }
+
+  AnimationItem.prototype.play = function (name) {
+    if (name && this.name !== name) {
+      return
+    }
+    if (this.isPaused === true) {
+      this.isPaused = false
+      this.trigger('_pause')
+      this.audioController.resume()
+      if (this._idle) {
+        this._idle = false
+        this.trigger('_active')
+      }
+    }
+  }
+
+  AnimationItem.prototype.pause = function (name) {
+    if (name && this.name !== name) {
+      return
+    }
+    if (this.isPaused === false) {
+      this.isPaused = true
+      this.trigger('_play')
+      this._idle = true
+      this.trigger('_idle')
+      this.audioController.pause()
+    }
+  }
+
+  AnimationItem.prototype.togglePause = function (name) {
+    if (name && this.name !== name) {
+      return
+    }
+    if (this.isPaused === true) {
+      this.play()
+    } else {
+      this.pause()
+    }
+  }
+
+  AnimationItem.prototype.stop = function (name) {
+    if (name && this.name !== name) {
+      return
+    }
+    this.pause()
+    this.playCount = 0
+    this._completedLoop = false
+    this.setCurrentRawFrameValue(0)
+  }
+
+  AnimationItem.prototype.getMarkerData = function (markerName) {
+    var marker
+    for (var i = 0; i < this.markers.length; i += 1) {
+      marker = this.markers[i]
+      if (marker.payload && marker.payload.name === markerName) {
+        return marker
+      }
+    }
+    return null
+  }
+
+  AnimationItem.prototype.goToAndStop = function (value, isFrame, name) {
+    if (name && this.name !== name) {
+      return
+    }
+    var numValue = Number(value)
+    if (isNaN(numValue)) {
+      var marker = this.getMarkerData(value)
+      if (marker) {
+        this.goToAndStop(marker.time, true)
+      }
+    } else if (isFrame) {
+      this.setCurrentRawFrameValue(value)
+    } else {
+      this.setCurrentRawFrameValue(value * this.frameModifier)
+    }
+    this.pause()
+  }
+
+  AnimationItem.prototype.goToAndPlay = function (value, isFrame, name) {
+    if (name && this.name !== name) {
+      return
+    }
+    var numValue = Number(value)
+    if (isNaN(numValue)) {
+      var marker = this.getMarkerData(value)
+      if (marker) {
+        if (!marker.duration) {
+          this.goToAndStop(marker.time, true)
         } else {
-          this.trigger('loopComplete');
-        }
-      } else {
-        _isComplete = true;
-        nextValue = 0;
-      }
-    }
-  } else {
-    this.setCurrentRawFrameValue(nextValue);
-  }
-  if (_isComplete) {
-    this.setCurrentRawFrameValue(nextValue);
-    this.pause();
-    this.trigger('complete');
-  }
-};
-
-AnimationItem.prototype.adjustSegment = function (arr, offset) {
-  this.playCount = 0;
-  if (arr[1] < arr[0]) {
-    if (this.frameModifier > 0) {
-      if (this.playSpeed < 0) {
-        this.setSpeed(-this.playSpeed);
-      } else {
-        this.setDirection(-1);
-      }
-    }
-    this.totalFrames = arr[0] - arr[1];
-    this.timeCompleted = this.totalFrames;
-    this.firstFrame = arr[1];
-    this.setCurrentRawFrameValue(this.totalFrames - 0.001 - offset);
-  } else if (arr[1] > arr[0]) {
-    if (this.frameModifier < 0) {
-      if (this.playSpeed < 0) {
-        this.setSpeed(-this.playSpeed);
-      } else {
-        this.setDirection(1);
-      }
-    }
-    this.totalFrames = arr[1] - arr[0];
-    this.timeCompleted = this.totalFrames;
-    this.firstFrame = arr[0];
-    this.setCurrentRawFrameValue(0.001 + offset);
-  }
-  this.trigger('segmentStart');
-};
-AnimationItem.prototype.setSegment = function (init, end) {
-  var pendingFrame = -1;
-  if (this.isPaused) {
-    if (this.currentRawFrame + this.firstFrame < init) {
-      pendingFrame = init;
-    } else if (this.currentRawFrame + this.firstFrame > end) {
-      pendingFrame = end - init;
-    }
-  }
-
-  this.firstFrame = init;
-  this.totalFrames = end - init;
-  this.timeCompleted = this.totalFrames;
-  if (pendingFrame !== -1) {
-    this.goToAndStop(pendingFrame, true);
-  }
-};
-
-AnimationItem.prototype.playSegments = function (arr, forceFlag) {
-  if (forceFlag) {
-    this.segments.length = 0;
-  }
-  if (typeof arr[0] === 'object') {
-    var i;
-    var len = arr.length;
-    for (i = 0; i < len; i += 1) {
-      this.segments.push(arr[i]);
-    }
-  } else {
-    this.segments.push(arr);
-  }
-  if (this.segments.length && forceFlag) {
-    this.adjustSegment(this.segments.shift(), 0);
-  }
-  if (this.isPaused) {
-    this.play();
-  }
-};
-
-AnimationItem.prototype.resetSegments = function (forceFlag) {
-  this.segments.length = 0;
-  this.segments.push([this.animationData.ip, this.animationData.op]);
-  if (forceFlag) {
-    this.checkSegments(0);
-  }
-};
-AnimationItem.prototype.checkSegments = function (offset) {
-  if (this.segments.length) {
-    this.adjustSegment(this.segments.shift(), offset);
-    return true;
-  }
-  return false;
-};
-
-AnimationItem.prototype.destroy = function (name) {
-  if ((name && this.name !== name) || !this.renderer) {
-    return;
-  }
-  this.renderer.destroy();
-  this.imagePreloader.destroy();
-  this.trigger('destroy');
-  this._cbs = null;
-  this.onEnterFrame = null;
-  this.onLoopComplete = null;
-  this.onComplete = null;
-  this.onSegmentStart = null;
-  this.onDestroy = null;
-  this.renderer = null;
-  this.renderer = null;
-  this.imagePreloader = null;
-  this.projectInterface = null;
-};
-
-AnimationItem.prototype.setCurrentRawFrameValue = function (value) {
-  this.currentRawFrame = value;
-  this.gotoFrame();
-};
-
-AnimationItem.prototype.setSpeed = function (val) {
-  this.playSpeed = val;
-  this.updaFrameModifier();
-};
-
-AnimationItem.prototype.setDirection = function (val) {
-  this.playDirection = val < 0 ? -1 : 1;
-  this.updaFrameModifier();
-};
-
-AnimationItem.prototype.setVolume = function (val, name) {
-  if (name && this.name !== name) {
-    return;
-  }
-  this.audioController.setVolume(val);
-};
-
-AnimationItem.prototype.getVolume = function () {
-  return this.audioController.getVolume();
-};
-
-AnimationItem.prototype.mute = function (name) {
-  if (name && this.name !== name) {
-    return;
-  }
-  this.audioController.mute();
-};
-
-AnimationItem.prototype.unmute = function (name) {
-  if (name && this.name !== name) {
-    return;
-  }
-  this.audioController.unmute();
-};
-
-AnimationItem.prototype.updaFrameModifier = function () {
-  this.frameModifier = this.frameMult * this.playSpeed * this.playDirection;
-  this.audioController.setRate(this.playSpeed * this.playDirection);
-};
-
-AnimationItem.prototype.getPath = function () {
-  return this.path;
-};
-
-AnimationItem.prototype.getAssetsPath = function (assetData) {
-  var path = '';
-  if (assetData.e) {
-    path = assetData.p;
-  } else if (this.assetsPath) {
-    var imagePath = assetData.p;
-    if (imagePath.indexOf('images/') !== -1) {
-      imagePath = imagePath.split('/')[1];
-    }
-    path = this.assetsPath + imagePath;
-  } else {
-    path = this.path;
-    path += assetData.u ? assetData.u : '';
-    path += assetData.p;
-  }
-  return path;
-};
-
-AnimationItem.prototype.getAssetData = function (id) {
-  var i = 0;
-  var len = this.assets.length;
-  while (i < len) {
-    if (id === this.assets[i].id) {
-      return this.assets[i];
-    }
-    i += 1;
-  }
-  return null;
-};
-
-AnimationItem.prototype.hide = function () {
-  this.renderer.hide();
-};
-
-AnimationItem.prototype.show = function () {
-  this.renderer.show();
-};
-
-AnimationItem.prototype.getDuration = function (isFrame) {
-  return isFrame ? this.totalFrames : this.totalFrames / this.frameRate;
-};
-
-AnimationItem.prototype.updateDocumentData = function (path, documentData, index) {
-  try {
-    var element = this.renderer.getElementByPath(path);
-    element.updateDocumentData(documentData, index);
-  } catch (error) {
-    // TODO: decide how to handle catch case
-  }
-};
-
-AnimationItem.prototype.trigger = function (name) {
-  if (this._cbs && this._cbs[name]) {
-    switch (name) {
-      case 'enterFrame':
-        this.triggerEvent(name, new BMEnterFrameEvent(name, this.currentFrame, this.totalFrames, this.frameModifier));
-        break;
-      case 'drawnFrame':
-        this.drawnFrameEvent.currentTime = this.currentFrame;
-        this.drawnFrameEvent.totalTime = this.totalFrames;
-        this.drawnFrameEvent.direction = this.frameModifier;
-        this.triggerEvent(name, this.drawnFrameEvent);
-        break;
-      case 'loopComplete':
-        this.triggerEvent(name, new BMCompleteLoopEvent(name, this.loop, this.playCount, this.frameMult));
-        break;
-      case 'complete':
-        this.triggerEvent(name, new BMCompleteEvent(name, this.frameMult));
-        break;
-      case 'segmentStart':
-        this.triggerEvent(name, new BMSegmentStartEvent(name, this.firstFrame, this.totalFrames));
-        break;
-      case 'destroy':
-        this.triggerEvent(name, new BMDestroyEvent(name, this));
-        break;
-      default:
-        this.triggerEvent(name);
-    }
-  }
-  if (name === 'enterFrame' && this.onEnterFrame) {
-    this.onEnterFrame.call(this, new BMEnterFrameEvent(name, this.currentFrame, this.totalFrames, this.frameMult));
-  }
-  if (name === 'loopComplete' && this.onLoopComplete) {
-    this.onLoopComplete.call(this, new BMCompleteLoopEvent(name, this.loop, this.playCount, this.frameMult));
-  }
-  if (name === 'complete' && this.onComplete) {
-    this.onComplete.call(this, new BMCompleteEvent(name, this.frameMult));
-  }
-  if (name === 'segmentStart' && this.onSegmentStart) {
-    this.onSegmentStart.call(this, new BMSegmentStartEvent(name, this.firstFrame, this.totalFrames));
-  }
-  if (name === 'destroy' && this.onDestroy) {
-    this.onDestroy.call(this, new BMDestroyEvent(name, this));
-  }
-};
-
-AnimationItem.prototype.triggerRenderFrameError = function (nativeError) {
-  var error = new BMRenderFrameErrorEvent(nativeError, this.currentFrame);
-  this.triggerEvent('error', error);
-
-  if (this.onError) {
-    this.onError.call(this, error);
-  }
-};
-
-AnimationItem.prototype.triggerConfigError = function (nativeError) {
-  var error = new BMConfigErrorEvent(nativeError, this.currentFrame);
-  this.triggerEvent('error', error);
-
-  if (this.onError) {
-    this.onError.call(this, error);
-  }
-};
-
-const animationManager = (function () {
-  var moduleOb = {};
-  var registeredAnimations = [];
-  var initTime = 0;
-  var len = 0;
-  var playingAnimationsNum = 0;
-  var _stopped = true;
-  var _isFrozen = false;
-
-  function removeElement(ev) {
-    var i = 0;
-    var animItem = ev.target;
-    while (i < len) {
-      if (registeredAnimations[i].animation === animItem) {
-        registeredAnimations.splice(i, 1);
-        i -= 1;
-        len -= 1;
-        if (!animItem.isPaused) {
-          subtractPlayingCount();
+          this.playSegments([marker.time, marker.time + marker.duration], true)
         }
       }
-      i += 1;
-    }
-  }
-
-  function registerAnimation(element, animationData) {
-    if (!element) {
-      return null;
-    }
-    var i = 0;
-    while (i < len) {
-      if (registeredAnimations[i].elem === element && registeredAnimations[i].elem !== null) {
-        return registeredAnimations[i].animation;
-      }
-      i += 1;
-    }
-    var animItem = new AnimationItem();
-    setupAnimation(animItem, element);
-    animItem.setData(element, animationData);
-    return animItem;
-  }
-
-  function getRegisteredAnimations() {
-    var i;
-    var lenAnims = registeredAnimations.length;
-    var animations = [];
-    for (i = 0; i < lenAnims; i += 1) {
-      animations.push(registeredAnimations[i].animation);
-    }
-    return animations;
-  }
-
-  function addPlayingCount() {
-    playingAnimationsNum += 1;
-    activate();
-  }
-
-  function subtractPlayingCount() {
-    playingAnimationsNum -= 1;
-  }
-
-  function setupAnimation(animItem, element) {
-    animItem.addEventListener('destroy', removeElement);
-    animItem.addEventListener('_active', addPlayingCount);
-    animItem.addEventListener('_idle', subtractPlayingCount);
-    registeredAnimations.push({ elem: element, animation: animItem });
-    len += 1;
-  }
-
-  function loadAnimation(params) {
-    var animItem = new AnimationItem();
-    setupAnimation(animItem, null);
-    animItem.setParams(params);
-    return animItem;
-  }
-
-  function setSpeed(val, animation) {
-    var i;
-    for (i = 0; i < len; i += 1) {
-      registeredAnimations[i].animation.setSpeed(val, animation);
-    }
-  }
-
-  function setDirection(val, animation) {
-    var i;
-    for (i = 0; i < len; i += 1) {
-      registeredAnimations[i].animation.setDirection(val, animation);
-    }
-  }
-
-  function play(animation) {
-    var i;
-    for (i = 0; i < len; i += 1) {
-      registeredAnimations[i].animation.play(animation);
-    }
-  }
-  function resume(nowTime) {
-    var elapsedTime = nowTime - initTime;
-    var i;
-    for (i = 0; i < len; i += 1) {
-      registeredAnimations[i].animation.advanceTime(elapsedTime);
-    }
-    initTime = nowTime;
-    if (playingAnimationsNum && !_isFrozen) {
-      window.requestAnimationFrame(resume);
     } else {
-      _stopped = true;
+      this.goToAndStop(numValue, isFrame, name)
     }
+    this.play()
   }
 
-  function first(nowTime) {
-    initTime = nowTime;
-    window.requestAnimationFrame(resume);
-  }
-
-  function pause(animation) {
-    var i;
-    for (i = 0; i < len; i += 1) {
-      registeredAnimations[i].animation.pause(animation);
+  AnimationItem.prototype.advanceTime = function (value) {
+    if (this.isPaused === true || this.isLoaded === false) {
+      return
     }
-  }
-
-  function goToAndStop(value, isFrame, animation) {
-    var i;
-    for (i = 0; i < len; i += 1) {
-      registeredAnimations[i].animation.goToAndStop(value, isFrame, animation);
-    }
-  }
-
-  function stop(animation) {
-    var i;
-    for (i = 0; i < len; i += 1) {
-      registeredAnimations[i].animation.stop(animation);
-    }
-  }
-
-  function togglePause(animation) {
-    var i;
-    for (i = 0; i < len; i += 1) {
-      registeredAnimations[i].animation.togglePause(animation);
-    }
-  }
-
-  function destroy(animation) {
-    var i;
-    for (i = (len - 1); i >= 0; i -= 1) {
-      registeredAnimations[i].animation.destroy(animation);
-    }
-  }
-
-  function searchAnimations(animationData, standalone, renderer) {
-    var animElements = [].concat([].slice.call(document.getElementsByClassName('lottie')),
-      [].slice.call(document.getElementsByClassName('bodymovin')));
-    var i;
-    var lenAnims = animElements.length;
-    for (i = 0; i < lenAnims; i += 1) {
-      if (renderer) {
-        animElements[i].setAttribute('data-bm-type', renderer);
+    var nextValue = this.currentRawFrame + value * this.frameModifier
+    var _isComplete = false
+    // Checking if nextValue > totalFrames - 1 for addressing non looping and looping animations.
+    // If animation won't loop, it should stop at totalFrames - 1. If it will loop it should complete the last frame and then loop.
+    if (nextValue >= this.totalFrames - 1 && this.frameModifier > 0) {
+      if (!this.loop || this.playCount === this.loop) {
+        if (!this.checkSegments(nextValue > this.totalFrames ? nextValue % this.totalFrames : 0)) {
+          _isComplete = true
+          nextValue = this.totalFrames - 1
+        }
+      } else if (nextValue >= this.totalFrames) {
+        this.playCount += 1
+        if (!this.checkSegments(nextValue % this.totalFrames)) {
+          this.setCurrentRawFrameValue(nextValue % this.totalFrames)
+          this._completedLoop = true
+          this.trigger('loopComplete')
+        }
+      } else {
+        this.setCurrentRawFrameValue(nextValue)
       }
-      registerAnimation(animElements[i], animationData);
-    }
-    if (standalone && lenAnims === 0) {
-      if (!renderer) {
-        renderer = 'svg';
+    } else if (nextValue < 0) {
+      if (!this.checkSegments(nextValue % this.totalFrames)) {
+        if (this.loop && !(this.playCount-- <= 0 && this.loop !== true)) {
+          // eslint-disable-line no-plusplus
+          this.setCurrentRawFrameValue(this.totalFrames + (nextValue % this.totalFrames))
+          if (!this._completedLoop) {
+            this._completedLoop = true
+          } else {
+            this.trigger('loopComplete')
+          }
+        } else {
+          _isComplete = true
+          nextValue = 0
+        }
       }
-      var body = document.getElementsByTagName('body')[0];
-      body.innerText = '';
-      var div = createTag('div');
-      div.style.width = '100%';
-      div.style.height = '100%';
-      div.setAttribute('data-bm-type', renderer);
-      body.appendChild(div);
-      registerAnimation(div, animationData);
+    } else {
+      this.setCurrentRawFrameValue(nextValue)
+    }
+    if (_isComplete) {
+      this.setCurrentRawFrameValue(nextValue)
+      this.pause()
+      this.trigger('complete')
     }
   }
 
-  function resize() {
-    var i;
-    for (i = 0; i < len; i += 1) {
-      registeredAnimations[i].animation.resize();
+  AnimationItem.prototype.adjustSegment = function (arr, offset) {
+    this.playCount = 0
+    if (arr[1] < arr[0]) {
+      if (this.frameModifier > 0) {
+        if (this.playSpeed < 0) {
+          this.setSpeed(-this.playSpeed)
+        } else {
+          this.setDirection(-1)
+        }
+      }
+      this.totalFrames = arr[0] - arr[1]
+      this.timeCompleted = this.totalFrames
+      this.firstFrame = arr[1]
+      this.setCurrentRawFrameValue(this.totalFrames - 0.001 - offset)
+    } else if (arr[1] > arr[0]) {
+      if (this.frameModifier < 0) {
+        if (this.playSpeed < 0) {
+          this.setSpeed(-this.playSpeed)
+        } else {
+          this.setDirection(1)
+        }
+      }
+      this.totalFrames = arr[1] - arr[0]
+      this.timeCompleted = this.totalFrames
+      this.firstFrame = arr[0]
+      this.setCurrentRawFrameValue(0.001 + offset)
     }
+    this.trigger('segmentStart')
   }
-
-  function activate() {
-    if (!_isFrozen && playingAnimationsNum) {
-      if (_stopped) {
-        window.requestAnimationFrame(first);
-        _stopped = false;
+  AnimationItem.prototype.setSegment = function (init, end) {
+    var pendingFrame = -1
+    if (this.isPaused) {
+      if (this.currentRawFrame + this.firstFrame < init) {
+        pendingFrame = init
+      } else if (this.currentRawFrame + this.firstFrame > end) {
+        pendingFrame = end - init
       }
     }
-  }
 
-  function freeze() {
-    _isFrozen = true;
-  }
-
-  function unfreeze() {
-    _isFrozen = false;
-    activate();
-  }
-
-  function setVolume(val, animation) {
-    var i;
-    for (i = 0; i < len; i += 1) {
-      registeredAnimations[i].animation.setVolume(val, animation);
+    this.firstFrame = init
+    this.totalFrames = end - init
+    this.timeCompleted = this.totalFrames
+    if (pendingFrame !== -1) {
+      this.goToAndStop(pendingFrame, true)
     }
   }
 
-  function mute(animation) {
-    var i;
-    for (i = 0; i < len; i += 1) {
-      registeredAnimations[i].animation.mute(animation);
+  AnimationItem.prototype.playSegments = function (arr, forceFlag) {
+    if (forceFlag) {
+      this.segments.length = 0
+    }
+    if (typeof arr[0] === 'object') {
+      var i
+      var len = arr.length
+      for (i = 0; i < len; i += 1) {
+        this.segments.push(arr[i])
+      }
+    } else {
+      this.segments.push(arr)
+    }
+    if (this.segments.length && forceFlag) {
+      this.adjustSegment(this.segments.shift(), 0)
+    }
+    if (this.isPaused) {
+      this.play()
     }
   }
 
-  function unmute(animation) {
-    var i;
-    for (i = 0; i < len; i += 1) {
-      registeredAnimations[i].animation.unmute(animation);
+  AnimationItem.prototype.resetSegments = function (forceFlag) {
+    this.segments.length = 0
+    this.segments.push([this.animationData.ip, this.animationData.op])
+    if (forceFlag) {
+      this.checkSegments(0)
+    }
+  }
+  AnimationItem.prototype.checkSegments = function (offset) {
+    if (this.segments.length) {
+      this.adjustSegment(this.segments.shift(), offset)
+      return true
+    }
+    return false
+  }
+
+  AnimationItem.prototype.destroy = function (name) {
+    if ((name && this.name !== name) || !this.renderer) {
+      return
+    }
+    this.renderer.destroy()
+    this.imagePreloader.destroy()
+    this.trigger('destroy')
+    this._cbs = null
+    this.onEnterFrame = null
+    this.onLoopComplete = null
+    this.onComplete = null
+    this.onSegmentStart = null
+    this.onDestroy = null
+    this.renderer = null
+    this.renderer = null
+    this.imagePreloader = null
+    this.projectInterface = null
+  }
+
+  AnimationItem.prototype.setCurrentRawFrameValue = function (value) {
+    this.currentRawFrame = value
+    this.gotoFrame()
+  }
+
+  AnimationItem.prototype.setSpeed = function (val) {
+    this.playSpeed = val
+    this.updaFrameModifier()
+  }
+
+  AnimationItem.prototype.setDirection = function (val) {
+    this.playDirection = val < 0 ? -1 : 1
+    this.updaFrameModifier()
+  }
+
+  AnimationItem.prototype.setVolume = function (val, name) {
+    if (name && this.name !== name) {
+      return
+    }
+    this.audioController.setVolume(val)
+  }
+
+  AnimationItem.prototype.getVolume = function () {
+    return this.audioController.getVolume()
+  }
+
+  AnimationItem.prototype.mute = function (name) {
+    if (name && this.name !== name) {
+      return
+    }
+    this.audioController.mute()
+  }
+
+  AnimationItem.prototype.unmute = function (name) {
+    if (name && this.name !== name) {
+      return
+    }
+    this.audioController.unmute()
+  }
+
+  AnimationItem.prototype.updaFrameModifier = function () {
+    this.frameModifier = this.frameMult * this.playSpeed * this.playDirection
+    this.audioController.setRate(this.playSpeed * this.playDirection)
+  }
+
+  AnimationItem.prototype.getPath = function () {
+    return this.path
+  }
+
+  AnimationItem.prototype.getAssetsPath = function (assetData) {
+    var path = ''
+    if (assetData.e) {
+      path = assetData.p
+    } else if (this.assetsPath) {
+      var imagePath = assetData.p
+      if (imagePath.indexOf('images/') !== -1) {
+        imagePath = imagePath.split('/')[1]
+      }
+      path = this.assetsPath + imagePath
+    } else {
+      path = this.path
+      path += assetData.u ? assetData.u : ''
+      path += assetData.p
+    }
+    return path
+  }
+
+  AnimationItem.prototype.getAssetData = function (id) {
+    var i = 0
+    var len = this.assets.length
+    while (i < len) {
+      if (id === this.assets[i].id) {
+        return this.assets[i]
+      }
+      i += 1
+    }
+    return null
+  }
+
+  AnimationItem.prototype.hide = function () {
+    this.renderer.hide()
+  }
+
+  AnimationItem.prototype.show = function () {
+    this.renderer.show()
+  }
+
+  AnimationItem.prototype.getDuration = function (isFrame) {
+    return isFrame ? this.totalFrames : this.totalFrames / this.frameRate
+  }
+
+  AnimationItem.prototype.updateDocumentData = function (path, documentData, index) {
+    try {
+      var element = this.renderer.getElementByPath(path)
+      element.updateDocumentData(documentData, index)
+    } catch (error) {
+      // TODO: decide how to handle catch case
     }
   }
 
-  moduleOb.registerAnimation = registerAnimation;
-  moduleOb.loadAnimation = loadAnimation;
-  moduleOb.setSpeed = setSpeed;
-  moduleOb.setDirection = setDirection;
-  moduleOb.play = play;
-  moduleOb.pause = pause;
-  moduleOb.stop = stop;
-  moduleOb.togglePause = togglePause;
-  moduleOb.searchAnimations = searchAnimations;
-  moduleOb.resize = resize;
-  // moduleOb.start = start;
-  moduleOb.goToAndStop = goToAndStop;
-  moduleOb.destroy = destroy;
-  moduleOb.freeze = freeze;
-  moduleOb.unfreeze = unfreeze;
-  moduleOb.setVolume = setVolume;
-  moduleOb.mute = mute;
-  moduleOb.unmute = unmute;
-  moduleOb.getRegisteredAnimations = getRegisteredAnimations;
-  return moduleOb;
-}());
+  AnimationItem.prototype.trigger = function (name) {
+    if (this._cbs && this._cbs[name]) {
+      switch (name) {
+        case 'enterFrame':
+          this.triggerEvent(
+            name,
+            new BMEnterFrameEvent(name, this.currentFrame, this.totalFrames, this.frameModifier)
+          )
+          break
+        case 'drawnFrame':
+          this.drawnFrameEvent.currentTime = this.currentFrame
+          this.drawnFrameEvent.totalTime = this.totalFrames
+          this.drawnFrameEvent.direction = this.frameModifier
+          this.triggerEvent(name, this.drawnFrameEvent)
+          break
+        case 'loopComplete':
+          this.triggerEvent(
+            name,
+            new BMCompleteLoopEvent(name, this.loop, this.playCount, this.frameMult)
+          )
+          break
+        case 'complete':
+          this.triggerEvent(name, new BMCompleteEvent(name, this.frameMult))
+          break
+        case 'segmentStart':
+          this.triggerEvent(name, new BMSegmentStartEvent(name, this.firstFrame, this.totalFrames))
+          break
+        case 'destroy':
+          this.triggerEvent(name, new BMDestroyEvent(name, this))
+          break
+        default:
+          this.triggerEvent(name)
+      }
+    }
+    if (name === 'enterFrame' && this.onEnterFrame) {
+      this.onEnterFrame.call(
+        this,
+        new BMEnterFrameEvent(name, this.currentFrame, this.totalFrames, this.frameMult)
+      )
+    }
+    if (name === 'loopComplete' && this.onLoopComplete) {
+      this.onLoopComplete.call(
+        this,
+        new BMCompleteLoopEvent(name, this.loop, this.playCount, this.frameMult)
+      )
+    }
+    if (name === 'complete' && this.onComplete) {
+      this.onComplete.call(this, new BMCompleteEvent(name, this.frameMult))
+    }
+    if (name === 'segmentStart' && this.onSegmentStart) {
+      this.onSegmentStart.call(
+        this,
+        new BMSegmentStartEvent(name, this.firstFrame, this.totalFrames)
+      )
+    }
+    if (name === 'destroy' && this.onDestroy) {
+      this.onDestroy.call(this, new BMDestroyEvent(name, this))
+    }
+  }
+
+  AnimationItem.prototype.triggerRenderFrameError = function (nativeError) {
+    var error = new BMRenderFrameErrorEvent(nativeError, this.currentFrame)
+    this.triggerEvent('error', error)
+
+    if (this.onError) {
+      this.onError.call(this, error)
+    }
+  }
+
+  AnimationItem.prototype.triggerConfigError = function (nativeError) {
+    var error = new BMConfigErrorEvent(nativeError, this.currentFrame)
+    this.triggerEvent('error', error)
+
+    if (this.onError) {
+      this.onError.call(this, error)
+    }
+  }
+
+  const animationManager = (function () {
+    var moduleOb = {}
+    var registeredAnimations = []
+    var initTime = 0
+    var len = 0
+    var playingAnimationsNum = 0
+    var _stopped = true
+    var _isFrozen = false
+
+    function removeElement(ev) {
+      var i = 0
+      var animItem = ev.target
+      while (i < len) {
+        if (registeredAnimations[i].animation === animItem) {
+          registeredAnimations.splice(i, 1)
+          i -= 1
+          len -= 1
+          if (!animItem.isPaused) {
+            subtractPlayingCount()
+          }
+        }
+        i += 1
+      }
+    }
+
+    function registerAnimation(element, animationData) {
+      if (!element) {
+        return null
+      }
+      var i = 0
+      while (i < len) {
+        if (registeredAnimations[i].elem === element && registeredAnimations[i].elem !== null) {
+          return registeredAnimations[i].animation
+        }
+        i += 1
+      }
+      var animItem = new AnimationItem()
+      setupAnimation(animItem, element)
+      animItem.setData(element, animationData)
+      return animItem
+    }
+
+    function getRegisteredAnimations() {
+      var i
+      var lenAnims = registeredAnimations.length
+      var animations = []
+      for (i = 0; i < lenAnims; i += 1) {
+        animations.push(registeredAnimations[i].animation)
+      }
+      return animations
+    }
+
+    function addPlayingCount() {
+      playingAnimationsNum += 1
+      activate()
+    }
+
+    function subtractPlayingCount() {
+      playingAnimationsNum -= 1
+    }
+
+    function setupAnimation(animItem, element) {
+      animItem.addEventListener('destroy', removeElement)
+      animItem.addEventListener('_active', addPlayingCount)
+      animItem.addEventListener('_idle', subtractPlayingCount)
+      registeredAnimations.push({ elem: element, animation: animItem })
+      len += 1
+    }
+
+    function loadAnimation(params) {
+      var animItem = new AnimationItem()
+      setupAnimation(animItem, null)
+      animItem.setParams(params)
+      return animItem
+    }
+
+    function setSpeed(val, animation) {
+      var i
+      for (i = 0; i < len; i += 1) {
+        registeredAnimations[i].animation.setSpeed(val, animation)
+      }
+    }
+
+    function setDirection(val, animation) {
+      var i
+      for (i = 0; i < len; i += 1) {
+        registeredAnimations[i].animation.setDirection(val, animation)
+      }
+    }
+
+    function play(animation) {
+      var i
+      for (i = 0; i < len; i += 1) {
+        registeredAnimations[i].animation.play(animation)
+      }
+    }
+    function resume(nowTime) {
+      var elapsedTime = nowTime - initTime
+      var i
+      for (i = 0; i < len; i += 1) {
+        registeredAnimations[i].animation.advanceTime(elapsedTime)
+      }
+      initTime = nowTime
+      if (playingAnimationsNum && !_isFrozen) {
+        window.requestAnimationFrame(resume)
+      } else {
+        _stopped = true
+      }
+    }
+
+    function first(nowTime) {
+      initTime = nowTime
+      window.requestAnimationFrame(resume)
+    }
+
+    function pause(animation) {
+      var i
+      for (i = 0; i < len; i += 1) {
+        registeredAnimations[i].animation.pause(animation)
+      }
+    }
+
+    function goToAndStop(value, isFrame, animation) {
+      var i
+      for (i = 0; i < len; i += 1) {
+        registeredAnimations[i].animation.goToAndStop(value, isFrame, animation)
+      }
+    }
+
+    function stop(animation) {
+      var i
+      for (i = 0; i < len; i += 1) {
+        registeredAnimations[i].animation.stop(animation)
+      }
+    }
+
+    function togglePause(animation) {
+      var i
+      for (i = 0; i < len; i += 1) {
+        registeredAnimations[i].animation.togglePause(animation)
+      }
+    }
+
+    function destroy(animation) {
+      var i
+      for (i = len - 1; i >= 0; i -= 1) {
+        registeredAnimations[i].animation.destroy(animation)
+      }
+    }
+
+    function searchAnimations(animationData, standalone, renderer) {
+      var animElements = [].concat(
+        [].slice.call(document.getElementsByClassName('lottie')),
+        [].slice.call(document.getElementsByClassName('bodymovin'))
+      )
+      var i
+      var lenAnims = animElements.length
+      for (i = 0; i < lenAnims; i += 1) {
+        if (renderer) {
+          animElements[i].setAttribute('data-bm-type', renderer)
+        }
+        registerAnimation(animElements[i], animationData)
+      }
+      if (standalone && lenAnims === 0) {
+        if (!renderer) {
+          renderer = 'svg'
+        }
+        var body = document.getElementsByTagName('body')[0]
+        body.innerText = ''
+        var div = createTag('div')
+        div.style.width = '100%'
+        div.style.height = '100%'
+        div.setAttribute('data-bm-type', renderer)
+        body.appendChild(div)
+        registerAnimation(div, animationData)
+      }
+    }
+
+    function resize() {
+      var i
+      for (i = 0; i < len; i += 1) {
+        registeredAnimations[i].animation.resize()
+      }
+    }
+
+    function activate() {
+      if (!_isFrozen && playingAnimationsNum) {
+        if (_stopped) {
+          window.requestAnimationFrame(first)
+          _stopped = false
+        }
+      }
+    }
+
+    function freeze() {
+      _isFrozen = true
+    }
+
+    function unfreeze() {
+      _isFrozen = false
+      activate()
+    }
+
+    function setVolume(val, animation) {
+      var i
+      for (i = 0; i < len; i += 1) {
+        registeredAnimations[i].animation.setVolume(val, animation)
+      }
+    }
+
+    function mute(animation) {
+      var i
+      for (i = 0; i < len; i += 1) {
+        registeredAnimations[i].animation.mute(animation)
+      }
+    }
+
+    function unmute(animation) {
+      var i
+      for (i = 0; i < len; i += 1) {
+        registeredAnimations[i].animation.unmute(animation)
+      }
+    }
+
+    moduleOb.registerAnimation = registerAnimation
+    moduleOb.loadAnimation = loadAnimation
+    moduleOb.setSpeed = setSpeed
+    moduleOb.setDirection = setDirection
+    moduleOb.play = play
+    moduleOb.pause = pause
+    moduleOb.stop = stop
+    moduleOb.togglePause = togglePause
+    moduleOb.searchAnimations = searchAnimations
+    moduleOb.resize = resize
+    // moduleOb.start = start;
+    moduleOb.goToAndStop = goToAndStop
+    moduleOb.destroy = destroy
+    moduleOb.freeze = freeze
+    moduleOb.unfreeze = unfreeze
+    moduleOb.setVolume = setVolume
+    moduleOb.mute = mute
+    moduleOb.unmute = unmute
+    moduleOb.getRegisteredAnimations = getRegisteredAnimations
+    return moduleOb
+  })()
 
 /* eslint-disable */
 const BezierFactory = (function () {

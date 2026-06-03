@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import type { PropType } from 'vue'
@@ -54,11 +54,7 @@ const { helper } = useHelper(() => helperInstance)
 function createHelper() {
   const light = toValue(props.light)
   if (light) {
-    helperInstance = new PointLightHelper(
-      light,
-      props.sphereSize,
-      props.color
-    )
+    helperInstance = new PointLightHelper(light, props.sphereSize, props.color)
   }
 }
 

@@ -2,7 +2,12 @@
   <TCanvas antialias :enable-controls="false">
     <TScene ref="sceneRef" :background="0xbfd1e5">
       <TPerspectiveCamera ref="cameraRef" :fov="60" :near="1" :far="20000" />
-      <TFirstPersonControls ref="controlsRef" :movement-speed="1000" :look-speed="0.125" :look-vertical="true" />
+      <TFirstPersonControls
+        ref="controlsRef"
+        :movement-speed="1000"
+        :look-speed="0.125"
+        :look-vertical="true"
+      />
 
       <TAmbientLight :intensity="3" :color="0xeeeeee" />
       <TDirectionalLight :intensity="12" :position="[1, 1, 0.5]" />
@@ -10,8 +15,12 @@
       <TMesh ref="meshRef">
         <TBufferGeometry ref="bufferGeometryRef" />
         <TMeshLambertMaterial :side="2">
-          <TTexture ref="textureRef" url="/textures/minecraft/atlas.png" :mag-filter="THREE.NearestFilter"
-            :color-space="THREE.SRGBColorSpace" />
+          <TTexture
+            ref="textureRef"
+            url="/textures/minecraft/atlas.png"
+            :mag-filter="THREE.NearestFilter"
+            :color-space="THREE.SRGBColorSpace"
+          />
         </TMeshLambertMaterial>
       </TMesh>
     </TScene>
@@ -31,7 +40,7 @@ import {
   TMesh,
   TMeshLambertMaterial,
   TBufferGeometry,
-  TTexture,
+  TTexture
 } from '@vue-three/vue-three'
 import { ImprovedNoise } from 'three/addons/math/ImprovedNoise.js'
 import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js'
@@ -79,7 +88,7 @@ function generateHeight(width: number, height: number) {
 }
 
 function getY(x: number, z: number) {
-  return ((data[x + z * worldWidth] * 0.15) | 0)
+  return (data[x + z * worldWidth] * 0.15) | 0
 }
 
 async function initScene() {
@@ -169,7 +178,6 @@ async function initScene() {
   nzGeometry.dispose()
   mergedGeometry.dispose()
 }
-
 </script>
 
 <style scoped></style>

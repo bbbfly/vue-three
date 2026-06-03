@@ -4,12 +4,21 @@
       <TPerspectiveCamera :position="[0, 0, 700]" :near="0.1" :far="1000" :fov="80" />
 
       <template v-for="(dstItem, dstIndex) in dstFactors" :key="'dst-' + dstIndex">
-        <template v-for="(srcItem, srcIndex) in srcFactors" :key="'src-' + dstIndex + '-' + srcIndex">
+        <template
+          v-for="(srcItem, srcIndex) in srcFactors"
+          :key="'src-' + dstIndex + '-' + srcIndex"
+        >
           <TMesh :position="[getX(srcIndex), getY(dstIndex), 0]" :matrix-auto-update="false">
             <TPlane :args="[100, 100]" :side="2" />
-            <TMeshBasicMaterial :transparent="true" :blending="THREE.CustomBlending" :blend-src="srcItem.constant"
-              :blend-dst="dstItem.constant" :blend-equation="blendEquation" :side="2">
-              <TTexture url="/textures/lensflare/lensflare0_alpha.png" colorSpace="srgb" />
+            <TMeshBasicMaterial
+              :transparent="true"
+              :blending="THREE.CustomBlending"
+              :blend-src="srcItem.constant"
+              :blend-dst="dstItem.constant"
+              :blend-equation="blendEquation"
+              :side="2"
+            >
+              <TTexture url="/textures/lensflare/lensflare0_alpha.png" color-space="srgb" />
             </TMeshBasicMaterial>
           </TMesh>
         </template>
@@ -19,7 +28,7 @@
         <TMesh :position="[getX(srcIndex), getY(-1), 0]" :matrix-auto-update="false">
           <TPlane :args="[100, 25]" />
           <TMeshBasicMaterial :transparent="true">
-            <TTexture :url="srcLabelTextures[srcIndex]" colorSpace="srgb" />
+            <TTexture :url="srcLabelTextures[srcIndex]" color-space="srgb" />
           </TMeshBasicMaterial>
         </TMesh>
       </template>
@@ -28,7 +37,7 @@
         <TMesh :position="[getX(-1), getY(dstIndex) - 50, 0]" :matrix-auto-update="false">
           <TPlane :args="[100, 25]" />
           <TMeshBasicMaterial :transparent="true">
-            <TTexture :url="dstLabelTextures[dstIndex]" colorSpace="srgb" />
+            <TTexture :url="dstLabelTextures[dstIndex]" color-space="srgb" />
           </TMeshBasicMaterial>
         </TMesh>
       </template>
@@ -145,7 +154,8 @@ onMounted(() => {
   srcLabelTextures.value = srcFactors.map(s => generateLabelTexture(s.name, 'rgba( 0, 150, 0, 1 )'))
   dstLabelTextures.value = dstFactors.map(d => generateLabelTexture(d.name, 'rgba( 150, 0, 0, 1 )'))
   gui = new GUI({ width: 300 })
-  gui.add({ blendEquation: blendEquation.value }, 'blendEquation', equations)
+  gui
+    .add({ blendEquation: blendEquation.value }, 'blendEquation', equations)
     .onChange((value: number) => {
       blendEquation.value = value
       console.log(blendEquation.value, '9')

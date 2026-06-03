@@ -1,8 +1,6 @@
-import {
-	ExtrudeGeometry
-} from 'three';
+import { ExtrudeGeometry } from 'three'
 
-import { Font } from '../loaders/FontLoader.js';
+import { Font } from '../loaders/FontLoader.js'
 
 /**
  * A class for generating text as a single geometry. It is constructed by providing a string of text, and a set of
@@ -28,56 +26,44 @@ import { Font } from '../loaders/FontLoader.js';
  * @three_import import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
  */
 class TextGeometry extends ExtrudeGeometry {
+  /**
+   * Constructs a new text geometry.
+   *
+   * @param {string} text - The text that should be transformed into a geometry.
+   * @param {TextGeometry~Options} [parameters] - The text settings.
+   */
+  constructor(text, parameters = {}) {
+    const font = parameters.font
 
-	/**
-	 * Constructs a new text geometry.
-	 *
-	 * @param {string} text - The text that should be transformed into a geometry.
-	 * @param {TextGeometry~Options} [parameters] - The text settings.
-	 */
-	constructor( text, parameters = {} ) {
+    if (font === undefined) {
+      super() // generate default extrude geometry
+    } else {
+      const shapes = font.generateShapes(text, parameters.size, parameters.direction)
 
-		const font = parameters.font;
+      // defaults
 
-		if ( font === undefined ) {
+      if (parameters.depth === undefined) parameters.depth = 50
+      if (parameters.bevelThickness === undefined) parameters.bevelThickness = 10
+      if (parameters.bevelSize === undefined) parameters.bevelSize = 8
+      if (parameters.bevelEnabled === undefined) parameters.bevelEnabled = false
 
-			super(); // generate default extrude geometry
+      super(shapes, parameters)
+    }
 
-		} else {
+    this.type = 'TextGeometry'
+  }
 
-			const shapes = font.generateShapes( text, parameters.size, parameters.direction );
+  toJSON() {
+    const data = super.toJSON()
+    return data
+  }
 
-			// defaults
+  static fromJSON(data) {
+    const options = data.options
 
-			if ( parameters.depth === undefined ) parameters.depth = 50;
-			if ( parameters.bevelThickness === undefined ) parameters.bevelThickness = 10;
-			if ( parameters.bevelSize === undefined ) parameters.bevelSize = 8;
-			if ( parameters.bevelEnabled === undefined ) parameters.bevelEnabled = false;
-
-			super( shapes, parameters );
-
-		}
-
-		this.type = 'TextGeometry';
-
-	}
-
-	toJSON() {
-
-		const data = super.toJSON();
-		return data;
-
-	}
-
-	static fromJSON( data ) {
-
-		const options = data.options;
-
-		options.font = new Font( options.font.data );
-		return new TextGeometry( options.text, options );
-
-	}
-
+    options.font = new Font(options.font.data)
+    return new TextGeometry(options.text, options)
+  }
 }
 
 /**
@@ -99,4 +85,4 @@ class TextGeometry extends ExtrudeGeometry {
  * @property {Object} [UVGenerator] - An object that provides UV generator functions for custom UV generation.
  **/
 
-export { TextGeometry };
+export { TextGeometry }

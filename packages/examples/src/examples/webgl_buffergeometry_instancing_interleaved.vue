@@ -3,10 +3,10 @@
     <TScene background="#101010">
       <TPerspectiveCamera :fov="50" :near="1" :far="1000" :position="[0, 0, 120]" />
 
-      <TInstancedMesh ref="meshRef" :instanceCount="instances">
+      <TInstancedMesh ref="meshRef" :instance-count="instances">
         <TInstancedBufferGeometry :attributes="geometryAttributes" />
         <TMeshBasicMaterial>
-          <TTexture url="/textures/crate.gif" colorSpace="srgb" :flipY="false" />
+          <TTexture url="/textures/crate.gif" color-space="srgb" :flip-y="false" />
         </TMeshBasicMaterial>
       </TInstancedMesh>
     </TScene>
@@ -23,14 +23,19 @@ import {
   TInstancedMesh,
   TInstancedBufferGeometry,
   TMeshBasicMaterial,
-  TTexture,
+  TTexture
 } from '@vue-three/vue-three'
 
 const meshRef = ref<any>(null)
 const instances = 5000
 let lastTime = 0
 
-const geometryAttributes = shallowRef<Record<string, THREE.BufferAttribute | THREE.InterleavedBufferAttribute | THREE.InstancedBufferAttribute>>({})
+const geometryAttributes = shallowRef<
+  Record<
+    string,
+    THREE.BufferAttribute | THREE.InterleavedBufferAttribute | THREE.InstancedBufferAttribute
+  >
+>({})
 
 const moveQ = new THREE.Quaternion(0.5, 0.5, 0.5, 0.0).normalize()
 const tmpQ = new THREE.Quaternion()
@@ -45,35 +50,23 @@ function createGeometry() {
   const vertexBuffer = new THREE.InterleavedBuffer(
     new Float32Array([
       // Front
-      -1, 1, 1, 0, 0, 0, 0, 0,
-      1, 1, 1, 0, 1, 0, 0, 0,
-      -1, -1, 1, 0, 0, 1, 0, 0,
-      1, -1, 1, 0, 1, 1, 0, 0,
+      -1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, -1, -1, 1, 0, 0, 1, 0, 0, 1, -1, 1, 0, 1, 1,
+      0, 0,
       // Back
-      1, 1, -1, 0, 1, 0, 0, 0,
-      -1, 1, -1, 0, 0, 0, 0, 0,
-      1, -1, -1, 0, 1, 1, 0, 0,
-      -1, -1, -1, 0, 0, 1, 0, 0,
+      1, 1, -1, 0, 1, 0, 0, 0, -1, 1, -1, 0, 0, 0, 0, 0, 1, -1, -1, 0, 1, 1, 0, 0, -1, -1, -1, 0, 0,
+      1, 0, 0,
       // Left
-      -1, 1, -1, 0, 1, 1, 0, 0,
-      -1, 1, 1, 0, 1, 0, 0, 0,
-      -1, -1, -1, 0, 0, 1, 0, 0,
-      -1, -1, 1, 0, 0, 0, 0, 0,
+      -1, 1, -1, 0, 1, 1, 0, 0, -1, 1, 1, 0, 1, 0, 0, 0, -1, -1, -1, 0, 0, 1, 0, 0, -1, -1, 1, 0, 0,
+      0, 0, 0,
       // Right
-      1, 1, 1, 0, 1, 0, 0, 0,
-      1, 1, -1, 0, 1, 1, 0, 0,
-      1, -1, 1, 0, 0, 0, 0, 0,
-      1, -1, -1, 0, 0, 1, 0, 0,
+      1, 1, 1, 0, 1, 0, 0, 0, 1, 1, -1, 0, 1, 1, 0, 0, 1, -1, 1, 0, 0, 0, 0, 0, 1, -1, -1, 0, 0, 1,
+      0, 0,
       // Top
-      -1, 1, 1, 0, 0, 0, 0, 0,
-      1, 1, 1, 0, 1, 0, 0, 0,
-      -1, 1, -1, 0, 0, 1, 0, 0,
-      1, 1, -1, 0, 1, 1, 0, 0,
+      -1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, -1, 1, -1, 0, 0, 1, 0, 0, 1, 1, -1, 0, 1, 1,
+      0, 0,
       // Bottom
-      1, -1, 1, 0, 1, 0, 0, 0,
-      -1, -1, 1, 0, 0, 0, 0, 0,
-      1, -1, -1, 0, 1, 1, 0, 0,
-      -1, -1, -1, 0, 0, 1, 0, 0
+      1, -1, 1, 0, 1, 0, 0, 0, -1, -1, 1, 0, 0, 0, 0, 0, 1, -1, -1, 0, 1, 1, 0, 0, -1, -1, -1, 0, 0,
+      1, 0, 0
     ]),
     8
   )
@@ -82,7 +75,8 @@ function createGeometry() {
   const uvs = new THREE.InterleavedBufferAttribute(vertexBuffer, 2, 4)
 
   const indices = new Uint16Array([
-    0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5, 8, 10, 9, 10, 11, 9, 12, 14, 13, 14, 15, 13, 16, 17, 18, 18, 17, 19, 20, 21, 22, 22, 21, 23
+    0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5, 8, 10, 9, 10, 11, 9, 12, 14, 13, 14, 15, 13, 16, 17, 18, 18,
+    17, 19, 20, 21, 22, 22, 21, 23
   ])
 
   const matrixArray = new Float32Array(instances * 16)

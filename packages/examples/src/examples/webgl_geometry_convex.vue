@@ -1,7 +1,13 @@
 <template>
   <TCanvas antialias @animate="animate">
     <TScene ref="sceneRef">
-      <TPerspectiveCamera ref="cameraRef" :fov="40" :near="1" :far="1000" :position="[15, 20, 30]" />
+      <TPerspectiveCamera
+        ref="cameraRef"
+        :fov="40"
+        :near="1"
+        :far="1000"
+        :position="[15, 20, 30]"
+      />
       <TOrbitControls :min-distance="20" :max-distance="50" :max-polar-angle="Math.PI / 2" />
 
       <TAmbientLight :intensity="1000" :color="0x666666" />
@@ -44,10 +50,9 @@ import {
   TMeshLambertMaterial,
   TBufferGeometry,
   TTexture,
-  TConvexGeometry,
+  TConvexGeometry
 } from '@vue-three/vue-three'
 import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js'
-
 
 const groupRef = ref<any>(null)
 const bufferGeometryRef = ref<any>(null)

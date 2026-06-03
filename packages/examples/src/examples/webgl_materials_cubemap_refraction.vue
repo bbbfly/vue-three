@@ -1,7 +1,13 @@
 <template>
-  <TCanvas antialias @mousemove="onDocumentMouseMove" @animate="render" :enable-control="false">
+  <TCanvas antialias :enable-control="false" @mousemove="onDocumentMouseMove" @animate="render">
     <TScene :background="backgroundTexture">
-      <TPerspectiveCamera :fov="50" :near="1" :far="100000" ref="cameraRef" :position="cameraPosition" />
+      <TPerspectiveCamera
+        ref="cameraRef"
+        :fov="50"
+        :near="1"
+        :far="100000"
+        :position="cameraPosition"
+      />
 
       <TAmbientLight :intensity="3.5" />
 
@@ -61,12 +67,10 @@ const mouseY = ref(0)
 
 const cameraPosition = ref([0, 0, -4000])
 
-
 onMounted(() => {
   const loader = new THREE.CubeTextureLoader()
   backgroundTexture.value = loader.load(cubeUrls)
   backgroundTexture.value.mapping = THREE.CubeRefractionMapping
-
 })
 
 const onDocumentMouseMove = (event: MouseEvent) => {
@@ -78,7 +82,6 @@ const onDocumentMouseMove = (event: MouseEvent) => {
   mouseY.value = (event.clientY - windowHalfY) * 4
 }
 
-
 const render = () => {
   if (cameraRef.value && backgroundTexture.value) {
     cameraPosition.value[0] += (mouseX.value - cameraPosition.value[0]) * 0.05
@@ -86,6 +89,4 @@ const render = () => {
     cameraRef.value.lookAt(0, 0, 0)
   }
 }
-
-
 </script>

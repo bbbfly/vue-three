@@ -10,8 +10,12 @@
     </header>
 
     <div class="tabs">
-      <button v-for="tab in tabs" :key="tab.value" :class="{ active: activeTab === tab.value }"
-        @click="activeTab = tab.value">
+      <button
+        v-for="tab in tabs"
+        :key="tab.value"
+        :class="{ active: activeTab === tab.value }"
+        @click="activeTab = tab.value"
+      >
         {{ tab.label }}
       </button>
     </div>
@@ -34,7 +38,12 @@
             <span class="badge official-badge">官方示例</span>
           </div>
           <div class="panel-content canvas-container">
-            <iframe v-if="officialExampleUrl" :src="officialExampleUrl" class="example-iframe" frameborder="0"></iframe>
+            <iframe
+              v-if="officialExampleUrl"
+              :src="officialExampleUrl"
+              class="example-iframe"
+              frameborder="0"
+            ></iframe>
             <div v-else class="no-official">
               <p>官方示例不存在:</p>
               <code>/lib/{{ exampleId }}.html</code>
@@ -48,7 +57,12 @@
       </div>
 
       <div v-if="activeTab === 'official-code'" class="code-content">
-        <CodeBlock :code="officialSourceCode" language="javascript" title="官方 JS 源码（从 HTML 提取）" :show-copy="true" />
+        <CodeBlock
+          :code="officialSourceCode"
+          language="javascript"
+          title="官方 JS 源码（从 HTML 提取）"
+          :show-copy="true"
+        />
       </div>
 
       <div v-if="activeTab === 'diff'" class="diff-content">
@@ -56,7 +70,12 @@
           <CodeBlock :code="vueSourceCode" language="vue" title="Vue 组件源码" :show-copy="false" />
         </div>
         <div class="diff-panel">
-          <CodeBlock :code="officialSourceCode" language="javascript" title="官方 JS 源码" :show-copy="false" />
+          <CodeBlock
+            :code="officialSourceCode"
+            language="javascript"
+            title="官方 JS 源码"
+            :show-copy="false"
+          />
         </div>
       </div>
     </div>
@@ -146,7 +165,7 @@ async function loadExample(id: string) {
 
 watch(
   exampleId,
-  (newId) => {
+  newId => {
     loadExample(newId)
   },
   { immediate: true }

@@ -5,8 +5,13 @@
       <TMesh ref="meshRef">
         <TBufferGeometry ref="geometryRef" />
         <TMeshBasicMaterial v-if="textureCanvas">
-          <TCanvasTexture ref="textureRef" :canvas="textureCanvas" :wrap-s="THREE.ClampToEdgeWrapping"
-            :wrap-t="THREE.ClampToEdgeWrapping" :color-space="THREE.SRGBColorSpace" />
+          <TCanvasTexture
+            ref="textureRef"
+            :canvas="textureCanvas"
+            :wrap-s="THREE.ClampToEdgeWrapping"
+            :wrap-t="THREE.ClampToEdgeWrapping"
+            :color-space="THREE.SRGBColorSpace"
+          />
         </TMeshBasicMaterial>
       </TMesh>
 
@@ -174,7 +179,7 @@ function initTerrain() {
 
 function setupRaycaster() {
   if (meshRef.value?.mesh) {
-    intersectObject(meshRef.value.mesh, (result) => {
+    intersectObject(meshRef.value.mesh, result => {
       if (result.intersects.length > 0 && helperRef.value?.mesh) {
         helperRef.value.mesh.position.set(0, 0, 0)
         helperRef.value.mesh.lookAt(result.intersects[0].face.normal)

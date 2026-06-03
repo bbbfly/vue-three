@@ -3,12 +3,22 @@
     <TPerspectiveCamera ref="cameraRef" :fov="70" :near="1" :far="1000" :position="[0, 0, 75]" />
 
     <TScene ref="sceneRef">
-      <THemisphereLight sky-color="#ffffff" ground-color="#222222" :intensity="4" :position="[1, 1, 1]" />
+      <THemisphereLight
+        sky-color="#ffffff"
+        ground-color="#222222"
+        :intensity="4"
+        :position="[1, 1, 1]"
+      />
 
-      <TMesh v-for="(object, index) in objects" :key="index" :ref="el => setObjectRef(el, index)"
+      <TMesh
+        v-for="(object, index) in objects"
+        :key="index"
+        :ref="el => setObjectRef(el, index)"
         :position="[object.position.x, object.position.y, object.position.z]"
         :rotation="[object.rotation.x, object.rotation.y, object.rotation.z]"
-        :scale="[object.scale.x, object.scale.y, object.scale.z]" :matrix-auto-update="false">
+        :scale="[object.scale.x, object.scale.y, object.scale.z]"
+        :matrix-auto-update="false"
+      >
         <TBox :args="[object.size.x, object.size.y, object.size.z]" />
         <TMeshLambertMaterial :color="object.color" />
       </TMesh>
@@ -95,11 +105,7 @@ onMounted(() => {
         Math.random() * 2 * Math.PI,
         Math.random() * 2 * Math.PI
       ),
-      scale: new THREE.Vector3(
-        Math.random() + 0.5,
-        Math.random() + 0.5,
-        Math.random() + 0.5
-      ),
+      scale: new THREE.Vector3(Math.random() + 0.5, Math.random() + 0.5, Math.random() + 0.5),
       size: size.clone(),
       color: 0x00ff00,
       obb: new OBB(),
@@ -108,7 +114,7 @@ onMounted(() => {
     objects.value.push(object)
   }
 
-  ; (sceneRef.value?.scene as THREE.Scene).onBeforeRender = () => {
+  ;(sceneRef.value?.scene as THREE.Scene).onBeforeRender = () => {
     const delta = 0.016
 
     for (let i = 0, il = objects.value.length; i < il; i++) {
@@ -116,15 +122,15 @@ onMounted(() => {
       if (!mesh) continue
       const geometry = mesh.geometry
 
-      mesh.rotation.x += delta * Math.PI * 0.20
-      mesh.rotation.y += delta * Math.PI * 0.10
+      mesh.rotation.x += delta * Math.PI * 0.2
+      mesh.rotation.y += delta * Math.PI * 0.1
 
       mesh.updateMatrix()
       mesh.updateMatrixWorld()
 
       if (!geometry.userData.obb) {
         geometry.userData.obb = new OBB()
-        geometry.userData.obb.halfSize.copy(size).multiplyScalar(0.5);
+        geometry.userData.obb.halfSize.copy(size).multiplyScalar(0.5)
       }
       if (!mesh.userData.obb) {
         mesh.userData.obb = new OBB()
@@ -144,8 +150,8 @@ onMounted(() => {
         const obbToTest = objectToTest.userData.obb
 
         if (obb.intersectsOBB(obbToTest)) {
-          object.material.color.setHex(0xff0000);
-          objectToTest.material.color.setHex(0xff0000);
+          object.material.color.setHex(0xff0000)
+          objectToTest.material.color.setHex(0xff0000)
         }
       }
     }

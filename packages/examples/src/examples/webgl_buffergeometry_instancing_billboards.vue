@@ -3,10 +3,20 @@
     <TScene background="#000000">
       <TPerspectiveCamera :fov="50" :near="1" :far="5000" :position="[0, 0, 1400]" />
 
-      <TMesh ref="meshRef" :scale="[500, 500, 500]" v-if="geometryAttributes.position">
-        <TInstancedBufferGeometry :attributes="geometryAttributes" :instanceCount="particleCount" />
-        <TShaderMaterial shaderType="rawShader" :uniforms="uniforms" :vertexShader="vertexShader"
-          :fragmentShader="fragmentShader" :depthTest="true" :depthWrite="true" :transparent="true" />
+      <TMesh v-if="geometryAttributes.position" ref="meshRef" :scale="[500, 500, 500]">
+        <TInstancedBufferGeometry
+          :attributes="geometryAttributes"
+          :instance-count="particleCount"
+        />
+        <TShaderMaterial
+          shader-type="rawShader"
+          :uniforms="uniforms"
+          :vertex-shader="vertexShader"
+          :fragment-shader="fragmentShader"
+          :depth-test="true"
+          :depth-write="true"
+          :transparent="true"
+        />
       </TMesh>
     </TScene>
   </TCanvas>
@@ -26,7 +36,9 @@ import {
 
 const meshRef = ref<any>(null)
 const particleCount = 75000
-const geometryAttributes = ref<Record<string, THREE.BufferAttribute | THREE.InstancedBufferAttribute>>({})
+const geometryAttributes = ref<
+  Record<string, THREE.BufferAttribute | THREE.InstancedBufferAttribute>
+>({})
 
 const uniforms = ref({
   map: { value: null as any },
@@ -106,7 +118,7 @@ onMounted(() => {
   }
 
   const textureLoader = new THREE.TextureLoader()
-  textureLoader.load('/textures/sprites/circle.png', (texture) => {
+  textureLoader.load('/textures/sprites/circle.png', texture => {
     uniforms.value.map.value = texture
   })
 })

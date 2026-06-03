@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import type { PropType } from 'vue'
@@ -182,117 +182,113 @@ const { material, updateMaterial } = useMaterial({
 watch(
   () => props.color,
   newColor => {
-    ; (material as MeshPhysicalMaterial).color.set(newColor)
+    ;(material as MeshPhysicalMaterial).color.set(newColor)
   }
 )
 
 watch(
   () => props.metalness,
   newValue => {
-    ; (material as MeshPhysicalMaterial).metalness = newValue
+    ;(material as MeshPhysicalMaterial).metalness = newValue
   }
 )
 
 watch(
   () => props.roughness,
   newValue => {
-    ; (material as MeshPhysicalMaterial).roughness = newValue
+    ;(material as MeshPhysicalMaterial).roughness = newValue
   }
 )
 
 watch(
   () => props.clearcoat,
   newValue => {
-    ; (material as MeshPhysicalMaterial).clearcoat = newValue
+    ;(material as MeshPhysicalMaterial).clearcoat = newValue
   }
 )
 
 watch(
   () => props.clearcoatRoughness,
   newValue => {
-    ; (material as MeshPhysicalMaterial).clearcoatRoughness = newValue
+    ;(material as MeshPhysicalMaterial).clearcoatRoughness = newValue
   }
 )
 
 watch(
   () => props.transmission,
   newValue => {
-    ; (material as MeshPhysicalMaterial).transmission = newValue
+    ;(material as MeshPhysicalMaterial).transmission = newValue
   }
 )
 
 watch(
   () => props.thickness,
   newValue => {
-    ; (material as MeshPhysicalMaterial).thickness = newValue
+    ;(material as MeshPhysicalMaterial).thickness = newValue
   }
 )
 
 watch(
   () => props.ior,
   newValue => {
-    ; (material as MeshPhysicalMaterial).ior = newValue
+    ;(material as MeshPhysicalMaterial).ior = newValue
   }
 )
 
 watch(
   () => props.iridescence,
   newValue => {
-    ; (material as MeshPhysicalMaterial).iridescence = newValue
+    ;(material as MeshPhysicalMaterial).iridescence = newValue
   }
 )
 
 watch(
   () => props.sheen,
   newValue => {
-    ; (material as MeshPhysicalMaterial).sheen = newValue
+    ;(material as MeshPhysicalMaterial).sheen = newValue
   }
 )
 
 watch(
   () => props.sheenColor,
   newValue => {
-    ; (material as MeshPhysicalMaterial).sheenColor = new Color(newValue)
+    ;(material as MeshPhysicalMaterial).sheenColor = new Color(newValue)
   }
 )
 
 watch(
   () => props.specularIntensity,
   newValue => {
-    ; (material as MeshPhysicalMaterial).specularIntensity = newValue
+    ;(material as MeshPhysicalMaterial).specularIntensity = newValue
   }
 )
 
 watch(
   () => props.opacity,
   newValue => {
-    ; (material as MeshPhysicalMaterial).opacity = newValue
+    ;(material as MeshPhysicalMaterial).opacity = newValue
   }
 )
 
 watch(
   () => props.transparent,
   newValue => {
-    ; (material as MeshPhysicalMaterial).transparent = newValue
+    ;(material as MeshPhysicalMaterial).transparent = newValue
   }
 )
 
 watch(
   () => props.wireframe,
   newValue => {
-    ; (material as MeshPhysicalMaterial).wireframe = newValue
+    ;(material as MeshPhysicalMaterial).wireframe = newValue
   }
 )
 
-
-
-onMounted(() => {
-
-})
+onMounted(() => {})
 
 watch(
   camelCaseAttrs,
-  (val) => {
+  val => {
     updateMaterial({ type: 'physical', ...val })
   },
   { deep: true }

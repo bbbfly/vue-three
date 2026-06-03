@@ -1,5 +1,5 @@
 <template>
-  <TCanvas antialias ref="canvasRef">
+  <TCanvas ref="canvasRef" antialias>
     <TScene>
       <TPerspectiveCamera :fov="40" :near="1" :far="1000" :position="[10, 15, 25]" />
       <TOrbitControls :min-distance="20" :max-distance="50" :max-polar-angle="Math.PI / 2" />
@@ -61,7 +61,7 @@ onMounted(() => {
   const renderer = canvasRef.value?.context?.renderer
   const scene = canvasRef.value?.context?.scene
   if (renderer && scene) {
-    scene.traverse((child) => {
+    scene.traverse(child => {
       if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshBasicMaterial) {
         const texture = child.material.map
         if (texture) {

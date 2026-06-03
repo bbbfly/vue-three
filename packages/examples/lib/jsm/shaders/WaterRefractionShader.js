@@ -10,34 +10,31 @@
  * @type {ShaderMaterial~Shader}
  */
 const WaterRefractionShader = {
+  name: 'WaterRefractionShader',
 
-	name: 'WaterRefractionShader',
+  uniforms: {
+    color: {
+      value: null
+    },
 
-	uniforms: {
+    time: {
+      value: 0
+    },
 
-		'color': {
-			value: null
-		},
+    tDiffuse: {
+      value: null
+    },
 
-		'time': {
-			value: 0
-		},
+    tDudv: {
+      value: null
+    },
 
-		'tDiffuse': {
-			value: null
-		},
+    textureMatrix: {
+      value: null
+    }
+  },
 
-		'tDudv': {
-			value: null
-		},
-
-		'textureMatrix': {
-			value: null
-		}
-
-	},
-
-	vertexShader: /* glsl */`
+  vertexShader: /* glsl */ `
 
 		uniform mat4 textureMatrix;
 
@@ -54,7 +51,7 @@ const WaterRefractionShader = {
 
 		}`,
 
-	fragmentShader: /* glsl */`
+  fragmentShader: /* glsl */ `
 
 		uniform vec3 color;
 		uniform float time;
@@ -100,7 +97,6 @@ const WaterRefractionShader = {
 			#include <colorspace_fragment>
 
 		}`
+}
 
-};
-
-export { WaterRefractionShader };
+export { WaterRefractionShader }

@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import { computed, inject, watch } from 'vue'
@@ -16,14 +16,14 @@ interface SubCameraConfig {
   fov?: number
   near?: number
   far?: number
-  position?: [number, number, number],
+  position?: [number, number, number]
   multiplyScalar?: number
   viewport?: {
     x: number
     y: number
     width: number
     height: number
-  },
+  }
   lookAtTarget?: [number, number, number]
 }
 
@@ -45,7 +45,7 @@ const props = defineProps({
   subCameras: {
     type: Array as unknown as PropType<SubCameraConfig[]>,
     default: () => []
-  },
+  }
 })
 
 const ctx = inject(ThreeContextKey)
@@ -71,7 +71,12 @@ const createSubCamerasFromConfig = (configs: SubCameraConfig[]) => {
       cam.position.set(...config.position)
     }
     if (config.viewport) {
-      cam.viewport = new Vector4(config.viewport.x, config.viewport.y, config.viewport.width, config.viewport.height)
+      cam.viewport = new Vector4(
+        config.viewport.x,
+        config.viewport.y,
+        config.viewport.width,
+        config.viewport.height
+      )
     }
     cam.lookAt(new Vector3(...(config.lookAtTarget || [0, 0, 0])))
     cam.position.multiplyScalar(config.multiplyScalar || 1)
@@ -110,6 +115,6 @@ watch([() => ctx.size.width, () => ctx.size.height], () => {
  */
 defineExpose({
   arrayCamera,
-  subCameras: computed(() => arrayCamera.cameras),
+  subCameras: computed(() => arrayCamera.cameras)
 })
 </script>

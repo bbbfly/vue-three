@@ -1,57 +1,104 @@
 <template>
-  <TCanvas ref="canvasRef" antialias :stencil="true" :localClippingEnabled="true" :shadowMap="{ enabled: true }"
-    :clearColor="0x263238" @animate="onAnimate">
+  <TCanvas
+    ref="canvasRef"
+    antialias
+    :stencil="true"
+    :local-clipping-enabled="true"
+    :shadow-map="{ enabled: true }"
+    :clear-color="0x263238"
+    @animate="onAnimate"
+  >
     <TScene>
       <TPerspectiveCamera :position="[2, 2, 2]" :fov="36" :near="1" :far="100" />
 
       <TAmbientLight :intensity="1.5" />
 
-      <TDirectionalLight :position="[5, 10, 7.5]" :intensity="3" :castShadow="true" :shadow-mapSize="[1024, 1024]"
-        :shadow-camera-right="2" :shadow-camera-left="-2" :shadow-camera-top="2" :shadow-camera-bottom="-2" />
-
-
+      <TDirectionalLight
+        :position="[5, 10, 7.5]"
+        :intensity="3"
+        :cast-shadow="true"
+        :shadow-map-size="[1024, 1024]"
+        :shadow-camera-right="2"
+        :shadow-camera-left="-2"
+        :shadow-camera-top="2"
+        :shadow-camera-bottom="-2"
+      />
 
       <TGroup ref="objectGroup">
-        <TMesh ref="clippedColorFront" :castShadow="true" :renderOrder="6">
+        <TMesh ref="clippedColorFront" :cast-shadow="true" :render-order="6">
           <TTorusKnotGeometry :args="[0.4, 0.15, 220, 60]" />
-          <TMeshStandardMaterial :color="0xFFC107" :metalness="0.1" :roughness="0.75" :clippingPlanes="planes"
-            :clipShadows="true" :shadowSide="THREE.DoubleSide" />
+          <TMeshStandardMaterial
+            :color="0xffc107"
+            :metalness="0.1"
+            :roughness="0.75"
+            :clipping-planes="planes"
+            :clip-shadows="true"
+            :shadow-side="THREE.DoubleSide"
+          />
         </TMesh>
         <template v-for="(poGroup, index) in planeObjectGroups" :key="index">
           <TGroup>
-            <TMesh v-for="(stencilMesh, stencilIndex) in poGroup.stencilMeshes" :key="stencilIndex"
-              :renderOrder="index + 1">
+            <TMesh
+              v-for="(stencilMesh, stencilIndex) in poGroup.stencilMeshes"
+              :key="stencilIndex"
+              :render-order="index + 1"
+            >
               <TTorusKnotGeometry :args="[0.4, 0.15, 220, 60]" />
-              <TMeshBasicMaterial :side="stencilMesh.side" :depthWrite="false" :depthTest="false" :colorWrite="false"
-                :stencilWrite="true" :stencilFunc="THREE.AlwaysStencilFunc" :stencilFail="stencilMesh.stencilFail"
-                :stencilZFail="stencilMesh.stencilZFail" :stencilZPass="stencilMesh.stencilZPass"
-                :clippingPlanes="[planes[index]]" />
+              <TMeshBasicMaterial
+                :side="stencilMesh.side"
+                :depth-write="false"
+                :depth-test="false"
+                :color-write="false"
+                :stencil-write="true"
+                :stencil-func="THREE.AlwaysStencilFunc"
+                :stencil-fail="stencilMesh.stencilFail"
+                :stencil-z-fail="stencilMesh.stencilZFail"
+                :stencil-z-pass="stencilMesh.stencilZPass"
+                :clipping-planes="[planes[index]]"
+              />
             </TMesh>
           </TGroup>
         </template>
       </TGroup>
 
       <TGroup>
-        <TMesh v-for="(_, index) in planeObjectGroups" :key="index" :ref="el => setPlaneObjectRef(index, el)"
-          :renderOrder="index + 1.1">
+        <TMesh
+          v-for="(_, index) in planeObjectGroups"
+          :key="index"
+          :ref="el => setPlaneObjectRef(index, el)"
+          :render-order="index + 1.1"
+        >
           <TPlane :args="[4, 4]" />
-          <TMeshStandardMaterial :color="0xE91E63" :metalness="0.1" :roughness="0.75"
-            :clippingPlanes="planes.filter((_, i) => i !== index)" :stencilWrite="true" :stencilRef="0"
-            :stencilFunc="THREE.NotEqualStencilFunc" :stencilFail="THREE.ReplaceStencilOp"
-            :stencilZFail="THREE.ReplaceStencilOp" :stencilZPass="THREE.ReplaceStencilOp" />
+          <TMeshStandardMaterial
+            :color="0xe91e63"
+            :metalness="0.1"
+            :roughness="0.75"
+            :clipping-planes="planes.filter((_, i) => i !== index)"
+            :stencil-write="true"
+            :stencil-ref="0"
+            :stencil-func="THREE.NotEqualStencilFunc"
+            :stencil-fail="THREE.ReplaceStencilOp"
+            :stencil-z-fail="THREE.ReplaceStencilOp"
+            :stencil-z-pass="THREE.ReplaceStencilOp"
+          />
         </TMesh>
       </TGroup>
 
-      <TPlaneHelper v-for="(helper, index) in planeHelpers" :key="index" :plane="planes[index]" :size="2"
-        :visible="planeHelpersVisible[index]" />
+      <TPlaneHelper
+        v-for="(helper, index) in planeHelpers"
+        :key="index"
+        :plane="planes[index]"
+        :size="2"
+        :visible="planeHelpersVisible[index]"
+      />
 
-      <TMesh :rotation="[-Math.PI / 2, 0, 0]" :position="[0, -1, 0]" :receiveShadow="true">
+      <TMesh :rotation="[-Math.PI / 2, 0, 0]" :position="[0, -1, 0]" :receive-shadow="true">
         <TPlane :args="[9, 9, 1, 1]" />
         <TShadowMaterial :color="0x000000" :opacity="0.25" :side="THREE.DoubleSide" />
       </TMesh>
     </TScene>
 
-    <TOrbitControls :minDistance="2" :maxDistance="20" />
+    <TOrbitControls :min-distance="2" :max-distance="20" />
   </TCanvas>
 </template>
 
@@ -83,7 +130,7 @@ const planeObjectRefs = ref<THREE.Mesh[]>([])
 const setPlaneObjectRef = (index: number, el: any) => {
   if (el) {
     planeObjectRefs.value[index] = el.mesh
-    el.mesh.onAfterRender = (renderer) => {
+    el.mesh.onAfterRender = renderer => {
       renderer.clearStencil()
     }
   }
@@ -211,9 +258,13 @@ onMounted(() => {
   planeX.add(params.planeX, 'displayHelper').onChange((v: boolean) => {
     planeHelpersVisible.value[0] = v
   })
-  planeX.add(params.planeX, 'constant').min(-1).max(1).onChange((d: number) => {
-    planes.value[0].constant = d
-  })
+  planeX
+    .add(params.planeX, 'constant')
+    .min(-1)
+    .max(1)
+    .onChange((d: number) => {
+      planes.value[0].constant = d
+    })
   planeX.add(params.planeX, 'negated').onChange(() => {
     planes.value[0].negate()
     params.planeX.constant = planes.value[0].constant
@@ -224,9 +275,13 @@ onMounted(() => {
   planeY.add(params.planeY, 'displayHelper').onChange((v: boolean) => {
     planeHelpersVisible.value[1] = v
   })
-  planeY.add(params.planeY, 'constant').min(-1).max(1).onChange((d: number) => {
-    planes.value[1].constant = d
-  })
+  planeY
+    .add(params.planeY, 'constant')
+    .min(-1)
+    .max(1)
+    .onChange((d: number) => {
+      planes.value[1].constant = d
+    })
   planeY.add(params.planeY, 'negated').onChange(() => {
     planes.value[1].negate()
     params.planeY.constant = planes.value[1].constant
@@ -237,9 +292,13 @@ onMounted(() => {
   planeZ.add(params.planeZ, 'displayHelper').onChange((v: boolean) => {
     planeHelpersVisible.value[2] = v
   })
-  planeZ.add(params.planeZ, 'constant').min(-1).max(1).onChange((d: number) => {
-    planes.value[2].constant = d
-  })
+  planeZ
+    .add(params.planeZ, 'constant')
+    .min(-1)
+    .max(1)
+    .onChange((d: number) => {
+      planes.value[2].constant = d
+    })
   planeZ.add(params.planeZ, 'negated').onChange(() => {
     planes.value[2].negate()
     params.planeZ.constant = planes.value[2].constant

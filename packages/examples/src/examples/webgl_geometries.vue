@@ -1,7 +1,13 @@
 <template>
   <TCanvas antialias clear-color="#000000">
     <TScene ref="sceneRef">
-      <TPerspectiveCamera ref="cameraRef" :fov="45" :near="1" :far="2000" :position="[0, 500, 800]" />
+      <TPerspectiveCamera
+        ref="cameraRef"
+        :fov="45"
+        :near="1"
+        :far="2000"
+        :position="[0, 500, 800]"
+      />
 
       <TAmbientLight :intensity="1.5" :color="0xcccccc" />
       <TPointLight :intensity="2.5" :distance="0" :decay="0" />
@@ -10,25 +16,45 @@
       <TMesh :ref="setMeshRef" :position="[-300, 0, 300]">
         <TSphere :args="[75, 20, 10]" />
         <TMeshPhongMaterial :side="2">
-          <TTexture :url="textureUrl" :wrap-s="RepeatWrapping" :wrap-t="RepeatWrapping" :anisotropy="16" />
+          <TTexture
+            :url="textureUrl"
+            :wrap-s="RepeatWrapping"
+            :wrap-t="RepeatWrapping"
+            :anisotropy="16"
+          />
         </TMeshPhongMaterial>
       </TMesh>
 
       <TMesh :ref="setMeshRef" :position="[-100, 0, 300]">
         <TMeshPhongMaterial :side="2">
-          <TTexture :url="textureUrl" :wrap-s="RepeatWrapping" :wrap-t="RepeatWrapping" :anisotropy="16" />
+          <TTexture
+            :url="textureUrl"
+            :wrap-s="RepeatWrapping"
+            :wrap-t="RepeatWrapping"
+            :anisotropy="16"
+          />
         </TMeshPhongMaterial>
       </TMesh>
 
       <TMesh :ref="setMeshRef" :position="[100, 0, 300]">
         <TMeshPhongMaterial :side="2">
-          <TTexture :url="textureUrl" :wrap-s="RepeatWrapping" :wrap-t="RepeatWrapping" :anisotropy="16" />
+          <TTexture
+            :url="textureUrl"
+            :wrap-s="RepeatWrapping"
+            :wrap-t="RepeatWrapping"
+            :anisotropy="16"
+          />
         </TMeshPhongMaterial>
       </TMesh>
 
       <TMesh :ref="setMeshRef" :position="[300, 0, 300]">
         <TMeshPhongMaterial :side="2">
-          <TTexture :url="textureUrl" :wrap-s="RepeatWrapping" :wrap-t="RepeatWrapping" :anisotropy="16" />
+          <TTexture
+            :url="textureUrl"
+            :wrap-s="RepeatWrapping"
+            :wrap-t="RepeatWrapping"
+            :anisotropy="16"
+          />
         </TMeshPhongMaterial>
       </TMesh>
 
@@ -36,26 +62,46 @@
       <TMesh :ref="setMeshRef" :position="[-300, 0, 100]">
         <TPlane :args="[100, 100, 4, 4]" />
         <TMeshPhongMaterial :side="2">
-          <TTexture :url="textureUrl" :wrap-s="RepeatWrapping" :wrap-t="RepeatWrapping" :anisotropy="16" />
+          <TTexture
+            :url="textureUrl"
+            :wrap-s="RepeatWrapping"
+            :wrap-t="RepeatWrapping"
+            :anisotropy="16"
+          />
         </TMeshPhongMaterial>
       </TMesh>
 
       <TMesh :ref="setMeshRef" :position="[-100, 0, 100]">
         <TBox :args="[100, 100, 100, 4, 4, 4]" />
         <TMeshPhongMaterial :side="2">
-          <TTexture :url="textureUrl" :wrap-s="RepeatWrapping" :wrap-t="RepeatWrapping" :anisotropy="16" />
+          <TTexture
+            :url="textureUrl"
+            :wrap-s="RepeatWrapping"
+            :wrap-t="RepeatWrapping"
+            :anisotropy="16"
+          />
         </TMeshPhongMaterial>
       </TMesh>
 
       <TMesh :ref="setMeshRef" :position="[100, 0, 100]">
         <TMeshPhongMaterial :side="2">
-          <TTexture :url="textureUrl" :wrap-s="RepeatWrapping" :wrap-t="RepeatWrapping" :anisotropy="16" />
+          <TTexture
+            :url="textureUrl"
+            :wrap-s="RepeatWrapping"
+            :wrap-t="RepeatWrapping"
+            :anisotropy="16"
+          />
         </TMeshPhongMaterial>
       </TMesh>
 
       <TMesh :ref="setMeshRef" :position="[300, 0, 100]">
         <TMeshPhongMaterial :side="2">
-          <TTexture :url="textureUrl" :wrap-s="RepeatWrapping" :wrap-t="RepeatWrapping" :anisotropy="16" />
+          <TTexture
+            :url="textureUrl"
+            :wrap-s="RepeatWrapping"
+            :wrap-t="RepeatWrapping"
+            :anisotropy="16"
+          />
         </TMeshPhongMaterial>
       </TMesh>
 
@@ -63,51 +109,91 @@
       <TMesh :ref="setMeshRef" :position="[-300, 0, -100]">
         <TCylinder :args="[25, 75, 100, 40, 5]" />
         <TMeshPhongMaterial :side="2">
-          <TTexture :url="textureUrl" :wrap-s="RepeatWrapping" :wrap-t="RepeatWrapping" :anisotropy="16" />
+          <TTexture
+            :url="textureUrl"
+            :wrap-s="RepeatWrapping"
+            :wrap-t="RepeatWrapping"
+            :anisotropy="16"
+          />
         </TMeshPhongMaterial>
       </TMesh>
 
       <TMesh :ref="setMeshRef" :position="[-100, 0, -100]">
         <TMeshPhongMaterial :side="2">
-          <TTexture :url="textureUrl" :wrap-s="RepeatWrapping" :wrap-t="RepeatWrapping" :anisotropy="16" />
+          <TTexture
+            :url="textureUrl"
+            :wrap-s="RepeatWrapping"
+            :wrap-t="RepeatWrapping"
+            :anisotropy="16"
+          />
         </TMeshPhongMaterial>
       </TMesh>
 
       <TMesh :ref="setMeshRef" :position="[100, 0, -100]">
         <TTorus :args="[50, 20, 20, 20]" />
         <TMeshPhongMaterial :side="2">
-          <TTexture :url="textureUrl" :wrap-s="RepeatWrapping" :wrap-t="RepeatWrapping" :anisotropy="16" />
+          <TTexture
+            :url="textureUrl"
+            :wrap-s="RepeatWrapping"
+            :wrap-t="RepeatWrapping"
+            :anisotropy="16"
+          />
         </TMeshPhongMaterial>
       </TMesh>
 
       <TMesh :ref="setMeshRef" :position="[300, 0, -100]">
         <TMeshPhongMaterial :side="2">
-          <TTexture :url="textureUrl" :wrap-s="RepeatWrapping" :wrap-t="RepeatWrapping" :anisotropy="16" />
+          <TTexture
+            :url="textureUrl"
+            :wrap-s="RepeatWrapping"
+            :wrap-t="RepeatWrapping"
+            :anisotropy="16"
+          />
         </TMeshPhongMaterial>
       </TMesh>
 
       <!-- 第四行 -->
       <TMesh :ref="setMeshRef" :position="[-300, 0, -300]">
         <TMeshPhongMaterial :side="2">
-          <TTexture :url="textureUrl" :wrap-s="RepeatWrapping" :wrap-t="RepeatWrapping" :anisotropy="16" />
+          <TTexture
+            :url="textureUrl"
+            :wrap-s="RepeatWrapping"
+            :wrap-t="RepeatWrapping"
+            :anisotropy="16"
+          />
         </TMeshPhongMaterial>
       </TMesh>
 
       <TMesh :ref="setMeshRef" :position="[-100, 0, -300]">
         <TMeshPhongMaterial :side="2">
-          <TTexture :url="textureUrl" :wrap-s="RepeatWrapping" :wrap-t="RepeatWrapping" :anisotropy="16" />
+          <TTexture
+            :url="textureUrl"
+            :wrap-s="RepeatWrapping"
+            :wrap-t="RepeatWrapping"
+            :anisotropy="16"
+          />
         </TMeshPhongMaterial>
       </TMesh>
 
       <TMesh :ref="setMeshRef" :position="[100, 0, -300]">
         <TMeshPhongMaterial :side="2">
-          <TTexture :url="textureUrl" :wrap-s="RepeatWrapping" :wrap-t="RepeatWrapping" :anisotropy="16" />
+          <TTexture
+            :url="textureUrl"
+            :wrap-s="RepeatWrapping"
+            :wrap-t="RepeatWrapping"
+            :anisotropy="16"
+          />
         </TMeshPhongMaterial>
       </TMesh>
 
       <TMesh :ref="setMeshRef" :position="[300, 0, -300]">
         <TMeshPhongMaterial :side="THREE.DoubleSide">
-          <TTexture :url="textureUrl" :wrap-s="RepeatWrapping" :wrap-t="RepeatWrapping" :anisotropy="16" />
+          <TTexture
+            :url="textureUrl"
+            :wrap-s="RepeatWrapping"
+            :wrap-t="RepeatWrapping"
+            :anisotropy="16"
+          />
         </TMeshPhongMaterial>
       </TMesh>
     </TScene>

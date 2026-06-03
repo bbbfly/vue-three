@@ -2,11 +2,11 @@
   <TCanvas antialias @animate="animate">
     <TScene>
       <TPerspectiveCamera :position="[0, 0, 20]" :fov="27" />
-      <TOrbitControls :minDistance="10" :maxDistance="50" />
+      <TOrbitControls :min-distance="10" :max-distance="50" />
 
       <TMesh v-for="(twistAmount, index) in twistAmounts" :key="index" :position="positions[index]">
         <TGLTFLoader :src="modelSrc" />
-        <TMeshNormalMaterial :ref="(el) => setMaterialRef(el, index)" />
+        <TMeshNormalMaterial :ref="el => setMaterialRef(el, index)" />
       </TMesh>
     </TScene>
   </TCanvas>
@@ -28,7 +28,10 @@ import * as THREE from 'three'
 
 const modelSrc = '/models/gltf/LeePerrySmith/LeePerrySmith.glb'
 const twistAmounts = [2.0, -2.0]
-const positions = [[-3.5, -0.5, 0], [3.5, -0.5, 0]]
+const positions = [
+  [-3.5, -0.5, 0],
+  [3.5, -0.5, 0]
+]
 
 const geometries = ref<(THREE.BufferGeometry | null)[]>([null, null])
 const materialRefs = ref<(InstanceType<typeof TMeshNormalMaterial> | null)[]>([null, null])
@@ -74,7 +77,7 @@ function setupTwistMaterial(material: THREE.MeshNormalMaterial, amount: number) 
 
 function animate() {
   const time = performance.now() / 1000
-  materialRefs.value.forEach((materialRef) => {
+  materialRefs.value.forEach(materialRef => {
     if (materialRef && materialRef.material) {
       const material = materialRef.material as THREE.MeshNormalMaterial
       if (material.userData.shader) {
@@ -83,7 +86,6 @@ function animate() {
     }
   })
 }
-
 </script>
 
 <style scoped></style>

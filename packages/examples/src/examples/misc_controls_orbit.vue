@@ -1,9 +1,16 @@
 <template>
-  <TCanvas antialias clearColor="#cccccc">
+  <TCanvas antialias clear-color="#cccccc">
     <TScene ref="sceneRef" :fog="fogConfig" background="#cccccc">
       <TPerspectiveCamera :position="[400, 200, 0]" :fov="60" :near="1" :far="1000" />
-      <TOrbitControls :enableDamping="true" :dampingFactor="0.05" :screenSpacePanning="false" :minDistance="100"
-        :maxDistance="500" :maxPolarAngle="Math.PI / 2" cursorStyle="grab" />
+      <TOrbitControls
+        :enable-damping="true"
+        :damping-factor="0.05"
+        :screen-space-panning="false"
+        :min-distance="100"
+        :max-distance="500"
+        :max-polar-angle="Math.PI / 2"
+        cursor-style="grab"
+      />
 
       <TDirectionalLight :color="0xffffff" :intensity="3" :position="[1, 1, 1]" />
       <TDirectionalLight :color="0x002288" :intensity="3" :position="[-1, -1, -1]" />

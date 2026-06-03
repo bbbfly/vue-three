@@ -13,7 +13,7 @@ export function useCSS3DRenderer() {
   }
 
   // 使用普通变量存储 Three.js 对象，在组件初始化时创建
-  let renderer: CSS3DRenderer = new CSS3DRenderer()
+  const renderer: CSS3DRenderer = new CSS3DRenderer()
   const container = renderer.domElement
 
   // 创建独立的 CSS3D 场景

@@ -5,7 +5,7 @@
 
       <TPoints ref="pointsRef">
         <TBufferGeometry :attributes="geometryAttributes" />
-        <TPointsMaterial :size="15" :vertexColors="true" />
+        <TPointsMaterial :size="15" :vertex-colors="true" />
       </TPoints>
     </TScene>
   </TCanvas>
@@ -14,7 +14,14 @@
 <script setup lang="ts">
 import { ref, onMounted, shallowRef } from 'vue'
 import * as THREE from 'three'
-import { TCanvas, TScene, TPerspectiveCamera, TPoints, TBufferGeometry, TPointsMaterial } from '@vue-three/vue-three'
+import {
+  TCanvas,
+  TScene,
+  TPerspectiveCamera,
+  TPoints,
+  TBufferGeometry,
+  TPointsMaterial
+} from '@vue-three/vue-three'
 
 const pointsRef = ref<any>(null)
 const geometryAttributes = shallowRef<Record<string, THREE.BufferAttribute>>({})
@@ -35,9 +42,9 @@ onMounted(() => {
 
     positions.push(x, y, z)
 
-    const vx = (x / n) + 0.5
-    const vy = (y / n) + 0.5
-    const vz = (z / n) + 0.5
+    const vx = x / n + 0.5
+    const vy = y / n + 0.5
+    const vz = z / n + 0.5
 
     color.setRGB(vx, vy, vz)
 

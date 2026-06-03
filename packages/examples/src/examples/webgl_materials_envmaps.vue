@@ -14,7 +14,15 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick, watch } from 'vue'
 import * as THREE from 'three'
-import { useGui, TCanvas, TPerspectiveCamera, TOrbitControls, TMesh, TMeshBasicMaterial, TScene } from '@vue-three/vue-three'
+import {
+  useGui,
+  TCanvas,
+  TPerspectiveCamera,
+  TOrbitControls,
+  TMesh,
+  TMeshBasicMaterial,
+  TScene
+} from '@vue-three/vue-three'
 
 const sceneRef = ref<any>(null)
 const canvasRef = ref<any>(null)
@@ -101,13 +109,12 @@ function initScene() {
   const cubeTextureLoader = new THREE.CubeTextureLoader()
   cubeTextureLoader.setPath('/textures/cube/Bridge2/')
 
-  textureCube.value = cubeTextureLoader.load([
-    'posx.jpg', 'negx.jpg',
-    'posy.jpg', 'negy.jpg',
-    'posz.jpg', 'negz.jpg'
-  ], () => {
-    applyCubeTexture()
-  })
+  textureCube.value = cubeTextureLoader.load(
+    ['posx.jpg', 'negx.jpg', 'posy.jpg', 'negy.jpg', 'posz.jpg', 'negz.jpg'],
+    () => {
+      applyCubeTexture()
+    }
+  )
 
   const textureLoader = new THREE.TextureLoader()
   textureEquirec.value = textureLoader.load('/textures/2294472375_24a3b8ef46_o.jpg', () => {
@@ -116,7 +123,9 @@ function initScene() {
   })
 
   gui.add({ Cube: applyCubeTexture }, 'Cube').name('Cube Texture')
-  gui.add({ Equirectangular: applyEquirectangularTexture }, 'Equirectangular').name('Equirectangular Map')
+  gui
+    .add({ Equirectangular: applyEquirectangularTexture }, 'Equirectangular')
+    .name('Equirectangular Map')
 
   gui.add(params.value, 'Refraction').onChange(updateMapping)
 
@@ -129,21 +138,25 @@ function initScene() {
   initialized = true
 }
 
-watch([canvasRef, materialRef, sphereMeshRef], async () => {
-  await nextTick()
+watch(
+  [canvasRef, materialRef, sphereMeshRef],
+  async () => {
+    await nextTick()
 
-  if (sceneRef.value.scene) {
-    scene.value = sceneRef.value.scene
-  }
+    if (sceneRef.value.scene) {
+      scene.value = sceneRef.value.scene
+    }
 
-  if (materialRef.value?.material) {
-    material.value = materialRef.value.material
-  }
+    if (materialRef.value?.material) {
+      material.value = materialRef.value.material
+    }
 
-  if (scene.value && material.value && sphereMeshRef.value) {
-    initScene()
-  }
-}, { immediate: true, deep: true })
+    if (scene.value && material.value && sphereMeshRef.value) {
+      initScene()
+    }
+  },
+  { immediate: true, deep: true }
+)
 
 onMounted(async () => {
   await nextTick()

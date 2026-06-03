@@ -14,7 +14,14 @@
 <script setup lang="ts">
 import { ref, onMounted, shallowRef } from 'vue'
 import * as THREE from 'three'
-import { TCanvas, TScene, TPerspectiveCamera, TLine, TBufferGeometry, TLineBasicMaterial } from '@vue-three/vue-three'
+import {
+  TCanvas,
+  TScene,
+  TPerspectiveCamera,
+  TLine,
+  TBufferGeometry,
+  TLineBasicMaterial
+} from '@vue-three/vue-three'
 
 const lineRef = ref<any>(null)
 const geometryAttributes = shallowRef<Record<string, THREE.BufferAttribute>>({})
@@ -36,9 +43,9 @@ onMounted(() => {
 
     positions.push(x, y, z)
 
-    colors.push((x / r) + 0.5)
-    colors.push((y / r) + 0.5)
-    colors.push((z / r) + 0.5)
+    colors.push(x / r + 0.5)
+    colors.push(y / r + 0.5)
+    colors.push(z / r + 0.5)
 
     const mx = Math.random() * r - r / 2
     const my = Math.random() * r - r / 2

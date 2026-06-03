@@ -4,8 +4,14 @@
     <TScene background="#050505">
       <TMesh ref="meshRef" :frustum-culled="false">
         <TBufferGeometry :draw-range="[0, vertexCount]" />
-        <TShaderMaterial shader-type="rawShader" :uniforms="uniforms" :vertex-shader="vertexShader"
-          :fragment-shader="fragmentShader" :side="THREE.DoubleSide" :glsl-version="THREE.GLSL3" />
+        <TShaderMaterial
+          shader-type="rawShader"
+          :uniforms="uniforms"
+          :vertex-shader="vertexShader"
+          :fragment-shader="fragmentShader"
+          :side="THREE.DoubleSide"
+          :glsl-version="THREE.GLSL3"
+        />
       </TMesh>
     </TScene>
   </TCanvas>
@@ -20,7 +26,7 @@ import {
   TPerspectiveCamera,
   TMesh,
   TBufferGeometry,
-  TShaderMaterial,
+  TShaderMaterial
 } from '@vue-three/vue-three'
 
 const meshRef = ref<any>(null)

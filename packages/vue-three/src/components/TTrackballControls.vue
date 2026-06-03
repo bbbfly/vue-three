@@ -8,7 +8,7 @@ import { TrackballControls } from 'three/addons/controls/TrackballControls.js'
 import { ThreeContextKey } from '../core/context'
 
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 const props = defineProps({
@@ -94,7 +94,7 @@ const setTarget = (x: number, y: number, z: number) => {
   }
 }
 
-ctx.ready((context) => {
+ctx.ready(context => {
   controls.domElement = context.renderer!.domElement
 
   if (props.enableDamping !== undefined) {
@@ -138,7 +138,7 @@ ctx.ready((context) => {
 
 watch(
   () => props,
-  (newProps) => {
+  newProps => {
     if (!controls) return
 
     if (newProps.enableDamping !== undefined) {

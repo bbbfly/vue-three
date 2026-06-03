@@ -44,23 +44,20 @@ export function useFlyControls(config: FlyControlsConfig = {}) {
     }
   }
 
-  const stopWatch = watch(
-    [() => ctx.renderer, () => ctx.camera],
-    ([renderer, camera]) => {
-      if (!renderer || !camera) return
-      if (controls) return
+  const stopWatch = watch([() => ctx.renderer, () => ctx.camera], ([renderer, camera]) => {
+    if (!renderer || !camera) return
+    if (controls) return
 
-      const flyControls = new FlyControls(camera, renderer.domElement)
-      controls = flyControls
+    const flyControls = new FlyControls(camera, renderer.domElement)
+    controls = flyControls
 
-      if (Object.keys(config).length > 0) {
-        updateConfig(config)
-      }
-
-      ctx.controls = flyControls
-      stopWatch()
+    if (Object.keys(config).length > 0) {
+      updateConfig(config)
     }
-  )
+
+    ctx.controls = flyControls
+    stopWatch()
+  })
 
   watch(
     () => config,

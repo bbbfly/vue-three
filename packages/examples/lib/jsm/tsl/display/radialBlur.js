@@ -1,4 +1,19 @@
-import { interleavedGradientNoise, Fn, vec2, vec4, mix, uv, Loop, premultiplyAlpha, unpremultiplyAlpha, int, float, nodeObject, convertToTexture, screenCoordinate } from 'three/tsl';
+import {
+  interleavedGradientNoise,
+  Fn,
+  vec2,
+  vec4,
+  mix,
+  uv,
+  Loop,
+  premultiplyAlpha,
+  unpremultiplyAlpha,
+  int,
+  float,
+  nodeObject,
+  convertToTexture,
+  screenCoordinate
+} from 'three/tsl'
 
 /**
  * This TSL function blurs an image in a circular pattern, radiating from a configurable center point in screen space.
@@ -19,50 +34,44 @@ import { interleavedGradientNoise, Fn, vec2, vec4, mix, uv, Loop, premultiplyAlp
  * @param {Node<int>} [options.exposure=float(5)] - Exposure control of the blur.
  * @return {Node<vec4>} The blurred texture node.
  */
-export const radialBlur = /*#__PURE__*/ Fn( ( [ textureNode, options = {} ] ) => {
+export const radialBlur = /*#__PURE__*/ Fn(([textureNode, options = {}]) => {
+  textureNode = convertToTexture(textureNode)
 
-	textureNode = convertToTexture( textureNode );
+  const center = nodeObject(options.center) || vec2(0.5, 0.5)
+  const weight = nodeObject(options.weight) || float(0.9)
+  const decay = nodeObject(options.decay) || float(0.95)
+  const count = nodeObject(options.count) || int(32)
+  const exposure = nodeObject(options.exposure) || float(5)
+  const premultipliedAlpha = options.premultipliedAlpha || false
 
-	const center = nodeObject( options.center ) || vec2( 0.5, 0.5 );
-	const weight = nodeObject( options.weight ) || float( 0.9 );
-	const decay = nodeObject( options.decay ) || float( 0.95 );
-	const count = nodeObject( options.count ) || int( 32 );
-	const exposure = nodeObject( options.exposure ) || float( 5 );
-	const premultipliedAlpha = options.premultipliedAlpha || false;
+  const tap = uv => {
+    const sample = textureNode.sample(uv)
 
-	const tap = ( uv ) => {
+    return premultipliedAlpha ? premultiplyAlpha(sample) : sample
+  }
 
-		const sample = textureNode.sample( uv );
+  const sampleUv = vec2(textureNode.uvNode || uv())
 
-		return premultipliedAlpha ? premultiplyAlpha( sample ) : sample;
+  const base = tap(sampleUv).toConst()
+  const blur = vec4().toVar()
+  const offset = center.sub(sampleUv).div(count).toConst()
+  const w = float(weight).toVar()
 
-	};
+  const noise = interleavedGradientNoise(screenCoordinate)
+  sampleUv.addAssign(offset.mul(noise)) // mitigate banding
 
-	const sampleUv = vec2( textureNode.uvNode || uv() );
+  Loop({ start: int(0), end: int(count), type: 'int', condition: '<' }, () => {
+    sampleUv.addAssign(offset)
+    const sample = tap(sampleUv)
 
-	const base = tap( sampleUv ).toConst();
-	const blur = vec4().toVar();
-	const offset = center.sub( sampleUv ).div( count ).toConst();
-	const w = float( weight ).toVar();
+    blur.addAssign(sample.mul(w))
+    w.mulAssign(decay)
+  })
 
-	const noise = interleavedGradientNoise( screenCoordinate );
-	sampleUv.addAssign( offset.mul( noise ) ); // mitigate banding
+  blur.divAssign(count)
+  blur.mulAssign(exposure)
 
-	Loop( { start: int( 0 ), end: int( count ), type: 'int', condition: '<' }, () => {
+  const color = mix(blur, base.mul(2), 0.5)
 
-		sampleUv.addAssign( offset );
-		const sample = tap( sampleUv );
-
-		blur.addAssign( sample.mul( w ) );
-		w.mulAssign( decay );
-
-	} );
-
-	blur.divAssign( count );
-	blur.mulAssign( exposure );
-
-	const color = mix( blur, base.mul( 2 ), 0.5 );
-
-	return premultipliedAlpha ? unpremultiplyAlpha( color ) : color;
-
-} );
+  return premultipliedAlpha ? unpremultiplyAlpha(color) : color
+})

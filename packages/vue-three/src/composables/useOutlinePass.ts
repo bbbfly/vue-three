@@ -58,11 +58,7 @@ export function useOutlinePass(config: MaybeRef<OutlinePassConfig> = {}) {
   const init = () => {
     const { scene, camera, size } = threeCtx
 
-    const pass = new OutlinePass(
-      new Vector2(size.width, size.height),
-      scene,
-      camera
-    )
+    const pass = new OutlinePass(new Vector2(size.width, size.height), scene, camera)
 
     pass.edgeStrength = 3
     pass.edgeGlow = 0

@@ -2,11 +2,11 @@
   <TCanvas antialias>
     <TScene>
       <TPerspectiveCamera :position="[amount, amount, amount]" :fov="60" :near="0.1" :far="100" />
-      <TOrbitControls :enableZoom="false" :enablePan="false" />
+      <TOrbitControls :enable-zoom="false" :enable-pan="false" />
 
-      <TInstancedMesh ref="instancedMesh" :instanceCount="count">
+      <TInstancedMesh ref="instancedMesh" :instance-count="count">
         <TIcosahedron :args="[0.5, 3]" />
-        <TMeshStandardMaterial color="0xffffff" :alphaHash="true" :opacity="0.5" />
+        <TMeshStandardMaterial color="0xffffff" :alpha-hash="true" :opacity="0.5" />
       </TInstancedMesh>
 
       <TAmbientLight :intensity="0.5" />
@@ -15,7 +15,7 @@
 
     <TEffectComposer>
       <TRenderPass />
-      <TTAARenderPass :sampleLevel="2" :unbiased="true" />
+      <TTAARenderPass :sample-level="2" :unbiased="true" />
       <TOutputPass />
     </TEffectComposer>
   </TCanvas>
@@ -66,7 +66,6 @@ onMounted(() => {
     mesh.instanceMatrix.needsUpdate = true
     mesh.instanceColor.needsUpdate = true
   }
-
 })
 </script>
 

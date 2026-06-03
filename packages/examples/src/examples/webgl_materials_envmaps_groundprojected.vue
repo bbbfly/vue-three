@@ -1,9 +1,19 @@
 <template>
-  <TCanvas ref="canvasRef" antialias :tone-mapping="'ACESFilmicToneMapping'" @before-render="onAnimate">
+  <TCanvas
+    ref="canvasRef"
+    antialias
+    :tone-mapping="'ACESFilmicToneMapping'"
+    @before-render="onAnimate"
+  >
     <TScene ref="sceneRef" :environment="environmentMap">
       <TPerspectiveCamera :position="[-20, 7, 20]" :fov="40" :near="1" :far="1000" />
-      <TOrbitControls :target="[0, 2, 0]" :max-polar-angle="Math.PI / 2" :max-distance="80" :min-distance="20"
-        :enable-pan="false" />
+      <TOrbitControls
+        :target="[0, 2, 0]"
+        :max-polar-angle="Math.PI / 2"
+        :max-distance="80"
+        :min-distance="20"
+        :enable-pan="false"
+      />
 
       <TGridHelper :size="200" :divisions="100" color="#ffffff" :opacity="0.2" />
 
@@ -131,7 +141,6 @@ function onModelLoad(loadedModel: any) {
     shadowMesh.rotation.x = -Math.PI / 2
     carModel!.add(shadowMesh)
   })
-
 }
 
 function initScene() {

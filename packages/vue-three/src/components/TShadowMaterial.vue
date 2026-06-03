@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { onMounted, watch } from 'vue'
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import type { PropType } from 'vue'

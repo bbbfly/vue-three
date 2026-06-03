@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import type { PropType } from 'vue'
@@ -13,10 +13,7 @@ import { Vector3 } from 'three'
 import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js'
 import { MeshContextKey } from '../core/context'
 
-type VertexInput =
-  | Vector3
-  | { x: number; y: number; z: number }
-  | [number, number, number]
+type VertexInput = Vector3 | { x: number; y: number; z: number } | [number, number, number]
 
 const props = defineProps({
   vertices: {

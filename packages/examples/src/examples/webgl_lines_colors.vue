@@ -3,8 +3,14 @@
     <TPerspectiveCamera ref="cameraRef" :fov="33" :near="1" :far="10000" :position="[0, 0, 1000]" />
 
     <TScene ref="sceneRef">
-      <TLine v-for="(lineConfig, index) in lineConfigs" :key="index" :geometry="lineConfig.geometry"
-        :vertex-colors="true" :position="lineConfig.position" :scale="lineConfig.scale" />
+      <TLine
+        v-for="(lineConfig, index) in lineConfigs"
+        :key="index"
+        :geometry="lineConfig.geometry"
+        :vertex-colors="true"
+        :position="lineConfig.position"
+        :scale="lineConfig.scale"
+      />
     </TScene>
   </TCanvas>
 </template>
@@ -31,14 +37,30 @@ const hilbertPoints = computed(() => {
     for (const i of indexes) {
       const v = new Vector3()
       switch (i) {
-        case 0: v.set(0, 0, 0); break
-        case 1: v.set(0, 1, 0); break
-        case 2: v.set(1, 1, 0); break
-        case 3: v.set(1, 0, 0); break
-        case 4: v.set(1, 0, 1); break
-        case 5: v.set(1, 1, 1); break
-        case 6: v.set(0, 1, 1); break
-        case 7: v.set(0, 0, 1); break
+        case 0:
+          v.set(0, 0, 0)
+          break
+        case 1:
+          v.set(0, 1, 0)
+          break
+        case 2:
+          v.set(1, 1, 0)
+          break
+        case 3:
+          v.set(1, 0, 0)
+          break
+        case 4:
+          v.set(1, 0, 1)
+          break
+        case 5:
+          v.set(1, 1, 1)
+          break
+        case 6:
+          v.set(0, 1, 1)
+          break
+        case 7:
+          v.set(0, 0, 1)
+          break
       }
       v.multiplyScalar(scale).add(point)
       points.push(v)
@@ -137,7 +159,7 @@ const lineConfigs = computed(() => {
 })
 
 onMounted(() => {
-  document.body.addEventListener('pointermove', (event) => {
+  document.body.addEventListener('pointermove', event => {
     if (!event.isPrimary) return
     mouseX.value = event.clientX - windowHalfX.value
     mouseY.value = event.clientY - windowHalfY.value

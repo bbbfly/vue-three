@@ -1,55 +1,55 @@
 import {
-	Box3,
-	CubeCamera,
-	FloatType,
-	HalfFloatType,
-	LinearFilter,
-	Mesh,
-	NearestFilter,
-	Object3D,
-	OrthographicCamera,
-	PlaneGeometry,
-	RGBAFormat,
-	Scene,
-	ShaderMaterial,
-	Vector3,
-	Vector4,
-	WebGL3DRenderTarget,
-	WebGLCubeRenderTarget,
-	WebGLRenderTarget
-} from 'three';
+  Box3,
+  CubeCamera,
+  FloatType,
+  HalfFloatType,
+  LinearFilter,
+  Mesh,
+  NearestFilter,
+  Object3D,
+  OrthographicCamera,
+  PlaneGeometry,
+  RGBAFormat,
+  Scene,
+  ShaderMaterial,
+  Vector3,
+  Vector4,
+  WebGL3DRenderTarget,
+  WebGLCubeRenderTarget,
+  WebGLRenderTarget
+} from 'three'
 
 // Shared fullscreen-quad scene / camera
-let _scene = null;
-let _camera = null;
-let _mesh = null;
+let _scene = null
+let _camera = null
+let _mesh = null
 
 // SH projection material (depends on cubemapSize)
-let _shMaterial = null;
-let _lastCubemapSize = 0;
+let _shMaterial = null
+let _lastCubemapSize = 0
 
 // Repack materials (one per output sub-volume / texture index)
-let _repackMaterials = null;
+let _repackMaterials = null
 
 // Cached bake resources
-let _cubeRenderTarget = null;
-let _cubeCamera = null;
-let _cachedCubemapSize = 0;
-let _cachedNear = 0;
-let _cachedFar = 0;
+let _cubeRenderTarget = null
+let _cubeCamera = null
+let _cachedCubemapSize = 0
+let _cachedNear = 0
+let _cachedFar = 0
 
 // Cached batch render target
-let _batchTarget = null;
-let _batchTargetProbes = 0;
+let _batchTarget = null
+let _batchTargetProbes = 0
 
 // Reusable temp objects
-const _position = /*@__PURE__*/ new Vector3();
-const _size = /*@__PURE__*/ new Vector3();
-const _currentViewport = /*@__PURE__*/ new Vector4();
-const _currentScissor = /*@__PURE__*/ new Vector4();
+const _position = /*@__PURE__*/ new Vector3()
+const _size = /*@__PURE__*/ new Vector3()
+const _currentViewport = /*@__PURE__*/ new Vector4()
+const _currentScissor = /*@__PURE__*/ new Vector4()
 
 // Number of padding texels added at each boundary of every sub-volume in the atlas.
-const ATLAS_PADDING = 1;
+const ATLAS_PADDING = 1
 
 /**
  * A 3D grid of L2 Spherical Harmonic irradiance probes that provides
@@ -81,361 +81,331 @@ const ATLAS_PADDING = 1;
  * @three_import import { LightProbeGrid } from 'three/addons/lighting/LightProbeGrid.js';
  */
 class LightProbeGrid extends Object3D {
-
-	/**
-	 * Constructs a new irradiance probe grid.
-	 *
-	 * The volume is centered at the object's position.
-	 *
-	 * @param {number} [width=1] - Full width of the volume along X.
-	 * @param {number} [height=1] - Full height of the volume along Y.
-	 * @param {number} [depth=1] - Full depth of the volume along Z.
-	 * @param {number} [widthProbes] - Number of probes along X. Defaults to `Math.max( 2, Math.round( width ) + 1 )`.
-	 * @param {number} [heightProbes] - Number of probes along Y. Defaults to `Math.max( 2, Math.round( height ) + 1 )`.
-	 * @param {number} [depthProbes] - Number of probes along Z. Defaults to `Math.max( 2, Math.round( depth ) + 1 )`.
-	 */
-	constructor( width = 1, height = 1, depth = 1, widthProbes, heightProbes, depthProbes ) {
-
-		super();
-
-		/**
-		 * This flag can be used for type testing.
-		 *
-		 * @type {boolean}
-		 * @readonly
-		 * @default true
-		 */
-		this.isLightProbeGrid = true;
-
-		/**
-		 * The full width of the volume along X.
-		 *
-		 * @type {number}
-		 */
-		this.width = width;
-
-		/**
-		 * The full height of the volume along Y.
-		 *
-		 * @type {number}
-		 */
-		this.height = height;
-
-		/**
-		 * The full depth of the volume along Z.
-		 *
-		 * @type {number}
-		 */
-		this.depth = depth;
-
-		/**
-		 * The number of probes along each axis.
-		 *
-		 * @type {Vector3}
-		 */
-		this.resolution = new Vector3(
-			widthProbes !== undefined ? widthProbes : Math.max( 2, Math.round( width ) + 1 ),
-			heightProbes !== undefined ? heightProbes : Math.max( 2, Math.round( height ) + 1 ),
-			depthProbes !== undefined ? depthProbes : Math.max( 2, Math.round( depth ) + 1 )
-		);
-
-		/**
-		 * The world-space bounding box for the grid. Updated automatically
-		 * by {@link LightProbeGrid#bake}.
-		 *
-		 * @type {Box3}
-		 */
-		this.boundingBox = new Box3();
-
-		/**
-		 * The single RGBA atlas 3D texture storing all seven packed SH sub-volumes.
-		 *
-		 * @type {?Data3DTexture}
-		 * @default null
-		 */
-		this.texture = null;
-
-		/**
-		 * Internal render target for GPU-resident baking.
-		 *
-		 * @private
-		 * @type {?WebGL3DRenderTarget}
-		 * @default null
-		 */
-		this._renderTarget = null;
-
-		this.updateBoundingBox();
-
-	}
-
-	/**
-	 * Returns the world-space position of the probe at grid indices (ix, iy, iz).
-	 *
-	 * @param {number} ix - X index.
-	 * @param {number} iy - Y index.
-	 * @param {number} iz - Z index.
-	 * @param {Vector3} target - The target vector.
-	 * @return {Vector3} The world-space position.
-	 */
-	getProbePosition( ix, iy, iz, target ) {
-
-		const pos = this.position;
-		const res = this.resolution;
-		const w = this.width, h = this.height, d = this.depth;
-
-		target.set(
-			res.x > 1 ? pos.x - w / 2 + ix * w / ( res.x - 1 ) : pos.x,
-			res.y > 1 ? pos.y - h / 2 + iy * h / ( res.y - 1 ) : pos.y,
-			res.z > 1 ? pos.z - d / 2 + iz * d / ( res.z - 1 ) : pos.z
-		);
-
-		return target;
-
-	}
-
-	/**
-	 * Updates the world-space bounding box from the current position and size.
-	 */
-	updateBoundingBox() {
-
-		_size.set( this.width, this.height, this.depth );
-		this.boundingBox.setFromCenterAndSize( this.position, _size );
-
-	}
-
-	/**
-	 * Bakes all probes by rendering cubemaps at each probe position
-	 * and projecting to L2 SH. Fully GPU-resident with zero CPU readback.
-	 *
-	 * @param {WebGLRenderer} renderer - The renderer.
-	 * @param {Scene} scene - The scene to render.
-	 * @param {Object} [options] - Bake options.
-	 * @param {number} [options.cubemapSize=8] - Resolution of each cubemap face.
-	 * @param {number} [options.near=0.1] - Near plane for the cube camera.
-	 * @param {number} [options.far=100] - Far plane for the cube camera.
-	 */
-	bake( renderer, scene, options = {} ) {
-
-		const { cubeRenderTarget, cubeCamera } = _ensureBakeResources( options );
-
-		this._ensureTextures();
-		this.updateBoundingBox();
-
-		// Prevent feedback: temporarily hide the volume during baking
-		this.visible = false;
-
-		const res = this.resolution;
-		const totalProbes = res.x * res.y * res.z;
-
-		// Batch render target for SH coefficients: 9 pixels wide, one row per probe
-		const batchTarget = _ensureBatchTarget( totalProbes );
-
-		// Save renderer state
-		const currentRenderTarget = renderer.getRenderTarget();
-		renderer.getViewport( _currentViewport );
-		renderer.getScissor( _currentScissor );
-		const currentScissorTest = renderer.getScissorTest();
-
-		// Scene is static across the bake — update once and disable per-render auto updates.
-		const currentMatrixWorldAutoUpdate = scene.matrixWorldAutoUpdate;
-		if ( currentMatrixWorldAutoUpdate === true ) {
-
-			scene.updateMatrixWorld( true );
-			scene.matrixWorldAutoUpdate = false;
-
-		}
-
-		// Clear pooled batch target so skipped probes read as zero
-		batchTarget.scissorTest = false;
-		batchTarget.viewport.set( 0, 0, 9, totalProbes );
-		renderer.setRenderTarget( batchTarget );
-		renderer.clear();
-
-		// const t0 = performance.now();
-
-		// Phase 1: Render cubemaps and project to SH into batch target
-		// Note: set viewport/scissor on the render target directly to avoid pixel ratio scaling
-		batchTarget.scissorTest = true;
-
-		// Disable shadow map auto-update during bake — lights don't move between probes.
-		// Force one shadow update on the first render so maps are initialized.
-		const currentShadowAutoUpdate = renderer.shadowMap.autoUpdate;
-		renderer.shadowMap.autoUpdate = false;
-		renderer.shadowMap.needsUpdate = true;
-
-		for ( let iz = 0; iz < res.z; iz ++ ) {
-
-			for ( let iy = 0; iy < res.y; iy ++ ) {
-
-				for ( let ix = 0; ix < res.x; ix ++ ) {
-
-					const probeIndex = ix + iy * res.x + iz * res.x * res.y;
-
-					this.getProbePosition( ix, iy, iz, _position );
-					cubeCamera.position.copy( _position );
-					cubeCamera.update( renderer, scene );
-
-					// SH projection
-					_shMaterial.uniforms.envMap.value = cubeRenderTarget.texture;
-					_mesh.material = _shMaterial;
-					batchTarget.viewport.set( 0, probeIndex, 9, 1 );
-					batchTarget.scissor.set( 0, probeIndex, 9, 1 );
-					renderer.setRenderTarget( batchTarget );
-					renderer.render( _scene, _camera );
-
-				}
-
-			}
-
-		}
-
-		renderer.shadowMap.autoUpdate = currentShadowAutoUpdate;
-
-		// Phase 2: Repack SH data from batch target into the atlas 3D texture (GPU-to-GPU).
-		//
-		// For each of the 7 packed sub-volumes (texture index t) we write:
-		//   - A leading padding slice  (copy of data slice iz = 0)
-		//   - All nz data slices       (iz = 0 … nz-1)
-		//   - A trailing padding slice (copy of data slice iz = nz-1)
-		//
-		// In the atlas the slices for sub-volume t occupy the range:
-		//   [ t * paddedSlices, t * paddedSlices + paddedSlices - 1 ]
-		// where paddedSlices = nz + 2 * ATLAS_PADDING.
-
-		_ensureRepackResources();
-
-		const paddedSlices = res.z + 2 * ATLAS_PADDING;
-		const rt = this._renderTarget;
-		rt.scissorTest = false;
-		rt.viewport.set( 0, 0, res.x, res.y );
-
-		for ( let t = 0; t < 7; t ++ ) {
-
-			_repackMaterials[ t ].uniforms.batchTexture.value = batchTarget.texture;
-			_repackMaterials[ t ].uniforms.resolution.value.copy( res );
-
-			// Write data slices
-			for ( let iz = 0; iz < res.z; iz ++ ) {
-
-				_repackMaterials[ t ].uniforms.sliceZ.value = iz;
-				_mesh.material = _repackMaterials[ t ];
-				renderer.setRenderTarget( rt, t * paddedSlices + ATLAS_PADDING + iz );
-				renderer.render( _scene, _camera );
-
-			}
-
-			// Leading padding: copy of data slice iz = 0
-			_repackMaterials[ t ].uniforms.sliceZ.value = 0;
-			_mesh.material = _repackMaterials[ t ];
-			renderer.setRenderTarget( rt, t * paddedSlices );
-			renderer.render( _scene, _camera );
-
-			// Trailing padding: copy of data slice iz = nz - 1
-			_repackMaterials[ t ].uniforms.sliceZ.value = res.z - 1;
-			_mesh.material = _repackMaterials[ t ];
-			renderer.setRenderTarget( rt, t * paddedSlices + ATLAS_PADDING + res.z );
-			renderer.render( _scene, _camera );
-
-		}
-
-		// Restore renderer state
-		renderer.setRenderTarget( currentRenderTarget );
-		renderer.setViewport( _currentViewport );
-		renderer.setScissor( _currentScissor );
-		renderer.setScissorTest( currentScissorTest );
-
-		scene.matrixWorldAutoUpdate = currentMatrixWorldAutoUpdate;
-
-		// console.log( `LightProbeGrid: bake complete ${ ( performance.now() - t0 ).toFixed( 1 ) }ms` );
-
-		this.visible = true;
-
-	}
-
-	/**
-	 * Ensures the atlas 3D render target exists with the correct dimensions.
-	 *
-	 * @private
-	 */
-	_ensureTextures() {
-
-		if ( this._renderTarget !== null ) return;
-
-		const res = this.resolution;
-		const nx = res.x, ny = res.y, nz = res.z;
-
-		// Atlas depth: 7 sub-volumes, each with ATLAS_PADDING slices at both ends
-		const atlasDepth = 7 * ( nz + 2 * ATLAS_PADDING );
-
-		const rt = new WebGL3DRenderTarget( nx, ny, atlasDepth, {
-			format: RGBAFormat,
-			type: FloatType,
-			minFilter: LinearFilter,
-			magFilter: LinearFilter,
-			generateMipmaps: false,
-			depthBuffer: false
-		} );
-
-		this._renderTarget = rt;
-		this.texture = rt.texture;
-
-	}
-
-	/**
-	 * Frees GPU resources.
-	 */
-	dispose() {
-
-		if ( this._renderTarget !== null ) {
-
-			this._renderTarget.dispose();
-			this._renderTarget = null;
-			this.texture = null;
-
-		}
-
-	}
-
+  /**
+   * Constructs a new irradiance probe grid.
+   *
+   * The volume is centered at the object's position.
+   *
+   * @param {number} [width=1] - Full width of the volume along X.
+   * @param {number} [height=1] - Full height of the volume along Y.
+   * @param {number} [depth=1] - Full depth of the volume along Z.
+   * @param {number} [widthProbes] - Number of probes along X. Defaults to `Math.max( 2, Math.round( width ) + 1 )`.
+   * @param {number} [heightProbes] - Number of probes along Y. Defaults to `Math.max( 2, Math.round( height ) + 1 )`.
+   * @param {number} [depthProbes] - Number of probes along Z. Defaults to `Math.max( 2, Math.round( depth ) + 1 )`.
+   */
+  constructor(width = 1, height = 1, depth = 1, widthProbes, heightProbes, depthProbes) {
+    super()
+
+    /**
+     * This flag can be used for type testing.
+     *
+     * @type {boolean}
+     * @readonly
+     * @default true
+     */
+    this.isLightProbeGrid = true
+
+    /**
+     * The full width of the volume along X.
+     *
+     * @type {number}
+     */
+    this.width = width
+
+    /**
+     * The full height of the volume along Y.
+     *
+     * @type {number}
+     */
+    this.height = height
+
+    /**
+     * The full depth of the volume along Z.
+     *
+     * @type {number}
+     */
+    this.depth = depth
+
+    /**
+     * The number of probes along each axis.
+     *
+     * @type {Vector3}
+     */
+    this.resolution = new Vector3(
+      widthProbes !== undefined ? widthProbes : Math.max(2, Math.round(width) + 1),
+      heightProbes !== undefined ? heightProbes : Math.max(2, Math.round(height) + 1),
+      depthProbes !== undefined ? depthProbes : Math.max(2, Math.round(depth) + 1)
+    )
+
+    /**
+     * The world-space bounding box for the grid. Updated automatically
+     * by {@link LightProbeGrid#bake}.
+     *
+     * @type {Box3}
+     */
+    this.boundingBox = new Box3()
+
+    /**
+     * The single RGBA atlas 3D texture storing all seven packed SH sub-volumes.
+     *
+     * @type {?Data3DTexture}
+     * @default null
+     */
+    this.texture = null
+
+    /**
+     * Internal render target for GPU-resident baking.
+     *
+     * @private
+     * @type {?WebGL3DRenderTarget}
+     * @default null
+     */
+    this._renderTarget = null
+
+    this.updateBoundingBox()
+  }
+
+  /**
+   * Returns the world-space position of the probe at grid indices (ix, iy, iz).
+   *
+   * @param {number} ix - X index.
+   * @param {number} iy - Y index.
+   * @param {number} iz - Z index.
+   * @param {Vector3} target - The target vector.
+   * @return {Vector3} The world-space position.
+   */
+  getProbePosition(ix, iy, iz, target) {
+    const pos = this.position
+    const res = this.resolution
+    const w = this.width,
+      h = this.height,
+      d = this.depth
+
+    target.set(
+      res.x > 1 ? pos.x - w / 2 + (ix * w) / (res.x - 1) : pos.x,
+      res.y > 1 ? pos.y - h / 2 + (iy * h) / (res.y - 1) : pos.y,
+      res.z > 1 ? pos.z - d / 2 + (iz * d) / (res.z - 1) : pos.z
+    )
+
+    return target
+  }
+
+  /**
+   * Updates the world-space bounding box from the current position and size.
+   */
+  updateBoundingBox() {
+    _size.set(this.width, this.height, this.depth)
+    this.boundingBox.setFromCenterAndSize(this.position, _size)
+  }
+
+  /**
+   * Bakes all probes by rendering cubemaps at each probe position
+   * and projecting to L2 SH. Fully GPU-resident with zero CPU readback.
+   *
+   * @param {WebGLRenderer} renderer - The renderer.
+   * @param {Scene} scene - The scene to render.
+   * @param {Object} [options] - Bake options.
+   * @param {number} [options.cubemapSize=8] - Resolution of each cubemap face.
+   * @param {number} [options.near=0.1] - Near plane for the cube camera.
+   * @param {number} [options.far=100] - Far plane for the cube camera.
+   */
+  bake(renderer, scene, options = {}) {
+    const { cubeRenderTarget, cubeCamera } = _ensureBakeResources(options)
+
+    this._ensureTextures()
+    this.updateBoundingBox()
+
+    // Prevent feedback: temporarily hide the volume during baking
+    this.visible = false
+
+    const res = this.resolution
+    const totalProbes = res.x * res.y * res.z
+
+    // Batch render target for SH coefficients: 9 pixels wide, one row per probe
+    const batchTarget = _ensureBatchTarget(totalProbes)
+
+    // Save renderer state
+    const currentRenderTarget = renderer.getRenderTarget()
+    renderer.getViewport(_currentViewport)
+    renderer.getScissor(_currentScissor)
+    const currentScissorTest = renderer.getScissorTest()
+
+    // Scene is static across the bake — update once and disable per-render auto updates.
+    const currentMatrixWorldAutoUpdate = scene.matrixWorldAutoUpdate
+    if (currentMatrixWorldAutoUpdate === true) {
+      scene.updateMatrixWorld(true)
+      scene.matrixWorldAutoUpdate = false
+    }
+
+    // Clear pooled batch target so skipped probes read as zero
+    batchTarget.scissorTest = false
+    batchTarget.viewport.set(0, 0, 9, totalProbes)
+    renderer.setRenderTarget(batchTarget)
+    renderer.clear()
+
+    // const t0 = performance.now();
+
+    // Phase 1: Render cubemaps and project to SH into batch target
+    // Note: set viewport/scissor on the render target directly to avoid pixel ratio scaling
+    batchTarget.scissorTest = true
+
+    // Disable shadow map auto-update during bake — lights don't move between probes.
+    // Force one shadow update on the first render so maps are initialized.
+    const currentShadowAutoUpdate = renderer.shadowMap.autoUpdate
+    renderer.shadowMap.autoUpdate = false
+    renderer.shadowMap.needsUpdate = true
+
+    for (let iz = 0; iz < res.z; iz++) {
+      for (let iy = 0; iy < res.y; iy++) {
+        for (let ix = 0; ix < res.x; ix++) {
+          const probeIndex = ix + iy * res.x + iz * res.x * res.y
+
+          this.getProbePosition(ix, iy, iz, _position)
+          cubeCamera.position.copy(_position)
+          cubeCamera.update(renderer, scene)
+
+          // SH projection
+          _shMaterial.uniforms.envMap.value = cubeRenderTarget.texture
+          _mesh.material = _shMaterial
+          batchTarget.viewport.set(0, probeIndex, 9, 1)
+          batchTarget.scissor.set(0, probeIndex, 9, 1)
+          renderer.setRenderTarget(batchTarget)
+          renderer.render(_scene, _camera)
+        }
+      }
+    }
+
+    renderer.shadowMap.autoUpdate = currentShadowAutoUpdate
+
+    // Phase 2: Repack SH data from batch target into the atlas 3D texture (GPU-to-GPU).
+    //
+    // For each of the 7 packed sub-volumes (texture index t) we write:
+    //   - A leading padding slice  (copy of data slice iz = 0)
+    //   - All nz data slices       (iz = 0 … nz-1)
+    //   - A trailing padding slice (copy of data slice iz = nz-1)
+    //
+    // In the atlas the slices for sub-volume t occupy the range:
+    //   [ t * paddedSlices, t * paddedSlices + paddedSlices - 1 ]
+    // where paddedSlices = nz + 2 * ATLAS_PADDING.
+
+    _ensureRepackResources()
+
+    const paddedSlices = res.z + 2 * ATLAS_PADDING
+    const rt = this._renderTarget
+    rt.scissorTest = false
+    rt.viewport.set(0, 0, res.x, res.y)
+
+    for (let t = 0; t < 7; t++) {
+      _repackMaterials[t].uniforms.batchTexture.value = batchTarget.texture
+      _repackMaterials[t].uniforms.resolution.value.copy(res)
+
+      // Write data slices
+      for (let iz = 0; iz < res.z; iz++) {
+        _repackMaterials[t].uniforms.sliceZ.value = iz
+        _mesh.material = _repackMaterials[t]
+        renderer.setRenderTarget(rt, t * paddedSlices + ATLAS_PADDING + iz)
+        renderer.render(_scene, _camera)
+      }
+
+      // Leading padding: copy of data slice iz = 0
+      _repackMaterials[t].uniforms.sliceZ.value = 0
+      _mesh.material = _repackMaterials[t]
+      renderer.setRenderTarget(rt, t * paddedSlices)
+      renderer.render(_scene, _camera)
+
+      // Trailing padding: copy of data slice iz = nz - 1
+      _repackMaterials[t].uniforms.sliceZ.value = res.z - 1
+      _mesh.material = _repackMaterials[t]
+      renderer.setRenderTarget(rt, t * paddedSlices + ATLAS_PADDING + res.z)
+      renderer.render(_scene, _camera)
+    }
+
+    // Restore renderer state
+    renderer.setRenderTarget(currentRenderTarget)
+    renderer.setViewport(_currentViewport)
+    renderer.setScissor(_currentScissor)
+    renderer.setScissorTest(currentScissorTest)
+
+    scene.matrixWorldAutoUpdate = currentMatrixWorldAutoUpdate
+
+    // console.log( `LightProbeGrid: bake complete ${ ( performance.now() - t0 ).toFixed( 1 ) }ms` );
+
+    this.visible = true
+  }
+
+  /**
+   * Ensures the atlas 3D render target exists with the correct dimensions.
+   *
+   * @private
+   */
+  _ensureTextures() {
+    if (this._renderTarget !== null) return
+
+    const res = this.resolution
+    const nx = res.x,
+      ny = res.y,
+      nz = res.z
+
+    // Atlas depth: 7 sub-volumes, each with ATLAS_PADDING slices at both ends
+    const atlasDepth = 7 * (nz + 2 * ATLAS_PADDING)
+
+    const rt = new WebGL3DRenderTarget(nx, ny, atlasDepth, {
+      format: RGBAFormat,
+      type: FloatType,
+      minFilter: LinearFilter,
+      magFilter: LinearFilter,
+      generateMipmaps: false,
+      depthBuffer: false
+    })
+
+    this._renderTarget = rt
+    this.texture = rt.texture
+  }
+
+  /**
+   * Frees GPU resources.
+   */
+  dispose() {
+    if (this._renderTarget !== null) {
+      this._renderTarget.dispose()
+      this._renderTarget = null
+      this.texture = null
+    }
+  }
 }
 
 // Internal: Ensure the shared fullscreen-quad scene exists
 function _ensureScene() {
-
-	if ( _scene === null ) {
-
-		_camera = new OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
-		_mesh = new Mesh( new PlaneGeometry( 2, 2 ) );
-		_scene = new Scene();
-		_scene.add( _mesh );
-
-	}
-
+  if (_scene === null) {
+    _camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1)
+    _mesh = new Mesh(new PlaneGeometry(2, 2))
+    _scene = new Scene()
+    _scene.add(_mesh)
+  }
 }
 
 // Internal: Ensure GPU resources for SH projection are created
-function _ensureGPUResources( cubemapSize ) {
+function _ensureGPUResources(cubemapSize) {
+  _ensureScene()
 
-	_ensureScene();
+  // Recreate material when cubemap size changes
+  if (cubemapSize !== _lastCubemapSize) {
+    if (_shMaterial !== null) _shMaterial.dispose()
 
-	// Recreate material when cubemap size changes
-	if ( cubemapSize !== _lastCubemapSize ) {
-
-		if ( _shMaterial !== null ) _shMaterial.dispose();
-
-		_shMaterial = new ShaderMaterial( {
-			precision: 'highp',
-			defines: {
-				CUBEMAP_SIZE: cubemapSize
-			},
-			uniforms: {
-				envMap: { value: null }
-			},
-			vertexShader: /* glsl */`
+    _shMaterial = new ShaderMaterial({
+      precision: 'highp',
+      defines: {
+        CUBEMAP_SIZE: cubemapSize
+      },
+      uniforms: {
+        envMap: { value: null }
+      },
+      vertexShader: /* glsl */ `
 				void main() {
 					gl_Position = vec4( position.xy, 0.0, 1.0 );
 				}
 			`,
-			fragmentShader: /* glsl */`
+      fragmentShader: /* glsl */ `
 				#include <common>
 
 				uniform samplerCube envMap;
@@ -520,52 +490,48 @@ function _ensureGPUResources( cubemapSize ) {
 
 				}
 			`
-		} );
+    })
 
-		_lastCubemapSize = cubemapSize;
-
-	}
-
+    _lastCubemapSize = cubemapSize
+  }
 }
 
 // Internal: Ensure GPU resources for repacking SH into the atlas 3D texture
 function _ensureRepackResources() {
+  if (_repackMaterials !== null) return
 
-	if ( _repackMaterials !== null ) return;
+  _ensureScene()
 
-	_ensureScene();
+  // Create 7 materials, one per output texture packing
+  // Texture 0: (c0.r, c0.g, c0.b, c1.r)
+  // Texture 1: (c1.g, c1.b, c2.r, c2.g)
+  // Texture 2: (c2.b, c3.r, c3.g, c3.b)
+  // Texture 3: (c4.r, c4.g, c4.b, c5.r)
+  // Texture 4: (c5.g, c5.b, c6.r, c6.g)
+  // Texture 5: (c6.b, c7.r, c7.g, c7.b)
+  // Texture 6: (c8.r, c8.g, c8.b, 0.0)
 
-	// Create 7 materials, one per output texture packing
-	// Texture 0: (c0.r, c0.g, c0.b, c1.r)
-	// Texture 1: (c1.g, c1.b, c2.r, c2.g)
-	// Texture 2: (c2.b, c3.r, c3.g, c3.b)
-	// Texture 3: (c4.r, c4.g, c4.b, c5.r)
-	// Texture 4: (c5.g, c5.b, c6.r, c6.g)
-	// Texture 5: (c6.b, c7.r, c7.g, c7.b)
-	// Texture 6: (c8.r, c8.g, c8.b, 0.0)
-
-	const repackVertexShader = /* glsl */`
+  const repackVertexShader = /* glsl */ `
 		void main() {
 			gl_Position = vec4( position.xy, 0.0, 1.0 );
 		}
-	`;
+	`
 
-	_repackMaterials = [];
+  _repackMaterials = []
 
-	for ( let t = 0; t < 7; t ++ ) {
-
-		_repackMaterials[ t ] = new ShaderMaterial( {
-			precision: 'highp',
-			defines: {
-				TEXTURE_INDEX: t
-			},
-			uniforms: {
-				batchTexture: { value: null },
-				resolution: { value: new Vector3() },
-				sliceZ: { value: 0 }
-			},
-			vertexShader: repackVertexShader,
-			fragmentShader: /* glsl */`
+  for (let t = 0; t < 7; t++) {
+    _repackMaterials[t] = new ShaderMaterial({
+      precision: 'highp',
+      defines: {
+        TEXTURE_INDEX: t
+      },
+      uniforms: {
+        batchTexture: { value: null },
+        resolution: { value: new Vector3() },
+        sliceZ: { value: 0 }
+      },
+      vertexShader: repackVertexShader,
+      fragmentShader: /* glsl */ `
 				uniform sampler2D batchTexture;
 				uniform vec3 resolution;
 				uniform int sliceZ;
@@ -608,58 +574,49 @@ function _ensureRepackResources() {
 
 				}
 			`
-		} );
-
-	}
-
+    })
+  }
 }
 
 // Internal: Ensure cube render target and camera exist with the right parameters
-function _ensureBakeResources( options ) {
+function _ensureBakeResources(options) {
+  const { cubemapSize = 8, near = 0.1, far = 100 } = options
 
-	const {
-		cubemapSize = 8,
-		near = 0.1,
-		far = 100
-	} = options;
+  if (
+    _cubeRenderTarget === null ||
+    cubemapSize !== _cachedCubemapSize ||
+    near !== _cachedNear ||
+    far !== _cachedFar
+  ) {
+    if (_cubeRenderTarget !== null) _cubeRenderTarget.dispose()
 
-	if ( _cubeRenderTarget === null || cubemapSize !== _cachedCubemapSize || near !== _cachedNear || far !== _cachedFar ) {
+    _cubeRenderTarget = new WebGLCubeRenderTarget(cubemapSize, { type: HalfFloatType })
+    _cubeCamera = new CubeCamera(near, far, _cubeRenderTarget)
+    _cachedCubemapSize = cubemapSize
+    _cachedNear = near
+    _cachedFar = far
+  }
 
-		if ( _cubeRenderTarget !== null ) _cubeRenderTarget.dispose();
+  _ensureGPUResources(cubemapSize)
 
-		_cubeRenderTarget = new WebGLCubeRenderTarget( cubemapSize, { type: HalfFloatType } );
-		_cubeCamera = new CubeCamera( near, far, _cubeRenderTarget );
-		_cachedCubemapSize = cubemapSize;
-		_cachedNear = near;
-		_cachedFar = far;
-
-	}
-
-	_ensureGPUResources( cubemapSize );
-
-	return { cubeRenderTarget: _cubeRenderTarget, cubeCamera: _cubeCamera };
-
+  return { cubeRenderTarget: _cubeRenderTarget, cubeCamera: _cubeCamera }
 }
 
-function _ensureBatchTarget( totalProbes ) {
+function _ensureBatchTarget(totalProbes) {
+  if (_batchTarget === null || _batchTargetProbes !== totalProbes) {
+    if (_batchTarget !== null) _batchTarget.dispose()
 
-	if ( _batchTarget === null || _batchTargetProbes !== totalProbes ) {
+    _batchTarget = new WebGLRenderTarget(9, totalProbes, {
+      type: FloatType,
+      minFilter: NearestFilter,
+      magFilter: NearestFilter,
+      depthBuffer: false
+    })
 
-		if ( _batchTarget !== null ) _batchTarget.dispose();
+    _batchTargetProbes = totalProbes
+  }
 
-		_batchTarget = new WebGLRenderTarget( 9, totalProbes, {
-			type: FloatType,
-			minFilter: NearestFilter,
-			magFilter: NearestFilter,
-			depthBuffer: false
-		} );
-
-		_batchTargetProbes = totalProbes;
-
-	}
-
-	return _batchTarget;
-
+  return _batchTarget
 }
 
-export { LightProbeGrid };
+export { LightProbeGrid }

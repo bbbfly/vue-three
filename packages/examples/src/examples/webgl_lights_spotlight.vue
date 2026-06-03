@@ -1,12 +1,25 @@
 <template>
-  <TCanvas antialias :shadowMapEnabled="true" shadowMapType="PCFSoftShadowMap" background="#222222">
+  <TCanvas
+    antialias
+    :shadow-map-enabled="true"
+    shadow-map-type="PCFSoftShadowMap"
+    background="#222222"
+  >
     <TScene>
       <TPerspectiveCamera :position="[15, 20, 25]" :fov="45" />
-      <TOrbitControls enableDamping :minDistance="10" :maxDistance="60" />
+      <TOrbitControls enable-damping :min-distance="10" :max-distance="60" />
 
       <TAmbientLight :intensity="0.5" color="#404040" />
-      <TSpotLight :color="0xffffff" :intensity="500" :position="lightPosition" :angle="Math.PI / 6" :penumbra="0.5"
-        :decay="2" :distance="100" :castShadow="true" />
+      <TSpotLight
+        :color="0xffffff"
+        :intensity="500"
+        :position="lightPosition"
+        :angle="Math.PI / 6"
+        :penumbra="0.5"
+        :decay="2"
+        :distance="100"
+        :cast-shadow="true"
+      />
 
       <TMesh :position="[0, 0, 0]" :rotation="[-Math.PI / 2, 0, 0]">
         <TPlane :args="[50, 50]" />
@@ -50,11 +63,7 @@ const time = ref(0)
 onMounted(() => {
   function animate() {
     time.value += 0.001
-    lightPosition.value = [
-      Math.sin(time.value * 0.5) * 15,
-      25,
-      Math.cos(time.value * 0.5) * 15
-    ]
+    lightPosition.value = [Math.sin(time.value * 0.5) * 15, 25, Math.cos(time.value * 0.5) * 15]
     requestAnimationFrame(animate)
   }
   animate()

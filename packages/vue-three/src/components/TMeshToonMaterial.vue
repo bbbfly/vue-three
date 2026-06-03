@@ -18,7 +18,7 @@ import { useCamelCaseKeys } from '../hooks'
  * </TMesh>
  */
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 const props = defineProps({

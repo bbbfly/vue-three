@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import type { PropType } from 'vue'
@@ -76,7 +76,7 @@ const { material, updateMaterial } = useMaterial(materialConfig.value)
 
 watch(
   materialConfig,
-  (newConfig) => {
+  newConfig => {
     updateMaterial(newConfig)
   },
   { deep: true }

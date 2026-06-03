@@ -1,8 +1,4 @@
-import {
-	Matrix4,
-	Vector2
-} from 'three';
-
+import { Matrix4, Vector2 } from 'three'
 
 /**
  * A collection of shaders used for SSR.
@@ -21,37 +17,34 @@ import {
  * @type {ShaderMaterial~Shader}
  */
 const SSRShader = {
+  name: 'SSRShader',
 
-	name: 'SSRShader',
+  defines: {
+    MAX_STEP: 0,
+    PERSPECTIVE_CAMERA: true,
+    DISTANCE_ATTENUATION: true,
+    FRESNEL: true,
+    INFINITE_THICK: false,
+    SELECTIVE: false
+  },
 
-	defines: {
-		MAX_STEP: 0,
-		PERSPECTIVE_CAMERA: true,
-		DISTANCE_ATTENUATION: true,
-		FRESNEL: true,
-		INFINITE_THICK: false,
-		SELECTIVE: false,
-	},
+  uniforms: {
+    tDiffuse: { value: null },
+    tNormal: { value: null },
+    tMetalness: { value: null },
+    tDepth: { value: null },
+    cameraNear: { value: null },
+    cameraFar: { value: null },
+    resolution: { value: new Vector2() },
+    cameraProjectionMatrix: { value: new Matrix4() },
+    cameraInverseProjectionMatrix: { value: new Matrix4() },
+    opacity: { value: 0.5 },
+    maxDistance: { value: 180 },
+    cameraRange: { value: 0 },
+    thickness: { value: 0.018 }
+  },
 
-	uniforms: {
-
-		'tDiffuse': { value: null },
-		'tNormal': { value: null },
-		'tMetalness': { value: null },
-		'tDepth': { value: null },
-		'cameraNear': { value: null },
-		'cameraFar': { value: null },
-		'resolution': { value: new Vector2() },
-		'cameraProjectionMatrix': { value: new Matrix4() },
-		'cameraInverseProjectionMatrix': { value: new Matrix4() },
-		'opacity': { value: .5 },
-		'maxDistance': { value: 180 },
-		'cameraRange': { value: 0 },
-		'thickness': { value: .018 }
-
-	},
-
-	vertexShader: /* glsl */`
+  vertexShader: /* glsl */ `
 
 		varying vec2 vUv;
 
@@ -65,7 +58,7 @@ const SSRShader = {
 
 	`,
 
-	fragmentShader: /* glsl */`
+  fragmentShader: /* glsl */ `
 		// precision highp float;
 		precision highp sampler2D;
 		varying vec2 vUv;
@@ -244,8 +237,7 @@ const SSRShader = {
 			}
 		}
 	`
-
-};
+}
 
 /**
  * SSR Depth shader.
@@ -254,22 +246,19 @@ const SSRShader = {
  * @type {ShaderMaterial~Shader}
  */
 const SSRDepthShader = {
+  name: 'SSRDepthShader',
 
-	name: 'SSRDepthShader',
+  defines: {
+    PERSPECTIVE_CAMERA: 1
+  },
 
-	defines: {
-		'PERSPECTIVE_CAMERA': 1
-	},
+  uniforms: {
+    tDepth: { value: null },
+    cameraNear: { value: null },
+    cameraFar: { value: null }
+  },
 
-	uniforms: {
-
-		'tDepth': { value: null },
-		'cameraNear': { value: null },
-		'cameraFar': { value: null },
-
-	},
-
-	vertexShader: /* glsl */`
+  vertexShader: /* glsl */ `
 
 		varying vec2 vUv;
 
@@ -282,7 +271,7 @@ const SSRDepthShader = {
 
 	`,
 
-	fragmentShader: /* glsl */`
+  fragmentShader: /* glsl */ `
 
 		uniform sampler2D tDepth;
 
@@ -319,8 +308,7 @@ const SSRDepthShader = {
 		}
 
 	`
-
-};
+}
 
 /**
  * SSR Blur shader.
@@ -329,18 +317,15 @@ const SSRDepthShader = {
  * @type {ShaderMaterial~Shader}
  */
 const SSRBlurShader = {
+  name: 'SSRBlurShader',
 
-	name: 'SSRBlurShader',
+  uniforms: {
+    tDiffuse: { value: null },
+    resolution: { value: new Vector2() },
+    opacity: { value: 0.5 }
+  },
 
-	uniforms: {
-
-		'tDiffuse': { value: null },
-		'resolution': { value: new Vector2() },
-		'opacity': { value: .5 },
-
-	},
-
-	vertexShader: /* glsl */`
+  vertexShader: /* glsl */ `
 
 		varying vec2 vUv;
 
@@ -353,7 +338,7 @@ const SSRBlurShader = {
 
 	`,
 
-	fragmentShader: /* glsl */`
+  fragmentShader: /* glsl */ `
 
 		uniform sampler2D tDiffuse;
 		uniform vec2 resolution;
@@ -389,8 +374,6 @@ const SSRBlurShader = {
 
 		}
 	`
+}
 
-
-};
-
-export { SSRShader, SSRDepthShader, SSRBlurShader };
+export { SSRShader, SSRDepthShader, SSRBlurShader }

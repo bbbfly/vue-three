@@ -5,8 +5,14 @@
 
       <TDirectionalLight :color="0xffffff" :intensity="3" :position="[1, 1, 1]" />
 
-      <TMesh v-for="(cube, index) in cubes" :key="cube.id" :ref="el => setMeshRef(el, index)" :position="cube.position"
-        :rotation="cube.rotation" :scale="cube.scale">
+      <TMesh
+        v-for="(cube, index) in cubes"
+        :key="cube.id"
+        :ref="el => setMeshRef(el, index)"
+        :position="cube.position"
+        :rotation="cube.rotation"
+        :scale="cube.scale"
+      >
         <TBox />
         <TMeshLambertMaterial :color="cube.color" :emissive="cube.emissive" />
       </TMesh>
@@ -61,21 +67,13 @@ function createCubes() {
   for (let i = 0; i < 2000; i++) {
     newCubes.push({
       id: i,
-      position: [
-        Math.random() * 40 - 20,
-        Math.random() * 40 - 20,
-        Math.random() * 40 - 20
-      ],
+      position: [Math.random() * 40 - 20, Math.random() * 40 - 20, Math.random() * 40 - 20],
       rotation: [
         Math.random() * 2 * Math.PI,
         Math.random() * 2 * Math.PI,
         Math.random() * 2 * Math.PI
       ],
-      scale: [
-        Math.random() + 0.5,
-        Math.random() + 0.5,
-        Math.random() + 0.5
-      ],
+      scale: [Math.random() + 0.5, Math.random() + 0.5, Math.random() + 0.5],
       color: Math.random() * 0xffffff,
       emissive: 0x000000
     })

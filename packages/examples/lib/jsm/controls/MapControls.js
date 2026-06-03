@@ -1,11 +1,11 @@
-import { MOUSE, TOUCH, Plane, Raycaster, Vector2, Vector3 } from 'three';
+import { MOUSE, TOUCH, Plane, Raycaster, Vector2, Vector3 } from 'three'
 
-import { OrbitControls } from './OrbitControls.js';
+import { OrbitControls } from './OrbitControls.js'
 
-const _plane = new Plane();
-const _raycaster = new Raycaster();
-const _mouse = new Vector2();
-const _panCurrent = new Vector3();
+const _plane = new Plane()
+const _raycaster = new Raycaster()
+const _mouse = new Vector2()
+const _panCurrent = new Vector3()
 
 /**
  * This class is intended for transforming a camera over a map from bird's eye perspective.
@@ -20,97 +20,85 @@ const _panCurrent = new Vector3();
  * @three_import import { MapControls } from 'three/addons/controls/MapControls.js';
  */
 class MapControls extends OrbitControls {
+  constructor(object, domElement) {
+    super(object, domElement)
 
-	constructor( object, domElement ) {
+    /**
+     * Overwritten and set to `false` to pan orthogonal to world-space direction `camera.up`.
+     *
+     * @type {boolean}
+     * @default false
+     */
+    this.screenSpacePanning = false
 
-		super( object, domElement );
+    /**
+     * This object contains references to the mouse actions used by the controls.
+     *
+     * ```js
+     * controls.mouseButtons = {
+     * 	LEFT: THREE.MOUSE.PAN,
+     * 	MIDDLE: THREE.MOUSE.DOLLY,
+     * 	RIGHT: THREE.MOUSE.ROTATE
+     * }
+     * ```
+     * @type {Object}
+     */
+    this.mouseButtons = { LEFT: MOUSE.PAN, MIDDLE: MOUSE.DOLLY, RIGHT: MOUSE.ROTATE }
 
-		/**
-		 * Overwritten and set to `false` to pan orthogonal to world-space direction `camera.up`.
-		 *
-		 * @type {boolean}
-		 * @default false
-		 */
-		this.screenSpacePanning = false;
+    /**
+     * This object contains references to the touch actions used by the controls.
+     *
+     * ```js
+     * controls.mouseButtons = {
+     * 	ONE: THREE.TOUCH.PAN,
+     * 	TWO: THREE.TOUCH.DOLLY_ROTATE
+     * }
+     * ```
+     * @type {Object}
+     */
+    this.touches = { ONE: TOUCH.PAN, TWO: TOUCH.DOLLY_ROTATE }
 
-		/**
-		 * This object contains references to the mouse actions used by the controls.
-		 *
-		 * ```js
-		 * controls.mouseButtons = {
-		 * 	LEFT: THREE.MOUSE.PAN,
-		 * 	MIDDLE: THREE.MOUSE.DOLLY,
-		 * 	RIGHT: THREE.MOUSE.ROTATE
-		 * }
-		 * ```
-		 * @type {Object}
-		 */
-		this.mouseButtons = { LEFT: MOUSE.PAN, MIDDLE: MOUSE.DOLLY, RIGHT: MOUSE.ROTATE };
+    this._panWorldStart = new Vector3()
+  }
 
-		/**
-		 * This object contains references to the touch actions used by the controls.
-		 *
-		 * ```js
-		 * controls.mouseButtons = {
-		 * 	ONE: THREE.TOUCH.PAN,
-		 * 	TWO: THREE.TOUCH.DOLLY_ROTATE
-		 * }
-		 * ```
-		 * @type {Object}
-		 */
-		this.touches = { ONE: TOUCH.PAN, TWO: TOUCH.DOLLY_ROTATE };
+  _handleMouseDownPan(event) {
+    super._handleMouseDownPan(event)
 
-		this._panWorldStart = new Vector3();
+    this._panOffset.set(0, 0, 0)
 
-	}
+    if (this.screenSpacePanning === true) return
 
-	_handleMouseDownPan( event ) {
+    _plane.setFromNormalAndCoplanarPoint(this.object.up, this.target)
 
-		super._handleMouseDownPan( event );
+    const element = this.domElement
+    const rect = element.getBoundingClientRect()
+    _mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
+    _mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
 
-		this._panOffset.set( 0, 0, 0 );
+    _raycaster.setFromCamera(_mouse, this.object)
+    _raycaster.ray.intersectPlane(_plane, this._panWorldStart)
+  }
 
-		if ( this.screenSpacePanning === true ) return;
+  _handleMouseMovePan(event) {
+    if (this.screenSpacePanning === true) {
+      super._handleMouseMovePan(event)
+      return
+    }
 
-		_plane.setFromNormalAndCoplanarPoint( this.object.up, this.target );
+    const element = this.domElement
+    const rect = element.getBoundingClientRect()
+    _mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
+    _mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
 
-		const element = this.domElement;
-		const rect = element.getBoundingClientRect();
-		_mouse.x = ( ( event.clientX - rect.left ) / rect.width ) * 2 - 1;
-		_mouse.y = - ( ( event.clientY - rect.top ) / rect.height ) * 2 + 1;
+    _raycaster.setFromCamera(_mouse, this.object)
 
-		_raycaster.setFromCamera( _mouse, this.object );
-		_raycaster.ray.intersectPlane( _plane, this._panWorldStart );
+    if (_raycaster.ray.intersectPlane(_plane, _panCurrent)) {
+      _panCurrent.sub(this._panWorldStart)
+      this._panOffset.copy(_panCurrent).negate()
 
-	}
-
-	_handleMouseMovePan( event ) {
-
-		if ( this.screenSpacePanning === true ) {
-
-			super._handleMouseMovePan( event );
-			return;
-
-		}
-
-		const element = this.domElement;
-		const rect = element.getBoundingClientRect();
-		_mouse.x = ( ( event.clientX - rect.left ) / rect.width ) * 2 - 1;
-		_mouse.y = - ( ( event.clientY - rect.top ) / rect.height ) * 2 + 1;
-
-		_raycaster.setFromCamera( _mouse, this.object );
-
-		if ( _raycaster.ray.intersectPlane( _plane, _panCurrent ) ) {
-
-			_panCurrent.sub( this._panWorldStart );
-			this._panOffset.copy( _panCurrent ).negate();
-
-			this.update();
-
-		}
-
-	}
-
+      this.update()
+    }
+  }
 }
 
-export { MapControls };
+export { MapControls }

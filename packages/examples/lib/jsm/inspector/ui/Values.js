@@ -1,476 +1,361 @@
-import { EventDispatcher } from 'three';
+import { EventDispatcher } from 'three'
 
 class Value extends EventDispatcher {
+  constructor() {
+    super()
 
-	constructor() {
+    this.domElement = document.createElement('div')
+    this.domElement.className = 'param-control'
 
-		super();
+    this._onChangeFunction = null
 
-		this.domElement = document.createElement( 'div' );
-		this.domElement.className = 'param-control';
+    this.addEventListener('change', e => {
+      // defer to avoid issues when changing multiple values in the same call stack
 
-		this._onChangeFunction = null;
+      requestAnimationFrame(() => {
+        if (this._onChangeFunction) this._onChangeFunction(e.value)
+      })
+    })
+  }
 
-		this.addEventListener( 'change', ( e ) => {
+  setValue(/*val*/) {
+    this.dispatchChange()
 
-			// defer to avoid issues when changing multiple values in the same call stack
+    return this
+  }
 
-			requestAnimationFrame( () => {
+  getValue() {
+    return null
+  }
 
-				if ( this._onChangeFunction ) this._onChangeFunction( e.value );
+  dispatchChange() {
+    this.dispatchEvent({ type: 'change', value: this.getValue() })
+  }
 
-			} );
+  onChange(callback) {
+    this._onChangeFunction = callback
 
-		} );
-
-	}
-
-	setValue( /*val*/ ) {
-
-		this.dispatchChange();
-
-		return this;
-
-	}
-
-	getValue() {
-
-		return null;
-
-	}
-
-	dispatchChange() {
-
-		this.dispatchEvent( { type: 'change', value: this.getValue() } );
-
-	}
-
-	onChange( callback ) {
-
-		this._onChangeFunction = callback;
-
-		return this;
-
-	}
-
+    return this
+  }
 }
 
 class ValueNumber extends Value {
+  constructor({ value = 0, step = 0.1, min = -Infinity, max = Infinity }) {
+    super()
 
-	constructor( { value = 0, step = 0.1, min = - Infinity, max = Infinity } ) {
+    this.input = document.createElement('input')
+    this.input.type = 'number'
+    this.input.value = value
+    this.input.step = step
+    this.input.min = min
+    this.input.max = max
+    this.input.addEventListener('change', this._onChangeValue.bind(this))
+    this.domElement.appendChild(this.input)
+    this.addDragHandler()
+  }
 
-		super();
+  _onChangeValue() {
+    const value = parseFloat(this.input.value)
+    const min = parseFloat(this.input.min)
+    const max = parseFloat(this.input.max)
 
-		this.input = document.createElement( 'input' );
-		this.input.type = 'number';
-		this.input.value = value;
-		this.input.step = step;
-		this.input.min = min;
-		this.input.max = max;
-		this.input.addEventListener( 'change', this._onChangeValue.bind( this ) );
-		this.domElement.appendChild( this.input );
-		this.addDragHandler();
+    if (value > max) {
+      this.input.value = max
+    } else if (value < min) {
+      this.input.value = min
+    } else if (isNaN(value)) {
+      this.input.value = min
+    }
 
-	}
+    this.dispatchChange()
+  }
 
-	_onChangeValue() {
+  addDragHandler() {
+    let isDragging = false
+    let startY, startValue
 
-		const value = parseFloat( this.input.value );
-		const min = parseFloat( this.input.min );
-		const max = parseFloat( this.input.max );
+    this.input.addEventListener('mousedown', e => {
+      isDragging = true
+      startY = e.clientY
+      startValue = parseFloat(this.input.value)
+      document.body.style.cursor = 'ns-resize'
+    })
 
-		if ( value > max ) {
+    document.addEventListener('mousemove', e => {
+      if (isDragging) {
+        const deltaY = startY - e.clientY
+        const step = parseFloat(this.input.step) || 1
+        const min = parseFloat(this.input.min)
+        const max = parseFloat(this.input.max)
 
-			this.input.value = max;
+        let stepSize = step
 
-		} else if ( value < min ) {
+        if (!isNaN(max) && isFinite(min)) {
+          stepSize = (max - min) / 100
+        }
 
-			this.input.value = min;
+        const change = deltaY * stepSize
 
-		} else if ( isNaN( value ) ) {
+        let newValue = startValue + change
+        newValue = Math.max(min, Math.min(newValue, max))
 
-			this.input.value = min;
+        const precision = (String(step).split('.')[1] || []).length
+        this.input.value = newValue.toFixed(precision)
 
-		}
+        this.input.dispatchEvent(new Event('input'))
 
-		this.dispatchChange();
+        this.dispatchChange()
+      }
+    })
 
-	}
+    document.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false
+        document.body.style.cursor = 'default'
+      }
+    })
+  }
 
-	addDragHandler() {
+  setValue(val) {
+    this.input.value = val
 
-		let isDragging = false;
-		let startY, startValue;
+    return super.setValue(val)
+  }
 
-		this.input.addEventListener( 'mousedown', ( e ) => {
-
-			isDragging = true;
-			startY = e.clientY;
-			startValue = parseFloat( this.input.value );
-			document.body.style.cursor = 'ns-resize';
-
-		} );
-
-		document.addEventListener( 'mousemove', ( e ) => {
-
-			if ( isDragging ) {
-
-				const deltaY = startY - e.clientY;
-				const step = parseFloat( this.input.step ) || 1;
-				const min = parseFloat( this.input.min );
-				const max = parseFloat( this.input.max );
-
-				let stepSize = step;
-
-				if ( ! isNaN( max ) && isFinite( min ) ) {
-
-					stepSize = ( max - min ) / 100;
-
-				}
-
-				const change = deltaY * stepSize;
-
-				let newValue = startValue + change;
-				newValue = Math.max( min, Math.min( newValue, max ) );
-
-				const precision = ( String( step ).split( '.' )[ 1 ] || [] ).length;
-				this.input.value = newValue.toFixed( precision );
-
-				this.input.dispatchEvent( new Event( 'input' ) );
-
-				this.dispatchChange();
-
-			}
-
-		} );
-
-		document.addEventListener( 'mouseup', () => {
-
-			if ( isDragging ) {
-
-				isDragging = false;
-				document.body.style.cursor = 'default';
-
-			}
-
-		} );
-
-	}
-
-	setValue( val ) {
-
-		this.input.value = val;
-
-		return super.setValue( val );
-
-	}
-
-	getValue() {
-
-		return parseFloat( this.input.value );
-
-	}
-
+  getValue() {
+    return parseFloat(this.input.value)
+  }
 }
 
 class ValueCheckbox extends Value {
+  constructor({ value = false }) {
+    super()
 
-	constructor( { value = false } ) {
+    const label = document.createElement('label')
+    label.className = 'custom-checkbox'
 
-		super();
+    const checkbox = document.createElement('input')
+    checkbox.type = 'checkbox'
+    checkbox.checked = value
+    this.checkbox = checkbox
 
-		const label = document.createElement( 'label' );
-		label.className = 'custom-checkbox';
+    const checkmark = document.createElement('span')
+    checkmark.className = 'checkmark'
 
-		const checkbox = document.createElement( 'input' );
-		checkbox.type = 'checkbox';
-		checkbox.checked = value;
-		this.checkbox = checkbox;
+    label.appendChild(checkbox)
+    label.appendChild(checkmark)
+    this.domElement.appendChild(label)
 
-		const checkmark = document.createElement( 'span' );
-		checkmark.className = 'checkmark';
+    checkbox.addEventListener('change', () => {
+      this.dispatchChange()
+    })
+  }
 
-		label.appendChild( checkbox );
-		label.appendChild( checkmark );
-		this.domElement.appendChild( label );
+  setValue(val) {
+    this.checkbox.checked = val
 
-		checkbox.addEventListener( 'change', () => {
+    return super.setValue(val)
+  }
 
-			this.dispatchChange();
-
-		} );
-
-	}
-
-	setValue( val ) {
-
-		this.checkbox.checked = val;
-
-		return super.setValue( val );
-
-	}
-
-	getValue() {
-
-		return this.checkbox.checked;
-
-	}
-
+  getValue() {
+    return this.checkbox.checked
+  }
 }
 
 class ValueSlider extends Value {
+  constructor({ value = 0, min = 0, max = 1, step = 0.01 }) {
+    super()
 
-	constructor( { value = 0, min = 0, max = 1, step = 0.01 } ) {
+    this.slider = document.createElement('input')
+    this.slider.type = 'range'
+    this.slider.min = min
+    this.slider.max = max
+    this.slider.step = step
 
-		super();
+    const numberValue = new ValueNumber({ value, min, max, step })
+    this.numberInput = numberValue.input
+    this.numberInput.style.flexBasis = '80px'
+    this.numberInput.style.flexShrink = '0'
 
-		this.slider = document.createElement( 'input' );
-		this.slider.type = 'range';
-		this.slider.min = min;
-		this.slider.max = max;
-		this.slider.step = step;
+    this.slider.value = value
 
-		const numberValue = new ValueNumber( { value, min, max, step } );
-		this.numberInput = numberValue.input;
-		this.numberInput.style.flexBasis = '80px';
-		this.numberInput.style.flexShrink = '0';
+    this.domElement.append(this.slider, this.numberInput)
 
-		this.slider.value = value;
+    this.slider.addEventListener('input', () => {
+      this.numberInput.value = this.slider.value
 
-		this.domElement.append( this.slider, this.numberInput );
+      this.dispatchChange()
+    })
 
-		this.slider.addEventListener( 'input', () => {
+    numberValue.addEventListener('change', () => {
+      this.slider.value = parseFloat(this.numberInput.value)
 
-			this.numberInput.value = this.slider.value;
+      this.dispatchChange()
+    })
+  }
 
-			this.dispatchChange();
+  setValue(val) {
+    this.slider.value = val
+    this.numberInput.value = val
 
-		} );
+    return super.setValue(val)
+  }
 
-		numberValue.addEventListener( 'change', () => {
+  getValue() {
+    return parseFloat(this.slider.value)
+  }
 
-			this.slider.value = parseFloat( this.numberInput.value );
+  step(value) {
+    this.slider.step = value
+    this.numberInput.step = value
 
-			this.dispatchChange();
-
-		} );
-
-	}
-
-	setValue( val ) {
-
-		this.slider.value = val;
-		this.numberInput.value = val;
-
-		return super.setValue( val );
-
-	}
-
-	getValue() {
-
-		return parseFloat( this.slider.value );
-
-	}
-
-	step( value ) {
-
-		this.slider.step = value;
-		this.numberInput.step = value;
-
-		return this;
-
-	}
-
+    return this
+  }
 }
 
 class ValueSelect extends Value {
+  constructor({ options = [], value = '' }) {
+    super()
 
-	constructor( { options = [], value = '' } ) {
+    const select = document.createElement('select')
 
-		super();
+    const createOption = (name, optionValue) => {
+      const optionEl = document.createElement('option')
+      optionEl.value = name
+      optionEl.textContent = name
 
-		const select = document.createElement( 'select' );
+      if (optionValue == value) optionEl.selected = true
 
-		const createOption = ( name, optionValue ) => {
+      select.appendChild(optionEl)
 
-			const optionEl = document.createElement( 'option' );
-			optionEl.value = name;
-			optionEl.textContent = name;
+      return optionEl
+    }
 
-			if ( optionValue == value ) optionEl.selected = true;
+    if (Array.isArray(options)) {
+      options.forEach(opt => createOption(opt, opt))
+    } else {
+      Object.entries(options).forEach(([key, value]) => createOption(key, value))
+    }
 
-			select.appendChild( optionEl );
+    this.domElement.appendChild(select)
 
-			return optionEl;
+    //
 
-		};
+    select.addEventListener('change', () => {
+      this.dispatchChange()
+    })
 
-		if ( Array.isArray( options ) ) {
+    this.options = options
+    this.select = select
+  }
 
-			options.forEach( opt => createOption( opt, opt ) );
+  getValue() {
+    const options = this.options
 
-		} else {
-
-			Object.entries( options ).forEach( ( [ key, value ] ) => createOption( key, value ) );
-
-		}
-
-		this.domElement.appendChild( select );
-
-		//
-
-		select.addEventListener( 'change', () => {
-
-			this.dispatchChange();
-
-		} );
-
-		this.options = options;
-		this.select = select;
-
-	}
-
-	getValue() {
-
-		const options = this.options;
-
-		if ( Array.isArray( options ) ) {
-
-			return options[ this.select.selectedIndex ];
-
-		} else {
-
-			return options[ this.select.value ];
-
-		}
-
-	}
-
+    if (Array.isArray(options)) {
+      return options[this.select.selectedIndex]
+    } else {
+      return options[this.select.value]
+    }
+  }
 }
 
 class ValueColor extends Value {
+  constructor({ value = '#ffffff' }) {
+    super()
 
-	constructor( { value = '#ffffff' } ) {
+    const colorInput = document.createElement('input')
+    colorInput.type = 'color'
+    colorInput.value = this._getColorHex(value)
+    this.colorInput = colorInput
 
-		super();
+    this._value = value
 
-		const colorInput = document.createElement( 'input' );
-		colorInput.type = 'color';
-		colorInput.value = this._getColorHex( value );
-		this.colorInput = colorInput;
+    colorInput.addEventListener('input', () => {
+      const colorValue = colorInput.value
 
-		this._value = value;
+      if (this._value.isColor) {
+        this._value.setHex(parseInt(colorValue.slice(1), 16))
+      } else {
+        this._value = colorValue
+      }
 
-		colorInput.addEventListener( 'input', () => {
+      this.dispatchChange()
+    })
 
-			const colorValue = colorInput.value;
+    this.domElement.appendChild(colorInput)
+  }
 
-			if ( this._value.isColor ) {
+  _getColorHex(color) {
+    if (color.isColor) {
+      color = color.getHex()
+    }
 
-				this._value.setHex( parseInt( colorValue.slice( 1 ), 16 ) );
+    if (typeof color === 'number') {
+      color = `#${color.toString(16)}`
+    } else if (color[0] !== '#') {
+      color = '#' + color
+    }
 
-			} else {
+    return color
+  }
 
-				this._value = colorValue;
+  getValue() {
+    let value = this._value
 
-			}
+    if (typeof value === 'string') {
+      value = parseInt(value.slice(1), 16)
+    }
 
-			this.dispatchChange();
-
-		} );
-
-		this.domElement.appendChild( colorInput );
-
-	}
-
-	_getColorHex( color ) {
-
-		if ( color.isColor ) {
-
-			color = color.getHex();
-
-		}
-
-		if ( typeof color === 'number' ) {
-
-			color = `#${ color.toString( 16 ) }`;
-
-		} else if ( color[ 0 ] !== '#' ) {
-
-			color = '#' + color;
-
-		}
-
-		return color;
-
-	}
-
-	getValue() {
-
-		let value = this._value;
-
-		if ( typeof value === 'string' ) {
-
-			value = parseInt( value.slice( 1 ), 16 );
-
-		}
-
-		return value;
-
-	}
-
+    return value
+  }
 }
 
 class ValueButton extends Value {
+  constructor({ text = 'Button', value = () => {} }) {
+    super()
 
-	constructor( { text = 'Button', value = () => {} } ) {
-
-		super();
-
-		const button = document.createElement( 'button' );
-		button.textContent = text;
-		button.onclick = value;
-		this.domElement.appendChild( button );
-
-	}
-
+    const button = document.createElement('button')
+    button.textContent = text
+    button.onclick = value
+    this.domElement.appendChild(button)
+  }
 }
 
 class ValueString extends Value {
+  constructor({ value = '' }) {
+    super()
 
-	constructor( { value = '' } ) {
+    const input = document.createElement('input')
+    input.type = 'text'
+    input.value = value
+    this.input = input
 
-		super();
+    input.addEventListener('input', () => {
+      this.dispatchChange()
+    })
 
-		const input = document.createElement( 'input' );
-		input.type = 'text';
-		input.value = value;
-		this.input = input;
+    this.domElement.appendChild(input)
+  }
 
-		input.addEventListener( 'input', () => {
+  setValue(val) {
+    this.input.value = val
 
-			this.dispatchChange();
+    return super.setValue(val)
+  }
 
-		} );
-
-		this.domElement.appendChild( input );
-
-	}
-
-	setValue( val ) {
-
-		this.input.value = val;
-
-		return super.setValue( val );
-
-	}
-
-	getValue() {
-
-		return this.input.value;
-
-	}
-
+  getValue() {
+    return this.input.value
+  }
 }
 
-export { Value, ValueNumber, ValueString, ValueCheckbox, ValueSlider, ValueSelect, ValueColor, ValueButton };
+export {
+  Value,
+  ValueNumber,
+  ValueString,
+  ValueCheckbox,
+  ValueSlider,
+  ValueSelect,
+  ValueColor,
+  ValueButton
+}

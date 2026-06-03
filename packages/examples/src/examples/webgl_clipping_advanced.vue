@@ -1,34 +1,66 @@
 <template>
-  <TCanvas ref="canvasRef" antialias :localClippingEnabled="localClippingEnabled" :clippingPlanes="globalClippingPlanes"
-    :shadowMap="{ enabled: true }" @animate="onAnimate">
+  <TCanvas
+    ref="canvasRef"
+    antialias
+    :local-clipping-enabled="localClippingEnabled"
+    :clipping-planes="globalClippingPlanes"
+    :shadow-map="{ enabled: true }"
+    @animate="onAnimate"
+  >
     <TScene>
       <TPerspectiveCamera :position="[0, 1.5, 3]" :fov="36" :near="0.25" :far="16" />
 
       <TAmbientLight :intensity="1" />
 
-      <TSpotLight :position="[2, 3, 3]" :intensity="60" :angle="Math.PI / 5" :penumbra="0.2" :castShadow="true"
-        :shadow-mapSize="[1024, 1024]" :shadow-camera-near="3" :shadow-camera-far="10" />
+      <TSpotLight
+        :position="[2, 3, 3]"
+        :intensity="60"
+        :angle="Math.PI / 5"
+        :penumbra="0.2"
+        :cast-shadow="true"
+        :shadow-map-size="[1024, 1024]"
+        :shadow-camera-near="3"
+        :shadow-camera-far="10"
+      />
 
-      <TDirectionalLight :position="[0, 2, 0]" :intensity="1.5" :castShadow="true" :shadow-camera-near="1"
-        :shadow-camera-far="10" :shadow-camera-right="1" :shadow-camera-left="-1" :shadow-camera-top="1"
-        :shadow-camera-bottom="-1" :shadow-mapSize="[1024, 1024]" />
+      <TDirectionalLight
+        :position="[0, 2, 0]"
+        :intensity="1.5"
+        :cast-shadow="true"
+        :shadow-camera-near="1"
+        :shadow-camera-far="10"
+        :shadow-camera-right="1"
+        :shadow-camera-left="-1"
+        :shadow-camera-top="1"
+        :shadow-camera-bottom="-1"
+        :shadow-map-size="[1024, 1024]"
+      />
 
       <TGroup :visible="volumeVisualizationVisible">
-        <TMesh v-for="(planeMesh, index) in volumePlaneMeshes" :key="index" :matrix="planeMesh.matrix"
-          :matrixAutoUpdate="false">
+        <TMesh
+          v-for="(planeMesh, index) in volumePlaneMeshes"
+          :key="index"
+          :matrix="planeMesh.matrix"
+          :matrix-auto-update="false"
+        >
           <TPlane :args="[3, 3, 1, 1]" />
-          <TMeshBasicMaterial :color="planeMesh.color" :side="THREE.DoubleSide" :opacity="0.2" :transparent="true"
-            :clippingPlanes="planeMesh.clippingPlanes" />
+          <TMeshBasicMaterial
+            :color="planeMesh.color"
+            :side="THREE.DoubleSide"
+            :opacity="0.2"
+            :transparent="true"
+            :clipping-planes="planeMesh.clippingPlanes"
+          />
         </TMesh>
       </TGroup>
 
-      <TMesh :rotation="[-Math.PI / 2, 0, 0]" :scale="[3, 3, 3]" :receiveShadow="true">
+      <TMesh :rotation="[-Math.PI / 2, 0, 0]" :scale="[3, 3, 3]" :receive-shadow="true">
         <TPlane :args="[3, 3, 1, 1]" />
         <TMeshPhongMaterial :color="0xa0adaf" :shininess="10" />
       </TMesh>
     </TScene>
 
-    <TOrbitControls :minDistance="1" :maxDistance="8" :target="[0, 1, 0]" />
+    <TOrbitControls :min-distance="1" :max-distance="8" :target="[0, 1, 0]" />
   </TCanvas>
 </template>
 
@@ -97,7 +129,11 @@ function createPlanes(n: number): THREE.Plane[] {
 }
 
 // 变换平面
-function assignTransformedPlanes(planesOut: THREE.Plane[], planesIn: THREE.Plane[], matrix: THREE.Matrix4): void {
+function assignTransformedPlanes(
+  planesOut: THREE.Plane[],
+  planesIn: THREE.Plane[],
+  matrix: THREE.Matrix4
+): void {
   for (let i = 0, n = planesIn.length; i !== n; ++i) {
     planesOut[i].copy(planesIn[i]).applyMatrix4(matrix)
   }
@@ -109,7 +145,7 @@ function cylindricalPlanes(n: number, innerRadius: number): THREE.Plane[] {
 
   for (let i = 0; i !== n; ++i) {
     const plane = result[i]
-    const angle = i * Math.PI * 2 / n
+    const angle = (i * Math.PI * 2) / n
 
     plane.normal.set(Math.cos(angle), 0, Math.sin(angle))
     plane.constant = innerRadius
@@ -138,10 +174,22 @@ const planeToMatrix = (() => {
     plane.coplanarPoint(trans)
 
     return matrix.set(
-      xAxis.x, yAxis.x, zAxis.x, trans.x,
-      xAxis.y, yAxis.y, zAxis.y, trans.y,
-      xAxis.z, yAxis.z, zAxis.z, trans.z,
-      0, 0, 0, 1
+      xAxis.x,
+      yAxis.x,
+      zAxis.x,
+      trans.x,
+      xAxis.y,
+      yAxis.y,
+      zAxis.y,
+      trans.y,
+      xAxis.z,
+      yAxis.z,
+      zAxis.z,
+      trans.z,
+      0,
+      0,
+      0,
+      1
     )
   }
 })()
@@ -158,7 +206,9 @@ const clipMaterialClippingPlanes = ref<THREE.Plane[]>(createPlanes(Planes.length
 const globalClippingPlanes = ref<THREE.Plane[]>(Empty)
 
 // 体积可视化平面网格数据
-const volumePlaneMeshes = ref<{ matrix: THREE.Matrix4; color: number; clippingPlanes: THREE.Plane[] }[]>([])
+const volumePlaneMeshes = ref<
+  { matrix: THREE.Matrix4; color: number; clippingPlanes: THREE.Plane[] }[]
+>([])
 
 // Three.js 对象引用
 let instancedMesh: THREE.InstancedMesh | null = null
@@ -235,7 +285,6 @@ function onAnimate() {
 
 let gui: GUI | null = null
 
-
 onMounted(async () => {
   initVolumeVisualization()
 
@@ -311,21 +360,24 @@ onMounted(async () => {
 
   const folderGlobal = gui.addFolder('Global Clipping')
 
-  folderGlobal.add({
-    get Enabled() {
-      return globalClippingEnabled.value
-    },
-    set Enabled(v: boolean) {
-      globalClippingEnabled.value = v
-      if (v) {
-        if (globalClippingPlanes.value === Empty) {
-          globalClippingPlanes.value = createPlanes(GlobalClippingPlanes.length)
+  folderGlobal.add(
+    {
+      get Enabled() {
+        return globalClippingEnabled.value
+      },
+      set Enabled(v: boolean) {
+        globalClippingEnabled.value = v
+        if (v) {
+          if (globalClippingPlanes.value === Empty) {
+            globalClippingPlanes.value = createPlanes(GlobalClippingPlanes.length)
+          }
+        } else {
+          globalClippingPlanes.value = Empty
         }
-      } else {
-        globalClippingPlanes.value = Empty
       }
-    }
-  }, 'Enabled')
+    },
+    'Enabled'
+  )
 })
 
 onUnmounted(() => {
@@ -342,7 +394,7 @@ onUnmounted(() => {
 })
 
 // 监听本地裁剪启用状态变化
-watch(localClippingEnabled, (enabled) => {
+watch(localClippingEnabled, enabled => {
   if (!enabled) {
     volumeVisualizationVisible.value = false
   }

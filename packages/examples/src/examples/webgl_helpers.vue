@@ -6,11 +6,23 @@
       <TPointLight ref="lightRef" :position="[200, 100, 150]" />
       <TPointLightHelper v-if="lightRef?.light" :light="lightRef.light" :sphere-size="15" />
 
-      <TGridHelper :size="400" :divisions="40" :color-center-line="0x0000ff" :color-grid="0x808080"
-        :position="[-150, -150, 0]" />
+      <TGridHelper
+        :size="400"
+        :divisions="40"
+        :color-center-line="0x0000ff"
+        :color-grid="0x808080"
+        :position="[-150, -150, 0]"
+      />
 
-      <TPolarGridHelper :radius="200" :radials="16" :circles="8" :divisions="64" :color-center-line="0x0000ff"
-        :color-grid="0x808080" :position="[200, -150, 0]" />
+      <TPolarGridHelper
+        :radius="200"
+        :radials="16"
+        :circles="8"
+        :divisions="64"
+        :color-center-line="0x0000ff"
+        :color-grid="0x808080"
+        :position="[200, -150, 0]"
+      />
 
       <TGLTFLoader src="/models/gltf/LeePerrySmith/LeePerrySmith.glb" @load="onModelLoad" />
     </TScene>
@@ -77,18 +89,18 @@ function onModelLoad(model: THREE.Object3D, animations: THREE.AnimationClip[], g
 
   const wireframe = new THREE.WireframeGeometry(mesh.geometry)
   let line = new THREE.LineSegments(wireframe)
-    ; (line.material as THREE.Material).depthTest = false
-    ; (line.material as THREE.Material).opacity = 0.25
-    ; (line.material as THREE.Material).transparent = true
+  ;(line.material as THREE.Material).depthTest = false
+  ;(line.material as THREE.Material).opacity = 0.25
+  ;(line.material as THREE.Material).transparent = true
   line.position.x = 4
   group.add(line)
   scene.add(new THREE.BoxHelper(line))
 
   const edges = new THREE.EdgesGeometry(mesh.geometry)
   line = new THREE.LineSegments(edges)
-    ; (line.material as THREE.Material).depthTest = false
-    ; (line.material as THREE.Material).opacity = 0.25
-    ; (line.material as THREE.Material).transparent = true
+  ;(line.material as THREE.Material).depthTest = false
+  ;(line.material as THREE.Material).opacity = 0.25
+  ;(line.material as THREE.Material).transparent = true
   line.position.x = -4
   group.add(line)
   scene.add(new THREE.BoxHelper(line))

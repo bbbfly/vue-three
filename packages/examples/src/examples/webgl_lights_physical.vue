@@ -3,19 +3,42 @@
     <TPerspectiveCamera :fov="50" :near="0.1" :far="100" :position="[-4, 2, 4]" />
     <TOrbitControls :min-distance="1" :max-distance="20" />
 
-    <THemisphereLight ref="hemiLightRef" :color="0xddeeff" :ground-color="0x0f0e0d" :intensity="0.02" />
+    <THemisphereLight
+      ref="hemiLightRef"
+      :color="0xddeeff"
+      :ground-color="0x0f0e0d"
+      :intensity="0.02"
+    />
 
-    <TPointLight ref="bulbLightRef" :color="0xffee88" :intensity="1" :distance="100" :decay="2" :position="[0, 2, 0]"
-      :cast-shadow="params.shadows">
+    <TPointLight
+      ref="bulbLightRef"
+      :color="0xffee88"
+      :intensity="1"
+      :distance="100"
+      :decay="2"
+      :position="[0, 2, 0]"
+      :cast-shadow="params.shadows"
+    >
       <TMesh>
         <TSphere :args="[0.02, 16, 8]" />
-        <TMeshStandardMaterial ref="bulbMatRef" :emissive="0xffffee" :emissive-intensity="1" :color="0x000000" />
+        <TMeshStandardMaterial
+          ref="bulbMatRef"
+          :emissive="0xffffee"
+          :emissive-intensity="1"
+          :color="0x000000"
+        />
       </TMesh>
     </TPointLight>
 
     <TMesh :rotation="[-Math.PI / 2, 0, 0]" receive-shadow>
       <TPlane :args="[20, 20]" />
-      <TMeshStandardMaterial ref="floorMatRef" :roughness="0.8" :color="0xffffff" :metalness="0.2" :bump-scale="1" />
+      <TMeshStandardMaterial
+        ref="floorMatRef"
+        :roughness="0.8"
+        :color="0xffffff"
+        :metalness="0.2"
+        :bump-scale="1"
+      />
     </TMesh>
 
     <TMesh :position="[1, 0.25, 1]" :rotation="[0, Math.PI, 0]" cast-shadow>
@@ -25,7 +48,13 @@
 
     <TMesh :position="[-0.5, 0.25, -1]" cast-shadow>
       <TBox :args="[0.5, 0.5, 0.5]" />
-      <TMeshStandardMaterial ref="cubeMatRef" :roughness="0.7" :color="0xffffff" :bump-scale="1" :metalness="0.2" />
+      <TMeshStandardMaterial
+        ref="cubeMatRef"
+        :roughness="0.7"
+        :color="0xffffff"
+        :bump-scale="1"
+        :metalness="0.2"
+      />
     </TMesh>
 
     <TMesh :position="[0, 0.25, -5]" cast-shadow>
@@ -64,7 +93,7 @@ const bulbLuminousPowers: Record<string, number> = {
   '400 lm (40W)': 400,
   '180 lm (25W)': 180,
   '20 lm (4W)': 20,
-  'Off': 0
+  Off: 0
 }
 
 const hemiLuminousIrradiances: Record<string, number> = {

@@ -5,8 +5,12 @@
       <TOrbitControls :min-distance="50" :max-distance="300" />
 
       <TMesh ref="torusMeshRef">
-        <TMeshStandardMaterial ref="torusMaterialRef" :metalness="params.metalness" :roughness="params.roughness"
-          :env-map-intensity="1.0" />
+        <TMeshStandardMaterial
+          ref="torusMaterialRef"
+          :metalness="params.metalness"
+          :roughness="params.roughness"
+          :env-map-intensity="1.0"
+        />
       </TMesh>
 
       <TMesh ref="planeMeshRef" :visible="params.debug">
@@ -20,7 +24,16 @@
 import { ref, onMounted, nextTick, watch } from 'vue'
 import * as THREE from 'three'
 import { EXRLoader } from 'three/addons/loaders/EXRLoader.js'
-import { useGui, TCanvas, TPerspectiveCamera, TOrbitControls, TMesh, TMeshStandardMaterial, TMeshBasicMaterial, TScene } from '@vue-three/vue-three'
+import {
+  useGui,
+  TCanvas,
+  TPerspectiveCamera,
+  TOrbitControls,
+  TMesh,
+  TMeshStandardMaterial,
+  TMeshBasicMaterial,
+  TScene
+} from '@vue-three/vue-three'
 
 const sceneRef = ref<any>(null)
 const canvasRef = ref<any>(null)
@@ -52,7 +65,6 @@ let initialized = false
 const { gui } = useGui({ width: 300 })
 
 function animate({ scene, renderer }) {
-
   torusMaterial.value.roughness = params.value.roughness
   torusMaterial.value.metalness = params.value.metalness
 
@@ -90,7 +102,6 @@ function animate({ scene, renderer }) {
 
   scene.background = background
   renderer.toneMappingExposure = params.value.exposure
-
 }
 
 function initScene() {
@@ -116,13 +127,13 @@ function initScene() {
     pmremGenerator = new THREE.PMREMGenerator(canvasRef.value.context.renderer)
     pmremGenerator.compileEquirectangularShader()
 
-    new EXRLoader().load('/textures/piz_compressed.exr', (texture) => {
+    new EXRLoader().load('/textures/piz_compressed.exr', texture => {
       texture.mapping = THREE.EquirectangularReflectionMapping
       exrCubeRenderTarget = pmremGenerator!.fromEquirectangular(texture)
       exrBackground = texture
     })
 
-    new THREE.TextureLoader().load('/textures/equirectangular.png', (texture) => {
+    new THREE.TextureLoader().load('/textures/equirectangular.png', texture => {
       texture.mapping = THREE.EquirectangularReflectionMapping
       texture.colorSpace = THREE.SRGBColorSpace
       pngCubeRenderTarget = pmremGenerator!.fromEquirectangular(texture)
@@ -146,25 +157,29 @@ function initScene() {
   initialized = true
 }
 
-watch([canvasRef, torusMaterialRef, planeMaterialRef, torusMeshRef, planeMeshRef], async () => {
-  await nextTick()
+watch(
+  [canvasRef, torusMaterialRef, planeMaterialRef, torusMeshRef, planeMeshRef],
+  async () => {
+    await nextTick()
 
-  if (sceneRef.value?.scene) {
-    scene.value = sceneRef.value.scene
-  }
+    if (sceneRef.value?.scene) {
+      scene.value = sceneRef.value.scene
+    }
 
-  if (torusMaterialRef.value?.material) {
-    torusMaterial.value = torusMaterialRef.value.material
-  }
+    if (torusMaterialRef.value?.material) {
+      torusMaterial.value = torusMaterialRef.value.material
+    }
 
-  if (planeMaterialRef.value?.material) {
-    planeMaterial.value = planeMaterialRef.value.material
-  }
+    if (planeMaterialRef.value?.material) {
+      planeMaterial.value = planeMaterialRef.value.material
+    }
 
-  if (scene.value && torusMaterial.value && torusMeshRef.value && planeMeshRef.value) {
-    initScene()
-  }
-}, { immediate: true, deep: true })
+    if (scene.value && torusMaterial.value && torusMeshRef.value && planeMeshRef.value) {
+      initScene()
+    }
+  },
+  { immediate: true, deep: true }
+)
 
 onMounted(async () => {
   await nextTick()

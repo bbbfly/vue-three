@@ -5,7 +5,13 @@
       <TTrackballControls ref="controlsRef" :min-distance="200" :max-distance="500" />
 
       <TAmbientLight :intensity="1" :color="0x666666" receive-shadow cast-shadow />
-      <TPointLight ref="pointLightRef" cast-shadow :intensity="3" :distance="0" :position="[0, 0, 500]" />
+      <TPointLight
+        ref="pointLightRef"
+        cast-shadow
+        :intensity="3"
+        :distance="0"
+        :position="[0, 0, 500]"
+      />
 
       <TMesh receive-shadow>
         <TExtrudeGeometry :shape="shape1" :args="extrudeSettings1" />
@@ -21,7 +27,6 @@
         <TExtrudeGeometry :shape="shape2" :args="extrudeSettings3" />
         <TMeshLambertMaterial :color="0xb00000" />
       </TMesh>
-
     </TScene>
   </TCanvas>
 </template>
@@ -38,7 +43,7 @@ import {
   TPointLight,
   TMesh,
   TMeshLambertMaterial,
-  TExtrudeGeometry,
+  TExtrudeGeometry
 } from '@vue-three/vue-three'
 
 const shape1 = ref<THREE.Shape>()
@@ -56,13 +61,12 @@ onMounted(() => {
 })
 
 function initShapes() {
-
   const closedSpline = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-60, -100, 60),
     new THREE.Vector3(-60, 20, 60),
     new THREE.Vector3(-60, 120, 60),
     new THREE.Vector3(60, 20, -60),
-    new THREE.Vector3(60, -100, -60),
+    new THREE.Vector3(60, -100, -60)
   ])
 
   closedSpline.curveType = 'catmullrom'
@@ -73,7 +77,7 @@ function initShapes() {
 
   for (let i = 0; i < count; i++) {
     const l = 20
-    const a = (2 * i / count) * Math.PI
+    const a = ((2 * i) / count) * Math.PI
     pts1.push(new THREE.Vector2(Math.cos(a) * l, Math.sin(a) * l))
   }
 
@@ -103,7 +107,7 @@ function initShapes() {
 
   for (let i = 0; i < numPts * 2; i++) {
     const l = i % 2 == 1 ? 10 : 20
-    const a = i / numPts * Math.PI
+    const a = (i / numPts) * Math.PI
     pts2.push(new THREE.Vector2(Math.cos(a) * l, Math.sin(a) * l))
   }
 

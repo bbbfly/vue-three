@@ -6,8 +6,11 @@
 
       <TMesh ref="sphereRef">
         <TIcosahedron :args="[15, 8]" />
-        <TMeshStandardMaterial :roughness="params.roughness" :metalness="params.metalness"
-          :env-map="cubeRenderTarget?.texture" />
+        <TMeshStandardMaterial
+          :roughness="params.roughness"
+          :metalness="params.metalness"
+          :env-map="cubeRenderTarget?.texture"
+        />
       </TMesh>
 
       <TMesh ref="cubeRef" :position="cubeRefConfig.position" :rotation="cubeRefConfig.rotation">
@@ -26,7 +29,19 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, shallowRef } from 'vue'
 import * as THREE from 'three'
-import { TBox, useGui, TCanvas, TPerspectiveCamera, TOrbitControls, TMesh, TMeshStandardMaterial, TScene, TIcosahedron, TBoxGeometry, TTorusKnotGeometry } from '@vue-three/vue-three'
+import {
+  TBox,
+  useGui,
+  TCanvas,
+  TPerspectiveCamera,
+  TOrbitControls,
+  TMesh,
+  TMeshStandardMaterial,
+  TScene,
+  TIcosahedron,
+  TBoxGeometry,
+  TTorusKnotGeometry
+} from '@vue-three/vue-three'
 import { HDRLoader } from 'three/addons/loaders/HDRLoader.js'
 
 const canvasRef = ref<any>(null)
@@ -47,7 +62,7 @@ const { gui } = useGui({ width: 300 })
 const params = ref({
   roughness: 0.05,
   metalness: 1,
-  exposure: 1,
+  exposure: 1
 })
 
 const cubeRefConfig = ref({
@@ -59,7 +74,6 @@ const torusRefConfig = ref({
   rotation: [0, 0, 0]
 })
 function animate({ renderer, scene }) {
-
   const time = (Date.now() - startTime) / 1000
 
   if (cubeRef.value?.mesh) {
@@ -121,6 +135,5 @@ onMounted(async () => {
   startTime = Date.now()
   initCubeCamera()
   setupGui()
-
 })
 </script>

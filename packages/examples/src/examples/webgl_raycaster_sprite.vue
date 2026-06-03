@@ -6,17 +6,30 @@
 
       <TGroup ref="groupRef">
         <!-- Sprite 1 -->
-        <TSprite :position="[6, 5, 5]" :scale="[2, 5, 1]" color="#69f" ref="sprite1Ref" />
+        <TSprite ref="sprite1Ref" :position="[6, 5, 5]" :scale="[2, 5, 1]" color="#69f" />
 
         <!-- Sprite 2 -->
-        <TSprite :position="[8, -2, 2]" :scale="[0.1, 0.5, 0.1]" :center="[0.5, 0]" color="#69f"
-          :size-attenuation="false" :rotation="Math.PI / 3 * 4" ref="sprite2Ref" />
+        <TSprite
+          ref="sprite2Ref"
+          :position="[8, -2, 2]"
+          :scale="[0.1, 0.5, 0.1]"
+          :center="[0.5, 0]"
+          color="#69f"
+          :size-attenuation="false"
+          :rotation="(Math.PI / 3) * 4"
+        />
 
         <!-- Group 2 -->
         <TGroup :position="[-5, 0, 0]" :scale="[1, 2, 1]" :rotation="[Math.PI / 2, 0, 0]">
           <!-- Sprite 3 -->
-          <TSprite :position="[0, 2, 5]" :scale="[10, 2, 3]" :center="[-0.1, 0]" color="#69f" :rotation="Math.PI / 3"
-            ref="sprite3Ref" />
+          <TSprite
+            ref="sprite3Ref"
+            :position="[0, 2, 5]"
+            :scale="[10, 2, 3]"
+            :center="[-0.1, 0]"
+            color="#69f"
+            :rotation="Math.PI / 3"
+          />
         </TGroup>
       </TGroup>
     </TScene>
@@ -48,7 +61,7 @@ const onRaycasterResult = (result: { intersects: Intersection[] }) => {
   }
 
   if (result.intersects.length > 0) {
-    const res = result.intersects.filter((res) => res && res.object)[0]
+    const res = result.intersects.filter(res => res && res.object)[0]
     if (res && res.object) {
       selectedObject = res.object as Sprite
       selectedObject.material.color.set('#f00')
@@ -60,7 +73,6 @@ const { intersectObject } = useRaycaster(canvasRef)
 onMounted(() => {
   intersectObject(groupRef.value.group, onRaycasterResult)
 })
-
 </script>
 
 <style scoped></style>

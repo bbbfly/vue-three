@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import type { PropType } from 'vue'
@@ -59,7 +59,7 @@ const { texture, load, setMapping } = useCubeTexture({
 
 const emit = defineEmits(['load'])
 
-watch(texture, (val) => {
+watch(texture, val => {
   if (val) {
     emit('load', val)
   }
@@ -67,7 +67,7 @@ watch(texture, (val) => {
 
 watch(
   () => props.urls,
-  (newUrls) => {
+  newUrls => {
     if (newUrls) {
       load(newUrls)
     }
@@ -76,7 +76,7 @@ watch(
 
 watch(
   () => props.mapping,
-  (newMapping) => {
+  newMapping => {
     if (newMapping === 'refraction') {
       setMapping(301) // CubeRefractionMapping
     } else {

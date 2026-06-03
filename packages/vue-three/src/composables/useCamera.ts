@@ -25,21 +25,22 @@ export function useCamera(configOrRef: CameraOptions | ComputedRef<CameraOptions
   const initialConfig = getConfig()
 
   // 组件内部自己创建新相机，不使用上下文中的旧相机
-  let localCamera: Camera = initialConfig.type === 'orthographic'
-    ? new OrthographicCamera(
-        initialConfig.left || -1,
-        initialConfig.right || 1,
-        initialConfig.top || 1,
-        initialConfig.bottom || -1,
-        initialConfig.near || 0.1,
-        initialConfig.far || 1000
-      )
-    : new PerspectiveCamera(
-        initialConfig.fov || 75,
-        1,
-        initialConfig.near || 0.1,
-        initialConfig.far || 1000
-      )
+  let localCamera: Camera =
+    initialConfig.type === 'orthographic'
+      ? new OrthographicCamera(
+          initialConfig.left || -1,
+          initialConfig.right || 1,
+          initialConfig.top || 1,
+          initialConfig.bottom || -1,
+          initialConfig.near || 0.1,
+          initialConfig.far || 1000
+        )
+      : new PerspectiveCamera(
+          initialConfig.fov || 75,
+          1,
+          initialConfig.near || 0.1,
+          initialConfig.far || 1000
+        )
 
   const setPosition = (x: number, y: number, z: number) => {
     localCamera.position.set(x, y, z)
@@ -54,10 +55,7 @@ export function useCamera(configOrRef: CameraOptions | ComputedRef<CameraOptions
   }
 
   const updateProjectionMatrix = () => {
-    if (
-      localCamera instanceof PerspectiveCamera ||
-      localCamera instanceof OrthographicCamera
-    ) {
+    if (localCamera instanceof PerspectiveCamera || localCamera instanceof OrthographicCamera) {
       localCamera.updateProjectionMatrix()
     }
   }
@@ -70,20 +68,14 @@ export function useCamera(configOrRef: CameraOptions | ComputedRef<CameraOptions
   }
 
   const setNear = (near: number) => {
-    if (
-      localCamera instanceof PerspectiveCamera ||
-      localCamera instanceof OrthographicCamera
-    ) {
+    if (localCamera instanceof PerspectiveCamera || localCamera instanceof OrthographicCamera) {
       localCamera.near = near
       updateProjectionMatrix()
     }
   }
 
   const setFar = (far: number) => {
-    if (
-      localCamera instanceof PerspectiveCamera ||
-      localCamera instanceof OrthographicCamera
-    ) {
+    if (localCamera instanceof PerspectiveCamera || localCamera instanceof OrthographicCamera) {
       localCamera.far = far
       updateProjectionMatrix()
     }

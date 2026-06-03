@@ -1,19 +1,38 @@
 <template>
   <TCanvas antialias :clear-color="'#050505'">
     <TScene>
-      <TPerspectiveCamera :fov="70" :near="1" :far="5000" :position="[0, 0, 1000]" ref="cameraRef" />
+      <TPerspectiveCamera
+        ref="cameraRef"
+        :fov="70"
+        :near="1"
+        :far="5000"
+        :position="[0, 0, 1000]"
+      />
       <TTrackballControls ref="controlsRef" :rotate-speed="0.5" />
       <TCSS3DRenderer ref="cssRendererRef" class="css3d-renderer">
         <TGroup ref="rootRef" :rotation="rootRotation">
           <template v-for="atom in atoms" :key="atom.id">
-            <TCSS3DSprite :position="atom.position" :scale="[1, 1, 1]" :style="atom.style"
-              :ref="el => setSpriteRef(atom.id, el)">
-              <img :src="atom.src" draggable="false" style="user-select: none; pointer-events: auto;" />
+            <TCSS3DSprite
+              :ref="el => setSpriteRef(atom.id, el)"
+              :position="atom.position"
+              :scale="[1, 1, 1]"
+              :style="atom.style"
+            >
+              <img
+                :src="atom.src"
+                draggable="false"
+                style="user-select: none; pointer-events: auto"
+              />
             </TCSS3DSprite>
           </template>
           <template v-for="bond in bonds" :key="bond.id">
-            <TCSS3DObject :position="bond.position" :rotation="bond.rotation" :scale="[1, 1, 1]" :style="bond.style"
-              :ref="el => setBondRef(bond.id, el)">
+            <TCSS3DObject
+              :ref="el => setBondRef(bond.id, el)"
+              :position="bond.position"
+              :rotation="bond.rotation"
+              :scale="[1, 1, 1]"
+              :style="bond.style"
+            >
               <div class="bond"></div>
             </TCSS3DObject>
           </template>
@@ -59,29 +78,29 @@ const rootRef = ref<any>(null)
 const rootRotation = ref<[number, number, number]>([0, 0, 0])
 
 const VIZ_TYPE = {
-  'Atoms': 0,
-  'Bonds': 1,
+  Atoms: 0,
+  Bonds: 1,
   'Atoms + Bonds': 2
 }
 
 const MOLECULES: Record<string, string> = {
-  'Ethanol': 'ethanol.pdb',
-  'Aspirin': 'aspirin.pdb',
-  'Caffeine': 'caffeine.pdb',
-  'Nicotine': 'nicotine.pdb',
-  'LSD': 'lsd.pdb',
-  'Cocaine': 'cocaine.pdb',
-  'Cholesterol': 'cholesterol.pdb',
-  'Lycopene': 'lycopene.pdb',
-  'Glucose': 'glucose.pdb',
+  Ethanol: 'ethanol.pdb',
+  Aspirin: 'aspirin.pdb',
+  Caffeine: 'caffeine.pdb',
+  Nicotine: 'nicotine.pdb',
+  LSD: 'lsd.pdb',
+  Cocaine: 'cocaine.pdb',
+  Cholesterol: 'cholesterol.pdb',
+  Lycopene: 'lycopene.pdb',
+  Glucose: 'glucose.pdb',
   'Aluminium oxide': 'Al2O3.pdb',
-  'Cubane': 'cubane.pdb',
-  'Copper': 'cu.pdb',
-  'Fluorite': 'caf2.pdb',
-  'Salt': 'nacl.pdb',
+  Cubane: 'cubane.pdb',
+  Copper: 'cu.pdb',
+  Fluorite: 'caf2.pdb',
+  Salt: 'nacl.pdb',
   'YBCO superconductor': 'ybco.pdb',
-  'Buckyball': 'buckyball.pdb',
-  'Graphite': 'graphite.pdb'
+  Buckyball: 'buckyball.pdb',
+  Graphite: 'graphite.pdb'
 }
 
 const vizType = ref(2)
@@ -132,8 +151,15 @@ const setBondRef = (id: string, el: any) => {
   }
 }
 
-const colorify = (ctx: CanvasRenderingContext2D, width: number, height: number, color: THREE.Color) => {
-  const r = color.r, g = color.g, b = color.b
+const colorify = (
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  color: THREE.Color
+) => {
+  const r = color.r,
+    g = color.g,
+    b = color.b
   const imageData = ctx.getImageData(0, 0, width, height)
   const data = imageData.data
 
@@ -163,7 +189,7 @@ const loadMolecule = (model?: string) => {
   atoms.value = []
   bonds.value = []
 
-  loader.load(url, (pdb) => {
+  loader.load(url, pdb => {
     const geometryAtoms = pdb.geometryAtoms
     const geometryBonds = pdb.geometryBonds
     const json = pdb.json
@@ -245,7 +271,7 @@ const loadMolecule = (model?: string) => {
         },
         visible: true,
         bondLengthShort: bondLength + 'px',
-        bondLengthFull: (bondLength + 55) + 'px'
+        bondLengthFull: bondLength + 55 + 'px'
       })
     }
 
@@ -274,7 +300,8 @@ const changeVizType = (value: number) => {
     if (el && el.css3dObject) {
       if (value === 1 || value === 2) {
         el.css3dObject.element.style.display = ''
-        el.css3dObject.element.style.height = value === 1 ? bond.bondLengthFull : bond.bondLengthShort
+        el.css3dObject.element.style.height =
+          value === 1 ? bond.bondLengthFull : bond.bondLengthShort
         el.css3dObject.visible = true
       } else {
         el.css3dObject.element.style.display = 'none'

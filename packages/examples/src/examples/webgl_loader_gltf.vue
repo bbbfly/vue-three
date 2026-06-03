@@ -1,21 +1,46 @@
 <template>
-  <TCanvas ref="canvasRef" antialias :animation-loop="animationLoop" tone-mapping="ACESFilmicToneMapping">
+  <TCanvas
+    ref="canvasRef"
+    antialias
+    :animation-loop="animationLoop"
+    tone-mapping="ACESFilmicToneMapping"
+  >
     <TScene ref="sceneRef">
       <TPerspectiveCamera :fov="45" :near="0.25" :far="20" :position="[-1.8, 0.6, 2.7]" />
 
-      <TOrbitControls :enable-damping="true" :damping-factor="0.05" :min-distance="2" :max-distance="10"
-        :target="[0, 0, -0.2]" />
+      <TOrbitControls
+        :enable-damping="true"
+        :damping-factor="0.05"
+        :min-distance="2"
+        :max-distance="10"
+        :target="[0, 0, -0.2]"
+      />
 
       <TAmbientLight :intensity="0.5" />
 
       <TDirectionalLight :intensity="1" :position="[5, 5, 5]" cast-shadow />
 
-      <TGLTFLoader v-if="currentModelUrl" ref="gltfLoaderRef" :src="currentModelUrl" :cast-shadow="true"
-        :receive-shadow="true" @load="onModelLoad" @progress="onProgress" @error="onError">
-        <template #default="{ loading, progress: loadProgress, error: loadError, model, animations }">
+      <TGLTFLoader
+        v-if="currentModelUrl"
+        ref="gltfLoaderRef"
+        :src="currentModelUrl"
+        :cast-shadow="true"
+        :receive-shadow="true"
+        @load="onModelLoad"
+        @progress="onProgress"
+        @error="onError"
+      >
+        <template
+          #default="{ loading, progress: loadProgress, error: loadError, model, animations }"
+        >
           <TAnimationMixer v-if="model" :root="model" :auto-update="true">
-            <TKeyframeAnimation v-for="(clip, index) in animations" :key="index" :clip="clip" :loop="true"
-              :clamp-when-finished="true" />
+            <TKeyframeAnimation
+              v-for="(clip, index) in animations"
+              :key="index"
+              :clip="clip"
+              :loop="true"
+              :clamp-when-finished="true"
+            />
           </TAnimationMixer>
         </template>
       </TGLTFLoader>

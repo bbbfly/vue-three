@@ -1,9 +1,19 @@
 <template>
-  <TCanvas antialias :toneMapping="'ACESFilmicToneMapping'" :toneMappingExposure="0.85" background="#333333"
-    @animate="onAnimate">
+  <TCanvas
+    antialias
+    :tone-mapping="'ACESFilmicToneMapping'"
+    :tone-mapping-exposure="0.85"
+    background="#333333"
+    @animate="onAnimate"
+  >
     <TScene :environment="environmentMap" :fog="{ color: '#333333', near: 10, far: 15 }">
       <TPerspectiveCamera :position="[4.25, 1.4, -4.5]" :fov="40" :near="0.1" :far="100" />
-      <TOrbitControls :maxDistance="9" :maxPolarAngle="Math.PI / 2" :target="[0, 0.5, 0]" :enableDamping="true" />
+      <TOrbitControls
+        :max-distance="9"
+        :max-polar-angle="Math.PI / 2"
+        :target="[0, 0.5, 0]"
+        :enable-damping="true"
+      />
 
       <TGridHelper :size="20" :divisions="40" color="#ffffff" :opacity="0.2" />
 
@@ -21,9 +31,9 @@ import {
   TPerspectiveCamera,
   TOrbitControls,
   TGridHelper,
-  TGLTFLoader,
+  TGLTFLoader
 } from '@vue-three/vue-three'
-import { HDRLoader } from 'three/addons/loaders/HDRLoader.js';
+import { HDRLoader } from 'three/addons/loaders/HDRLoader.js'
 import {
   EquirectangularReflectionMapping,
   Mesh,
@@ -77,25 +87,33 @@ const glassMaterial = new MeshPhysicalMaterial({
 const { gui } = useGui()
 
 const hdrLoader = new HDRLoader()
-hdrLoader.load('/textures/equirectangular/venice_sunset_1k.hdr', (texture) => {
+hdrLoader.load('/textures/equirectangular/venice_sunset_1k.hdr', texture => {
   texture.mapping = EquirectangularReflectionMapping
   environmentMap.value = texture
   environmentLoaded.value = true
 })
 
 onMounted(() => {
+  gui
+    .addColor(params, 'bodyColor')
+    .name('Body')
+    .onChange((color: string) => {
+      bodyMaterial.color.set(color)
+    })
 
-  gui.addColor(params, 'bodyColor').name('Body').onChange((color: string) => {
-    bodyMaterial.color.set(color)
-  })
+  gui
+    .addColor(params, 'detailsColor')
+    .name('Details')
+    .onChange((color: string) => {
+      detailsMaterial.color.set(color)
+    })
 
-  gui.addColor(params, 'detailsColor').name('Details').onChange((color: string) => {
-    detailsMaterial.color.set(color)
-  })
-
-  gui.addColor(params, 'glassColor').name('Glass').onChange((color: string) => {
-    glassMaterial.color.set(color)
-  })
+  gui
+    .addColor(params, 'glassColor')
+    .name('Glass')
+    .onChange((color: string) => {
+      glassMaterial.color.set(color)
+    })
 })
 
 const onModelLoad = (loadedModel: any) => {
@@ -176,7 +194,7 @@ const onAnimate = () => {
   const time = -performance.now() / 1000
 
   if (wheels.length > 0) {
-    wheels.forEach((wheel) => {
+    wheels.forEach(wheel => {
       wheel.rotation.x = time * Math.PI * 2
     })
   }

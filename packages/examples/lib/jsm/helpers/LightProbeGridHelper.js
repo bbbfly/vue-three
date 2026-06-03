@@ -1,11 +1,11 @@
 import {
-	InstancedBufferAttribute,
-	InstancedMesh,
-	Matrix4,
-	ShaderMaterial,
-	SphereGeometry,
-	Vector3
-} from 'three';
+  InstancedBufferAttribute,
+  InstancedMesh,
+  Matrix4,
+  ShaderMaterial,
+  SphereGeometry,
+  Vector3
+} from 'three'
 
 /**
  * Visualizes an {@link LightProbeGrid} by rendering a sphere at each
@@ -22,27 +22,22 @@ import {
  * @three_import import { LightProbeGridHelper } from 'three/addons/helpers/LightProbeGridHelper.js';
  */
 class LightProbeGridHelper extends InstancedMesh {
+  /**
+   * Constructs a new irradiance probe grid helper.
+   *
+   * @param {LightProbeGrid} probes - The probe grid to visualize.
+   * @param {number} [sphereSize=0.12] - The radius of each probe sphere.
+   */
+  constructor(probes, sphereSize = 0.12) {
+    const geometry = new SphereGeometry(sphereSize, 16, 16)
 
-	/**
-	 * Constructs a new irradiance probe grid helper.
-	 *
-	 * @param {LightProbeGrid} probes - The probe grid to visualize.
-	 * @param {number} [sphereSize=0.12] - The radius of each probe sphere.
-	 */
-	constructor( probes, sphereSize = 0.12 ) {
+    const material = new ShaderMaterial({
+      uniforms: {
+        probesSH: { value: null },
+        probesResolution: { value: new Vector3() }
+      },
 
-		const geometry = new SphereGeometry( sphereSize, 16, 16 );
-
-		const material = new ShaderMaterial( {
-
-			uniforms: {
-
-				probesSH: { value: null },
-				probesResolution: { value: new Vector3() },
-
-			},
-
-			vertexShader: /* glsl */`
+      vertexShader: /* glsl */ `
 
 				attribute vec3 instanceUVW;
 
@@ -59,7 +54,7 @@ class LightProbeGridHelper extends InstancedMesh {
 
 			`,
 
-			fragmentShader: /* glsl */`
+      fragmentShader: /* glsl */ `
 
 				precision highp sampler3D;
 
@@ -124,98 +119,83 @@ class LightProbeGridHelper extends InstancedMesh {
 				}
 
 			`
+    })
 
-		} );
+    const res = probes.resolution
+    const count = res.x * res.y * res.z
 
-		const res = probes.resolution;
-		const count = res.x * res.y * res.z;
+    super(geometry, material, count)
 
-		super( geometry, material, count );
+    /**
+     * The probe grid to visualize.
+     *
+     * @type {LightProbeGrid}
+     */
+    this.probes = probes
 
-		/**
-		 * The probe grid to visualize.
-		 *
-		 * @type {LightProbeGrid}
-		 */
-		this.probes = probes;
+    this.type = 'LightProbeGridHelper'
 
-		this.type = 'LightProbeGridHelper';
+    this.update()
+  }
 
-		this.update();
+  /**
+   * Rebuilds instance matrices and UVW attributes from the current probe grid.
+   * Call this after changing `probes` or after re-baking.
+   */
+  update() {
+    const probes = this.probes
+    const res = probes.resolution
+    const count = res.x * res.y * res.z
 
-	}
+    // Resize instance matrix buffer if needed
 
-	/**
-	 * Rebuilds instance matrices and UVW attributes from the current probe grid.
-	 * Call this after changing `probes` or after re-baking.
-	 */
-	update() {
+    if (this.instanceMatrix.count !== count) {
+      this.instanceMatrix = new InstancedBufferAttribute(new Float32Array(count * 16), 16)
+    }
 
-		const probes = this.probes;
-		const res = probes.resolution;
-		const count = res.x * res.y * res.z;
+    this.count = count
 
-		// Resize instance matrix buffer if needed
+    const uvwArray = new Float32Array(count * 3)
+    const matrix = new Matrix4()
+    const probePos = new Vector3()
 
-		if ( this.instanceMatrix.count !== count ) {
+    let i = 0
 
-			this.instanceMatrix = new InstancedBufferAttribute( new Float32Array( count * 16 ), 16 );
+    for (let iz = 0; iz < res.z; iz++) {
+      for (let iy = 0; iy < res.y; iy++) {
+        for (let ix = 0; ix < res.x; ix++) {
+          // Remap to texel centers (must match lightprobes_pars_fragment.glsl.js)
+          uvwArray[i * 3] = (ix + 0.5) / res.x
+          uvwArray[i * 3 + 1] = (iy + 0.5) / res.y
+          uvwArray[i * 3 + 2] = (iz + 0.5) / res.z
 
-		}
+          probes.getProbePosition(ix, iy, iz, probePos)
+          matrix.makeTranslation(probePos.x, probePos.y, probePos.z)
+          this.setMatrixAt(i, matrix)
 
-		this.count = count;
+          i++
+        }
+      }
+    }
 
-		const uvwArray = new Float32Array( count * 3 );
-		const matrix = new Matrix4();
-		const probePos = new Vector3();
+    this.instanceMatrix.needsUpdate = true
 
-		let i = 0;
+    this.geometry.setAttribute('instanceUVW', new InstancedBufferAttribute(uvwArray, 3))
 
-		for ( let iz = 0; iz < res.z; iz ++ ) {
+    // Update texture uniforms
 
-			for ( let iy = 0; iy < res.y; iy ++ ) {
+    this.material.uniforms.probesSH.value = probes.texture
+    this.material.uniforms.probesResolution.value.copy(probes.resolution)
+  }
 
-				for ( let ix = 0; ix < res.x; ix ++ ) {
-
-					// Remap to texel centers (must match lightprobes_pars_fragment.glsl.js)
-					uvwArray[ i * 3 ] = ( ix + 0.5 ) / res.x;
-					uvwArray[ i * 3 + 1 ] = ( iy + 0.5 ) / res.y;
-					uvwArray[ i * 3 + 2 ] = ( iz + 0.5 ) / res.z;
-
-					probes.getProbePosition( ix, iy, iz, probePos );
-					matrix.makeTranslation( probePos.x, probePos.y, probePos.z );
-					this.setMatrixAt( i, matrix );
-
-					i ++;
-
-				}
-
-			}
-
-		}
-
-		this.instanceMatrix.needsUpdate = true;
-
-		this.geometry.setAttribute( 'instanceUVW', new InstancedBufferAttribute( uvwArray, 3 ) );
-
-		// Update texture uniforms
-
-		this.material.uniforms.probesSH.value = probes.texture;
-		this.material.uniforms.probesResolution.value.copy( probes.resolution );
-
-	}
-
-	/**
-	 * Frees the GPU-related resources allocated by this instance. Call this
-	 * method whenever this instance is no longer used in your app.
-	 */
-	dispose() {
-
-		this.geometry.dispose();
-		this.material.dispose();
-
-	}
-
+  /**
+   * Frees the GPU-related resources allocated by this instance. Call this
+   * method whenever this instance is no longer used in your app.
+   */
+  dispose() {
+    this.geometry.dispose()
+    this.material.dispose()
+  }
 }
 
-export { LightProbeGridHelper };
+export { LightProbeGridHelper }

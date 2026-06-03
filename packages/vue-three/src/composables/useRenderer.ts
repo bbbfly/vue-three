@@ -99,7 +99,7 @@ export function useRenderer(config: RendererOptions = {}) {
   // 监听 renderer 变化（响应式 context 更新）
   watch(
     () => ctx.renderer,
-    (newRenderer) => {
+    newRenderer => {
       renderer = newRenderer
       if (renderer && Object.keys(config).length > 0) {
         updateConfig(config)

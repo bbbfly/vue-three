@@ -2,11 +2,13 @@
   <div class="code-block-wrapper">
     <div v-if="title || showCopy" class="code-toolbar">
       <span v-if="title" class="code-title">{{ title }}</span>
-      <button v-if="showCopy" @click="copyCode" class="copy-btn">
+      <button v-if="showCopy" class="copy-btn" @click="copyCode">
         {{ copied ? '✓ 已复制' : '📋 复制' }}
       </button>
     </div>
-    <pre class="code-block"><code ref="codeElement" :class="languageClass">{{ innerCode }}</code></pre>
+    <pre
+      class="code-block"
+    ><code ref="codeElement" :class="languageClass">{{ innerCode }}</code></pre>
   </div>
 </template>
 

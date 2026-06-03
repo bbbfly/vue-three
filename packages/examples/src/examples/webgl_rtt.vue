@@ -1,8 +1,26 @@
 <template>
-  <TCanvas ref="canvasRef" :camera="null" :enableControls="false" @mousemove="onDocumentMouseMove" @render="onRender">
+  <TCanvas
+    ref="canvasRef"
+    :camera="null"
+    :enable-controls="false"
+    @mousemove="onDocumentMouseMove"
+    @render="onRender"
+  >
     <TScene>
-      <TPerspectiveCamera ref="camera" :aspect="aspect" :position="[0, 0, 100]" :fov="30" :near="1" :far="10000" />
-      <TMesh v-for="(sphere, index) in spheres" :key="index" :position="sphere.position" :rotation="sphere.rotation">
+      <TPerspectiveCamera
+        ref="camera"
+        :aspect="aspect"
+        :position="[0, 0, 100]"
+        :fov="30"
+        :near="1"
+        :far="10000"
+      />
+      <TMesh
+        v-for="(sphere, index) in spheres"
+        :key="index"
+        :position="sphere.position"
+        :rotation="sphere.rotation"
+      >
         <TSphere :args="[10, 64, 32]" />
         <TMeshBasicMaterial v-if="rtTexture" :map="rtTexture?.texture" />
       </TMesh>
@@ -27,7 +45,9 @@ const camera = ref<InstanceType<typeof TPerspectiveCamera> | null>(null)
 
 const aspect = ref(window.innerWidth / window.innerHeight)
 
-const spheres = ref<{ position: [number, number, number]; rotation: [number, number, number] }[]>([])
+const spheres = ref<{ position: [number, number, number]; rotation: [number, number, number] }[]>(
+  []
+)
 
 const rtTexture = shallowRef<THREE.WebGLRenderTarget | null>(null)
 const sceneRTT = shallowRef<THREE.Scene | null>(null)
@@ -151,11 +171,7 @@ const initRTT = () => {
   for (let j = 0; j < n; j++) {
     for (let i = 0; i < n; i++) {
       spheres.value.push({
-        position: [
-          (i - (n - 1) / 2) * 20,
-          (j - (n - 1) / 2) * 20,
-          0
-        ],
+        position: [(i - (n - 1) / 2) * 20, (j - (n - 1) / 2) * 20, 0],
         rotation: [0, -Math.PI / 2, 0]
       })
     }
@@ -163,7 +179,13 @@ const initRTT = () => {
 }
 
 const onRender = ({ renderer, camera, scene }) => {
-  if (!rtTexture.value || !sceneRTT.value || !sceneScreen.value || !cameraRTT.value || !material.value) {
+  if (
+    !rtTexture.value ||
+    !sceneRTT.value ||
+    !sceneScreen.value ||
+    !cameraRTT.value ||
+    !material.value
+  ) {
     return
   }
 

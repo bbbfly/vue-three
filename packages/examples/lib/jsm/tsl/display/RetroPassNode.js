@@ -1,28 +1,48 @@
-import { MeshBasicNodeMaterial, PassNode, UnsignedByteType, NearestFilter, CubeMapNode, MeshPhongNodeMaterial } from 'three/webgpu';
-import { float, vec2, vec4, Fn, uv, varying, cameraProjectionMatrix, cameraViewMatrix, positionWorld, screenSize, materialColor, uint, texture, uniform, context, reflectVector } from 'three/tsl';
+import {
+  MeshBasicNodeMaterial,
+  PassNode,
+  UnsignedByteType,
+  NearestFilter,
+  CubeMapNode,
+  MeshPhongNodeMaterial
+} from 'three/webgpu'
+import {
+  float,
+  vec2,
+  vec4,
+  Fn,
+  uv,
+  varying,
+  cameraProjectionMatrix,
+  cameraViewMatrix,
+  positionWorld,
+  screenSize,
+  materialColor,
+  uint,
+  texture,
+  uniform,
+  context,
+  reflectVector
+} from 'three/tsl'
 
-const _affineUv = varying( vec2() );
-const _w = varying( float() );
+const _affineUv = varying(vec2())
+const _w = varying(float())
 
-const _clipSpaceRetro = Fn( () => {
+const _clipSpaceRetro = Fn(() => {
+  const defaultPosition = cameraProjectionMatrix.mul(cameraViewMatrix).mul(positionWorld)
 
-	const defaultPosition = cameraProjectionMatrix
-		.mul( cameraViewMatrix )
-		.mul( positionWorld );
+  const roundedPosition = defaultPosition.xy
+    .div(defaultPosition.w.mul(2))
+    .mul(screenSize.xy)
+    .round()
+    .div(screenSize.xy)
+    .mul(defaultPosition.w.mul(2))
 
-	const roundedPosition = defaultPosition.xy
-		.div( defaultPosition.w.mul( 2 ) )
-		.mul( screenSize.xy )
-		.round()
-		.div( screenSize.xy )
-		.mul( defaultPosition.w.mul( 2 ) );
+  _affineUv.assign(uv().mul(defaultPosition.w))
+  _w.assign(defaultPosition.w)
 
-	_affineUv.assign( uv().mul( defaultPosition.w ) );
-	_w.assign( defaultPosition.w );
-
-	return vec4( roundedPosition.xy, defaultPosition.zw );
-
-} )();
+  return vec4(roundedPosition.xy, defaultPosition.zw)
+})()
 
 /**
  * A post-processing pass that applies a retro PS1-style effect to the scene.
@@ -36,206 +56,163 @@ const _clipSpaceRetro = Fn( () => {
  * @augments PassNode
  */
 class RetroPassNode extends PassNode {
+  /**
+   * Creates a new RetroPassNode instance.
+   *
+   * @param {Scene} scene - The scene to render.
+   * @param {Camera} camera - The camera to render from.
+   * @param {Object} [options={}] - Additional options for the retro pass.
+   * @param {Node} [options.affineDistortion=null] - An optional node to apply affine distortion to UVs.
+   */
+  constructor(scene, camera, options = {}) {
+    super(PassNode.COLOR, scene, camera)
 
-	/**
-	 * Creates a new RetroPassNode instance.
-	 *
-	 * @param {Scene} scene - The scene to render.
-	 * @param {Camera} camera - The camera to render from.
-	 * @param {Object} [options={}] - Additional options for the retro pass.
-	 * @param {Node} [options.affineDistortion=null] - An optional node to apply affine distortion to UVs.
-	 */
-	constructor( scene, camera, options = {} ) {
+    const { affineDistortion = null, filterTextures = false } = options
 
-		super( PassNode.COLOR, scene, camera );
+    this.setResolutionScale(0.25)
 
-		const {
-			affineDistortion = null,
-			filterTextures = false
-		} = options;
+    this.renderTarget.texture.type = UnsignedByteType
+    this.renderTarget.texture.magFilter = NearestFilter
+    this.renderTarget.texture.minFilter = NearestFilter
 
-		this.setResolutionScale( .25 );
+    this.affineDistortionNode = affineDistortion
 
-		this.renderTarget.texture.type = UnsignedByteType;
-		this.renderTarget.texture.magFilter = NearestFilter;
-		this.renderTarget.texture.minFilter = NearestFilter;
+    this.filterTextures = filterTextures
 
-		this.affineDistortionNode = affineDistortion;
+    this._materialCache = new Map()
+  }
 
-		this.filterTextures = filterTextures;
+  /**
+   * Updates the retro pass before rendering.
+   *
+   * @override
+   * @param {Frame} frame - The current frame information.
+   * @returns {void}
+   */
+  updateBefore(frame) {
+    const renderer = frame.renderer
 
-		this._materialCache = new Map();
+    const currentRenderObjectFunction = renderer.getRenderObjectFunction()
 
-	}
+    renderer.setRenderObjectFunction((object, scene, camera, geometry, material, ...params) => {
+      const retroMaterialData = this._materialCache.get(material)
 
-	/**
-	 * Updates the retro pass before rendering.
-	 *
-	 * @override
-	 * @param {Frame} frame - The current frame information.
-	 * @returns {void}
-	 */
-	updateBefore( frame ) {
+      let retroMaterial
 
-		const renderer = frame.renderer;
+      if (retroMaterialData === undefined || retroMaterialData.version !== material.version) {
+        if (retroMaterialData !== undefined) {
+          retroMaterialData.material.dispose()
+        }
 
-		const currentRenderObjectFunction = renderer.getRenderObjectFunction();
+        if (material.isMeshBasicMaterial || material.isMeshBasicNodeMaterial) {
+          retroMaterial = new MeshBasicNodeMaterial()
+        } else {
+          retroMaterial = new MeshPhongNodeMaterial()
+        }
 
-		renderer.setRenderObjectFunction( ( object, scene, camera, geometry, material, ...params ) => {
+        retroMaterial.colorNode = material.colorNode || null
+        retroMaterial.opacityNode = material.opacityNode || null
+        retroMaterial.positionNode = material.positionNode || null
+        retroMaterial.vertexNode = material.vertexNode || _clipSpaceRetro
 
-			const retroMaterialData = this._materialCache.get( material );
+        let colorNode = material.colorNode || materialColor
 
-			let retroMaterial;
+        if (material.isMeshStandardNodeMaterial || material.isMeshStandardMaterial) {
+          const envMap = material.envMap || scene.environment
 
-			if ( retroMaterialData === undefined || retroMaterialData.version !== material.version ) {
+          if (envMap) {
+            const reflection = new CubeMapNode(texture(envMap))
 
-				if ( retroMaterialData !== undefined ) {
+            let metalness
 
-					retroMaterialData.material.dispose();
+            if (material.metalnessNode) {
+              metalness = material.metalnessNode
+            } else {
+              metalness = uniform(material.metalness).onRenderUpdate(
+                ({ material }) => material.metalness
+              )
 
-				}
+              if (material.metalnessMap) {
+                const textureUniform = texture(material.metalnessMap).onRenderUpdate(
+                  ({ material }) => material.metalnessMap
+                )
 
-				if ( material.isMeshBasicMaterial || material.isMeshBasicNodeMaterial ) {
+                metalness = metalness.mul(textureUniform.b)
+              }
+            }
 
-					retroMaterial = new MeshBasicNodeMaterial();
+            colorNode = metalness.mix(colorNode, reflection)
+          }
+        }
 
-				} else {
+        retroMaterial.colorNode = colorNode
 
-					retroMaterial = new MeshPhongNodeMaterial();
+        //
 
-				}
+        const contextData = {}
 
-				retroMaterial.colorNode = material.colorNode || null;
-				retroMaterial.opacityNode = material.opacityNode || null;
-				retroMaterial.positionNode = material.positionNode || null;
-				retroMaterial.vertexNode = material.vertexNode || _clipSpaceRetro;
+        if (this.affineDistortionNode) {
+          contextData.getUV = texture => {
+            let finalUV
 
-				let colorNode = material.colorNode || materialColor;
-
-				if ( material.isMeshStandardNodeMaterial || material.isMeshStandardMaterial ) {
-
-					const envMap = material.envMap || scene.environment;
-
-					if ( envMap ) {
-
-						const reflection = new CubeMapNode( texture( envMap ) );
-
-						let metalness;
-
-						if ( material.metalnessNode ) {
-
-							metalness = material.metalnessNode;
-
-						} else {
-
-							metalness = uniform( material.metalness ).onRenderUpdate( ( { material } ) => material.metalness );
-
-							if ( material.metalnessMap ) {
-
-								const textureUniform = texture( material.metalnessMap ).onRenderUpdate( ( { material } ) => material.metalnessMap );
-
-								metalness = metalness.mul( textureUniform.b );
-
-							}
-
-						}
-
-						colorNode = metalness.mix( colorNode, reflection );
-
-					}
-
-				}
-
-				retroMaterial.colorNode = colorNode;
-
-				//
-
-				const contextData = {};
-
-				if ( this.affineDistortionNode ) {
-
-					contextData.getUV = ( texture ) => {
-
-						let finalUV;
-
-						if ( texture.isCubeTextureNode ) {
-
-							finalUV = reflectVector;
-
-						} else {
-
-							finalUV = this.affineDistortionNode.mix( uv(), _affineUv.div( _w ) );
-
-						}
-
-						return finalUV;
-
-					};
-
-				}
-
-				if ( this.filterTextures !== true ) {
-
-					contextData.getTextureLevel = () => uint( 0 );
-
-				}
-
-				retroMaterial.contextNode = context( contextData );
-
-				//
-
-				this._materialCache.set( material, {
-					material: retroMaterial,
-					version: material.version
-				} );
-
-			} else {
-
-				retroMaterial = retroMaterialData.material;
-
-			}
-
-			for ( const property in material ) {
-
-				if ( retroMaterial[ property ] === undefined ) continue;
-
-				retroMaterial[ property ] = material[ property ];
-
-			}
-
-			renderer.renderObject( object, scene, camera, geometry, retroMaterial, ...params );
-
-		} );
-
-		super.updateBefore( frame );
-
-		renderer.setRenderObjectFunction( currentRenderObjectFunction );
-
-	}
-
-	/**
-	 * Disposes the retro pass and its internal resources.
-	 *
-	 * @override
-	 * @returns {void}
-	 */
-	dispose() {
-
-		super.dispose();
-
-		this._materialCache.forEach( ( data ) => {
-
-			data.material.dispose();
-
-		} );
-
-		this._materialCache.clear();
-
-	}
-
+            if (texture.isCubeTextureNode) {
+              finalUV = reflectVector
+            } else {
+              finalUV = this.affineDistortionNode.mix(uv(), _affineUv.div(_w))
+            }
+
+            return finalUV
+          }
+        }
+
+        if (this.filterTextures !== true) {
+          contextData.getTextureLevel = () => uint(0)
+        }
+
+        retroMaterial.contextNode = context(contextData)
+
+        //
+
+        this._materialCache.set(material, {
+          material: retroMaterial,
+          version: material.version
+        })
+      } else {
+        retroMaterial = retroMaterialData.material
+      }
+
+      for (const property in material) {
+        if (retroMaterial[property] === undefined) continue
+
+        retroMaterial[property] = material[property]
+      }
+
+      renderer.renderObject(object, scene, camera, geometry, retroMaterial, ...params)
+    })
+
+    super.updateBefore(frame)
+
+    renderer.setRenderObjectFunction(currentRenderObjectFunction)
+  }
+
+  /**
+   * Disposes the retro pass and its internal resources.
+   *
+   * @override
+   * @returns {void}
+   */
+  dispose() {
+    super.dispose()
+
+    this._materialCache.forEach(data => {
+      data.material.dispose()
+    })
+
+    this._materialCache.clear()
+  }
 }
 
-export default RetroPassNode;
+export default RetroPassNode
 
 /**
  * Creates a new RetroPassNode instance for PS1-style rendering.
@@ -260,4 +237,4 @@ export default RetroPassNode;
  * @param {Node} [options.affineDistortion=null] - An optional node to apply affine distortion to UVs.
  * @return {RetroPassNode} A new RetroPassNode instance.
  */
-export const retroPass = ( scene, camera, options = {} ) => new RetroPassNode( scene, camera, options );
+export const retroPass = (scene, camera, options = {}) => new RetroPassNode(scene, camera, options)

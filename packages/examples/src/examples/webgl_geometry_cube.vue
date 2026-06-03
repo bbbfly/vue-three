@@ -14,7 +14,15 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { TCanvas, TScene, TPerspectiveCamera, TMeshBasicMaterial, TMesh, TBox, TTexture } from '@vue-three/vue-three'
+import {
+  TCanvas,
+  TScene,
+  TPerspectiveCamera,
+  TMeshBasicMaterial,
+  TMesh,
+  TBox,
+  TTexture
+} from '@vue-three/vue-three'
 
 const rotation = ref([0, 0, 0])
 

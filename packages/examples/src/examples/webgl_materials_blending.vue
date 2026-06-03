@@ -3,20 +3,29 @@
     <TScene :background="mapBg">
       <TPerspectiveCamera :position="[0, 0, 600]" :fov="70" />
 
-      <template v-for="(textureItem, textureIndex) in textureItems" :key="'texture-group-' + textureIndex">
-        <template v-for="(blending, blendingIndex) in blendings"
-          :key="'blending-' + textureIndex + '-' + blendingIndex">
+      <template
+        v-for="(textureItem, textureIndex) in textureItems"
+        :key="'texture-group-' + textureIndex"
+      >
+        <template
+          v-for="(blending, blendingIndex) in blendings"
+          :key="'blending-' + textureIndex + '-' + blendingIndex"
+        >
           <TMesh :position="[getX(blendingIndex), textureItem.y, 0]">
             <TPlane :args="[100, 100]" />
-            <TMeshBasicMaterial :transparent="true" :blending="blending.constant" :premultipliedAlpha="true">
-              <TTexture :url="textureItem.url" colorSpace="srgb" />
+            <TMeshBasicMaterial
+              :transparent="true"
+              :blending="blending.constant"
+              :premultiplied-alpha="true"
+            >
+              <TTexture :url="textureItem.url" color-space="srgb" />
             </TMeshBasicMaterial>
           </TMesh>
 
           <TMesh :position="[getX(blendingIndex), textureItem.y - 75, 0]">
             <TPlane :args="[100, 25]" />
             <TMeshBasicMaterial :transparent="true">
-              <TTexture :url="labelTextures[blendingIndex]" colorSpace="srgb" />
+              <TTexture :url="labelTextures[blendingIndex]" color-space="srgb" />
             </TMeshBasicMaterial>
           </TMesh>
         </template>
@@ -56,7 +65,6 @@ const textureItems = [
   { url: '/textures/lensflare/lensflare0.png', y: -150 },
   { url: '/textures/lensflare/lensflare0_alpha.png', y: -300 }
 ]
-
 
 function getX(index: number): number {
   return (index - blendings.length / 2) * 110
@@ -105,18 +113,16 @@ function generateLabelTexture(text: string): string {
 onMounted(() => {
   mapBg.value = createBackgroundTexture()
   labelTextures.value = blendings.map(b => generateLabelTexture(b.name))
-
 })
 
 function animate() {
   if (mapBg.value) {
     const time = Date.now() * 0.00025
-    const ox = ((time * -0.01 * mapBg.value.repeat.x) % 1 + 1) % 1
-    const oy = ((time * -0.01 * mapBg.value.repeat.y) % 1 + 1) % 1
+    const ox = (((time * -0.01 * mapBg.value.repeat.x) % 1) + 1) % 1
+    const oy = (((time * -0.01 * mapBg.value.repeat.y) % 1) + 1) % 1
     mapBg.value.offset.set(ox, oy)
   }
 }
-
 </script>
 
 <style scoped></style>

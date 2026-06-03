@@ -1,4 +1,4 @@
-import { MathUtils, SRGBColorSpace } from 'three';
+import { MathUtils, SRGBColorSpace } from 'three'
 
 /**
  * @module ColorUtils
@@ -20,57 +20,41 @@ import { MathUtils, SRGBColorSpace } from 'three';
  * @param {number} kelvin - Color temperature in Kelvin. Clamped to [1000, 40000].
  * @return {Color} The updated color.
  */
-function setKelvin( color, kelvin ) {
+function setKelvin(color, kelvin) {
+  // Algorithm by Tanner Helland (2012). Inputs are divided by 100.
+  const temp = MathUtils.clamp(kelvin, 1000, 40000) / 100
 
-	// Algorithm by Tanner Helland (2012). Inputs are divided by 100.
-	const temp = MathUtils.clamp( kelvin, 1000, 40000 ) / 100;
+  let r, g, b
 
-	let r, g, b;
+  // Red channel
+  if (temp <= 66) {
+    r = 255
+  } else {
+    r = 329.698727446 * Math.pow(temp - 60, -0.1332047592)
+  }
 
-	// Red channel
-	if ( temp <= 66 ) {
+  // Green channel
+  if (temp <= 66) {
+    g = 99.4708025861 * Math.log(temp) - 161.1195681661
+  } else {
+    g = 288.1221695283 * Math.pow(temp - 60, -0.0755148492)
+  }
 
-		r = 255;
+  // Blue channel
+  if (temp >= 66) {
+    b = 255
+  } else if (temp <= 19) {
+    b = 0
+  } else {
+    b = 138.5177312231 * Math.log(temp - 10) - 305.0447927307
+  }
 
-	} else {
-
-		r = 329.698727446 * Math.pow( temp - 60, - 0.1332047592 );
-
-	}
-
-	// Green channel
-	if ( temp <= 66 ) {
-
-		g = 99.4708025861 * Math.log( temp ) - 161.1195681661;
-
-	} else {
-
-		g = 288.1221695283 * Math.pow( temp - 60, - 0.0755148492 );
-
-	}
-
-	// Blue channel
-	if ( temp >= 66 ) {
-
-		b = 255;
-
-	} else if ( temp <= 19 ) {
-
-		b = 0;
-
-	} else {
-
-		b = 138.5177312231 * Math.log( temp - 10 ) - 305.0447927307;
-
-	}
-
-	return color.setRGB(
-		MathUtils.clamp( r, 0, 255 ) / 255,
-		MathUtils.clamp( g, 0, 255 ) / 255,
-		MathUtils.clamp( b, 0, 255 ) / 255,
-		SRGBColorSpace
-	);
-
+  return color.setRGB(
+    MathUtils.clamp(r, 0, 255) / 255,
+    MathUtils.clamp(g, 0, 255) / 255,
+    MathUtils.clamp(b, 0, 255) / 255,
+    SRGBColorSpace
+  )
 }
 
-export { setKelvin };
+export { setKelvin }

@@ -1,20 +1,40 @@
 <template>
   <TCanvas ref="canvasRef" antialias :background="0x000000">
     <TScene ref="sceneRef">
-      <TPerspectiveCamera ref="cameraRef" :fov="30" :near="1" :far="1500" :position="[0, 400, 700]" />
+      <TPerspectiveCamera
+        ref="cameraRef"
+        :fov="30"
+        :near="1"
+        :far="1500"
+        :position="[0, 400, 700]"
+      />
 
       <TDirectionalLight :intensity="0.4" :position="[0, 0, 1]" normalize />
-      <TPointLight ref="pointLightRef" :intensity="4.5" :distance="0" :decay="0" :color="pointLightColor"
-        :position="[0, 100, 90]" />
+      <TPointLight
+        ref="pointLightRef"
+        :intensity="4.5"
+        :distance="0"
+        :decay="0"
+        :color="pointLightColor"
+        :position="[0, 100, 90]"
+      />
 
       <TGroup ref="groupRef" :position="[0, 100, 0]">
-        <TMesh v-if="textMesh1 && font" :ref="textMesh1Ref" :position="[centerOffset, hover, 0]"
-          :rotation="[0, Math.PI * 2, 0]">
+        <TMesh
+          v-if="textMesh1 && font"
+          :ref="textMesh1Ref"
+          :position="[centerOffset, hover, 0]"
+          :rotation="[0, Math.PI * 2, 0]"
+        >
           <TTextGeometry :text="currentText" :font="font" :args="textGeometryParams" />
           <TMeshPhongMaterial :color="0xffffff" :flat-shading="true" />
         </TMesh>
-        <TMesh v-if="textMesh2 && font" :ref="textMesh2Ref" :position="[centerOffset, -hover, depth]"
-          :rotation="[Math.PI, Math.PI * 2, 0]">
+        <TMesh
+          v-if="textMesh2 && font"
+          :ref="textMesh2Ref"
+          :position="[centerOffset, -hover, depth]"
+          :rotation="[Math.PI, Math.PI * 2, 0]"
+        >
           <TTextGeometry :text="currentText" :font="font" :args="textGeometryParams" />
           <TMeshPhongMaterial :color="0xffffff" :flat-shading="true" />
         </TMesh>
@@ -68,16 +88,16 @@ const bevelSize = 1.5
 const mirror = true
 
 const fontMap: Record<string, number> = {
-  'helvetiker': 0,
-  'optimer': 1,
-  'gentilis': 2,
+  helvetiker: 0,
+  optimer: 1,
+  gentilis: 2,
   'droid/droid_sans': 3,
   'droid/droid_serif': 4
 }
 
 const weightMap: Record<string, number> = {
-  'regular': 0,
-  'bold': 1
+  regular: 0,
+  bold: 1
 }
 
 const reverseFontMap: string[] = []
@@ -140,14 +160,17 @@ const refreshText = () => {
   }, 50)
 }
 
-watch([currentText, font, bevelEnabled], () => {
-  refreshText()
-}, { deep: true })
+watch(
+  [currentText, font, bevelEnabled],
+  () => {
+    refreshText()
+  },
+  { deep: true }
+)
 
 onMounted(() => {
   loadFont()
 })
-
 </script>
 
 <style scoped></style>

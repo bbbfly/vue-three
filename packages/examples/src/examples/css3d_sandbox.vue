@@ -1,26 +1,42 @@
 <template>
   <TCanvas antialias :clear-color="'#f0f0f0'">
     <TScene>
-      <TPerspectiveCamera :fov="45" :near="1" :far="1000" :position="[200, 200, 200]" ref="cameraRef" />
+      <TPerspectiveCamera
+        ref="cameraRef"
+        :fov="45"
+        :near="1"
+        :far="1000"
+        :position="[200, 200, 200]"
+      />
       <TTrackballControls ref="controlsRef" />
 
-      <TMesh v-for="(item, index) in meshItems" :key="'mesh-' + index" :position="item.position"
-        :rotation="item.rotation" :scale="item.scale">
+      <TMesh
+        v-for="(item, index) in meshItems"
+        :key="'mesh-' + index"
+        :position="item.position"
+        :rotation="item.rotation"
+        :scale="item.scale"
+      >
         <TPlane :args="[100, 100]" />
         <TMeshBasicMaterial :color="0x000000" :wireframe="true" :side="THREE.DoubleSide" />
       </TMesh>
     </TScene>
     <TCSS3DRenderer ref="cssRendererRef" class="css3d-renderer">
-      <TCSS3DObject v-for="(item, index) in cssItems" :key="'css-' + index" :position="item.position"
-        :rotation="item.rotation" :scale="item.scale" :style="{
+      <TCSS3DObject
+        v-for="(item, index) in cssItems"
+        :key="'css-' + index"
+        :position="item.position"
+        :rotation="item.rotation"
+        :scale="item.scale"
+        :style="{
           width: '100px',
           height: '100px',
           opacity: item.opacity,
           backgroundColor: item.color
-        }" />
+        }"
+      />
     </TCSS3DRenderer>
   </TCanvas>
-
 </template>
 
 <script setup lang="ts">

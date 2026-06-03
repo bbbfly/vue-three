@@ -1,15 +1,25 @@
 <template>
-  <TCanvas ref="canvasRef" antialias :localClippingEnabled="true" @animate="onAnimate">
+  <TCanvas ref="canvasRef" antialias :local-clipping-enabled="true" @animate="onAnimate">
     <TScene>
       <TPerspectiveCamera :position="[-1.5, 2.5, 3.0]" :fov="40" :near="1" :far="200" />
 
-      <THemisphereLight :color="0xffffff" :groundColor="0x080808" :intensity="4.5" :position="[-1.25, 1, 1.25]" />
+      <THemisphereLight
+        :color="0xffffff"
+        :ground-color="0x080808"
+        :intensity="4.5"
+        :position="[-1.25, 1, 1.25]"
+      />
 
       <TGroup>
         <TMesh v-for="(sphere, index) in spheres" :key="index" :position="sphere.position">
           <TSphere :args="[sphere.radius, 48, 24]" />
-          <TMeshPhongMaterial :color="sphere.color" :side="THREE.DoubleSide" :clippingPlanes="clipPlanes"
-            :clipIntersection="clipIntersection" :alphaToCoverage="alphaToCoverage" />
+          <TMeshPhongMaterial
+            :color="sphere.color"
+            :side="THREE.DoubleSide"
+            :clipping-planes="clipPlanes"
+            :clip-intersection="clipIntersection"
+            :alpha-to-coverage="alphaToCoverage"
+          />
         </TMesh>
       </TGroup>
 
@@ -20,7 +30,7 @@
       </TGroup>
     </TScene>
 
-    <TOrbitControls :minDistance="1" :maxDistance="10" :enablePan="false" />
+    <TOrbitControls :min-distance="1" :max-distance="10" :enable-pan="false" />
   </TCanvas>
 </template>
 
@@ -68,8 +78,7 @@ function initSpheres() {
   spheres.value = result
 }
 
-function onAnimate() {
-}
+function onAnimate() {}
 
 let gui: GUI | null = null
 
@@ -78,24 +87,36 @@ onMounted(() => {
 
   gui = new GUI()
 
-  gui.add({ alphaToCoverage: alphaToCoverage.value }, 'alphaToCoverage').onChange((value: boolean) => {
-    alphaToCoverage.value = value
-  })
+  gui
+    .add({ alphaToCoverage: alphaToCoverage.value }, 'alphaToCoverage')
+    .onChange((value: boolean) => {
+      alphaToCoverage.value = value
+    })
 
-  gui.add({ clipIntersection: clipIntersection.value }, 'clipIntersection').name('clip intersection').onChange((value: boolean) => {
-    clipIntersection.value = value
-  })
+  gui
+    .add({ clipIntersection: clipIntersection.value }, 'clipIntersection')
+    .name('clip intersection')
+    .onChange((value: boolean) => {
+      clipIntersection.value = value
+    })
 
-  gui.add({ planeConstant: planeConstant.value }, 'planeConstant', -1, 1).step(0.01).name('plane constant').onChange((value: number) => {
-    planeConstant.value = value
-    for (let j = 0; j < clipPlanes.length; j++) {
-      clipPlanes[j].constant = value
-    }
-  })
+  gui
+    .add({ planeConstant: planeConstant.value }, 'planeConstant', -1, 1)
+    .step(0.01)
+    .name('plane constant')
+    .onChange((value: number) => {
+      planeConstant.value = value
+      for (let j = 0; j < clipPlanes.length; j++) {
+        clipPlanes[j].constant = value
+      }
+    })
 
-  gui.add({ showHelpers: showHelpers.value }, 'showHelpers').name('show helpers').onChange((value: boolean) => {
-    showHelpers.value = value
-  })
+  gui
+    .add({ showHelpers: showHelpers.value }, 'showHelpers')
+    .name('show helpers')
+    .onChange((value: boolean) => {
+      showHelpers.value = value
+    })
 
   window.addEventListener('resize', onWindowResize)
 })

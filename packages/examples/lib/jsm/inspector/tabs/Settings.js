@@ -1,264 +1,212 @@
-import { Parameters } from './Parameters.js';
-import { WebGPURenderer, WebGLBackend, Node } from 'three/webgpu';
-import { getItem, setItem } from '../Inspector.js';
+import { Parameters } from './Parameters.js'
+import { WebGPURenderer, WebGLBackend, Node } from 'three/webgpu'
+import { getItem, setItem } from '../Inspector.js'
 
-const _EXTENSIONS_PATH = '../extensions/extensions.json';
+const _EXTENSIONS_PATH = '../extensions/extensions.json'
 
-const _init = WebGPURenderer.prototype.init;
+const _init = WebGPURenderer.prototype.init
 
-function forceWebGL( enable ) {
+function forceWebGL(enable) {
+  if (enable) {
+    WebGPURenderer.prototype.init = async function () {
+      if (this.backend.isWebGLBackend !== true) {
+        const parameters = this.backend.parameters
 
-	if ( enable ) {
+        this.backend = new WebGLBackend(parameters)
+      }
 
-		WebGPURenderer.prototype.init = async function () {
-
-			if ( this.backend.isWebGLBackend !== true ) {
-
-				const parameters = this.backend.parameters;
-
-				this.backend = new WebGLBackend( parameters );
-
-			}
-
-			return _init.call( this );
-
-		};
-
-	} else {
-
-		WebGPURenderer.prototype.init = _init;
-
-	}
-
+      return _init.call(this)
+    }
+  } else {
+    WebGPURenderer.prototype.init = _init
+  }
 }
 
-let _state = null;
+let _state = null
 
 function _loadState() {
+  if (_state !== null) return _state
 
-	if ( _state !== null ) return _state;
+  const settings = getItem('settings')
 
-	const settings = getItem( 'settings' );
+  _state = {
+    forceWebGL: settings.forceWebGL !== undefined ? settings.forceWebGL : false,
+    captureStackTrace:
+      settings.captureStackTrace !== undefined ? settings.captureStackTrace : false,
+    activeExtensions: settings.activeExtensions !== undefined ? settings.activeExtensions : {}
+  }
 
-	_state = {
-		forceWebGL: settings.forceWebGL !== undefined ? settings.forceWebGL : false,
-		captureStackTrace: settings.captureStackTrace !== undefined ? settings.captureStackTrace : false,
-		activeExtensions: settings.activeExtensions !== undefined ? settings.activeExtensions : {}
-	};
+  if (_state.forceWebGL) {
+    forceWebGL(true)
+  }
 
-	if ( _state.forceWebGL ) {
+  if (_state.captureStackTrace) {
+    Node.captureStackTrace = true
+  }
 
-		forceWebGL( true );
-
-	}
-
-	if ( _state.captureStackTrace ) {
-
-		Node.captureStackTrace = true;
-
-	}
-
-	return _state;
-
+  return _state
 }
 
 function _saveState() {
-
-	setItem( 'settings', {
-		forceWebGL: _state.forceWebGL,
-		captureStackTrace: _state.captureStackTrace,
-		activeExtensions: _state.activeExtensions
-	} );
-
+  setItem('settings', {
+    forceWebGL: _state.forceWebGL,
+    captureStackTrace: _state.captureStackTrace,
+    activeExtensions: _state.activeExtensions
+  })
 }
 
-_loadState();
+_loadState()
 
 //
 
 class Settings extends Parameters {
+  constructor() {
+    super({ name: 'Settings' })
+
+    this.extensions = {}
 
-	constructor() {
+    const currentState = _loadState()
 
-		super( { name: 'Settings' } );
+    // UI
 
-		this.extensions = {};
+    const rendererGroup = this.createGroup('Renderer')
 
-		const currentState = _loadState();
+    rendererGroup
+      .add(currentState, 'forceWebGL')
+      .name('Force WebGL')
+      .onChange(enable => {
+        forceWebGL(enable)
+        _saveState()
 
-		// UI
+        location.reload()
+      })
 
-		const rendererGroup = this.createGroup( 'Renderer' );
+    rendererGroup
+      .add(currentState, 'captureStackTrace')
+      .name('Capture Stack Trace')
+      .onChange(enable => {
+        Node.captureStackTrace = enable
+        _saveState()
 
-		rendererGroup.add( currentState, 'forceWebGL' ).name( 'Force WebGL' ).onChange( ( enable ) => {
+        location.reload()
+      })
+  }
 
-			forceWebGL( enable );
-			_saveState();
+  init() {
+    const extensionsGroup = this.createGroup('Extensions')
 
-			location.reload();
+    this._getExtensions().then(extensions => {
+      for (const extension of extensions) {
+        extension.active = false
+        extension.loaded = false
+        extension.tab = null
 
-		} );
+        this.extensions[extension.name] = extension
 
-		rendererGroup.add( currentState, 'captureStackTrace' ).name( 'Capture Stack Trace' ).onChange( ( enable ) => {
+        extension.ui = extensionsGroup
+          .add({ [extension.name]: false }, extension.name)
+          .onChange(async value => {
+            this.setActiveExtension(extension.name, value)
 
-			Node.captureStackTrace = enable;
-			_saveState();
+            // User preference
 
-			location.reload();
+            if (value) {
+              _state.activeExtensions[extension.name] = {
+                name: extension.name,
+                url: extension.url
+              }
+            } else {
+              delete _state.activeExtensions[extension.name]
+            }
 
-		} );
+            //
 
-	}
+            this._updateExtensionUI(extension)
 
-	init() {
+            _saveState()
+          })
 
-		const extensionsGroup = this.createGroup( 'Extensions' );
+        // Set user-defined state
 
-		this._getExtensions().then( extensions => {
+        if (_state.activeExtensions[extension.name] !== undefined) {
+          extension.ui.setValue(true)
+        }
+      }
+    })
+  }
 
-			for ( const extension of extensions ) {
+  async setActiveExtension(name, value) {
+    const extension = this.extensions[name]
+    const inspector = this.inspector
 
-				extension.active = false;
-				extension.loaded = false;
-				extension.tab = null;
+    if (extension) {
+      if (value) {
+        await this._loadExtension(inspector, extension)
+      } else {
+        await this._unloadExtension(inspector, extension)
+      }
+    }
+  }
 
-				this.extensions[ extension.name ] = extension;
+  _updateExtensionUI(extension) {
+    const forceActive = extension.active && _state.activeExtensions[extension.name] === undefined
 
-				extension.ui = extensionsGroup.add( { [ extension.name ]: false }, extension.name ).onChange( async ( value ) => {
+    if (forceActive) {
+      extension.ui.checkbox.checked = true
+      extension.ui.domElement.style.setProperty('--accent-color', 'var(--color-green)')
+    } else {
+      extension.ui.domElement.style.removeProperty('--accent-color')
+    }
+  }
 
-					this.setActiveExtension( extension.name, value );
+  async _unloadExtension(inspector, extension) {
+    if (extension.active === false) return
 
-					// User preference
+    //
 
-					if ( value ) {
+    inspector.removeTab(extension.tab)
 
-						_state.activeExtensions[ extension.name ] = {
-							name: extension.name,
-							url: extension.url
-						};
+    extension.active = false
+    extension.loaded = false
+    extension.tab = null
 
-					} else {
+    this._updateExtensionUI(extension)
 
-						delete _state.activeExtensions[ extension.name ];
+    this.dispatchEvent({ type: 'extensionremoved', name: extension.name })
+  }
 
+  async _loadExtension(inspector, extension) {
+    if (extension.active === true) return
 
-					}
+    //
 
-					//
+    extension.active = true
 
-					this._updateExtensionUI( extension );
+    const extUrl = new URL(extension.url, new URL(_EXTENSIONS_PATH, import.meta.url)).href
 
-					_saveState();
+    const module = await import(extUrl)
 
-				} );
+    const keys = Object.keys(module)
+    const ExtensionClass = module[keys[0]]
+    const extensionTab = new ExtensionClass()
 
-				// Set user-defined state
+    inspector.addTab(extensionTab)
 
-				if ( _state.activeExtensions[ extension.name ] !== undefined ) {
+    extension.loaded = true
+    extension.tab = extensionTab
 
-					extension.ui.setValue( true );
+    this._updateExtensionUI(extension)
 
-				}
+    this.dispatchEvent({ type: 'extensionadded', name: extension.name, tab: extensionTab })
+  }
 
-			}
+  async _getExtensions() {
+    const url = new URL(_EXTENSIONS_PATH, import.meta.url)
 
-		} );
+    const extensions = await fetch(url).then(res => res.json())
 
-	}
-
-	async setActiveExtension( name, value ) {
-
-		const extension = this.extensions[ name ];
-		const inspector = this.inspector;
-
-		if ( extension ) {
-
-			if ( value ) {
-
-				await this._loadExtension( inspector, extension );
-
-			} else {
-
-				await this._unloadExtension( inspector, extension );
-
-			}
-
-		}
-
-	}
-
-	_updateExtensionUI( extension ) {
-
-		const forceActive = extension.active && _state.activeExtensions[ extension.name ] === undefined;
-
-		if ( forceActive ) {
-
-			extension.ui.checkbox.checked = true;
-			extension.ui.domElement.style.setProperty( '--accent-color', 'var(--color-green)' );
-
-		} else {
-
-			extension.ui.domElement.style.removeProperty( '--accent-color' );
-
-		}
-
-	}
-
-	async _unloadExtension( inspector, extension ) {
-
-		if ( extension.active === false ) return;
-
-		//
-
-		inspector.removeTab( extension.tab );
-
-		extension.active = false;
-		extension.loaded = false;
-		extension.tab = null;
-
-		this._updateExtensionUI( extension );
-
-		this.dispatchEvent( { type: 'extensionremoved', name: extension.name } );
-
-	}
-
-	async _loadExtension( inspector, extension ) {
-
-		if ( extension.active === true ) return;
-
-		//
-
-		extension.active = true;
-
-		const extUrl = new URL( extension.url, new URL( _EXTENSIONS_PATH, import.meta.url ) ).href;
-
-		const module = await import( extUrl );
-
-		const keys = Object.keys( module );
-		const ExtensionClass = module[ keys[ 0 ] ];
-		const extensionTab = new ExtensionClass();
-
-		inspector.addTab( extensionTab );
-
-		extension.loaded = true;
-		extension.tab = extensionTab;
-
-		this._updateExtensionUI( extension );
-
-		this.dispatchEvent( { type: 'extensionadded', name: extension.name, tab: extensionTab } );
-
-	}
-
-	async _getExtensions() {
-
-		const url = new URL( _EXTENSIONS_PATH, import.meta.url );
-
-		const extensions = await fetch( url ).then( res => res.json() );
-
-		return extensions;
-
-	}
-
+    return extensions
+  }
 }
 
-export { Settings };
+export { Settings }

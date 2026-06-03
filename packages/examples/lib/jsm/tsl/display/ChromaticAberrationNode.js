@@ -1,12 +1,5 @@
-import { TempNode } from 'three/webgpu';
-import {
-	nodeObject,
-	Fn,
-	convertToTexture,
-	float,
-	vec4,
-	uv,
-} from 'three/tsl';
+import { TempNode } from 'three/webgpu'
+import { nodeObject, Fn, convertToTexture, float, vec4, uv } from 'three/tsl'
 
 /**
  * Post processing node for applying chromatic aberration effect.
@@ -17,137 +10,120 @@ import {
  * @three_import import { chromaticAberration } from 'three/addons/tsl/display/ChromaticAberrationNode.js';
  */
 class ChromaticAberrationNode extends TempNode {
+  static get type() {
+    return 'ChromaticAberrationNode'
+  }
 
-	static get type() {
+  /**
+   * Constructs a new chromatic aberration node.
+   *
+   * @param {TextureNode} textureNode - The texture node that represents the input of the effect.
+   * @param {Node} strengthNode - The strength of the chromatic aberration effect as a node.
+   * @param {Node} centerNode - The center point of the effect as a node.
+   * @param {Node} scaleNode - The scale factor for stepped scaling from center as a node.
+   */
+  constructor(textureNode, strengthNode, centerNode, scaleNode) {
+    super('vec4')
 
-		return 'ChromaticAberrationNode';
+    /**
+     * The texture node that represents the input of the effect.
+     *
+     * @type {texture}
+     */
+    this.textureNode = textureNode
 
-	}
+    /**
+     * A node holding the strength of the effect.
+     *
+     * @type {Node}
+     */
+    this.strengthNode = strengthNode
 
-	/**
-	 * Constructs a new chromatic aberration node.
-	 *
-	 * @param {TextureNode} textureNode - The texture node that represents the input of the effect.
-	 * @param {Node} strengthNode - The strength of the chromatic aberration effect as a node.
-	 * @param {Node} centerNode - The center point of the effect as a node.
-	 * @param {Node} scaleNode - The scale factor for stepped scaling from center as a node.
-	 */
-	constructor( textureNode, strengthNode, centerNode, scaleNode ) {
+    /**
+     * A node holding the center point of the effect.
+     *
+     * @type {Node}
+     */
+    this.centerNode = centerNode
 
-		super( 'vec4' );
+    /**
+     * A node holding the scale factor for stepped scaling.
+     *
+     * @type {Node}
+     */
+    this.scaleNode = scaleNode
+  }
 
-		/**
-		 * The texture node that represents the input of the effect.
-		 *
-		 * @type {texture}
-		 */
-		this.textureNode = textureNode;
+  /**
+   * This method is used to setup the effect's TSL code.
+   *
+   * @param {NodeBuilder} builder - The current node builder.
+   * @return {ShaderCallNodeInternal}
+   */
+  setup(/* builder */) {
+    const textureNode = this.textureNode
+    const uvNode = textureNode.uvNode || uv()
 
-		/**
-		 * A node holding the strength of the effect.
-		 *
-		 * @type {Node}
-		 */
-		this.strengthNode = strengthNode;
+    const ApplyChromaticAberration = Fn(([uv, strength, center, scale]) => {
+      // Calculate distance from center
+      const offset = uv.sub(center)
+      const distance = offset.length()
 
-		/**
-		 * A node holding the center point of the effect.
-		 *
-		 * @type {Node}
-		 */
-		this.centerNode = centerNode;
+      // Create stepped scaling zones based on distance
+      // Each channel gets different scaling steps
+      const redScale = float(1.0).add(scale.mul(0.02).mul(strength)) // Red channel scaled outward
+      const greenScale = float(1.0) // Green stays at original scale
+      const blueScale = float(1.0).sub(scale.mul(0.02).mul(strength)) // Blue channel scaled inward
 
-		/**
-		 * A node holding the scale factor for stepped scaling.
-		 *
-		 * @type {Node}
-		 */
-		this.scaleNode = scaleNode;
+      // Create radial distortion based on distance from center
+      const aberrationStrength = strength.mul(distance)
 
-	}
+      // Calculate scaled UV coordinates for each channel
+      const redUV = center.add(offset.mul(redScale))
+      const greenUV = center.add(offset.mul(greenScale))
+      const blueUV = center.add(offset.mul(blueScale))
 
-	/**
-	 * This method is used to setup the effect's TSL code.
-	 *
-	 * @param {NodeBuilder} builder - The current node builder.
-	 * @return {ShaderCallNodeInternal}
-	 */
-	setup( /* builder */ ) {
+      // Apply additional chromatic offset based on aberration strength
+      const rOffset = offset.mul(aberrationStrength).mul(float(0.01))
+      const gOffset = offset.mul(aberrationStrength).mul(float(0.0))
+      const bOffset = offset.mul(aberrationStrength).mul(float(-0.01))
 
-		const textureNode = this.textureNode;
-		const uvNode = textureNode.uvNode || uv();
+      // Final UV coordinates combining scale and chromatic aberration
+      const finalRedUV = redUV.add(rOffset)
+      const finalGreenUV = greenUV.add(gOffset)
+      const finalBlueUV = blueUV.add(bOffset)
 
-		const ApplyChromaticAberration = Fn( ( [ uv, strength, center, scale ] ) => {
+      // Sample texture for each channel
+      const r = textureNode.sample(finalRedUV).r
+      const g = textureNode.sample(finalGreenUV).g
+      const b = textureNode.sample(finalBlueUV).b
 
-			// Calculate distance from center
-			const offset = uv.sub( center );
-			const distance = offset.length();
+      // Get original alpha
+      const a = textureNode.sample(uv).a
 
-			// Create stepped scaling zones based on distance
-			// Each channel gets different scaling steps
-			const redScale = float( 1.0 ).add( scale.mul( 0.02 ).mul( strength ) ); // Red channel scaled outward
-			const greenScale = float( 1.0 ); // Green stays at original scale
-			const blueScale = float( 1.0 ).sub( scale.mul( 0.02 ).mul( strength ) ); // Blue channel scaled inward
+      return vec4(r, g, b, a)
+    }).setLayout({
+      name: 'ChromaticAberrationShader',
+      type: 'vec4',
+      inputs: [
+        { name: 'uv', type: 'vec2' },
+        { name: 'strength', type: 'float' },
+        { name: 'center', type: 'vec2' },
+        { name: 'scale', type: 'float' }
+      ]
+    })
 
-			// Create radial distortion based on distance from center
-			const aberrationStrength = strength.mul( distance );
+    const chromaticAberrationFn = Fn(() => {
+      return ApplyChromaticAberration(uvNode, this.strengthNode, this.centerNode, this.scaleNode)
+    })
 
-			// Calculate scaled UV coordinates for each channel
-			const redUV = center.add( offset.mul( redScale ) );
-			const greenUV = center.add( offset.mul( greenScale ) );
-			const blueUV = center.add( offset.mul( blueScale ) );
+    const outputNode = chromaticAberrationFn()
 
-			// Apply additional chromatic offset based on aberration strength
-			const rOffset = offset.mul( aberrationStrength ).mul( float( 0.01 ) );
-			const gOffset = offset.mul( aberrationStrength ).mul( float( 0.0 ) );
-			const bOffset = offset.mul( aberrationStrength ).mul( float( - 0.01 ) );
-
-			// Final UV coordinates combining scale and chromatic aberration
-			const finalRedUV = redUV.add( rOffset );
-			const finalGreenUV = greenUV.add( gOffset );
-			const finalBlueUV = blueUV.add( bOffset );
-
-			// Sample texture for each channel
-			const r = textureNode.sample( finalRedUV ).r;
-			const g = textureNode.sample( finalGreenUV ).g;
-			const b = textureNode.sample( finalBlueUV ).b;
-
-			// Get original alpha
-			const a = textureNode.sample( uv ).a;
-
-			return vec4( r, g, b, a );
-
-		} ).setLayout( {
-			name: 'ChromaticAberrationShader',
-			type: 'vec4',
-			inputs: [
-				{ name: 'uv', type: 'vec2' },
-				{ name: 'strength', type: 'float' },
-				{ name: 'center', type: 'vec2' },
-				{ name: 'scale', type: 'float' }
-			]
-		} );
-
-		const chromaticAberrationFn = Fn( () => {
-
-			return ApplyChromaticAberration(
-				uvNode,
-				this.strengthNode,
-				this.centerNode,
-				this.scaleNode
-			);
-
-		} );
-
-		const outputNode = chromaticAberrationFn();
-
-		return outputNode;
-
-	}
-
+    return outputNode
+  }
 }
 
-export default ChromaticAberrationNode;
+export default ChromaticAberrationNode
 
 /**
  * TSL function for creating a chromatic aberration node for post processing.
@@ -160,15 +136,13 @@ export default ChromaticAberrationNode;
  * @param {Node|number} [scale=1.1] - The scale factor for stepped scaling from center as a node or value.
  * @returns {ChromaticAberrationNode}
  */
-export const chromaticAberration = ( node, strength = 1.0, center = null, scale = 1.1 ) => {
-
-	return nodeObject(
-		new ChromaticAberrationNode(
-			convertToTexture( node ),
-			nodeObject( strength ),
-			nodeObject( center ),
-			nodeObject( scale )
-		)
-	);
-
-};
+export const chromaticAberration = (node, strength = 1.0, center = null, scale = 1.1) => {
+  return nodeObject(
+    new ChromaticAberrationNode(
+      convertToTexture(node),
+      nodeObject(strength),
+      nodeObject(center),
+      nodeObject(scale)
+    )
+  )
+}

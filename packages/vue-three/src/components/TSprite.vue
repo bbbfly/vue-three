@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import type { PropType } from 'vue'
@@ -356,27 +356,72 @@ watch(() => props.scale, updateSpriteTransform, { deep: true })
 watch(() => props.visible, updateSpriteTransform)
 watch(() => props.renderOrder, updateSpriteTransform)
 
-watch(() => props.color, () => updateSpriteMaterial())
-watch(() => props.opacity, () => updateSpriteMaterial())
-watch(() => props.transparent, () => updateSpriteMaterial())
-watch(() => props.rotation, () => updateSpriteMaterial())
-watch(() => props.fog, () => updateSpriteMaterial())
-watch(() => props.depthTest, () => updateSpriteMaterial())
-watch(() => props.depthWrite, () => updateSpriteMaterial())
-watch(() => props.sizeAttenuation, () => updateSpriteMaterial())
-watch(() => props.blending, () => updateSpriteMaterial())
-watch(() => props.clip, () => updateSpriteMaterial())
-watch(() => props.borderRadius, () => updateSpriteMaterial())
-watch(() => props.tint, () => updateSpriteMaterial())
-watch(() => props.minDistance, () => updateSpriteMaterial())
-watch(() => props.maxDistance, () => updateSpriteMaterial())
+watch(
+  () => props.color,
+  () => updateSpriteMaterial()
+)
+watch(
+  () => props.opacity,
+  () => updateSpriteMaterial()
+)
+watch(
+  () => props.transparent,
+  () => updateSpriteMaterial()
+)
+watch(
+  () => props.rotation,
+  () => updateSpriteMaterial()
+)
+watch(
+  () => props.fog,
+  () => updateSpriteMaterial()
+)
+watch(
+  () => props.depthTest,
+  () => updateSpriteMaterial()
+)
+watch(
+  () => props.depthWrite,
+  () => updateSpriteMaterial()
+)
+watch(
+  () => props.sizeAttenuation,
+  () => updateSpriteMaterial()
+)
+watch(
+  () => props.blending,
+  () => updateSpriteMaterial()
+)
+watch(
+  () => props.clip,
+  () => updateSpriteMaterial()
+)
+watch(
+  () => props.borderRadius,
+  () => updateSpriteMaterial()
+)
+watch(
+  () => props.tint,
+  () => updateSpriteMaterial()
+)
+watch(
+  () => props.minDistance,
+  () => updateSpriteMaterial()
+)
+watch(
+  () => props.maxDistance,
+  () => updateSpriteMaterial()
+)
 
-watch(() => props.center, (newCenter) => {
-  if (!sprite.value || props.config) return
-  if (newCenter) {
-    setCenter(newCenter)
+watch(
+  () => props.center,
+  newCenter => {
+    if (!sprite.value || props.config) return
+    if (newCenter) {
+      setCenter(newCenter)
+    }
   }
-})
+)
 
 /**
  * 监听精灵实例和事件回调，注册交互事件

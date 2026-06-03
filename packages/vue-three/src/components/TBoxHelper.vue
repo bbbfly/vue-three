@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import type { PropType } from 'vue'
@@ -71,7 +71,7 @@ watch(
   () => props.color,
   newColor => {
     if (helperInstance) {
-      ; (helperInstance.material as any).color = new Color(newColor)
+      ;(helperInstance.material as any).color = new Color(newColor)
     }
   }
 )

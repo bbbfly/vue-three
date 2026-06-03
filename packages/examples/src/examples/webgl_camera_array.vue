@@ -2,22 +2,27 @@
   <TCanvas ref="canvasRef" :camera="null" @animate="onAnimate">
     <TScene ref="scene">
       <TAmbientLight color="#999999" />
-      <TDirectionalLight :color="'#ffffff'" :intensity="3" :position="[0.5, 0.5, 1]" :castShadow="true">
+      <TDirectionalLight
+        :color="'#ffffff'"
+        :intensity="3"
+        :position="[0.5, 0.5, 1]"
+        :cast-shadow="true"
+      >
       </TDirectionalLight>
-      <TMesh :position="[0, 0, -1]" :receiveShadow="true">
+      <TMesh :position="[0, 0, -1]" :receive-shadow="true">
         <TPlane :args="[100, 100]" />
         <TMeshPhongMaterial color="#000066" />
       </TMesh>
-      <TMesh ref="mesh" :castShadow="true" :receiveShadow="true">
+      <TMesh ref="mesh" :cast-shadow="true" :receive-shadow="true">
         <TCylinder :args="[0.5, 0.5, 1, 32]" />
         <TMeshPhongMaterial color="#ff0000" />
       </TMesh>
-      <TArrayCamera ref="arrayCamera" :position="[0, 0, 3]" :subCameras="subCameras" />
+      <TArrayCamera ref="arrayCamera" :position="[0, 0, 3]" :sub-cameras="subCameras" />
     </TScene>
   </TCanvas>
 </template>
 
-<script setup lang='ts'>
+<script setup lang="ts">
 import * as THREE from 'three'
 import { ref, onMounted, nextTick } from 'vue'
 import {
@@ -29,7 +34,7 @@ import {
   TPlane,
   TMeshPhongMaterial,
   TCylinder,
-  TArrayCamera,
+  TArrayCamera
 } from '@vue-three/vue-three'
 const canvasRef = ref<TCanvas>()
 const AMOUNT = 6
@@ -58,8 +63,13 @@ onMounted(async () => {
         near: 0.1,
         far: 10,
         multiplyScalar: 2,
-        position: [(x / AMOUNT - 0.5), (0.5 - y / AMOUNT), 3],
-        viewport: { x: Math.floor(x * w), y: Math.floor(y * h), width: Math.floor(w), height: Math.floor(h) }
+        position: [x / AMOUNT - 0.5, 0.5 - y / AMOUNT, 3],
+        viewport: {
+          x: Math.floor(x * w),
+          y: Math.floor(y * h),
+          width: Math.floor(w),
+          height: Math.floor(h)
+        }
       })
     }
   }
@@ -67,4 +77,4 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped lang='scss'></style>
+<style scoped lang="scss"></style>

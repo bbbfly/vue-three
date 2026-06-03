@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import { inject, watch, onBeforeUnmount } from 'vue'
@@ -23,7 +23,10 @@ const props = defineProps<{
   /**
    * 自定义顶点属性对象，key 为属性名，value 为 BufferAttribute 或属性配置
    */
-  attributes?: Record<string, BufferAttribute | { array: number[] | Float32Array; itemSize: number }>
+  attributes?: Record<
+    string,
+    BufferAttribute | { array: number[] | Float32Array; itemSize: number }
+  >
   /**
    * 变形目标属性，用于 morph 动画
    */

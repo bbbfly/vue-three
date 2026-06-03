@@ -3,10 +3,15 @@
     <TScene background="#050505" :fog="{ color: '#050505', near: 2000, far: 3500 }">
       <TPerspectiveCamera :fov="27" :near="1" :far="3500" :position="[0, 0, 2500]" />
 
-      <TMesh ref="meshRef" v-if="geometryAttributes.position">
+      <TMesh v-if="geometryAttributes.position" ref="meshRef">
         <TBufferGeometry :attributes="geometryAttributes" />
-        <TShaderMaterial :uniforms="shaderUniforms" :vertexShader="vertexShader" :fragmentShader="fragmentShader"
-          :side="2" :glslVersion="THREE.GLSL3" />
+        <TShaderMaterial
+          :uniforms="shaderUniforms"
+          :vertex-shader="vertexShader"
+          :fragment-shader="fragmentShader"
+          :side="2"
+          :glsl-version="THREE.GLSL3"
+        />
       </TMesh>
     </TScene>
   </TCanvas>

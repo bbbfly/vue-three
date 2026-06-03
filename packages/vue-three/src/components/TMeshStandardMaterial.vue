@@ -18,7 +18,7 @@ import { useCamelCaseKeys } from '../hooks'
  * </TMesh>
  */
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 const props = defineProps({
@@ -204,7 +204,7 @@ const { material, updateMaterial } = useMaterial(getMaterialConfig())
 // 监听 props 和 attrs 变化，自动更新材质
 watch(
   () => ({ ...props, ...useCamelCaseKeys(attrs) }),
-  (val) => {
+  val => {
     console.log(val)
     updateMaterial(getMaterialConfig())
   },

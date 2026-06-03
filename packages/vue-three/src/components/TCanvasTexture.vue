@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import type { PropType } from 'vue'
@@ -128,7 +128,8 @@ const { texture, createCanvasTexture, updateSettings } = useCanvasTexture({
   colorSpace: props.colorSpace
 })
 
-const { canvas, wrapS, wrapT, magFilter, minFilter, repeat, offset, center, rotation, colorSpace } = toRefs(props)
+const { canvas, wrapS, wrapT, magFilter, minFilter, repeat, offset, center, rotation, colorSpace } =
+  toRefs(props)
 
 watch(
   [canvas, wrapS, wrapT, magFilter, minFilter, repeat, offset, center, rotation, colorSpace],

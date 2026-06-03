@@ -1,7 +1,15 @@
 <template>
   <div class="canvas-texture-example">
-    <canvas ref="drawingCanvas" class="drawing-canvas" width="128" height="128" @pointerdown="handlePointerDown"
-      @pointermove="handlePointerMove" @pointerup="handlePointerUp" @pointerleave="handlePointerLeave"></canvas>
+    <canvas
+      ref="drawingCanvas"
+      class="drawing-canvas"
+      width="128"
+      height="128"
+      @pointerdown="handlePointerDown"
+      @pointermove="handlePointerMove"
+      @pointerup="handlePointerUp"
+      @pointerleave="handlePointerLeave"
+    ></canvas>
     <TCanvas antialias background="#1a1a2e">
       <TScene>
         <TPerspectiveCamera :position="[0, 0, 500]" :fov="50" />

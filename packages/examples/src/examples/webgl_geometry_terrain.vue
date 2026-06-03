@@ -1,15 +1,26 @@
 <template>
   <TCanvas antialias :background="0xefd1b5" :enable-controls="false">
     <TScene ref="sceneRef" :fog="fogConfig" :background="0xefd1b5">
-      <TPerspectiveCamera ref="cameraRef" :fov="60" :near="1" :far="10000" :position="[100, 800, -800]"
-        :look-at-target="[-100, 810, -800]" />
+      <TPerspectiveCamera
+        ref="cameraRef"
+        :fov="60"
+        :near="1"
+        :far="10000"
+        :position="[100, 800, -800]"
+        :look-at-target="[-100, 810, -800]"
+      />
       <TFirstPersonControls ref="controlsRef" :movement-speed="150" :look-speed="0.1" />
 
       <TMesh ref="meshRef">
         <TBufferGeometry ref="geometryRef" />
         <TMeshBasicMaterial v-if="textureCanvas">
-          <TCanvasTexture ref="textureRef" :canvas="textureCanvas" :wrap-s="THREE.ClampToEdgeWrapping"
-            :wrap-t="THREE.ClampToEdgeWrapping" :color-space="THREE.SRGBColorSpace" />
+          <TCanvasTexture
+            ref="textureRef"
+            :canvas="textureCanvas"
+            :wrap-s="THREE.ClampToEdgeWrapping"
+            :wrap-t="THREE.ClampToEdgeWrapping"
+            :color-space="THREE.SRGBColorSpace"
+          />
         </TMeshBasicMaterial>
       </TMesh>
     </TScene>
@@ -27,7 +38,7 @@ import {
   TMesh,
   TMeshBasicMaterial,
   TBufferGeometry,
-  TCanvasTexture,
+  TCanvasTexture
 } from '@vue-three/vue-three'
 import { ImprovedNoise } from 'three/addons/math/ImprovedNoise.js'
 
@@ -153,12 +164,10 @@ function initTerrain() {
   geometry.dispose()
 }
 
-
-
 const fogConfig = {
   type: 'exp',
   color: 0xefd1b5,
-  density: 0.0025,
+  density: 0.0025
 }
 </script>
 

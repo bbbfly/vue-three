@@ -2,7 +2,7 @@
   <TCanvas antialias background="#1a1a1a">
     <TScene ref="sceneRef">
       <TPerspectiveCamera :position="[-10, 0, 23]" :fov="40" :near="1" :far="1000" />
-      <TOrbitControls :minDistance="10" :maxDistance="50" :enablePan="false" />
+      <TOrbitControls :min-distance="10" :max-distance="50" :enable-pan="false" />
 
       <TAmbientLight color="#ffffff" :intensity="0.6" />
       <TPointLight color="#ffffff" :intensity="4.5" :decay="0" />
@@ -14,7 +14,17 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { TCanvas, TScene, TPerspectiveCamera, TOrbitControls, TAmbientLight, TPointLight, TMesh, TGLTFLoader, TMeshStandardMaterial } from '@vue-three/vue-three'
+import {
+  TCanvas,
+  TScene,
+  TPerspectiveCamera,
+  TOrbitControls,
+  TAmbientLight,
+  TPointLight,
+  TMesh,
+  TGLTFLoader,
+  TMeshStandardMaterial
+} from '@vue-three/vue-three'
 import { ObjectSpaceNormalMap, Box3 } from 'three'
 
 const modelUrl = '/models/gltf/Nefertiti/Nefertiti.glb'

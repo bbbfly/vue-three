@@ -25,7 +25,7 @@ import {
   TBufferGeometry,
   TMeshPhongMaterial
 } from '@vue-three/vue-three'
-import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js'
 
 const meshRef = ref<any>(null)
 const geometryRef = ref<any>(null)
@@ -59,16 +59,16 @@ function createIndexedGeometry() {
   const color = new THREE.Color()
 
   for (let i = 0; i <= segments; i++) {
-    const y = (i * segmentSize) - halfSize
+    const y = i * segmentSize - halfSize
 
     for (let j = 0; j <= segments; j++) {
-      const x = (j * segmentSize) - halfSize
+      const x = j * segmentSize - halfSize
 
       vertices.push(x, -y, 0)
       normals.push(0, 0, 1)
 
-      const r = (x / size) + 0.5
-      const g = (y / size) + 0.5
+      const r = x / size + 0.5
+      const g = y / size + 0.5
 
       color.setRGB(r, g, 1)
 

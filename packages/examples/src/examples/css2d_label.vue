@@ -1,7 +1,13 @@
 <template>
   <TCanvas antialias clear-color="#000000">
     <TScene>
-      <TPerspectiveCamera ref="cameraRef" :fov="45" :near="0.1" :far="200" :position="[10, 5, 20]" />
+      <TPerspectiveCamera
+        ref="cameraRef"
+        :fov="45"
+        :near="0.1"
+        :far="200"
+        :position="[10, 5, 20]"
+      />
       <TOrbitControls :min-distance="5" :max-distance="100" />
 
       <TAmbientLight :intensity="0.5" />
@@ -11,8 +17,8 @@
 
       <TMesh ref="earthMeshRef">
         <TSphere :args="[EARTH_RADIUS, 16, 16]" />
-        <TMeshPhongMaterial :specular="0x333333" :shininess="5" :normalScale="[0.85, 0.85]">
-          <TTexture :url="'/textures/planets/earth_atmos_2048.jpg'" :colorSpace="'srgb'" />
+        <TMeshPhongMaterial :specular="0x333333" :shininess="5" :normal-scale="[0.85, 0.85]">
+          <TTexture :url="'/textures/planets/earth_atmos_2048.jpg'" :color-space="'srgb'" />
           <TTexture map-type="specularMap" :url="'/textures/planets/earth_specular_2048.jpg'" />
           <TTexture map-type="normalMap" :url="'/textures/planets/earth_normal_2048.jpg'" />
         </TMeshPhongMaterial>
@@ -21,28 +27,48 @@
       <TMesh ref="moonMeshRef" :position="moonPosition">
         <TSphere :args="[MOON_RADIUS, 16, 16]" />
         <TMeshPhongMaterial :shininess="5">
-          <TTexture :url="'/textures/planets/moon_1024.jpg'" :colorSpace="'srgb'" />
+          <TTexture :url="'/textures/planets/moon_1024.jpg'" :color-space="'srgb'" />
         </TMeshPhongMaterial>
       </TMesh>
 
       <TCSS2DRenderer>
-        <TCSS2DObject :position="earthLabelPosition" :center="[0, 1]" :layers="0" class-name="label"
-          :style="{ backgroundColor: 'transparent' }">
+        <TCSS2DObject
+          :position="earthLabelPosition"
+          :center="[0, 1]"
+          :layers="0"
+          class-name="label"
+          :style="{ backgroundColor: 'transparent' }"
+        >
           Earth
         </TCSS2DObject>
 
-        <TCSS2DObject :position="earthLabelPosition" :center="[0, 0]" :layers="1" class-name="label"
-          :style="{ backgroundColor: 'transparent' }">
+        <TCSS2DObject
+          :position="earthLabelPosition"
+          :center="[0, 0]"
+          :layers="1"
+          class-name="label"
+          :style="{ backgroundColor: 'transparent' }"
+        >
           5.97237e24 kg
         </TCSS2DObject>
 
-        <TCSS2DObject :position="moonLabelPosition" :center="[0, 1]" :layers="0" class-name="label"
-          :style="{ backgroundColor: 'transparent' }">
+        <TCSS2DObject
+          :position="moonLabelPosition"
+          :center="[0, 1]"
+          :layers="0"
+          class-name="label"
+          :style="{ backgroundColor: 'transparent' }"
+        >
           Moon
         </TCSS2DObject>
 
-        <TCSS2DObject :position="moonLabelPosition" :center="[0, 0]" :layers="1" class-name="label"
-          :style="{ backgroundColor: 'transparent' }">
+        <TCSS2DObject
+          :position="moonLabelPosition"
+          :center="[0, 0]"
+          :layers="1"
+          class-name="label"
+          :style="{ backgroundColor: 'transparent' }"
+        >
           7.342e22 kg
         </TCSS2DObject>
       </TCSS2DRenderer>
@@ -83,11 +109,7 @@ const earthLabelPosition = computed<[number, number, number]>(() => {
 })
 
 const moonLabelPosition = computed<[number, number, number]>(() => {
-  return [
-    moonPosition.value[0] + 1.5 * MOON_RADIUS,
-    moonPosition.value[1],
-    moonPosition.value[2]
-  ]
+  return [moonPosition.value[0] + 1.5 * MOON_RADIUS, moonPosition.value[1], moonPosition.value[2]]
 })
 
 let animationId: number | null = null
@@ -131,11 +153,7 @@ const startAnimation = () => {
     timer.update()
     const elapsed = timer.getElapsed()
 
-    moonPosition.value = [
-      Math.sin(elapsed) * 5,
-      0,
-      Math.cos(elapsed) * 5
-    ]
+    moonPosition.value = [Math.sin(elapsed) * 5, 0, Math.cos(elapsed) * 5]
   }
 
   animate()
@@ -179,7 +197,7 @@ const initGui = () => {
 
 <style>
 .label {
-  color: #FFF;
+  color: #fff;
   font-family: sans-serif;
   padding: 2px;
   background: rgba(0, 0, 0, 0.6);

@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import type { PropType } from 'vue'
@@ -91,7 +91,7 @@ const { light } = useLight(config.value)
 
 watch(
   () => props.position,
-  (newPosition) => {
+  newPosition => {
     if (newPosition && light) {
       light.position.set(...newPosition)
     }

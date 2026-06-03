@@ -7,12 +7,18 @@
       <TDirectionalLight :color="0xffffff" :intensity="1.5" :position="[1, 1, 1]" />
       <TDirectionalLight :color="0xffffff" :intensity="4.5" :position="[0, -1, 0]" />
 
-      <TMesh ref="meshRef" v-if="geometryAttributes.position">
+      <TMesh v-if="geometryAttributes.position" ref="meshRef">
         <TBufferGeometry :attributes="geometryAttributes" />
-        <TMeshPhongMaterial :color="0xaaaaaa" :specular="0xffffff" :shininess="250" :side="2" :vertex-colors="true" />
+        <TMeshPhongMaterial
+          :color="0xaaaaaa"
+          :specular="0xffffff"
+          :shininess="250"
+          :side="2"
+          :vertex-colors="true"
+        />
       </TMesh>
 
-      <TLine ref="lineRef" v-if="lineVisible">
+      <TLine v-if="lineVisible" ref="lineRef">
         <TBufferGeometry :attributes="lineAttributes" />
         <TLineBasicMaterial :color="0xffffff" :transparent="true" />
       </TLine>
@@ -49,8 +55,6 @@ onMounted(() => {
   createBufferGeometry()
   createLineGeometry()
 })
-
-
 
 function createBufferGeometry() {
   const triangles = 5000

@@ -2,17 +2,29 @@
   <TCanvas antialias>
     <TScene :background="backgroundTexture">
       <TPerspectiveCamera :fov="50" :near="0.1" :far="100" :position="[0, 0, 13]" />
-      <TOrbitControls :enable-zoom="false" :enable-pan="false" :min-polar-angle="Math.PI / 4"
-        :max-polar-angle="Math.PI / 1.5" />
+      <TOrbitControls
+        :enable-zoom="false"
+        :enable-pan="false"
+        :min-polar-angle="Math.PI / 4"
+        :max-polar-angle="Math.PI / 1.5"
+      />
 
       <TAmbientLight :intensity="3" />
       <TPointLight :intensity="200" />
 
-      <TMesh v-for="(config, index) in headConfigs" :key="'head-' + index" :position="config.position"
-        :scale="[0.1, 0.1, 0.1]">
+      <TMesh
+        v-for="(config, index) in headConfigs"
+        :key="'head-' + index"
+        :position="config.position"
+        :scale="[0.1, 0.1, 0.1]"
+      >
         <TOBJLoader :src="config.url" />
-        <TMeshLambertMaterial :color="config.color" :refraction-ratio="config.refractionRatio" :combine="config.combine"
-          :reflectivity="config.reflectivity">
+        <TMeshLambertMaterial
+          :color="config.color"
+          :refraction-ratio="config.refractionRatio"
+          :combine="config.combine"
+          :reflectivity="config.reflectivity"
+        >
           <TCubeTexture :urls="cubeUrls" :mapping="index === 1 ? 'refraction' : 'reflection'" />
         </TMeshLambertMaterial>
       </TMesh>
@@ -23,7 +35,18 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import * as THREE from 'three'
-import { TCanvas, TScene, TPerspectiveCamera, TOrbitControls, TAmbientLight, TPointLight, TMesh, TOBJLoader, TMeshLambertMaterial, TCubeTexture } from '@vue-three/vue-three'
+import {
+  TCanvas,
+  TScene,
+  TPerspectiveCamera,
+  TOrbitControls,
+  TAmbientLight,
+  TPointLight,
+  TMesh,
+  TOBJLoader,
+  TMeshLambertMaterial,
+  TCubeTexture
+} from '@vue-three/vue-three'
 
 interface HeadConfig {
   url: string

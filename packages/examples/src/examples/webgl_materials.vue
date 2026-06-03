@@ -2,7 +2,7 @@
   <TCanvas antialias background="#e0e0e0">
     <TScene :rotation="rotation">
       <TPerspectiveCamera :position="[0, 12, 28]" :fov="45" />
-      <TOrbitControls enableDamping :minDistance="10" :maxDistance="80" />
+      <TOrbitControls enable-damping :min-distance="10" :max-distance="80" />
 
       <TAmbientLight :intensity="0.4" />
       <TDirectionalLight :intensity="1" :position="[10, 20, 10]" />

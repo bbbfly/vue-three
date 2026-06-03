@@ -4,13 +4,28 @@
       <TPerspectiveCamera :fov="50" :near="1" :far="10000" :position="[-1000, 500, 1500]" />
       <TOrbitControls ref="controlsRef" :enable-damping="true" />
 
-      <THemisphereLight :sky-color="0xffffff" :ground-color="0x444444" :intensity="4" :position="[-25, 100, 50]" />
+      <THemisphereLight
+        :sky-color="0xffffff"
+        :ground-color="0x444444"
+        :intensity="4"
+        :position="[-25, 100, 50]"
+      />
 
-      <TLineSegments :geometry="roomGeometry" :color="0x000000" :opacity="0.2" :transparent="true" />
+      <TLineSegments
+        :geometry="roomGeometry"
+        :color="0x000000"
+        :opacity="0.2"
+        :transparent="true"
+      />
 
       <TMesh>
         <TPlane :args="[1024, 768]" />
-        <TMeshBasicMaterial :color="0x2200ff" :blending="THREE.NoBlending" :opacity="0" :premultiplied-alpha="true" />
+        <TMeshBasicMaterial
+          :color="0x2200ff"
+          :blending="THREE.NoBlending"
+          :opacity="0"
+          :premultiplied-alpha="true"
+        />
       </TMesh>
 
       <TMesh ref="frameMeshRef">
@@ -121,5 +136,5 @@ onMounted(async () => {
   }
 })
 
-onUnmounted(() => { })
+onUnmounted(() => {})
 </script>

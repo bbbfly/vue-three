@@ -1,11 +1,26 @@
 <template>
   <TCanvas antialias :clear-color="'#fff'">
     <TScene>
-      <TPerspectiveCamera :fov="75" :near="1" :far="5000" :position="[600, 400, 1500]" ref="cameraRef" />
+      <TPerspectiveCamera
+        ref="cameraRef"
+        :fov="75"
+        :near="1"
+        :far="5000"
+        :position="[600, 400, 1500]"
+      />
       <TTrackballControls ref="controlsRef" />
       <TCSS3DRenderer ref="cssRendererRef" class="css3d-renderer">
-        <TCSS3DSprite v-for="(object, index) in objects" :key="index" :position="object.position" :scale="object.scale">
-          <img :src="spriteSrc" draggable="false" style="width: 64px; height: 64px; user-select: none;" />
+        <TCSS3DSprite
+          v-for="(object, index) in objects"
+          :key="index"
+          :position="object.position"
+          :scale="object.scale"
+        >
+          <img
+            :src="spriteSrc"
+            draggable="false"
+            style="width: 64px; height: 64px; user-select: none"
+          />
         </TCSS3DSprite>
       </TCSS3DRenderer>
     </TScene>
@@ -26,16 +41,15 @@ import {
 
 const controlsRef = ref<any>(null)
 
-
 const particlesTotal = 512
 const spriteSrc = '/lib/textures/sprite.png'
 
 interface SpriteObject {
   position: ComputedRef<[number, number, number]>
-  scale: [number, number, number],
+  scale: [number, number, number]
   animatePosition: {
-    x: number,
-    y: number,
+    x: number
+    y: number
     z: number
   }
 }
@@ -138,8 +152,6 @@ const transition = () => {
   currentLayout.value = (currentLayout.value + 1) % 4
 }
 
-
-
 const animate = () => {
   animationId = requestAnimationFrame(animate)
 
@@ -151,7 +163,7 @@ const animate = () => {
 
   const time = performance.now()
 
-  objects.value.forEach((object) => {
+  objects.value.forEach(object => {
     const scale = Math.sin((Math.floor(object.position[0]) + time) * 0.002) * 0.3 + 1
     object.scale = [scale, scale, scale]
   })
@@ -165,7 +177,6 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-
   if (animationId) {
     cancelAnimationFrame(animationId)
   }

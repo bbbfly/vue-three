@@ -4,11 +4,16 @@
 
 <script setup lang="ts">
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import { inject, watch, onBeforeUnmount } from 'vue'
-import { InstancedBufferGeometry, BufferAttribute, InstancedBufferAttribute, InterleavedBufferAttribute } from 'three'
+import {
+  InstancedBufferGeometry,
+  BufferAttribute,
+  InstancedBufferAttribute,
+  InterleavedBufferAttribute
+} from 'three'
 import { MeshContextKey } from '../core/context'
 
 /**
@@ -16,8 +21,8 @@ import { MeshContextKey } from '../core/context'
  * @description 用于创建大规模实例化渲染的几何体，支持 InstancedBufferAttribute
  * @component TInstancedBufferGeometry
  * @example
- * <TInstancedBufferGeometry 
- *   :attributes="instancedAttributes" 
+ * <TInstancedBufferGeometry
+ *   :attributes="instancedAttributes"
  *   :instanceCount="1000"
  * />
  */
@@ -25,7 +30,12 @@ const props = defineProps<{
   /**
    * 自定义顶点属性对象，key 为属性名，value 为 BufferAttribute 或 InstancedBufferAttribute
    */
-  attributes?: Record<string, BufferAttribute | InstancedBufferAttribute | { array: number[] | Float32Array; itemSize: number; instanced?: boolean }>
+  attributes?: Record<
+    string,
+    | BufferAttribute
+    | InstancedBufferAttribute
+    | { array: number[] | Float32Array; itemSize: number; instanced?: boolean }
+  >
   /**
    * 实例数量
    * @default undefined
@@ -56,14 +66,19 @@ function updateAttributes() {
       if (attr instanceof BufferAttribute) {
         geometry.setIndex(attr)
       } else if (attr.array && attr.itemSize !== undefined) {
-        const array = attr.array instanceof Uint16Array
-          ? attr.array
-          : (attr.array instanceof Uint32Array
+        const array =
+          attr.array instanceof Uint16Array
             ? attr.array
-            : new Uint16Array(attr.array))
+            : attr.array instanceof Uint32Array
+              ? attr.array
+              : new Uint16Array(attr.array)
         geometry.setIndex(new BufferAttribute(array, attr.itemSize))
       }
-    } else if (attr instanceof InterleavedBufferAttribute || attr instanceof BufferAttribute || attr instanceof InstancedBufferAttribute) {
+    } else if (
+      attr instanceof InterleavedBufferAttribute ||
+      attr instanceof BufferAttribute ||
+      attr instanceof InstancedBufferAttribute
+    ) {
       geometry.setAttribute(name, attr)
     } else if (attr.array && attr.itemSize !== undefined) {
       const array = attr.array instanceof Float32Array ? attr.array : new Float32Array(attr.array)

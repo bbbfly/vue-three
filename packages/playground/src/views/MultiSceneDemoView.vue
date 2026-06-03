@@ -6,14 +6,14 @@
     <template #viewport>
       <div class="h-full flex overflow-hidden">
         <div class="flex-1 relative">
-          <div class="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur rounded-lg p-3 shadow-lg">
+          <div
+            class="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur rounded-lg p-3 shadow-lg"
+          >
             <h2 class="text-lg font-bold text-gray-800">多场景渲染架构</h2>
-            <p class="text-xs text-gray-600">
-              WebGL + CSS3D + CSS2D 统一渲染 · TGroup 多场景支持
-            </p>
+            <p class="text-xs text-gray-600">WebGL + CSS3D + CSS2D 统一渲染 · TGroup 多场景支持</p>
           </div>
 
-          <TCanvas :antialias="true" clearColor="#000000">
+          <TCanvas :antialias="true" clear-color="#000000">
             <TScene background="#000000">
               <TPerspectiveCamera :position="[0, 2, 8]" :fov="60" />
               <TOrbitControls :enable-damping="true" :enable-pan="true" :enable-zoom="true" />
@@ -22,8 +22,12 @@
               <TGroup :position="[0, 0, 0]" :rotation="[0, groupRotation, 0]">
                 <TMesh :position="[0, 0, 0]" :cast-shadow="true" :receive-shadow="true">
                   <TSphere :args="[1.2, 32, 32]" />
-                  <TMeshStandardMaterial :color="sphereColor" :metalness="0.5" :roughness="0.3"
-                    @click="handleSphereClick" />
+                  <TMeshStandardMaterial
+                    :color="sphereColor"
+                    :metalness="0.5"
+                    :roughness="0.3"
+                    @click="handleSphereClick"
+                  />
                 </TMesh>
 
                 <TMesh :position="[2.5, 0, 0]" :cast-shadow="true" :receive-shadow="true">
@@ -78,21 +82,36 @@
               </TCSS3DRenderer>
 
               <TCSS2DRenderer>
-                <TCSS2DLabel :position="[0, 2.3, 0]" :offset="[0, 10]" :scale-by-distance="true" :scale-factor="0.8">
+                <TCSS2DLabel
+                  :position="[0, 2.3, 0]"
+                  :offset="[0, 10]"
+                  :scale-by-distance="true"
+                  :scale-factor="0.8"
+                >
                   <div class="label-badge">
                     <span class="label-icon">🎯</span>
                     中心球体标签
                   </div>
                 </TCSS2DLabel>
 
-                <TCSS2DLabel :position="[2.5, 1, 0]" :offset="[0, 10]" :scale-by-distance="true" :scale-factor="0.8">
+                <TCSS2DLabel
+                  :position="[2.5, 1, 0]"
+                  :offset="[0, 10]"
+                  :scale-by-distance="true"
+                  :scale-factor="0.8"
+                >
                   <div class="label-badge red">
                     <span class="label-icon">🔺</span>
                     红色立方体
                   </div>
                 </TCSS2DLabel>
 
-                <TCSS2DLabel :position="[-2.5, 1, 0]" :offset="[0, 10]" :scale-by-distance="true" :scale-factor="0.8">
+                <TCSS2DLabel
+                  :position="[-2.5, 1, 0]"
+                  :offset="[0, 10]"
+                  :scale-by-distance="true"
+                  :scale-factor="0.8"
+                >
                   <div class="label-badge teal">
                     <span class="label-icon">💎</span>
                     青色八面体
@@ -103,7 +122,9 @@
           </TCanvas>
         </div>
 
-        <div class="w-80 h-full bg-white border-l border-gray-200 p-4 flex flex-col overflow-hidden">
+        <div
+          class="w-80 h-full bg-white border-l border-gray-200 p-4 flex flex-col overflow-hidden"
+        >
           <h3 class="font-bold text-gray-800 mb-3 flex-shrink-0">⚙️ 多场景配置</h3>
 
           <div class="space-y-4 flex-1 min-h-0 overflow-auto pr-1">
@@ -113,7 +134,14 @@
               <div class="space-y-3">
                 <div>
                   <label class="text-sm text-gray-600 block mb-1">旋转速度</label>
-                  <input v-model="rotationSpeed" type="range" min="0" max="20" step="1" class="w-full" />
+                  <input
+                    v-model="rotationSpeed"
+                    type="range"
+                    min="0"
+                    max="20"
+                    step="1"
+                    class="w-full"
+                  />
                   <div class="text-xs text-gray-500 text-right">{{ rotationSpeed }}x</div>
                 </div>
 
@@ -179,8 +207,12 @@
 
           <h3 class="font-bold text-gray-800 mt-4 mb-2 flex-shrink-0">📝 事件日志</h3>
           <div class="h-32 min-h-32 bg-gray-50 rounded p-2 text-xs font-mono overflow-auto">
-            <div v-for="(log, index) in eventLogs" :key="index" class="py-0.5 border-b border-gray-200 last:border-0"
-              :class="getLogColor(log.type)">
+            <div
+              v-for="(log, index) in eventLogs"
+              :key="index"
+              class="py-0.5 border-b border-gray-200 last:border-0"
+              :class="getLogColor(log.type)"
+            >
               <span class="font-bold">[{{ log.type }}]</span>
               {{ log.message }}
             </div>
@@ -188,8 +220,10 @@
               点击对象查看事件
             </div>
           </div>
-          <button class="mt-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded text-sm transition-colors flex-shrink-0"
-            @click="eventLogs = []">
+          <button
+            class="mt-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded text-sm transition-colors flex-shrink-0"
+            @click="eventLogs = []"
+          >
             清空日志
           </button>
         </div>
@@ -284,7 +318,9 @@ onUnmounted(() => {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .css3d-card:hover {
@@ -313,7 +349,10 @@ onUnmounted(() => {
 .card-inner {
   color: white;
   text-align: center;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   pointer-events: none;
 }
 
@@ -341,7 +380,10 @@ onUnmounted(() => {
   font-size: 12px;
   font-weight: 600;
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   white-space: nowrap;
 }
 

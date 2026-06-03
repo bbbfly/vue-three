@@ -5,7 +5,11 @@
       <TOrbitControls :min-distance="50" :max-distance="300" />
 
       <TMesh ref="torusMeshRef">
-        <TMeshStandardMaterial ref="torusMaterialRef" :metalness="params.metalness" :roughness="params.roughness" />
+        <TMeshStandardMaterial
+          ref="torusMaterialRef"
+          :metalness="params.metalness"
+          :roughness="params.roughness"
+        />
       </TMesh>
 
       <TMesh ref="planeMeshRef" :visible="params.debug">
@@ -20,7 +24,16 @@ import { ref, onMounted, nextTick, watch } from 'vue'
 import * as THREE from 'three'
 import { HDRCubeTextureLoader } from 'three/addons/loaders/HDRCubeTextureLoader.js'
 import { DebugEnvironment } from 'three/addons/environments/DebugEnvironment.js'
-import { useGui, TCanvas, TPerspectiveCamera, TOrbitControls, TMesh, TMeshStandardMaterial, TMeshBasicMaterial, TScene } from '@vue-three/vue-three'
+import {
+  useGui,
+  TCanvas,
+  TPerspectiveCamera,
+  TOrbitControls,
+  TMesh,
+  TMeshStandardMaterial,
+  TMeshBasicMaterial,
+  TScene
+} from '@vue-three/vue-three'
 
 const sceneRef = ref<any>(null)
 const canvasRef = ref<any>(null)
@@ -157,25 +170,29 @@ function initScene() {
   initialized = true
 }
 
-watch([canvasRef, torusMaterialRef, planeMaterialRef, torusMeshRef, planeMeshRef], async () => {
-  await nextTick()
+watch(
+  [canvasRef, torusMaterialRef, planeMaterialRef, torusMeshRef, planeMeshRef],
+  async () => {
+    await nextTick()
 
-  if (sceneRef.value?.scene) {
-    scene.value = sceneRef.value.scene
-  }
+    if (sceneRef.value?.scene) {
+      scene.value = sceneRef.value.scene
+    }
 
-  if (torusMaterialRef.value?.material) {
-    torusMaterial.value = torusMaterialRef.value.material
-  }
+    if (torusMaterialRef.value?.material) {
+      torusMaterial.value = torusMaterialRef.value.material
+    }
 
-  if (planeMaterialRef.value?.material) {
-    planeMaterial.value = planeMaterialRef.value.material
-  }
+    if (planeMaterialRef.value?.material) {
+      planeMaterial.value = planeMaterialRef.value.material
+    }
 
-  if (scene.value && torusMaterial.value && torusMeshRef.value && planeMeshRef.value) {
-    initScene()
-  }
-}, { immediate: true, deep: true })
+    if (scene.value && torusMaterial.value && torusMeshRef.value && planeMeshRef.value) {
+      initScene()
+    }
+  },
+  { immediate: true, deep: true }
+)
 
 onMounted(async () => {
   await nextTick()

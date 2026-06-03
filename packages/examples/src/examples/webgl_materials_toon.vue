@@ -1,8 +1,8 @@
 <template>
-  <TCanvas  @animate="onAnimate">
+  <TCanvas @animate="onAnimate">
     <TScene :background="0x444488">
       <TPerspectiveCamera :position="[0, 400, 1400]" :fov="40" :near="1" :far="2500" />
-      <TOrbitControls :minDistance="200" :maxDistance="2000" />
+      <TOrbitControls :min-distance="200" :max-distance="2000" />
 
       <TAmbientLight color="#c1c1c1" :intensity="3" />
       <TPointLight ref="pointLightRef" color="#ffffff" :intensity="2" :distance="800" :decay="0" />
@@ -10,7 +10,7 @@
       <!-- 生成卡通材质球体网格 -->
       <TMesh v-for="(mesh, index) in meshes" :key="index" :position="mesh.position">
         <TSphere :args="[sphereRadius, 32, 16]" />
-        <TMeshToonMaterial :color="mesh.color" :gradientMap="mesh.gradientMap" />
+        <TMeshToonMaterial :color="mesh.color" :gradient-map="mesh.gradientMap" />
       </TMesh>
 
       <!-- 光源指示器 -->
@@ -21,19 +21,31 @@
 
       <!-- 标签 -->
       <TMesh :position="[-350, 0, 0]">
-        <TTextGeometry :text="'-gradientMap'" :font="font" :size="20" :depth="1" :curveSegments="1" />
+        <TTextGeometry
+          :text="'-gradientMap'"
+          :font="font"
+          :size="20"
+          :depth="1"
+          :curve-segments="1"
+        />
         <TMeshBasicMaterial />
       </TMesh>
       <TMesh :position="[350, 0, 0]">
-        <TTextGeometry :text="'+gradientMap'" :font="font" :size="20" :depth="1" :curveSegments="1" />
+        <TTextGeometry
+          :text="'+gradientMap'"
+          :font="font"
+          :size="20"
+          :depth="1"
+          :curve-segments="1"
+        />
         <TMeshBasicMaterial />
       </TMesh>
       <TMesh :position="[0, 0, -300]">
-        <TTextGeometry :text="'-diffuse'" :font="font" :size="20" :depth="1" :curveSegments="1" />
+        <TTextGeometry :text="'-diffuse'" :font="font" :size="20" :depth="1" :curve-segments="1" />
         <TMeshBasicMaterial />
       </TMesh>
       <TMesh :position="[0, 0, 300]">
-        <TTextGeometry :text="'+diffuse'" :font="font" :size="20" :depth="1" :curveSegments="1" />
+        <TTextGeometry :text="'+diffuse'" :font="font" :size="20" :depth="1" :curve-segments="1" />
         <TMeshBasicMaterial />
       </TMesh>
     </TScene>
@@ -53,7 +65,7 @@ import {
   TSphere,
   TMeshToonMaterial,
   TMeshBasicMaterial,
-  TTextGeometry,
+  TTextGeometry
 } from '@vue-three/vue-three'
 import { FontLoader } from 'three/addons/loaders/FontLoader.js'
 import { DataTexture, RedFormat, Color } from 'three'
@@ -111,11 +123,7 @@ function initMeshes() {
           .multiplyScalar(1 - beta * 0.2)
 
         result.push({
-          position: [
-            alpha * 400 - 200,
-            beta * 400 - 200,
-            gamma * 400 - 200
-          ],
+          position: [alpha * 400 - 200, beta * 400 - 200, gamma * 400 - 200],
           color: diffuseColor.getHex(),
           gradientMap
         })

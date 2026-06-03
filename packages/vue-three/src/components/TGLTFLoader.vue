@@ -1,11 +1,18 @@
 <template>
-  <slot :model="model" :animations="animations" :loading="loading" :progress="progress" :total="total" :error="error">
+  <slot
+    :model="model"
+    :animations="animations"
+    :loading="loading"
+    :progress="progress"
+    :total="total"
+    :error="error"
+  >
   </slot>
 </template>
 
 <script setup lang="ts">
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import type { PropType } from 'vue'

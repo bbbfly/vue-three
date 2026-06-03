@@ -1,7 +1,19 @@
 <template>
-  <TCanvas :antialias="true" :autoClear="false" :on-render="onRender" @mousemove="handleMouseMove" ref="canvasRef">
+  <TCanvas
+    ref="canvasRef"
+    :antialias="true"
+    :auto-clear="false"
+    :on-render="onRender"
+    @mousemove="handleMouseMove"
+  >
     <TScene :background="0xf2f7ff" :fog="{ color: 0xf2f7ff, near: 1, far: 25000 }">
-      <TPerspectiveCamera :fov="35" :near="1" :far="25000" :position="[0, 0, 1500]" ref="cameraRef" />
+      <TPerspectiveCamera
+        ref="cameraRef"
+        :fov="35"
+        :near="1"
+        :far="25000"
+        :position="[0, 0, 1500]"
+      />
 
       <TAmbientLight :color="0xeef0ff" :intensity="3" />
       <TDirectionalLight :color="0xffffff" :intensity="6" :position="[1, 1, 1]" />
@@ -9,7 +21,12 @@
       <TMesh :rotation="[-Math.PI / 2, 0, 0]" :scale="[1000, 1000, 1000]">
         <TPlane :args="[100, 100]" />
         <TMeshPhongMaterial :color="0xffffff">
-          <TTexture url="/textures/crate.gif" map-type="map" :repeat="[512, 512]" ref="textureRef" />
+          <TTexture
+            ref="textureRef"
+            url="/textures/crate.gif"
+            map-type="map"
+            :repeat="[512, 512]"
+          />
         </TMeshPhongMaterial>
       </TMesh>
     </TScene>
@@ -17,7 +34,8 @@
 
   <div class="labels">
     <div class="label label-left">
-      anisotropy: <span class="value">{{ maxAnisotropy > 0 ? maxAnisotropy : 'not supported' }}</span>
+      anisotropy:
+      <span class="value">{{ maxAnisotropy > 0 ? maxAnisotropy : 'not supported' }}</span>
     </div>
     <div class="label label-right">
       anisotropy: <span class="value">{{ 1 }}</span>
@@ -56,7 +74,12 @@ let scene2: THREE.Scene | null = null
 let mesh1: THREE.Mesh | null = null
 let mesh2: THREE.Mesh | null = null
 
-const onRender = (params: { renderer: THREE.WebGLRenderer; scene: THREE.Scene; camera: THREE.Camera; size: { width: number; height: number } }) => {
+const onRender = (params: {
+  renderer: THREE.WebGLRenderer
+  scene: THREE.Scene
+  camera: THREE.Camera
+  size: { width: number; height: number }
+}) => {
   const { renderer, scene, camera, size } = params
 
   camera.position.x += (mouseX.value - camera.position.x) * 0.05
@@ -116,7 +139,7 @@ onMounted(() => {
 
     if (canvasRef.value.context.scene) {
       const existingMeshes = canvasRef.value.context.scene.children.filter(
-        (child) => child instanceof THREE.Mesh
+        child => child instanceof THREE.Mesh
       )
       if (existingMeshes.length > 0) {
         const existingMesh = existingMeshes[0] as THREE.Mesh

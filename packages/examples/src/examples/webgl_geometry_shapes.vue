@@ -1,7 +1,13 @@
 <template>
   <TCanvas antialias clear-color="#f0f0f0">
     <TScene ref="sceneRef">
-      <TPerspectiveCamera ref="cameraRef" :fov="50" :near="1" :far="1000" :position="[0, 150, 500]" />
+      <TPerspectiveCamera
+        ref="cameraRef"
+        :fov="50"
+        :near="1"
+        :far="1000"
+        :position="[0, 150, 500]"
+      />
 
       <TPointLight :intensity="2.5" :distance="0" :decay="0" :position="[0, 150, 500]" />
 
@@ -9,52 +15,78 @@
         <!-- 使用 TMesh 和 TBufferGeometry 创建各种形状 -->
         <template v-for="(item, index) in shapeItems" :key="index">
           <!-- 带纹理的扁平形状 -->
-          <TMesh :position="[item.x, item.y, item.z - 175]" :rotation="[item.rx, item.ry, item.rz]"
-            :scale="[item.s, item.s, item.s]">
+          <TMesh
+            :position="[item.x, item.y, item.z - 175]"
+            :rotation="[item.rx, item.ry, item.rz]"
+            :scale="[item.s, item.s, item.s]"
+          >
             <TBufferGeometry :attributes="item.shapeAttributes" />
             <TMeshPhongMaterial :side="DoubleSide">
-              <TTexture :url="textureUrl" :wrap-s="RepeatWrapping" :wrap-t="RepeatWrapping" :repeat="[0.008, 0.008]" />
+              <TTexture
+                :url="textureUrl"
+                :wrap-s="RepeatWrapping"
+                :wrap-t="RepeatWrapping"
+                :repeat="[0.008, 0.008]"
+              />
             </TMeshPhongMaterial>
           </TMesh>
 
           <!-- 纯色扁平形状 -->
-          <TMesh :position="[item.x, item.y, item.z - 125]" :rotation="[item.rx, item.ry, item.rz]"
-            :scale="[item.s, item.s, item.s]">
+          <TMesh
+            :position="[item.x, item.y, item.z - 125]"
+            :rotation="[item.rx, item.ry, item.rz]"
+            :scale="[item.s, item.s, item.s]"
+          >
             <TBufferGeometry :attributes="item.shapeAttributes" />
             <TMeshPhongMaterial :color="item.color" :side="DoubleSide" />
           </TMesh>
 
           <!-- 拉伸形状 -->
-          <TMesh :position="[item.x, item.y, item.z - 75]" :rotation="[item.rx, item.ry, item.rz]"
-            :scale="[item.s, item.s, item.s]">
+          <TMesh
+            :position="[item.x, item.y, item.z - 75]"
+            :rotation="[item.rx, item.ry, item.rz]"
+            :scale="[item.s, item.s, item.s]"
+          >
             <TBufferGeometry :attributes="item.extrudeAttributes" />
             <TMeshPhongMaterial :color="item.color" />
           </TMesh>
 
           <!-- 实体线条 -->
-          <TLine :position="[item.x, item.y, item.z - 25]" :rotation="[item.rx, item.ry, item.rz]"
-            :scale="[item.s, item.s, item.s]">
+          <TLine
+            :position="[item.x, item.y, item.z - 25]"
+            :rotation="[item.rx, item.ry, item.rz]"
+            :scale="[item.s, item.s, item.s]"
+          >
             <TBufferGeometry :attributes="item.pointsAttributes" />
             <TLineBasicMaterial :color="item.color" />
           </TLine>
 
           <!-- 等距采样线条 -->
-          <TLine :position="[item.x, item.y, item.z + 25]" :rotation="[item.rx, item.ry, item.rz]"
-            :scale="[item.s, item.s, item.s]">
+          <TLine
+            :position="[item.x, item.y, item.z + 25]"
+            :rotation="[item.rx, item.ry, item.rz]"
+            :scale="[item.s, item.s, item.s]"
+          >
             <TBufferGeometry :attributes="item.spacedPointsAttributes" />
             <TLineBasicMaterial :color="item.color" />
           </TLine>
 
           <!-- 点（真实点） -->
-          <TPoints :position="[item.x, item.y, item.z + 75]" :rotation="[item.rx, item.ry, item.rz]"
-            :scale="[item.s, item.s, item.s]">
+          <TPoints
+            :position="[item.x, item.y, item.z + 75]"
+            :rotation="[item.rx, item.ry, item.rz]"
+            :scale="[item.s, item.s, item.s]"
+          >
             <TBufferGeometry :attributes="item.pointsAttributes" />
             <TPointsMaterial :color="item.color" :size="4" />
           </TPoints>
 
           <!-- 等距采样点 -->
-          <TPoints :position="[item.x, item.y, item.z + 125]" :rotation="[item.rx, item.ry, item.rz]"
-            :scale="[item.s, item.s, item.s]">
+          <TPoints
+            :position="[item.x, item.y, item.z + 125]"
+            :rotation="[item.rx, item.ry, item.rz]"
+            :scale="[item.s, item.s, item.s]"
+          >
             <TBufferGeometry :attributes="item.spacedPointsAttributes" />
             <TPointsMaterial :color="item.color" :size="4" />
           </TPoints>
@@ -62,23 +94,35 @@
 
         <!-- 孔洞路径 -->
         <template v-for="(holeItem, index) in holeItems" :key="'hole-' + index">
-          <TLine :position="[holeItem.x, holeItem.y, holeItem.z - 25]"
-            :rotation="[holeItem.rx, holeItem.ry, holeItem.rz]" :scale="[holeItem.s, holeItem.s, holeItem.s]">
+          <TLine
+            :position="[holeItem.x, holeItem.y, holeItem.z - 25]"
+            :rotation="[holeItem.rx, holeItem.ry, holeItem.rz]"
+            :scale="[holeItem.s, holeItem.s, holeItem.s]"
+          >
             <TBufferGeometry :attributes="holeItem.pointsAttributes" />
             <TLineBasicMaterial :color="holeItem.color" />
           </TLine>
-          <TLine :position="[holeItem.x, holeItem.y, holeItem.z + 25]"
-            :rotation="[holeItem.rx, holeItem.ry, holeItem.rz]" :scale="[holeItem.s, holeItem.s, holeItem.s]">
+          <TLine
+            :position="[holeItem.x, holeItem.y, holeItem.z + 25]"
+            :rotation="[holeItem.rx, holeItem.ry, holeItem.rz]"
+            :scale="[holeItem.s, holeItem.s, holeItem.s]"
+          >
             <TBufferGeometry :attributes="holeItem.spacedPointsAttributes" />
             <TLineBasicMaterial :color="holeItem.color" />
           </TLine>
-          <TPoints :position="[holeItem.x, holeItem.y, holeItem.z + 75]"
-            :rotation="[holeItem.rx, holeItem.ry, holeItem.rz]" :scale="[holeItem.s, holeItem.s, holeItem.s]">
+          <TPoints
+            :position="[holeItem.x, holeItem.y, holeItem.z + 75]"
+            :rotation="[holeItem.rx, holeItem.ry, holeItem.rz]"
+            :scale="[holeItem.s, holeItem.s, holeItem.s]"
+          >
             <TBufferGeometry :attributes="holeItem.pointsAttributes" />
             <TPointsMaterial :color="holeItem.color" :size="4" />
           </TPoints>
-          <TPoints :position="[holeItem.x, holeItem.y, holeItem.z + 125]"
-            :rotation="[holeItem.rx, holeItem.ry, holeItem.rz]" :scale="[holeItem.s, holeItem.s, holeItem.s]">
+          <TPoints
+            :position="[holeItem.x, holeItem.y, holeItem.z + 125]"
+            :rotation="[holeItem.rx, holeItem.ry, holeItem.rz]"
+            :scale="[holeItem.s, holeItem.s, holeItem.s]"
+          >
             <TBufferGeometry :attributes="holeItem.spacedPointsAttributes" />
             <TPointsMaterial :color="holeItem.color" :size="4" />
           </TPoints>
@@ -203,13 +247,10 @@ for (let i = 0; i < californiaPts.length; i++) {
 
 const californiaShape = new THREE.Shape(californiaPts)
 
-const triangleShape = new THREE.Shape()
-  .moveTo(80, 20)
-  .lineTo(40, 80)
-  .lineTo(120, 80)
-  .lineTo(80, 20)
+const triangleShape = new THREE.Shape().moveTo(80, 20).lineTo(40, 80).lineTo(120, 80).lineTo(80, 20)
 
-const x = 0, y = 0
+const x = 0,
+  y = 0
 const heartShape = new THREE.Shape()
   .moveTo(x + 25, y + 25)
   .bezierCurveTo(x + 25, y + 25, x + 20, y, x, y)
@@ -228,17 +269,24 @@ const squareShape = new THREE.Shape()
   .lineTo(0, 0)
 
 const roundedRectShape = new THREE.Shape()
-  ; (function roundedRect(ctx: THREE.Shape, x: number, y: number, width: number, height: number, radius: number) {
-    ctx.moveTo(x, y + radius)
-    ctx.lineTo(x, y + height - radius)
-    ctx.quadraticCurveTo(x, y + height, x + radius, y + height)
-    ctx.lineTo(x + width - radius, y + height)
-    ctx.quadraticCurveTo(x + width, y + height, x + width, y + height - radius)
-    ctx.lineTo(x + width, y + radius)
-    ctx.quadraticCurveTo(x + width, y, x + width - radius, y)
-    ctx.lineTo(x + radius, y)
-    ctx.quadraticCurveTo(x, y, x, y + radius)
-  })(roundedRectShape, 0, 0, 50, 50, 20)
+;(function roundedRect(
+  ctx: THREE.Shape,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number
+) {
+  ctx.moveTo(x, y + radius)
+  ctx.lineTo(x, y + height - radius)
+  ctx.quadraticCurveTo(x, y + height, x + radius, y + height)
+  ctx.lineTo(x + width - radius, y + height)
+  ctx.quadraticCurveTo(x + width, y + height, x + width, y + height - radius)
+  ctx.lineTo(x + width, y + radius)
+  ctx.quadraticCurveTo(x + width, y, x + width - radius, y)
+  ctx.lineTo(x + radius, y)
+  ctx.quadraticCurveTo(x, y, x, y + radius)
+})(roundedRectShape, 0, 0, 50, 50, 20)
 
 const trackShape = new THREE.Shape()
   .moveTo(40, 40)
@@ -263,24 +311,18 @@ const fishShape = new THREE.Shape()
   .quadraticCurveTo(x + 100, y + 10, x + 90, y + 10)
   .quadraticCurveTo(x + 50, y + 80, x, y)
 
-const arcShape = new THREE.Shape()
-  .moveTo(50, 10)
-  .absarc(10, 10, 40, 0, Math.PI * 2, false)
+const arcShape = new THREE.Shape().moveTo(50, 10).absarc(10, 10, 40, 0, Math.PI * 2, false)
 
 const holePath = new THREE.Path().moveTo(20, 10).absarc(10, 10, 10, 0, Math.PI * 2, true)
 arcShape.holes.push(holePath)
 
-const smileyShape = new THREE.Shape()
-  .moveTo(80, 40)
-  .absarc(40, 40, 40, 0, Math.PI * 2, false)
+const smileyShape = new THREE.Shape().moveTo(80, 40).absarc(40, 40, 40, 0, Math.PI * 2, false)
 
 const smileyEye1Path = new THREE.Path()
   .moveTo(35, 20)
   .absellipse(25, 20, 10, 10, 0, Math.PI * 2, true)
 
-const smileyEye2Path = new THREE.Path()
-  .moveTo(65, 20)
-  .absarc(55, 20, 10, 0, Math.PI * 2, true)
+const smileyEye2Path = new THREE.Path().moveTo(65, 20).absarc(55, 20, 10, 0, Math.PI * 2, true)
 
 const smileyMouthPath = new THREE.Path()
   .moveTo(20, 40)
@@ -302,17 +344,127 @@ splinepts.push(new THREE.Vector2(0, 0))
 const splineShape = new THREE.Shape().moveTo(0, 0).splineThru(splinepts)
 
 const shapeItems = computed(() => [
-  { ...createShapeAttributes(californiaShape), color: 0xf08000, x: -300, y: -100, z: 0, rx: 0, ry: 0, rz: 0, s: 1 },
-  { ...createShapeAttributes(triangleShape), color: 0x8080f0, x: -180, y: 0, z: 0, rx: 0, ry: 0, rz: 0, s: 1 },
-  { ...createShapeAttributes(roundedRectShape), color: 0x008000, x: -150, y: 150, z: 0, rx: 0, ry: 0, rz: 0, s: 1 },
-  { ...createShapeAttributes(trackShape), color: 0x008080, x: 200, y: -100, z: 0, rx: 0, ry: 0, rz: 0, s: 1 },
-  { ...createShapeAttributes(squareShape), color: 0x0040f0, x: 150, y: 100, z: 0, rx: 0, ry: 0, rz: 0, s: 1 },
-  { ...createShapeAttributes(heartShape), color: 0xf00000, x: 60, y: 100, z: 0, rx: 0, ry: 0, rz: Math.PI, s: 1 },
-  { ...createShapeAttributes(circleShape), color: 0x00f000, x: 120, y: 250, z: 0, rx: 0, ry: 0, rz: 0, s: 1 },
-  { ...createShapeAttributes(fishShape), color: 0x404040, x: -60, y: 200, z: 0, rx: 0, ry: 0, rz: 0, s: 1 },
-  { ...createShapeAttributes(smileyShape), color: 0xf000f0, x: -200, y: 250, z: 0, rx: 0, ry: 0, rz: Math.PI, s: 1 },
-  { ...createShapeAttributes(arcShape), color: 0x804000, x: 150, y: 0, z: 0, rx: 0, ry: 0, rz: 0, s: 1 },
-  { ...createShapeAttributes(splineShape), color: 0x808080, x: -50, y: -100, z: 0, rx: 0, ry: 0, rz: 0, s: 1 }
+  {
+    ...createShapeAttributes(californiaShape),
+    color: 0xf08000,
+    x: -300,
+    y: -100,
+    z: 0,
+    rx: 0,
+    ry: 0,
+    rz: 0,
+    s: 1
+  },
+  {
+    ...createShapeAttributes(triangleShape),
+    color: 0x8080f0,
+    x: -180,
+    y: 0,
+    z: 0,
+    rx: 0,
+    ry: 0,
+    rz: 0,
+    s: 1
+  },
+  {
+    ...createShapeAttributes(roundedRectShape),
+    color: 0x008000,
+    x: -150,
+    y: 150,
+    z: 0,
+    rx: 0,
+    ry: 0,
+    rz: 0,
+    s: 1
+  },
+  {
+    ...createShapeAttributes(trackShape),
+    color: 0x008080,
+    x: 200,
+    y: -100,
+    z: 0,
+    rx: 0,
+    ry: 0,
+    rz: 0,
+    s: 1
+  },
+  {
+    ...createShapeAttributes(squareShape),
+    color: 0x0040f0,
+    x: 150,
+    y: 100,
+    z: 0,
+    rx: 0,
+    ry: 0,
+    rz: 0,
+    s: 1
+  },
+  {
+    ...createShapeAttributes(heartShape),
+    color: 0xf00000,
+    x: 60,
+    y: 100,
+    z: 0,
+    rx: 0,
+    ry: 0,
+    rz: Math.PI,
+    s: 1
+  },
+  {
+    ...createShapeAttributes(circleShape),
+    color: 0x00f000,
+    x: 120,
+    y: 250,
+    z: 0,
+    rx: 0,
+    ry: 0,
+    rz: 0,
+    s: 1
+  },
+  {
+    ...createShapeAttributes(fishShape),
+    color: 0x404040,
+    x: -60,
+    y: 200,
+    z: 0,
+    rx: 0,
+    ry: 0,
+    rz: 0,
+    s: 1
+  },
+  {
+    ...createShapeAttributes(smileyShape),
+    color: 0xf000f0,
+    x: -200,
+    y: 250,
+    z: 0,
+    rx: 0,
+    ry: 0,
+    rz: Math.PI,
+    s: 1
+  },
+  {
+    ...createShapeAttributes(arcShape),
+    color: 0x804000,
+    x: 150,
+    y: 0,
+    z: 0,
+    rx: 0,
+    ry: 0,
+    rz: 0,
+    s: 1
+  },
+  {
+    ...createShapeAttributes(splineShape),
+    color: 0x808080,
+    x: -50,
+    y: -100,
+    z: 0,
+    rx: 0,
+    ry: 0,
+    rz: 0,
+    s: 1
+  }
 ])
 
 const holeItems = computed(() => {
@@ -398,7 +550,8 @@ const onPointerDown = (event: PointerEvent) => {
 const onPointerMove = (event: PointerEvent) => {
   if (event.isPrimary === false) return
   pointerX.value = event.clientX - windowHalfX
-  targetRotation.value = targetRotationOnPointerDown.value + (pointerX.value - pointerXOnPointerDown.value) * 0.02
+  targetRotation.value =
+    targetRotationOnPointerDown.value + (pointerX.value - pointerXOnPointerDown.value) * 0.02
 }
 
 const onPointerUp = () => {

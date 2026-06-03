@@ -3,10 +3,16 @@
     <TScene background="#000000">
       <TPerspectiveCamera :fov="50" :near="1" :far="10" :position="[0, 0, 2]" />
 
-      <TMesh ref="meshRef" v-if="geometryAttributes.position">
-        <TInstancedBufferGeometry :attributes="geometryAttributes" :instanceCount="instances" />
-        <TShaderMaterial shaderType="rawShader" :uniforms="uniforms" :vertexShader="vertexShader"
-          :fragmentShader="fragmentShader" :side="2" :transparent="true" />
+      <TMesh v-if="geometryAttributes.position" ref="meshRef">
+        <TInstancedBufferGeometry :attributes="geometryAttributes" :instance-count="instances" />
+        <TShaderMaterial
+          shader-type="rawShader"
+          :uniforms="uniforms"
+          :vertex-shader="vertexShader"
+          :fragment-shader="fragmentShader"
+          :side="2"
+          :transparent="true"
+        />
       </TMesh>
     </TScene>
   </TCanvas>
@@ -23,11 +29,13 @@ import {
   TShaderMaterial,
   TInstancedBufferGeometry
 } from '@vue-three/vue-three'
-import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js'
 
 const meshRef = ref<any>(null)
 const instances = ref<number>(50000)
-const geometryAttributes = ref<Record<string, THREE.BufferAttribute | THREE.InstancedBufferAttribute>>({})
+const geometryAttributes = ref<
+  Record<string, THREE.BufferAttribute | THREE.InstancedBufferAttribute>
+>({})
 
 const uniforms = ref({
   time: { value: 1.0 },
@@ -85,9 +93,11 @@ const fragmentShader = `
 const gui = new GUI()
 onMounted(() => {
   createInstancedGeometry()
-  gui.add({ instances: instances.value }, 'instances', 0, instances.value).onChange((value: number) => {
-    instances.value = value
-  })
+  gui
+    .add({ instances: instances.value }, 'instances', 0, instances.value)
+    .onChange((value: number) => {
+      instances.value = value
+    })
 })
 onBeforeUnmount(() => {
   gui.destroy()

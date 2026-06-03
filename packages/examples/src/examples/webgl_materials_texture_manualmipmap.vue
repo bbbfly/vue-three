@@ -1,8 +1,20 @@
 <template>
   <div class="texture-manualmipmap-example">
-    <TCanvas :antialias="true" :autoClear="false" :onRender="onRender" @mousemove="handleMouseMove" ref="canvasRef">
+    <TCanvas
+      ref="canvasRef"
+      :antialias="true"
+      :auto-clear="false"
+      :on-render="onRender"
+      @mousemove="handleMouseMove"
+    >
       <TScene :background="0x000000" :fog="{ color: 0x000000, near: 1500, far: 4000 }">
-        <TPerspectiveCamera :fov="35" :near="1" :far="5000" :position="[0, 0, 1500]" ref="cameraRef" />
+        <TPerspectiveCamera
+          ref="cameraRef"
+          :fov="35"
+          :near="1"
+          :far="5000"
+          :position="[0, 0, 1500]"
+        />
       </TScene>
     </TCanvas>
 
@@ -32,11 +44,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import * as THREE from 'three'
-import {
-  TCanvas,
-  TScene,
-  TPerspectiveCamera
-} from '@vue-three/vue-three'
+import { TCanvas, TScene, TPerspectiveCamera } from '@vue-three/vue-three'
 
 const canvasRef = ref<InstanceType<typeof TCanvas> | null>(null)
 const cameraRef = ref<InstanceType<typeof TPerspectiveCamera> | null>(null)
@@ -125,30 +133,39 @@ function addPainting(
   materials.push(frameMaterial)
   const meshFrame = new THREE.Mesh(geometry, frameMaterial)
   meshFrame.position.z = -10.0
-  meshFrame.scale.x = 1.1 * imageWidth / 100
-  meshFrame.scale.y = 1.1 * imageHeight / 100
+  meshFrame.scale.x = (1.1 * imageWidth) / 100
+  meshFrame.scale.y = (1.1 * imageHeight) / 100
   scene.add(meshFrame)
 
   // 阴影
-  const shadowMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 0.75, transparent: true })
+  const shadowMaterial = new THREE.MeshBasicMaterial({
+    color: 0x000000,
+    opacity: 0.75,
+    transparent: true
+  })
   materials.push(shadowMaterial)
   const meshShadow = new THREE.Mesh(geometry, shadowMaterial)
-  meshShadow.position.y = -1.1 * imageHeight / 2
-  meshShadow.position.z = -1.1 * imageHeight / 2
+  meshShadow.position.y = (-1.1 * imageHeight) / 2
+  meshShadow.position.z = (-1.1 * imageHeight) / 2
   meshShadow.rotation.x = -Math.PI / 2
-  meshShadow.scale.x = 1.1 * imageWidth / 100
-  meshShadow.scale.y = 1.1 * imageHeight / 100
+  meshShadow.scale.x = (1.1 * imageWidth) / 100
+  meshShadow.scale.y = (1.1 * imageHeight) / 100
   scene.add(meshShadow)
 
   // 设置地面高度
-  const floorHeight = -1.117 * imageHeight / 2
+  const floorHeight = (-1.117 * imageHeight) / 2
   floorMesh.position.y = floorHeight
 }
 
 /**
  * 自定义渲染回调 - 双场景裁剪渲染
  */
-const onRender = (params: { renderer: THREE.WebGLRenderer; scene: THREE.Scene; camera: THREE.Camera; size: { width: number; height: number } }): void => {
+const onRender = (params: {
+  renderer: THREE.WebGLRenderer
+  scene: THREE.Scene
+  camera: THREE.Camera
+  size: { width: number; height: number }
+}): void => {
   const { renderer, scene, camera, size } = params
 
   // 鼠标控制相机位置
@@ -233,7 +250,7 @@ onMounted(() => {
   // 使用 TextureLoader 的回调参数，在纹理加载完成后添加画作
   const texturePainting = textureLoader.load(
     '/textures/758px-Canestra_di_frutta_(Caravaggio).jpg',
-    (loadedTexture) => {
+    loadedTexture => {
       const image = loadedTexture.image as HTMLImageElement
 
       // 将加载的图片设置到 texturePainting2
@@ -269,7 +286,7 @@ onUnmounted(() => {
 
   // 清理场景2
   if (scene2) {
-    scene2.traverse((child) => {
+    scene2.traverse(child => {
       if (child instanceof THREE.Mesh) {
         child.geometry.dispose()
       }

@@ -38,18 +38,20 @@ import {
 const canvasRef = shallowRef<typeof TCanvas>()
 
 const urls = [
-  '/textures/cube/Park3Med/px.jpg', '/textures/cube/Park3Med/nx.jpg',
-  '/textures/cube/Park3Med/py.jpg', '/textures/cube/Park3Med/ny.jpg',
-  '/textures/cube/Park3Med/pz.jpg', '/textures/cube/Park3Med/nz.jpg'
+  '/textures/cube/Park3Med/px.jpg',
+  '/textures/cube/Park3Med/nx.jpg',
+  '/textures/cube/Park3Med/py.jpg',
+  '/textures/cube/Park3Med/ny.jpg',
+  '/textures/cube/Park3Med/pz.jpg',
+  '/textures/cube/Park3Med/nz.jpg'
 ]
-
 
 const CubemapFilterShader = {
   name: 'CubemapFilterShader',
 
   uniforms: {
     cubeTexture: { value: null as THREE.CubeTexture | null },
-    mipIndex: { value: 0 },
+    mipIndex: { value: 0 }
   },
 
   vertexShader: /* glsl */ `
@@ -85,7 +87,7 @@ const CubemapFilterShader = {
 
       gl_FragColor = textureCube(cubeTexture, cubeCoordinates, 0.0) * color;
     }
-    `,
+    `
 }
 
 function loadCubeTexture(texture) {
@@ -103,7 +105,7 @@ function allocateCubemapRenderTarget(cubeMapSize: number): THREE.WebGLCubeRender
     type: THREE.HalfFloatType,
     format: THREE.RGBAFormat,
     colorSpace: THREE.LinearSRGBColorSpace,
-    depthBuffer: false,
+    depthBuffer: false
   }
 
   const rt = new THREE.WebGLCubeRenderTarget(cubeMapSize, params)
@@ -127,14 +129,16 @@ function renderToCubeTexture(renderer, sourceCubeTexture) {
     vertexShader: CubemapFilterShader.vertexShader,
     fragmentShader: CubemapFilterShader.fragmentShader,
     side: THREE.BackSide,
-    blending: THREE.NoBlending,
+    blending: THREE.NoBlending
   })
 
   material.uniforms.cubeTexture.value = sourceCubeTexture
 
   const mesh = new THREE.Mesh(geometry, material)
   const cubeCamera = new THREE.CubeCamera(1, 10, cubeMapRenderTarget)
-  const mipmapCount = Math.floor(Math.log2(Math.max(cubeMapRenderTarget.width, cubeMapRenderTarget.height)))
+  const mipmapCount = Math.floor(
+    Math.log2(Math.max(cubeMapRenderTarget.width, cubeMapRenderTarget.height))
+  )
   console.log(mipmapCount)
   for (let mipmap = 0; mipmap < mipmapCount; mipmap++) {
     material.uniforms.mipIndex.value = mipmap
@@ -155,7 +159,5 @@ function renderToCubeTexture(renderer, sourceCubeTexture) {
   mesh.material.dispose()
 }
 
-onMounted(async () => {
-
-})
+onMounted(async () => {})
 </script>

@@ -1,6 +1,4 @@
-import {
-	Vector2
-} from 'three';
+import { Vector2 } from 'three'
 
 /**
  * @module FreiChenShader
@@ -17,16 +15,14 @@ import {
  * @type {ShaderMaterial~Shader}
  */
 const FreiChenShader = {
+  name: 'FreiChenShader',
 
-	name: 'FreiChenShader',
+  uniforms: {
+    tDiffuse: { value: null },
+    aspect: { value: new Vector2(512, 512) }
+  },
 
-	uniforms: {
-
-		'tDiffuse': { value: null },
-		'aspect': { value: new Vector2( 512, 512 ) }
-	},
-
-	vertexShader: /* glsl */`
+  vertexShader: /* glsl */ `
 
 		varying vec2 vUv;
 
@@ -37,7 +33,7 @@ const FreiChenShader = {
 
 		}`,
 
-	fragmentShader: /* glsl */`
+  fragmentShader: /* glsl */ `
 
 		uniform sampler2D tDiffuse;
 		varying vec2 vUv;
@@ -97,7 +93,6 @@ const FreiChenShader = {
 
 			gl_FragColor = vec4(vec3(sqrt(M/S)), 1.0);
 		}`
+}
 
-};
-
-export { FreiChenShader };
+export { FreiChenShader }

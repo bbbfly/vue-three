@@ -1,26 +1,44 @@
 <template>
-
-
   <TCanvas :clear-color="'#f0f0f0'">
     <TScene>
-      <TOrthographicCamera ref="cameraRef" :left="left" :right="right" :top="top" :bottom="bottom" :near="1" :far="1000"
-        :position="[-200, 200, 200]" />
+      <TOrthographicCamera
+        ref="cameraRef"
+        :left="left"
+        :right="right"
+        :top="top"
+        :bottom="bottom"
+        :near="1"
+        :far="1000"
+        :position="[-200, 200, 200]"
+      />
 
       <!-- WebGL Scene - wireframe planes -->
-      <TMesh v-for="(plane, index) in webglPlanes" :position="plane.position" :rotation="plane.rotation"
-        :key="'webgl-' + index">
+      <TMesh
+        v-for="(plane, index) in webglPlanes"
+        :key="'webgl-' + index"
+        :position="plane.position"
+        :rotation="plane.rotation"
+      >
         <TPlane :args="[plane.width, plane.height]" />
         <TMeshBasicMaterial :color="0x000000" :wireframe="true" :side="THREE.DoubleSide" />
       </TMesh>
     </TScene>
 
     <TCSS3DRenderer>
-      <TCSS3DObject v-for="(plane, index) in css3dPlanes" :key="'css3d-' + index" :position="plane.position"
+      <TCSS3DObject
+        v-for="(plane, index) in css3dPlanes"
+        :key="'css3d-' + index"
+        :position="plane.position"
         :rotation="plane.rotation"
-        :style="{ width: plane.width + 'px', height: plane.height + 'px', backgroundColor: plane.color, opacity: 0.7 }">
+        :style="{
+          width: plane.width + 'px',
+          height: plane.height + 'px',
+          backgroundColor: plane.color,
+          opacity: 0.7
+        }"
+      >
       </TCSS3DObject>
     </TCSS3DRenderer>
-
   </TCanvas>
 </template>
 
@@ -86,13 +104,7 @@ onMounted(() => {
     new THREE.Euler(0, -90 * THREE.MathUtils.DEG2RAD, 0)
   )
 
-  createPlane(
-    100,
-    100,
-    'saddlebrown',
-    new THREE.Vector3(0, 0, 50),
-    new THREE.Euler(0, 0, 0)
-  )
+  createPlane(100, 100, 'saddlebrown', new THREE.Vector3(0, 0, 50), new THREE.Euler(0, 0, 0))
 
   createPlane(
     100,
@@ -111,7 +123,7 @@ onMounted(() => {
   )
 })
 
-onUnmounted(() => { })
+onUnmounted(() => {})
 </script>
 
 <style scoped>

@@ -23,8 +23,12 @@
       <TMesh v-if="uniforms" :rotation="[0, rotationY, 0]">
         <TFBXLoader src="/models/fbx/stanford-bunny.fbx" :scale="[1, 1, 1]" />
         <!-- 存在问题：uniforms 有些属性没有生效 -->
-        <TShaderMaterial :uniforms="uniforms" :vertex-shader="shader.vertexShader"
-          :fragment-shader="shader.fragmentShader" :lights="true" />
+        <TShaderMaterial
+          :uniforms="uniforms"
+          :vertex-shader="shader.vertexShader"
+          :fragment-shader="shader.fragmentShader"
+          :lights="true"
+        />
       </TMesh>
     </TScene>
   </TCanvas>
@@ -50,7 +54,6 @@ import {
 import { SubsurfaceScatteringShader } from 'three/addons/shaders/SubsurfaceScatteringShader.js'
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js'
 
-
 const rotationY = ref(0)
 let gui: GUI | null = null
 
@@ -72,10 +75,10 @@ const thicknessTexture = loader.load('/models/fbx/bunny_thickness.jpg')
 
 const shader = SubsurfaceScatteringShader
 const uniforms = shallowRef<THREE.Uniforms>(THREE.UniformsUtils.clone(shader.uniforms))
-uniforms.value['map'].value = imgTexture;
+uniforms.value['map'].value = imgTexture
 uniforms.value['diffuse'].value = new THREE.Vector3(1.0, 0.2, 0.2)
 uniforms.value['shininess'].value = 500
-uniforms.value['thicknessMap'].value = thicknessTexture;
+uniforms.value['thicknessMap'].value = thicknessTexture
 uniforms.value['thicknessColor'].value = new THREE.Vector3(0.5, 0.3, 0.0)
 uniforms.value['thicknessDistortion'].value = params.distortion
 uniforms.value['thicknessAmbient'].value = params.ambient
@@ -83,11 +86,9 @@ uniforms.value['thicknessAttenuation'].value = params.attenuation
 uniforms.value['thicknessPower'].value = params.power
 uniforms.value['thicknessScale'].value = params.scale
 
-
 function animate() {
   rotationY.value = performance.now() / 5000
 }
-
 
 initGUI()
 
@@ -98,9 +99,14 @@ function initGUI() {
     gui.add(params, 'distortion').min(0.01).max(1).step(0.01)
     gui.add(params, 'ambient').min(0.01).max(5.0).step(0.05)
     gui.add(params, 'attenuation').min(0.01).max(5.0).step(0.05)
-    gui.add(params, 'power').min(0.01).max(16.0).step(0.1).onChange((val) => {
-      uniforms.value['thicknessPower'].value = val
-    })
+    gui
+      .add(params, 'power')
+      .min(0.01)
+      .max(16.0)
+      .step(0.1)
+      .onChange(val => {
+        uniforms.value['thicknessPower'].value = val
+      })
     gui.add(params, 'scale').min(0.01).max(50.0).step(0.1)
 
     gui.open()

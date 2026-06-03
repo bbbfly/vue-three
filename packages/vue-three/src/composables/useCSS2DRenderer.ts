@@ -12,7 +12,7 @@ export function useCSS2DRenderer() {
   }
 
   // 使用普通变量存储 Three.js 对象
-  let renderer: CSS2DRenderer = new CSS2DRenderer()
+  const renderer: CSS2DRenderer = new CSS2DRenderer()
   const labelContainer = renderer.domElement
 
   // 创建独立的 CSS2D 场景

@@ -11,7 +11,7 @@ export function useMaterial(initialConfig: MaterialConfig) {
     throw new Error('useMaterial must be used within a TMesh component')
   }
 
-  let material: Material = createMaterial(initialConfig)
+  const material: Material = createMaterial(initialConfig)
 
   meshCtx!.setMaterial(material)
 

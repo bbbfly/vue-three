@@ -1,5 +1,4 @@
 <template>
-
   <TCanvas antialias @animate="onAnimate">
     <TPerspectiveCamera :fov="45" :near="0.01" :far="10" :position="[0, 0, 3.5]" />
     <TScene background="#000000">
@@ -9,7 +8,6 @@
       </TLineSegments>
     </TScene>
   </TCanvas>
-
 </template>
 
 <script setup lang="ts">

@@ -15,7 +15,7 @@
           <span class="stat-label">总计</span>
         </div>
         <div class="stat-item">
-          <span class="stat-value">{{ Math.round(completedCount / totalCount * 100) }}%</span>
+          <span class="stat-value">{{ Math.round((completedCount / totalCount) * 100) }}%</span>
           <span class="stat-label">进度</span>
         </div>
       </div>
@@ -30,7 +30,12 @@
           </select>
         </div>
         <div class="search-box">
-          <input v-model="searchQuery" type="text" placeholder="🔍 搜索示例名称..." class="search-input" />
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="🔍 搜索示例名称..."
+            class="search-input"
+          />
         </div>
       </div>
     </header>
@@ -41,15 +46,24 @@
           <span class="category-icon">{{ category.icon }}</span>
           {{ category.name }}
           <span class="category-count">
-            ({{category.examples.filter(e => e.completed).length}}/{{ category.examples.length }})
+            ({{ category.examples.filter(e => e.completed).length }}/{{ category.examples.length }})
           </span>
         </h2>
 
         <div class="example-grid">
-          <router-link v-for="example in category.examples" :key="example.id" :to="`/example/${example.id}`"
-            class="example-card" :class="{ completed: example.completed }">
+          <router-link
+            v-for="example in category.examples"
+            :key="example.id"
+            :to="`/example/${example.id}`"
+            class="example-card"
+            :class="{ completed: example.completed }"
+          >
             <div class="card-image">
-              <img :src="getScreenshotUrl(example.id)" :alt="example.title" @error="handleImageError($event)" />
+              <img
+                :src="getScreenshotUrl(example.id)"
+                :alt="example.title"
+                @error="handleImageError($event)"
+              />
               <div class="image-overlay">
                 <span v-if="example.completed" class="overlay-badge done">✓ 已完成</span>
                 <span v-else class="overlay-badge pending">⏳ 待完成</span>
@@ -69,7 +83,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onActivated, onDeactivated, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { exampleCategories, getCompletedCount, getTotalCount, getScreenshotUrl } from '../config/examples'
+import {
+  exampleCategories,
+  getCompletedCount,
+  getTotalCount,
+  getScreenshotUrl
+} from '../config/examples'
 import CategoryNav from '../components/CategoryNav.vue'
 
 const route = useRoute()
@@ -95,9 +114,7 @@ const filteredCategories = computed(() => {
       .map(category => ({
         ...category,
         examples: category.examples.filter(
-          ex =>
-            ex.title.toLowerCase().includes(query) ||
-            ex.id.toLowerCase().includes(query)
+          ex => ex.title.toLowerCase().includes(query) || ex.id.toLowerCase().includes(query)
         )
       }))
       .filter(category => category.examples.length > 0)
@@ -128,7 +145,8 @@ onActivated(() => {
 
 function handleImageError(event: Event) {
   const target = event.target as HTMLImageElement
-  target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150"%3E%3Crect fill="%23f5f5f5" width="200" height="150"/%3E%3Ctext fill="%23999" font-family="sans-serif" font-size="14" x="50%25" y="50%25" text-anchor="middle" dominant-baseline="middle"%3E暂无预览图%3C/text%3E%3C/svg%3E'
+  target.src =
+    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150"%3E%3Crect fill="%23f5f5f5" width="200" height="150"/%3E%3Ctext fill="%23999" font-family="sans-serif" font-size="14" x="50%25" y="50%25" text-anchor="middle" dominant-baseline="middle"%3E暂无预览图%3C/text%3E%3C/svg%3E'
 }
 </script>
 

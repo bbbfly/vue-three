@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 
 import type { PropType } from 'vue'
@@ -83,12 +83,7 @@ const props = defineProps({
 })
 
 const helperInstance = computed(() => {
-  return new GridHelper(
-    props.size,
-    props.divisions,
-    props.colorCenterLine,
-    props.colorGrid
-  )
+  return new GridHelper(props.size, props.divisions, props.colorCenterLine, props.colorGrid)
 })
 
 const config = computed<HelperConfig>(() => ({

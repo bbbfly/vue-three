@@ -1,10 +1,15 @@
 <template>
-  <TCanvas antialias toneMapping="ACESFilmicToneMapping" :toneMappingExposure="0.8">
+  <TCanvas antialias tone-mapping="ACESFilmicToneMapping" :tone-mapping-exposure="0.8">
     <TScene>
       <TPerspectiveCamera :position="[0, 15, 30]" :fov="45" />
-      <TOrbitControls enableDamping :minDistance="10" :maxDistance="50" />
+      <TOrbitControls enable-damping :min-distance="10" :max-distance="50" />
 
-      <THemisphereLight skyColor="#ffffff" groundColor="#444444" :intensity="1.5" :position="[0, 20, 0]" />
+      <THemisphereLight
+        sky-color="#ffffff"
+        ground-color="#444444"
+        :intensity="1.5"
+        :position="[0, 20, 0]"
+      />
       <TDirectionalLight :intensity="0.8" :position="[5, 10, 7.5]" />
 
       <TMesh :position="[0, 0, 0]" :rotation="[-Math.PI / 2, 0, 0]">

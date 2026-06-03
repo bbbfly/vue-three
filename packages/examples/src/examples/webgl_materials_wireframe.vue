@@ -2,7 +2,7 @@
   <TCanvas antialias animation-loop>
     <TScene>
       <TPerspectiveCamera :position="[0, 0, 200]" :fov="40" :near="1" :far="500" />
-      <TOrbitControls :enablePan="false" :enableZoom="false" />
+      <TOrbitControls :enable-pan="false" :enable-zoom="false" />
 
       <!-- 左侧：基础线框材质 -->
       <TMesh v-if="geometryAttributes.position" :position="[-40, 0, 0]">
@@ -15,10 +15,10 @@
         <TBufferGeometry :attributes="geometryAttributes" />
         <TShaderMaterial
           :uniforms="shaderUniforms"
-          :vertexShader="vertexShader"
-          :fragmentShader="fragmentShader"
+          :vertex-shader="vertexShader"
+          :fragment-shader="fragmentShader"
           :side="'DoubleSide'"
-          :alphaToCoverage="true"
+          :alpha-to-coverage="true"
         />
       </TMesh>
     </TScene>
@@ -35,7 +35,7 @@ import {
   TMesh,
   TBufferGeometry,
   TMeshBasicMaterial,
-  TShaderMaterial,
+  TShaderMaterial
 } from '@vue-three/vue-three'
 import { BufferGeometryLoader, Vector3, BufferAttribute } from 'three'
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js'
@@ -83,19 +83,13 @@ let loadedGeometry: ThreeBufferGeometry | null = null
 /** GUI实例 */
 let gui: GUI | null = null
 
-
-
 /** 设置几何体属性 */
 function processGeometry(geometry: ThreeBufferGeometry): void {
   // 删除不需要的属性
   geometry.deleteAttribute('normal')
   geometry.deleteAttribute('uv')
 
-  const vectors = [
-    new Vector3(1, 0, 0),
-    new Vector3(0, 1, 0),
-    new Vector3(0, 0, 1)
-  ]
+  const vectors = [new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, 1)]
 
   const position = geometry.attributes.position
   const centers = new Float32Array(position.count * 3)
@@ -120,7 +114,8 @@ function processGeometry(geometry: ThreeBufferGeometry): void {
 function initGUI(): void {
   if (!gui) {
     gui = new GUI()
-    gui.add(shaderUniforms.value.thickness, 'value', 0, 4)
+    gui
+      .add(shaderUniforms.value.thickness, 'value', 0, 4)
       .name('Thickness')
       .onChange(() => {
         // uniforms会自动响应式更新
@@ -132,16 +127,13 @@ function initGUI(): void {
 /** 加载模型并初始化场景 */
 onMounted(() => {
   const loader = new BufferGeometryLoader()
-  loader.load(
-    '/models/json/WaltHeadLo_buffergeometry.json',
-    (geometry: ThreeBufferGeometry) => {
-      // 处理几何体
-      processGeometry(geometry)
+  loader.load('/models/json/WaltHeadLo_buffergeometry.json', (geometry: ThreeBufferGeometry) => {
+    // 处理几何体
+    processGeometry(geometry)
 
-      // 初始化GUI
-      initGUI()
-    }
-  )
+    // 初始化GUI
+    initGUI()
+  })
 })
 
 /** 清理资源 */

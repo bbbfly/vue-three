@@ -1,8 +1,6 @@
 export class Style {
-
-	static init( container ) {
-
-		const css = /* css */`
+  static init(container) {
+    const css = /* css */ `
 @scope (.three-inspector) {
 
 	:scope {
@@ -1657,13 +1655,11 @@ export class Style {
 	}
 
 }
-`;
+`
 
-		const styleElement = document.createElement( 'style' );
-		styleElement.textContent = css;
+    const styleElement = document.createElement('style')
+    styleElement.textContent = css
 
-		container.appendChild( styleElement );
-
-	}
-
+    container.appendChild(styleElement)
+  }
 }

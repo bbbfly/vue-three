@@ -1,17 +1,32 @@
 <template>
-  <TCanvas ref="canvasRef" antialias :tone-mapping="toneMapping" :tone-mapping-exposure="params.exposure"
-    @animate="animate">
+  <TCanvas
+    ref="canvasRef"
+    antialias
+    :tone-mapping="toneMapping"
+    :tone-mapping-exposure="params.exposure"
+    @animate="animate"
+  >
     <TPerspectiveCamera :fov="40" :near="0.1" :far="2000" :position="[0, 0, 120]" />
     <TOrbitControls :min-distance="10" :max-distance="150" />
 
     <TScene v-if="envMap" :background="envMap" :environment="envMap">
       <TMesh>
         <TSphere :args="[20, 64, 32]" />
-        <TMeshPhysicalMaterial :color="params.color" :transmission="params.transmission" :opacity="params.opacity"
-          :metalness="params.metalness" :roughness="params.roughness" :ior="params.ior" :thickness="params.thickness"
-          :specular-intensity="params.specularIntensity" :specular-color="params.specularColor"
-          :env-map-intensity="params.envMapIntensity" :alpha-map="alphaMap" :side="THREE.DoubleSide"
-          :transparent="true" />
+        <TMeshPhysicalMaterial
+          :color="params.color"
+          :transmission="params.transmission"
+          :opacity="params.opacity"
+          :metalness="params.metalness"
+          :roughness="params.roughness"
+          :ior="params.ior"
+          :thickness="params.thickness"
+          :specular-intensity="params.specularIntensity"
+          :specular-color="params.specularColor"
+          :env-map-intensity="params.envMapIntensity"
+          :alpha-map="alphaMap"
+          :side="THREE.DoubleSide"
+          :transparent="true"
+        />
       </TMesh>
     </TScene>
   </TCanvas>
@@ -33,7 +48,6 @@ import { UltraHDRLoader } from 'three/addons/loaders/UltraHDRLoader.js'
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js'
 
 const toneMapping = THREE.ACESFilmicToneMapping
-
 
 const envMap = ref<THREE.Texture | null>(null)
 const alphaMap = ref<THREE.CanvasTexture | null>(null)
@@ -96,34 +110,32 @@ function initGUI() {
   if (!gui) {
     gui = new GUI()
 
-    gui.addColor(params, 'color').onChange(() => { })
+    gui.addColor(params, 'color').onChange(() => {})
 
-    gui.add(params, 'transmission', 0, 1, 0.01).onChange(() => { })
+    gui.add(params, 'transmission', 0, 1, 0.01).onChange(() => {})
 
-    gui.add(params, 'opacity', 0, 1, 0.01).onChange(() => { })
+    gui.add(params, 'opacity', 0, 1, 0.01).onChange(() => {})
 
-    gui.add(params, 'metalness', 0, 1, 0.01).onChange(() => { })
+    gui.add(params, 'metalness', 0, 1, 0.01).onChange(() => {})
 
-    gui.add(params, 'roughness', 0, 1, 0.01).onChange(() => { })
+    gui.add(params, 'roughness', 0, 1, 0.01).onChange(() => {})
 
-    gui.add(params, 'ior', 1, 2, 0.01).onChange(() => { })
+    gui.add(params, 'ior', 1, 2, 0.01).onChange(() => {})
 
-    gui.add(params, 'thickness', 0, 5, 0.01).onChange(() => { })
+    gui.add(params, 'thickness', 0, 5, 0.01).onChange(() => {})
 
-    gui.add(params, 'specularIntensity', 0, 1, 0.01).onChange(() => { })
+    gui.add(params, 'specularIntensity', 0, 1, 0.01).onChange(() => {})
 
-    gui.addColor(params, 'specularColor').onChange(() => { })
+    gui.addColor(params, 'specularColor').onChange(() => {})
 
     gui
       .add(params, 'envMapIntensity', 0, 1, 0.01)
       .name('envMap intensity')
-      .onChange(() => { })
+      .onChange(() => {})
 
-    gui.add(params, 'exposure', 0, 1, 0.01).onChange(() => { })
+    gui.add(params, 'exposure', 0, 1, 0.01).onChange(() => {})
 
-    gui
-      .add(params, 'transmissionResolutionScale', 0.01, 1, 0.01)
-      .name('transmission resolution')
+    gui.add(params, 'transmissionResolutionScale', 0.01, 1, 0.01).name('transmission resolution')
 
     gui.open()
   }

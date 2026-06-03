@@ -8,34 +8,58 @@
         <!-- car paint -->
         <TMesh :position="[-1, 1, 0]">
           <TSphere :args="[0.8, 64, 32]" />
-          <TMeshPhysicalMaterial :clearcoat="1.0" :clearcoat-roughness="0.1" :metalness="0.9" :roughness="0.5"
-            color="#0000ff" :normal-map="normalMap3" :normal-scale="[0.15, 0.15]" />
+          <TMeshPhysicalMaterial
+            :clearcoat="1.0"
+            :clearcoat-roughness="0.1"
+            :metalness="0.9"
+            :roughness="0.5"
+            color="#0000ff"
+            :normal-map="normalMap3"
+            :normal-scale="[0.15, 0.15]"
+          />
         </TMesh>
 
         <!-- fibers -->
         <TMesh :position="[1, 1, 0]">
           <TSphere :args="[0.8, 64, 32]" />
-          <TMeshPhysicalMaterial :roughness="0.5" :clearcoat="1.0" :clearcoat-roughness="0.1" :map="diffuseMap"
-            :normal-map="normalMap" />
+          <TMeshPhysicalMaterial
+            :roughness="0.5"
+            :clearcoat="1.0"
+            :clearcoat-roughness="0.1"
+            :map="diffuseMap"
+            :normal-map="normalMap"
+          />
         </TMesh>
 
         <!-- golf -->
         <TMesh :position="[-1, -1, 0]">
           <TSphere :args="[0.8, 64, 32]" />
-          <TMeshPhysicalMaterial :metalness="0.0" :roughness="0.1" :clearcoat="1.0"
-            :clearcoat-normal-scale="[2.0, -2.0]">
+          <TMeshPhysicalMaterial
+            :metalness="0.0"
+            :roughness="0.1"
+            :clearcoat="1.0"
+            :clearcoat-normal-scale="[2.0, -2.0]"
+          >
             <TTexture map-type="normalMap" url="/textures/golfball.jpg" />
-            <TTexture map-type="clearcoatNormalMap"
-              url="/textures/pbr/Scratched_gold/Scratched_gold_01_1K_Normal.png" />
+            <TTexture
+              map-type="clearcoatNormalMap"
+              url="/textures/pbr/Scratched_gold/Scratched_gold_01_1K_Normal.png"
+            />
           </TMeshPhysicalMaterial>
         </TMesh>
 
         <!-- clearcoat + normalmap -->
         <TMesh :position="[1, -1, 0]">
           <TSphere :args="[0.8, 64, 32]" />
-          <TMeshPhysicalMaterial :clearcoat="1.0" :metalness="1.0" color="#ff0000" :normal-map="normalMap2"
-            :normal-scale="[0.15, 0.15]" :clearcoat-normal-map="clearcoatNormalMap"
-            :clearcoat-normal-scale="[2.0, -2.0]" />
+          <TMeshPhysicalMaterial
+            :clearcoat="1.0"
+            :metalness="1.0"
+            color="#ff0000"
+            :normal-map="normalMap2"
+            :normal-scale="[0.15, 0.15]"
+            :clearcoat-normal-map="clearcoatNormalMap"
+            :clearcoat-normal-scale="[2.0, -2.0]"
+          />
         </TMesh>
       </TGroup>
 
@@ -87,17 +111,17 @@ const textureLoader = new THREE.TextureLoader()
 onMounted(() => {
   new HDRCubeTextureLoader()
     .setPath('/textures/cube/pisaHDR/')
-    .load(['px.hdr', 'nx.hdr', 'py.hdr', 'ny.hdr', 'pz.hdr', 'nz.hdr'], (texture) => {
+    .load(['px.hdr', 'nx.hdr', 'py.hdr', 'ny.hdr', 'pz.hdr', 'nz.hdr'], texture => {
       envMap.value = texture
 
-      diffuseMap.value = textureLoader.load('/textures/carbon/Carbon.png', (t) => {
+      diffuseMap.value = textureLoader.load('/textures/carbon/Carbon.png', t => {
         t.colorSpace = THREE.SRGBColorSpace
         t.wrapS = THREE.RepeatWrapping
         t.wrapT = THREE.RepeatWrapping
         t.repeat.set(10, 10)
       })
 
-      normalMap.value = textureLoader.load('/textures/carbon/Carbon_Normal.png', (t) => {
+      normalMap.value = textureLoader.load('/textures/carbon/Carbon_Normal.png', t => {
         t.wrapS = THREE.RepeatWrapping
         t.wrapT = THREE.RepeatWrapping
         t.repeat.set(10, 10)
@@ -107,21 +131,23 @@ onMounted(() => {
 
       const flakes = new FlakesTexture()
       normalMap3.value = new CanvasTexture(flakes)
-      normalMap3.wrapS = THREE.RepeatWrapping
-      normalMap3.wrapT = THREE.RepeatWrapping
-      normalMap3.repeat.x = 10
-      normalMap3.repeat.y = 6
-      normalMap3.anisotropy = 16
+      normalMap3.value.wrapS = THREE.RepeatWrapping
+      normalMap3.value.wrapT = THREE.RepeatWrapping
+      normalMap3.value.repeat.x = 10
+      normalMap3.value.repeat.y = 6
+      normalMap3.value.anisotropy = 16
 
       normalMap4.value = textureLoader.load('/textures/golfball.jpg')
 
-      clearcoatNormalMap.value = textureLoader.load('/textures/pbr/Scratched_gold/Scratched_gold_01_1K_Normal.png')
+      clearcoatNormalMap.value = textureLoader.load(
+        '/textures/pbr/Scratched_gold/Scratched_gold_01_1K_Normal.png'
+      )
     })
 })
 
 watch(
   () => lightPosition.value,
-  (newVal) => {
+  newVal => {
     lightPosition.value = newVal
   },
   { deep: true }
@@ -129,11 +155,6 @@ watch(
 
 function animate() {
   const timer = Date.now() * 0.00025
-  lightPosition.value = [
-    Math.sin(timer * 7) * 3,
-    Math.cos(timer * 5) * 4,
-    Math.cos(timer * 3) * 3
-  ]
+  lightPosition.value = [Math.sin(timer * 7) * 3, Math.cos(timer * 5) * 4, Math.cos(timer * 3) * 3]
 }
-
 </script>

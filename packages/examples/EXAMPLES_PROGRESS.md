@@ -1,5 +1,29 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-06-03 - 动态实例化示例完成
+
+### 完成任务
+
+#### EX-2501 - webgl_instancing_dynamic 动态实例化示例
+
+- **完成时间**: 2026-06-03
+- **内容**:
+  - 创建 webgl_instancing_dynamic.vue 示例组件
+  - 使用 TInstancedMesh 创建 100x100 = 10000 个立方体实例
+  - 使用 Timer 和 TWEEN 实现动画系统
+  - 实现 Y 轴波浪动画：每个实例根据时间和随机种子计算 Y 位置
+  - 实现颜色渐变过渡：使用 3 种颜色（青、黄、紫）循环切换
+  - 相机围绕场景自动旋转，带有动态 up 向量
+  - 使用 PMREMGenerator 和 RoomEnvironment 生成环境贴图
+  - 加载 edge3.jpg 纹理作为材质贴图
+  - 设置 instanceMatrix 为 DynamicDrawUsage 支持每帧更新
+  - 每帧更新实例矩阵和颜色属性
+  - 完善的资源清理：几何体、材质、纹理、PMREMGenerator、TWEEN 动画
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+  - 更新 examples.ts 配置标记为已完成
+
+---
+
 ## 2026-06-03 - 线框材质示例完成
 
 ### 完成任务

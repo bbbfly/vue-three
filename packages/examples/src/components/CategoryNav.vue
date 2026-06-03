@@ -7,20 +7,23 @@
       </router-link>
 
       <nav class="nav-links">
-        <router-link v-for="category in categories" :key="category.id" :to="`/#${category.id}`" class="nav-link"
-          :class="{ active: isActive(category.id) }">
+        <router-link
+          v-for="category in categories"
+          :key="category.id"
+          :to="`/#${category.id}`"
+          class="nav-link"
+          :class="{ active: isActive(category.id) }"
+        >
           <span class="nav-icon">{{ category.icon }}</span>
           <span class="nav-label">{{ category.name }}</span>
           <span class="nav-count">
-            {{category.examples.filter(e => e.completed).length}}/{{ category.examples.length }}
+            {{ category.examples.filter(e => e.completed).length }}/{{ category.examples.length }}
           </span>
         </router-link>
       </nav>
 
       <div class="nav-stats">
-        <span class="stat-text">
-          已完成 {{ completedCount }}/{{ totalCount }}
-        </span>
+        <span class="stat-text"> 已完成 {{ completedCount }}/{{ totalCount }} </span>
         <div class="progress-bar">
           <div class="progress-fill" :style="{ width: `${progressPercent}%` }"></div>
         </div>

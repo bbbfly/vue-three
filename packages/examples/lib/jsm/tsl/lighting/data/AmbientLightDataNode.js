@@ -1,5 +1,5 @@
-import { Color, Node } from 'three/webgpu';
-import { NodeUpdateType, renderGroup, uniform } from 'three/tsl';
+import { Color, Node } from 'three/webgpu'
+import { NodeUpdateType, renderGroup, uniform } from 'three/tsl'
 
 /**
  * Batched data node for ambient lights in dynamic lighting mode.
@@ -7,55 +7,41 @@ import { NodeUpdateType, renderGroup, uniform } from 'three/tsl';
  * @augments Node
  */
 class AmbientLightDataNode extends Node {
+  static get type() {
+    return 'AmbientLightDataNode'
+  }
 
-	static get type() {
+  constructor() {
+    super()
 
-		return 'AmbientLightDataNode';
+    this._color = new Color()
+    this._lights = []
 
-	}
+    this.colorNode = uniform(this._color).setGroup(renderGroup)
+    this.updateType = NodeUpdateType.RENDER
+  }
 
-	constructor() {
+  setLights(lights) {
+    this._lights = lights
 
-		super();
+    return this
+  }
 
-		this._color = new Color();
-		this._lights = [];
+  update() {
+    this._color.setScalar(0)
 
-		this.colorNode = uniform( this._color ).setGroup( renderGroup );
-		this.updateType = NodeUpdateType.RENDER;
+    for (let i = 0; i < this._lights.length; i++) {
+      const light = this._lights[i]
 
-	}
+      this._color.r += light.color.r * light.intensity
+      this._color.g += light.color.g * light.intensity
+      this._color.b += light.color.b * light.intensity
+    }
+  }
 
-	setLights( lights ) {
-
-		this._lights = lights;
-
-		return this;
-
-	}
-
-	update() {
-
-		this._color.setScalar( 0 );
-
-		for ( let i = 0; i < this._lights.length; i ++ ) {
-
-			const light = this._lights[ i ];
-
-			this._color.r += light.color.r * light.intensity;
-			this._color.g += light.color.g * light.intensity;
-			this._color.b += light.color.b * light.intensity;
-
-		}
-
-	}
-
-	setup( builder ) {
-
-		builder.context.irradiance.addAssign( this.colorNode );
-
-	}
-
+  setup(builder) {
+    builder.context.irradiance.addAssign(this.colorNode)
+  }
 }
 
-export default AmbientLightDataNode;
+export default AmbientLightDataNode

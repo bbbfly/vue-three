@@ -1,11 +1,24 @@
 <template>
   <TCanvas antialias background="#000000" @animate="onAnimate">
     <TScene>
-      <TPerspectiveCamera v-if="cameraType === 'perspective'" ref="perspectiveCameraRef" :position="[0, 0, 1500]"
-        :fov="45" :near="500" :far="3000" />
-      <TOrthographicCamera v-else ref="orthoCameraRef" :position="[0, 0, 1500]" :zoom="1" :near="1000" :far="2500" />
+      <TPerspectiveCamera
+        v-if="cameraType === 'perspective'"
+        ref="perspectiveCameraRef"
+        :position="[0, 0, 1500]"
+        :fov="45"
+        :near="500"
+        :far="3000"
+      />
+      <TOrthographicCamera
+        v-else
+        ref="orthoCameraRef"
+        :position="[0, 0, 1500]"
+        :zoom="1"
+        :near="1000"
+        :far="2500"
+      />
 
-      <TOrbitControls ref="orbitControlsRef" :enableDamping="true" />
+      <TOrbitControls ref="orbitControlsRef" :enable-damping="true" />
 
       <TAmbientLight :intensity="0.3" />
       <TPointLight color="#ff0000" :intensity="1.5" :position="[0, 0, 2500]" />
@@ -15,41 +28,79 @@
       <TMesh ref="meshRef" :scale="[25, 25, 25]">
         <TOBJLoader ref="objLoaderRef" :src="modelUrl" />
 
-        <TMeshNormalMaterial v-if="currentMaterial === 'normal'" :side="currentSide" :displacementScale="SCALE"
-          :displacementBias="BIAS" :normalScale="[1, -1]">
+        <TMeshNormalMaterial
+          v-if="currentMaterial === 'normal'"
+          :side="currentSide"
+          :displacement-scale="SCALE"
+          :displacement-bias="BIAS"
+          :normal-scale="[1, -1]"
+        >
           <TTexture map-type="displacementMap" url="/models/obj/ninja/displacement.jpg" />
           <TTexture map-type="normalMap" url="/models/obj/ninja/normal.png" />
         </TMeshNormalMaterial>
 
-        <TMeshStandardMaterial v-else-if="currentMaterial === 'standard'" :side="currentSide" :color="0xffffff"
-          :metalness="0.5" :roughness="0.6" :displacementScale="SCALE" :displacementBias="BIAS" :normalScale="[1, -1]">
+        <TMeshStandardMaterial
+          v-else-if="currentMaterial === 'standard'"
+          :side="currentSide"
+          :color="0xffffff"
+          :metalness="0.5"
+          :roughness="0.6"
+          :displacement-scale="SCALE"
+          :displacement-bias="BIAS"
+          :normal-scale="[1, -1]"
+        >
           <TTexture map-type="displacementMap" url="/models/obj/ninja/displacement.jpg" />
           <TTexture map-type="aoMap" url="/models/obj/ninja/ao.jpg" />
           <TTexture map-type="normalMap" url="/models/obj/ninja/normal.png" />
         </TMeshStandardMaterial>
 
-        <TMeshDepthMaterial v-else-if="currentMaterial === 'depthBasic'" :side="currentSide"
-          depthPacking="BasicDepthPacking" :displacementScale="SCALE" :displacementBias="BIAS">
+        <TMeshDepthMaterial
+          v-else-if="currentMaterial === 'depthBasic'"
+          :side="currentSide"
+          depth-packing="BasicDepthPacking"
+          :displacement-scale="SCALE"
+          :displacement-bias="BIAS"
+        >
           <TTexture map-type="displacementMap" url="/models/obj/ninja/displacement.jpg" />
         </TMeshDepthMaterial>
 
-        <TMeshDepthMaterial v-else-if="currentMaterial === 'depthRGBA'" :side="currentSide"
-          depthPacking="RGBADepthPacking" :displacementScale="SCALE" :displacementBias="BIAS">
+        <TMeshDepthMaterial
+          v-else-if="currentMaterial === 'depthRGBA'"
+          :side="currentSide"
+          depth-packing="RGBADepthPacking"
+          :displacement-scale="SCALE"
+          :displacement-bias="BIAS"
+        >
           <TTexture map-type="displacementMap" url="/models/obj/ninja/displacement.jpg" />
         </TMeshDepthMaterial>
 
-        <TMeshDepthMaterial v-else-if="currentMaterial === 'depthRGB'" :side="currentSide"
-          depthPacking="RGBDepthPacking" :displacementScale="SCALE" :displacementBias="BIAS">
+        <TMeshDepthMaterial
+          v-else-if="currentMaterial === 'depthRGB'"
+          :side="currentSide"
+          depth-packing="RGBDepthPacking"
+          :displacement-scale="SCALE"
+          :displacement-bias="BIAS"
+        >
           <TTexture map-type="displacementMap" url="/models/obj/ninja/displacement.jpg" />
         </TMeshDepthMaterial>
 
-        <TMeshDepthMaterial v-else-if="currentMaterial === 'depthRG'" :side="currentSide" depthPacking="RGDepthPacking"
-          :displacementScale="SCALE" :displacementBias="BIAS">
+        <TMeshDepthMaterial
+          v-else-if="currentMaterial === 'depthRG'"
+          :side="currentSide"
+          depth-packing="RGDepthPacking"
+          :displacement-scale="SCALE"
+          :displacement-bias="BIAS"
+        >
           <TTexture map-type="displacementMap" url="/models/obj/ninja/displacement.jpg" />
         </TMeshDepthMaterial>
 
-        <TShaderMaterial v-else-if="currentMaterial === 'velocity'" :side="currentSide" :uniforms="velocityUniforms"
-          :vertexShader="velocityShader.vertexShader" :fragmentShader="velocityShader.fragmentShader" />
+        <TShaderMaterial
+          v-else-if="currentMaterial === 'velocity'"
+          :side="currentSide"
+          :uniforms="velocityUniforms"
+          :vertex-shader="velocityShader.vertexShader"
+          :fragment-shader="velocityShader.fragmentShader"
+        />
       </TMesh>
     </TScene>
   </TCanvas>
@@ -134,19 +185,30 @@ onMounted(() => {
   velocityUniforms.modelMatrixPrev.value = new Matrix4()
 
   const { gui } = useGui()
-  gui.add(params, 'material', ['standard', 'normal', 'velocity', 'depthBasic', 'depthRGBA', 'depthRGB', 'depthRG'])
+  gui
+    .add(params, 'material', [
+      'standard',
+      'normal',
+      'velocity',
+      'depthBasic',
+      'depthRGBA',
+      'depthRGB',
+      'depthRG'
+    ])
     .name('Material')
     .onChange((value: string) => {
       currentMaterial.value = value
     })
 
-  gui.add(params, 'camera', ['perspective', 'ortho'])
+  gui
+    .add(params, 'camera', ['perspective', 'ortho'])
     .name('Camera')
     .onChange((value: string) => {
       cameraType.value = value
     })
 
-  gui.add(params, 'side', ['front', 'back', 'double'])
+  gui
+    .add(params, 'side', ['front', 'back', 'double'])
     .name('Side')
     .onChange((value: string) => {
       currentSide.value = sides[value as keyof typeof sides]
@@ -154,15 +216,21 @@ onMounted(() => {
 })
 
 const onAnimate = () => {
-  const camera = cameraType.value === 'perspective' ? perspectiveCameraRef.value : orthoCameraRef.value
+  const camera =
+    cameraType.value === 'perspective' ? perspectiveCameraRef.value : orthoCameraRef.value
 
   if (camera && currentMaterial.value === 'velocity') {
-    velocityUniforms.previousProjectionViewMatrix.value.copy(velocityUniforms.currentProjectionViewMatrix.value)
+    velocityUniforms.previousProjectionViewMatrix.value.copy(
+      velocityUniforms.currentProjectionViewMatrix.value
+    )
 
     const projectionMatrix = camera.projectionMatrix
     const matrixWorldInverse = camera.matrixWorldInverse
     const tempMatrix = new Matrix4()
-    velocityUniforms.currentProjectionViewMatrix.value = tempMatrix.multiplyMatrices(projectionMatrix, matrixWorldInverse)
+    velocityUniforms.currentProjectionViewMatrix.value = tempMatrix.multiplyMatrices(
+      projectionMatrix,
+      matrixWorldInverse
+    )
 
     if (meshRef.value?.mesh?.userData?.matrixWorldPrevious) {
       velocityUniforms.modelMatrixPrev.value.copy(meshRef.value.mesh.userData.matrixWorldPrevious)

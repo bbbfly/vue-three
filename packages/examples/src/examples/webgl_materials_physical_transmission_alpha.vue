@@ -1,6 +1,11 @@
 <template>
-  <TCanvas ref="canvasRef" :antialias="true" :alpha="true" :tone-mapping="toneMapping"
-    :tone-mapping-exposure="params.exposure">
+  <TCanvas
+    ref="canvasRef"
+    :antialias="true"
+    :alpha="true"
+    :tone-mapping="toneMapping"
+    :tone-mapping-exposure="params.exposure"
+  >
     <TPerspectiveCamera :fov="40" :near="1" :far="2000" :position="[-5, 0.5, 0]" />
     <TOrbitControls :min-distance="5" :max-distance="20" :target="[0, 0.5, 0]" />
 
@@ -47,7 +52,7 @@ const params = reactive({
 })
 
 function onModelLoaded(gltf: THREE.Group) {
-  gltf.traverse((child) => {
+  gltf.traverse(child => {
     if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhysicalMaterial) {
       material = child.material
       const color = new THREE.Color()
@@ -73,75 +78,66 @@ function initGUI() {
   if (!gui && material) {
     gui = new GUI()
 
-    gui.addColor(params, 'color')
-      .onChange(() => {
-        material!.color.set(params.color)
-      })
+    gui.addColor(params, 'color').onChange(() => {
+      material!.color.set(params.color)
+    })
 
-    gui.add(params, 'transmission', 0, 1, 0.01)
-      .onChange(() => {
-        material!.transmission = params.transmission
-      })
+    gui.add(params, 'transmission', 0, 1, 0.01).onChange(() => {
+      material!.transmission = params.transmission
+    })
 
-    gui.add(params, 'opacity', 0, 1, 0.01)
-      .onChange(() => {
-        material!.opacity = params.opacity
-        const transparent = params.opacity < 1
-        if (transparent !== material!.transparent) {
-          material!.transparent = transparent
-          material!.needsUpdate = true
-        }
-      })
+    gui.add(params, 'opacity', 0, 1, 0.01).onChange(() => {
+      material!.opacity = params.opacity
+      const transparent = params.opacity < 1
+      if (transparent !== material!.transparent) {
+        material!.transparent = transparent
+        material!.needsUpdate = true
+      }
+    })
 
-    gui.add(params, 'metalness', 0, 1, 0.01)
-      .onChange(() => {
-        material!.metalness = params.metalness
-      })
+    gui.add(params, 'metalness', 0, 1, 0.01).onChange(() => {
+      material!.metalness = params.metalness
+    })
 
-    gui.add(params, 'roughness', 0, 1, 0.01)
-      .onChange(() => {
-        material!.roughness = params.roughness
-      })
+    gui.add(params, 'roughness', 0, 1, 0.01).onChange(() => {
+      material!.roughness = params.roughness
+    })
 
-    gui.add(params, 'ior', 1, 2, 0.01)
-      .onChange(() => {
-        material!.ior = params.ior
-      })
+    gui.add(params, 'ior', 1, 2, 0.01).onChange(() => {
+      material!.ior = params.ior
+    })
 
-    gui.add(params, 'thickness', 0, 5, 0.01)
-      .onChange(() => {
-        material!.thickness = params.thickness
-      })
+    gui.add(params, 'thickness', 0, 5, 0.01).onChange(() => {
+      material!.thickness = params.thickness
+    })
 
-    gui.addColor(params, 'attenuationColor')
+    gui
+      .addColor(params, 'attenuationColor')
       .name('attenuation color')
       .onChange(() => {
         material!.attenuationColor.set(params.attenuationColor)
       })
 
-    gui.add(params, 'attenuationDistance', 0, 1, 0.01)
-      .onChange(() => {
-        material!.attenuationDistance = params.attenuationDistance
-      })
+    gui.add(params, 'attenuationDistance', 0, 1, 0.01).onChange(() => {
+      material!.attenuationDistance = params.attenuationDistance
+    })
 
-    gui.add(params, 'specularIntensity', 0, 1, 0.01)
-      .onChange(() => {
-        material!.specularIntensity = params.specularIntensity
-      })
+    gui.add(params, 'specularIntensity', 0, 1, 0.01).onChange(() => {
+      material!.specularIntensity = params.specularIntensity
+    })
 
-    gui.addColor(params, 'specularColor')
-      .onChange(() => {
-        material!.specularColor.set(params.specularColor)
-      })
+    gui.addColor(params, 'specularColor').onChange(() => {
+      material!.specularColor.set(params.specularColor)
+    })
 
-    gui.add(params, 'envMapIntensity', 0, 1, 0.01)
+    gui
+      .add(params, 'envMapIntensity', 0, 1, 0.01)
       .name('envMap intensity')
       .onChange(() => {
         material!.envMapIntensity = params.envMapIntensity
       })
 
-    gui.add(params, 'exposure', 0, 1, 0.01)
-      .onChange(() => { })
+    gui.add(params, 'exposure', 0, 1, 0.01).onChange(() => {})
 
     gui.open()
   }
@@ -150,7 +146,7 @@ function initGUI() {
 onMounted(() => {
   new UltraHDRLoader()
     .setPath('/textures/equirectangular/')
-    .load('royal_esplanade_2k.hdr.jpg', (texture) => {
+    .load('royal_esplanade_2k.hdr.jpg', texture => {
       texture.mapping = THREE.EquirectangularReflectionMapping
       envMap.value = texture
     })
