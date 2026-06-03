@@ -539,7 +539,7 @@
 | 任务ID  | 任务名称 | 示例ID                           | 预计耗时 | 优先级 | 状态      |
 | ------- | -------- | -------------------------------- | -------- | ------ | --------- |
 | EX-3501 | OBB      | webgl_math_obb                   | 15min    | 中     | completed |
-| EX-3502 | 方向变换 | webgl_math_orientation_transform | 15min    | 中     | pending   |
+| EX-3502 | 方向变换 | webgl_math_orientation_transform | 15min    | 中     | completed |
 
 ---
 

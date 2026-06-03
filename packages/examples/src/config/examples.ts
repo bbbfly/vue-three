@@ -1053,7 +1053,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_math_orientation_transform',
         title: '方向变换',
         category: 'math',
-        completed: false
+        completed: true
       }
     ]
   },

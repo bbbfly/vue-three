@@ -1,5 +1,38 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-06-03 - Orientation Transform 方向变换示例完成
+
+### 完成任务
+
+#### EX-3502 - webgl_math_orientation_transform 方向变换示例
+
+- **完成时间**: 2026-06-03
+- **内容**:
+  - 创建 webgl_math_orientation_transform.vue 示例组件
+  - 展示如何逐步将物体的朝向转换到目标朝向
+  - 使用 TCone（圆锥）作为箭头网格，展示朝向变化
+  - 使用 TSphere（球体）作为目标点，红色小球标记目标位置
+  - 创建大型线框球体作为参考球面（半径2，透明度0.3）
+  - 使用 THREE.Spherical 在球面上生成随机目标点
+  - 使用 THREE.Matrix4.lookAt() 计算目标旋转矩阵
+  - 使用 THREE.Quaternion.setFromRotationMatrix() 获取目标四元数
+  - 使用 THREE.Timer 计时器精确计算时间增量
+  - 实现两种旋转模式：
+    - rotateTowards()：逐步平滑旋转到目标朝向（默认）
+    - lookAt()：立即朝向目标（可配置）
+  - 旋转速度：Math.PI / 2 弧度/秒（90度/秒）
+  - 每 2 秒自动生成新的随机目标点
+  - 相机配置：FOV 70，near 0.01，far 10，位置 [0, 0, 5]
+  - 材质使用：
+    - 箭头：TMeshNormalMaterial（法线材质，直观展示朝向）
+    - 目标点：TMeshBasicMaterial 红色
+    - 参考球：TMeshBasicMaterial 灰色线框
+  - 通过拦截 scene.onBeforeRender 实现动画循环
+  - 完整的 TypeScript 类型标注
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
 ## 2026-06-03 - Anaglyph 立体红青特效示例完成
 
 ### 完成任务
