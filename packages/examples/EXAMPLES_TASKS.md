@@ -530,7 +530,7 @@
 | EX-3432 | Toon                   | webgl_materials_toon                        | 15min    | 中     | completed |
 | EX-3433 | 视频                   | webgl_materials_video                       | 15min    | 中     | pending   |
 | EX-3434 | 视频webcam             | webgl_materials_video_webcam                | 15min    | 中     | pending   |
-| EX-3435 | 线框                   | webgl_materials_wireframe                   | 10min    | 中     | pending   |
+| EX-3435 | 线框                   | webgl_materials_wireframe                   | 10min    | 中     | completed |
 
 ---
 

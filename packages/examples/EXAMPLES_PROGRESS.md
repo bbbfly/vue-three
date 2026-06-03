@@ -1,5 +1,30 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-06-03 - 线框材质示例完成
+
+### 完成任务
+
+#### EX-3435 - webgl_materials_wireframe 线框材质示例
+
+- **完成时间**: 2026-06-03
+- **内容**:
+  - 创建 webgl_materials_wireframe.vue 示例组件
+  - 加载 WaltHeadLo_buffergeometry.json 模型文件
+  - 实现左右对比渲染：
+    - 左侧：TMeshBasicMaterial 的 wireframe 模式
+    - 右侧：自定义 TShaderMaterial 实现高级线框效果
+  - 自定义 Shader 实现基于 fwidth 的边缘检测线框
+  - 自定义属性 'center' 存储三角形面方向信息
+  - GUI 控制面板调节 thickness 参数（0-4范围）
+  - 正面/背面渲染不同颜色（浅蓝 vs 深蓝）
+  - alphaToCoverage 抗锯齿线框边缘
+  - DoubleSide 双面渲染
+  - OrbitControls 控制器（禁用平移和缩放）
+  - 完善的资源清理：几何体和GUI实例在onBeforeUnmount中释放
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
 ## 2026-06-02 - Toon 卡通材质示例完成
 
 ### 完成任务

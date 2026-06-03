@@ -1040,7 +1040,7 @@ export const exampleCategories: ExampleCategory[] = [
         category: 'materials',
         completed: false
       },
-      { id: 'webgl_materials_wireframe', title: '线框', category: 'materials', completed: false }
+      { id: 'webgl_materials_wireframe', title: '线框', category: 'materials', completed: true }
     ]
   },
   {
