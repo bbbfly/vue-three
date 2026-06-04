@@ -1,5 +1,36 @@
 # Three.js 官方示例验证平台 - 任务进度日志
 
+## 2026-06-04 - Postprocessing 后处理示例完成
+
+### 完成任务
+
+#### EX-4001 - webgl_postprocessing 后处理示例
+
+- **完成时间**: 2026-06-04
+- **内容**:
+  - 创建 webgl_postprocessing.vue 示例组件
+  - 使用 EffectComposer 实现后处理效果链
+  - 添加 RenderPass 作为基础渲染通道
+  - 添加 DotScreenShader 点阵屏幕效果（scale=4）
+  - 添加 RGBShiftShader RGB 偏移效果（amount=0.0015）
+  - 添加 OutputPass 作为最终输出通道
+  - 场景配置：
+    - 黑色背景（#000000）
+    - 100 个随机分布的球体（TSphereGeometry 4x4 分段）
+    - 球体使用 MeshPhongMaterial 白色平面着色
+    - 球体随机分布在半径 400 的球面内
+    - 球体随机缩放 0-50 倍
+    - AmbientLight 环境光（0xcccccc）
+    - DirectionalLight 平行光（强度 3）
+  - 相机配置：FOV 70，near 1，far 1000，位置 [0, 0, 400]
+  - 使用 TGroup 容器对象管理所有球体
+  - 实现旋转动画：容器对象 X 轴 +0.005，Y 轴 +0.01
+  - 完整的 TypeScript 类型标注
+  - 组件卸载时正确清理 EffectComposer
+  - 更新 EXAMPLES_TASKS.md 任务状态为 completed
+
+---
+
 ## 2026-06-03 - Orientation Transform 方向变换示例完成
 
 ### 完成任务

@@ -1165,7 +1165,7 @@ export const exampleCategories: ExampleCategory[] = [
         id: 'webgl_postprocessing',
         title: 'Webgl后处理',
         category: 'postprocessing',
-        completed: false
+        completed: true
       },
       {
         id: 'webgl_postprocessing_3dlut',
